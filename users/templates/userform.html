@@ -1,0 +1,51 @@
+{% extends "admin.html" %}
+{% load i18n %} 
+
+{% block title %}Administrace > {{ title }}{% endblock %}
+{% block content %}
+
+<div class="clear"></div>
+<div class="content-box">
+	<div class="content-box-header">
+		<h3>{{ title }}</h3>
+		<div class="clear"></div>
+	</div>
+	<div class="content-box-content">
+		<div class="tab-content default-tab">
+			<fieldset>
+			<form action="{{ action }}" enctype="multipart/form-data" method="post" id="myform">
+			{{ form_user.as_p }}
+			{{ form_parms.as_p }}
+			{{ form_address.as_p }}			
+			<p><input type="submit" value="{{ submit }}" /></p>
+			</form>
+			</fieldset>
+		</div>
+	</div>
+	<div class="clear"></div>
+</div>
+<script type="text/javascript">
+	jQuery(function($){
+	$.datepicker.regional['cs'] = {
+		closeText: 'Zavřít',
+		prevText: '&#x3c;Dříve',
+		nextText: 'Později&#x3e;',
+		currentText: 'Nyní',
+		monthNames: ['leden','únor','březen','duben','květen','červen',
+        'červenec','srpen','září','říjen','listopad','prosinec'],
+		monthNamesShort: ['led','úno','bře','dub','kvě','čer',
+		'čvc','srp','zář','říj','lis','pro'],
+		dayNames: ['neděle', 'pondělí', 'úterý', 'středa', 'čtvrtek', 'pátek', 'sobota'],
+		dayNamesShort: ['ne', 'po', 'út', 'st', 'čt', 'pá', 'so'],
+		dayNamesMin: ['ne','po','út','st','čt','pá','so'],
+		//dateFormat: 'dd.mm.yy', firstDay: 1,
+		dateFormat: 'yy-mm-dd', firstDay: 1,
+		isRTL: false};
+	$.datepicker.setDefaults($.datepicker.regional['cs']);
+});
+	$("#id_pub_date").datepicker();
+
+
+</script>
+{% endblock %}
+

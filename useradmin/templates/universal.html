@@ -1,0 +1,95 @@
+{% extends "admin.html" %}
+{% load uni_form_tags %}
+{% load i18n %} 
+
+{% block title %}{% trans "Administrace" %} > {{ title }}{% endblock %}
+{% block content %}
+
+<h3>{{ title }}</h3>
+
+{% if not next_step %}
+<p class="error-text">{{ valid }}</p>
+{% endif %}
+{% if next_step %}
+<p class="ok-text">{{ valid }}</p>
+{% endif %}
+
+{% if siteErrors %}
+<p>{% trans "Následující doménu jsou použity již u jiné stránky nebo je nemáte zadané:" %}:</p>
+<ul>
+{% for x in siteErrors %}
+	<li>{{ x }}</li>
+{% endfor %}
+</ul>
+{% endif %}
+
+<fieldset>
+<form action="{{ action }}" enctype="multipart/form-data" method="post" id="myform" class="uniForm">
+{% csrf_token %}
+{{ form|as_uni_form }}
+
+{% if note %}
+{% for x in note%}
+	<p><em>{{ x }}</em></p>
+{% endfor %}
+{% endif %}
+
+<p><input type="submit" value="{{ submit }}" /></p>
+</form>
+</fieldset>
+
+<script type="text/javascript">
+	jQuery(function($){
+	$.datepicker.regional['cs'] = {
+		closeText: 'Zavřít',
+		prevText: '&#x3c;Dříve',
+		nextText: 'Později&#x3e;',
+		currentText: 'Nyní',
+		monthNames: ['leden','únor','březen','duben','květen','červen',
+        'červenec','srpen','září','říjen','listopad','prosinec'],
+		monthNamesShort: ['led','úno','bře','dub','kvě','čer',
+		'čvc','srp','zář','říj','lis','pro'],
+		dayNames: ['neděle', 'pondělí', 'úterý', 'středa', 'čtvrtek', 'pátek', 'sobota'],
+		dayNamesShort: ['ne', 'po', 'út', 'st', 'čt', 'pá', 'so'],
+		dayNamesMin: ['ne','po','út','st','čt','pá','so'],
+		//dateFormat: 'dd.mm.yy', firstDay: 1,
+		dateFormat: 'yy-mm-dd', firstDay: 1,
+		isRTL: false};
+	$.datepicker.setDefaults($.datepicker.regional['cs']);
+});
+	$("#id_pub_date").datepicker();
+	$("#id_date_exposure").datepicker();
+	$("#id_date_payback").datepicker();
+
+	var instance = CKEDITOR.instances["id_text"];
+    if(instance)
+    {
+        CKEDITOR.remove(instance);
+    }
+    if ($("#id_text").length)
+    	CKEDITOR.replace("id_text",
+    			{
+					language : 'cs',
+					//filebrowserImageBrowseUrl : 'url images.views.ck_browse_images',
+					entities : false,
+					toolbar : [
+							['Source'],
+							['Cut','Copy','Paste','PasteText','PasteFromWord','-', 'SpellChecker', 'Scayt'],
+							['Undo','Redo','-','Find','Replace','-','SelectAll','RemoveFormat'],
+							'/',
+							['Bold','Italic','Underline','Strike','-','Subscript','Superscript'],
+							['NumberedList','BulletedList','-','Outdent','Indent','Blockquote','CreateDiv'],
+							['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
+							['Link','Unlink','Anchor'],
+							['Image','Table','HorizontalRule','SpecialChar'],
+							'/',
+							['Styles','Format','Font','FontSize'],
+							['TextColor','BGColor'],
+							['Maximize', 'ShowBlocks','-','About']
+						],
+				}
+    );
+
+</script>
+{% endblock %}
+

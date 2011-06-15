@@ -1,0 +1,43 @@
+body {
+	font-family: "Trebuchet MS", sans-serif;
+	font-size: 12px;
+	text-align: left;
+}
+
+hr {
+	border: 1px solid #c77405;
+}
+
+a {
+	color: #1c94c4;
+	text-decoration: none;
+}
+
+a:hover {
+	color: #c77405;
+	text-decoration: underline;
+}
+
+ok {
+	font-size: 15px;
+	color: green;
+	font-weight: bold;
+}
+
+#main {
+	width: 85%;
+}
+
+#menu {
+	width: 200px;
+	float: left;
+}
+
+#menu h3 {
+	padding: 2px 2px 2px 30px;
+}
+
+#viewport {
+	width: 600px;
+	margin-left: 210px;
+}

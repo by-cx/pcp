@@ -1,0 +1,124 @@
+{% extends "admin.html" %}
+{% load i18n %}
+
+{% block title %}
+	{% trans "Administrace > Souhrné informace" %}
+{% endblock %}
+
+{% block content %}
+<div class="clear"></div>
+
+{% if not u.parms.count_domains %}
+<div class="notification">
+	<div>
+		<p>{% trans "Většina služeb na Roští.cz je závislá na doméně a jelikož jste ještě žádnou nepřidal/a, tak nejlepší místo kde začít je" %} <a href="{% url domains.views.show %}">{% trans "správa domén" %}</a>.</p>
+	</div>
+</div>
+{% endif %}
+
+<h3>{% trans "Informace o Vašem účtu" %}</h3>
+<table>
+<tr>
+	<th>{% trans "Jméno" %}</th>
+	<td>{{ u.parms.address.getName }}</td>
+</tr>
+<tr>
+	<th>{% trans "Uživatelské jméno" %}</th>
+	<td>{{ u.parms.user.username }}</td>
+</tr>
+<tr>
+	<th>{% trans "Domovský adresář" %}</th>
+	<td>{{ u.parms.home }}</td>
+</tr>
+{% if u.parms.fee %}
+<tr>
+	<th>{% trans "Paušální poplatek" %}</th>
+	<td>{{ u.parms.fee }} {{ u.parms.currency|upper }}</td>
+</tr>
+{% else %}
+<tr>
+	<th>{% trans "Sleva" %} (%)</th>
+	<td>{{ u.parms.discount }}</td>
+</tr>
+{% endif %}
+<tr>
+	<th>{% trans "Server" %}</th>
+	<td>{{ u.parms.web_machine.name }} (IPv4: {{ u.parms.web_machine.ip }}{% if u.parms.web_machine.ipv6 %} / IPv6: {{ u.parms.web_machine.ipv6 }}{% endif %})</td>
+</tr>
+</table>
+
+<h3>{% trans "Platby za služby" %}</h3>
+<table>
+<tr>
+	<th><strong>{% trans "Služba" %}</strong></th>
+	<td><strong>{% trans "Počet" %}</strong></td>
+	<td><strong>{% trans "Platba za den" %}</strong></td>
+</tr>
+<tr>
+	<th>{% trans "Domény" %}</th>
+	<td>{{ u.parms.count_domains }}×</td>
+	<td>{% trans "Více informací v" %} <a href="{% url domains.views.show %}">{% trans "seznamu domén" %}</a></td>
+</tr>
+{% if u.parms.fee %}
+<tr>
+	<th>{% trans "Weby/Aplikace" %}</th>
+	<td>{{ u.parms.count_sites }}×</td>
+	<td>{{ u.parms.fee|floatformat:2 }} {{ u.parms.currency|upper }}</td>
+</tr>
+{% else %}
+<tr>
+	<th>{% trans "Weby/Aplikace" %}</th>
+	<td>{{ u.parms.count_sites }}×</td>
+	<td>{{ u.parms.pay_for_sites|floatformat:2 }} {{ u.parms.currency|upper }}</td>
+</tr>
+{% endif %}
+<tr>
+	<td colspan="3"><hr /></td>
+</tr>
+{% if not u.parms.fee %}
+<tr>
+	<th><strong>{% trans "Platba za den" %}</strong></th>
+	<td></td>
+	<td>{{ u.parms.pay_total_day|floatformat:2 }}  {{ u.parms.currency|upper }}</td>
+</tr>
+<tr>
+	<th><strong>{% trans "Platba za měsíc" %}</strong></th>
+	<td></td>
+	<td>{{ u.parms.pay_total_month|floatformat:2 }}  {{ u.parms.currency|upper }}</td>
+</tr>
+{% endif %}
+{% if u.balance_set %}
+<tr>
+	<th><strong>{% trans "Stav vašeho účtu" %}</strong></th>
+	<td></td>
+	<td>{{ u.balance_set.all.0.sum|floatformat:2 }}  {{ u.parms.currency|upper }}</td>
+</tr>
+{% endif %}
+</table>
+
+{% if invoices %}
+
+	<h3>{% trans "Vystavené faktury" %}</h3>
+
+	<table>
+		<tr>
+			<th>{% trans "Faktura s č." %}</th>
+			<th>{% trans "Celková částka" %}</th>
+			<th>{% trans "Stav" %}</th>
+			<th>{% trans "Odkaz ke stažení" %}</th>
+		</tr>
+		{% for invoice in invoices %}
+		<tr>
+			<td>{{ invoice.payment_id }}</td>
+			<td>{{ invoice.total }}</td>
+			<td>
+				{{ invoice.payed|yesno:"zaplacená,nezaplacená,nevím" }}
+			</td>
+			<td><a href="{% url invoices.views.invoice_get invoice.payment_id %}">{% trans "Stáhnout" %}</a></td>
+		</tr>
+		{% endfor %}
+	</table>
+
+{% endif %}
+
+{% endblock %}

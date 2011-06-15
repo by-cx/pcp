@@ -1,0 +1,65 @@
+{% extends "admin.html" %}
+{% load i18n %}
+
+{% block title %}
+	{% trans "Administrace > Pohyby na účtu" %}
+{% endblock %}
+
+{% block content %}
+
+{% if type == "income" %}
+	<h2>Příchozí platby</h2>
+{% endif %}
+{% if type == "bills" %}
+	<h2>Platby za služby</h2>
+{% endif %}
+
+<table>
+	<thead>
+		<tr>
+			<th>{% trans "Datum" %}</th>
+			<th>{% trans "Čátka" %}</th>
+			<th>{% trans "Poznámka" %}</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for item in items.object_list %}
+		<tr>
+			<th>{{ item.pub_date }}</th>
+			<td>
+				{{ item.cash|floatformat:2 }}
+				{{ item.price|floatformat:2 }}
+				{{ item.currency }}
+			</td>
+			<td>
+				{{ item.note }}
+				{{ item.info }}
+			</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+	<tfoot>
+		<tr>
+			<td colspan="3">
+					<div class="pagination">
+						{% if items.has_previous %}<a href="{% url bills.views.show type 1 %}" title="{% trans "První stránka" %}">&laquo; {% trans "První" %}</a>{% endif %}
+						{% if items.has_previous %}<a href="{% url bills.views.show type emails.previous_page_number %}" title="{% trans "Předchozí stránka" %}">&laquo; {% trans "Předchozí" %}</a>{% endif %}
+
+						{% for p in paginator.page_range %}
+							{% ifequal p num_page %}
+								<a href="{% url bills.views.show type p %}" class="number current" title="{{ p }}">{{ p }}</a>
+							{% else %}
+								<a href="{% url bills.views.show type p %}" class="number" title="{{ p }}">{{ p }}</a>
+							{% endifequal %}
+						{% endfor %}
+
+						{% if items.has_next %}<a href="{% url bills.views.show type items.next_page_number %}" title="{% trans "Další stránka" %}">{% trans "Další" %} &raquo;</a>{% endif %}
+						{% if items.has_next %}<a href="{% url bills.views.show type paginator.num_pages %}" title="{% trans "Poslední stránka" %}">{% trans "Poslední" %} &raquo;</a>{% endif %}
+					</div>
+					<div class="clear"></div>
+			</td>
+		</tr>
+	</tfoot>
+</table>
+
+{% endblock %}

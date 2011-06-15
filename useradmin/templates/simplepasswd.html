@@ -1,0 +1,36 @@
+{% load i18n %}
+
+<div class="content-box">
+	<div class="content-box-header">
+		<h3>{{ title }}</h3>
+		<div class="clear"></div>
+	</div>
+	<div class="content-box-content">
+		<div class="tab-content default-tab" id="result">
+
+			<fieldset>
+			<form action="." enctype="multipart/form-data" method="post" id="myform">
+
+			<div id="insert_form">
+			{{ form.as_p }}
+			</div>
+
+			<p><input type="button" id="submit_button" value="{{ submit }}" /></p>
+			</form>
+			</fieldset>
+		</div>
+	</div>
+	<div class="clear"></div>
+</div>
+<script type="text/javascript">
+	function result_callback(data) {
+		if ( data == "OK" ) $("#result").html("{% trans "Heslo bylo změněno." %}");
+		else $("#db_dialog").html(data);
+	}
+
+	$("#submit_button").click(function (){
+		$.post("{{ action }}", $("#myform").serialize(),result_callback);
+	});
+</script>
+
+

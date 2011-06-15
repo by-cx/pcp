@@ -1,0 +1,110 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Přihlášení a registrace</title>
+	<link rel="stylesheet/less" type="text/css" href="/m/cssng/style.less">
+	<script src="/m/js/less-1.0.41.min.js" type="text/javascript"></script>
+</head>
+<body>
+
+<div id="container">
+	<div id="top">
+		<h1>{% trans "Administrace" %} {{ SERVER_NAME }}</h1>
+	</div>
+
+	<div id="col1">
+	<div id="col1-wrapper">
+		<h2>Registrace</h2>
+		<form action="{% url useradmin.views.reg %}" method="post" id="regform">
+			{% csrf_token %}
+			<h3>{% trans "Kontaktní informace" %}</h3>
+
+			<table>
+				{% if form1 %}
+					{{ form1.as_table }}
+				{% else %}
+					<tr><th><label for="id_company">Název firmy:</label></th><td><input id="id_company" type="text" name="company" maxlength="250" /></td></tr>
+					<tr><th><label for="id_name">Jméno a příjmení *:</label></th><td><input id="id_name" type="text" name="name" maxlength="250" /></td></tr>
+					<tr><th><label for="id_street">Uliče a č.p. *:</label></th><td><input id="id_street" type="text" name="street" maxlength="250" /></td></tr>
+					<tr><th><label for="id_city">Město *:</label></th><td><input id="id_city" type="text" name="city" maxlength="250" /></td></tr>
+					<tr><th><label for="id_city_num">PSČ *:</label></th><td><input id="id_city_num" type="text" name="city_num" maxlength="6" /></td></tr>
+					<tr><th><label for="id_ic">IČ:</label></th><td><input id="id_ic" type="text" name="ic" maxlength="50" /></td></tr>
+					<tr><th><label for="id_dic">DIČ:</label></th><td><input id="id_dic" type="text" name="dic" maxlength="50" /></td></tr>
+					<tr><th><label for="id_email">Email *:</label></th><td><input id="id_email" type="text" name="email" maxlength="250" /></td></tr>
+					<tr><th><label for="id_phone">Telefon/Mobil *:</label></th><td><input id="id_phone" type="text" name="phone" maxlength="30" /></td></tr>
+				{% endif %}
+			</table>
+
+			<br />
+
+			<h3>{% trans "Přihlašovací informace" %}</h3>
+
+			<table>
+				{% if form2 %}
+					{{ form2.as_table }}
+				{% else %}
+					<tr><th><label for="id_username">Uživatelské jméno *:</label></th><td><input id="id_username" type="text" name="username" maxlength="30" /></td></tr>
+					<tr><th><label for="id_password1">Heslo poprvé *:</label></th><td><input type="password" name="password1" id="id_password1" /></td></tr>
+					<tr><th><label for="id_password2">Heslo pro kontrolu *:</label></th><td><input type="password" name="password2" id="id_password2" /></td></tr>
+				{% endif %}
+			</table>
+
+			<h3>{% trans "Platby" %}</h3>
+
+			<table>
+				{% if form3 %}
+					{{ form3.as_table }}
+				{% else %}
+					<tr><th><label for="id_pay_method"></label></th><td><select name="pay_method" id="id_pay_method">
+					<option value="per_web">Za každou aplikaci (60Kč/app/měsíc)</option>
+					<option value="fee">Paušální poplatek (200 Kč/196 MB RAM)</option>
+					</select></td></tr>
+				{% endif %}
+			</table>
+
+			<table style="border: 0;">
+			<tr>
+				<th></th>
+				<td><input type="submit" value="{% trans "Registrovat" %}" class="submit" class="submit" /><br/><em>{% trans 'Registrací souhlasíte se' %} <a href="{{ CONTRACT_URL }}">{% trans 'smluvními podmínkami' %}</a></em></td>
+			</tr>
+			</table>
+			
+		</form>
+	</div>
+	</div>
+	<div id="col2">
+	<div id="col2-wrapper">
+		<h2>Přihlášení</h2>
+		<form action="{% url django.contrib.auth.views.login %}" method="post">
+				{% csrf_token %}
+				<input type="hidden" name="next" value="{{ next }}">
+				{% if form.errors %}
+				<div class="notification error png_bg">
+					<div>
+						{% trans "Špatně zadané uživatelské jméno nebo heslo. Zkuste to prosím znovu." %}
+					</div>
+				</div>
+				{% endif %}
+				<table>
+				<tr>
+					<th><label for="id_username">{% trans "Uživatelské jméno" %}</label></th>
+					<td><input id="id_username" type="text" name="username" maxlength="30" class="text-input" /></td>
+				</tr>
+				<tr>
+					<th><label for="id_password">{% trans "Heslo" %}</label></th>
+					<td><input type="password" name="password" id="id_password" class="text-input" /></td>
+				</tr>
+				<tr>
+					<th></th>
+					<td><input class="button" type="submit" value="{% trans "Přihlásit" %}" /></td>
+				</tr>
+				</table>
+
+			</form>
+	</div>
+	</div>
+</div>
+
+</body>
+</html>

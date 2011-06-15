@@ -1,0 +1,82 @@
+{% extends "admin.html" %}
+{% load i18n %}
+
+{% block title %}
+	{% trans "Administrace > MySQL databáze" %}
+{% endblock %}
+
+{% block content %}
+<script type="text/javascript">
+	function remove(what) {
+		$("#db_"+what).load("{% url mysql.views.rm "" %}"+what)
+	}
+</script>
+<div id="message-box"></div>
+
+<h2>MySQL</h2>
+
+{% blocktrans %}
+<p>Informace týkající se MySQL databází najdete na Wiki na adrese <a href='{{ WIKI_URL }}/sprava_mysql_databazi' target="_blank">{{ WIKI_URL }}/sprava_mysql_databazi</a>.</p>
+{% endblocktrans %}
+
+<div id="db_dialog"></div>
+
+<script type="text/javascript">
+	function my_passwd(db) {
+		$("#db_dialog").dialog({"width": 400, "height": 300});
+		$("#db_dialog").load("{% url mysql.views.passwd "" %}"+db+"/");
+	}
+</script>
+
+<h3>{% trans "Seznam MySQL databází" %}</h3>
+<table>
+	<thead>
+		<tr>
+		   <th>{% trans "Název databáze" %}</th>
+		   <th>{% trans "Akce" %}</th>
+		</tr>
+	</thead>
+	{% if dbs %}
+	<tbody>
+		{% for db in dbs.object_list %}
+		<tr>
+			<td>{{ db }}</td>
+			<td id="db_{{ db }}">
+				<a href="#" title="{% trans "Změnit heslo" %}" onclick="my_passwd('{{ db }}');">{% trans "Změnit heslo" %}</a>
+				 <a href="#" title="{% trans "Smazat" %}" onclick="if(confirm('{% trans "Opravdu chcete smazat tuto databázi?" %}')) remove('{{ db }}')"><img src="/m/images/icons/cross.png" alt="{% trans "Smazat" %}" /></a>
+			</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+	<tfoot>
+		<tr>
+			<td colspan="2">
+					<div class="pagination">
+						{% if ftps.has_previous %}<a href="{% url mysql.views.show 1 %}" title="{% trans "První stránka" %}">&laquo; {% trans "První" %}</a>{% endif %}
+						{% if ftps.has_previous %}<a href="{% url mysql.views.show dbs.previous_page_number %}" title="{% trans "Předchozí stránka" %}">&laquo; {% trans "Předchozí" %}</a>{% endif %}
+
+						{% for p in paginator.page_range %}
+							{% ifequal p num_page %}
+								<a href="{% url mysql.views.show p %}" class="number current" title="{{ p }}">{{ p }}</a>
+							{% else %}
+								<a href="{% url mysql.views.show p %}" class="number" title="{{ p }}">{{ p }}</a>
+							{% endifequal %}
+						{% endfor %}
+
+						{% if ftps.has_next %}<a href="{% url mysql.views.show dbs.next_page_number %}" title="{% trans "Další stránka" %}">{% trans "Další" %} &raquo;</a>{% endif %}
+						{% if ftps.has_next %}<a href="{% url mysql.views.show paginator.num_pages %}" title="{% trans "Poslední stránka" %}">{% trans "Poslední" %} &raquo;</a>{% endif %}
+					</div>
+					<div class="clear"></div>
+			</td>
+		</tr>
+	</tfoot>
+	{% else %}
+	<tbody>
+	<tr>
+		<td colspan="2">{% trans "Žádná databáze nebyla ještě přidána. Databáze můžete přidávat pomocí nabídky vlevo." %}</td>
+	</tr>
+	</tbody>
+	{% endif%}
+</table>
+
+{% endblock %}

@@ -1,0 +1,292 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-05-04 14:47+0200\n"
+"PO-Revision-Date: 2011-02-13 22:15\n"
+"Last-Translator: <cx@initd.cz>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Translated-Using: django-rosetta 0.5.6\n"
+
+#: models.py:12
+msgid "Login"
+msgstr "Login"
+
+#: models.py:14 models.py:78 templates/email_info.html:49
+msgid "Heslo"
+msgstr "Password"
+
+#: models.py:15
+msgid "UID"
+msgstr "UID"
+
+#: models.py:16
+msgid "GID"
+msgstr "GID"
+
+#: models.py:17
+msgid "Homedir"
+msgstr "Homedir"
+
+#: models.py:18
+msgid "Smazat?"
+msgstr "Remove?"
+
+#: models.py:30
+msgid "Název"
+msgstr "Name"
+
+#: models.py:30
+msgid "Schánka bude ve formátu název@doména"
+msgstr "login@domain"
+
+#: models.py:31 models.py:91
+msgid "Doména"
+msgstr "Domain"
+
+#: models.py:32 models.py:58
+msgid "Heslo poprvé"
+msgstr "Password"
+
+#: models.py:33 models.py:59
+msgid "Heslo pro kontrolu"
+msgstr "Same password"
+
+#: models.py:41
+msgid "Login už je jednou použit"
+msgstr "Login is occupied"
+
+#: models.py:44 models.py:62
+msgid "Je potřeba vyplnit heslo do obou políček"
+msgstr "You have to fill both passwords"
+
+#: models.py:45 models.py:63
+msgid "Heslo musí mít alespoň 6 znaků"
+msgstr "Password has to be six letters long"
+
+#: models.py:49 models.py:67
+msgid "První heslo nesouhlasí s druhým"
+msgstr "Passwords are not same"
+
+#: models.py:50 models.py:68
+msgid "Je potřeba vyplnit podruhé heslo pro kontrolu"
+msgstr "You have to fill second password too"
+
+#: models.py:77
+msgid "Přihlašovací jméno"
+msgstr "Username"
+
+#: models.py:82
+msgid "Alias (odsud)"
+msgstr "Alias (from here)"
+
+#: models.py:84
+msgid "E-mail (sem)"
+msgstr "E-mail (to here)"
+
+#: models.py:98
+msgid "Alias už je jednou použit"
+msgstr "Alias is occupied"
+
+#: views.py:91
+msgid "Přidání e-mailové schránky"
+msgstr "Creating e-mail box"
+
+#: views.py:92
+msgid "Přidat schránku"
+msgstr "Add e-mail"
+
+#: views.py:142
+msgid "Změna hesla e-mailové schránky"
+msgstr "Change password for this e-mail"
+
+#: views.py:143
+msgid "Změnit heslo"
+msgstr "Change password"
+
+#: views.py:222
+msgid "Upravení přesměrování"
+msgstr "Modifying alias"
+
+#: views.py:223
+msgid "Upravit přesměrování"
+msgstr "Edit alias"
+
+#: views.py:255
+msgid "Přidání redirectu"
+msgstr "Creating redirect"
+
+#: views.py:256
+msgid "Přidat redirect"
+msgstr "Create redirect"
+
+#: templates/boxes.html:5
+msgid "Administrace > E-mailové schránky"
+msgstr "Administration > E-mails"
+
+#: templates/boxes.html:17 templates/redirects.html:18
+msgid "<p>Všechny informace týkající se e-mailů najdete na Wiki na adrese"
+msgstr ""
+
+#: templates/boxes.html:23
+msgid "Seznam vytvořených e-mailových schránek"
+msgstr "List of e-mails"
+
+#: templates/boxes.html:31
+msgid "E-mail"
+msgstr "E-mail"
+
+#: templates/boxes.html:32
+msgid "Vytvořeno"
+msgstr "Created"
+
+#: templates/boxes.html:33 templates/redirects.html:36
+msgid "Akce"
+msgstr "Action"
+
+#: templates/boxes.html:44 templates/redirects.html:47
+msgid "Upravit"
+msgstr "Edit"
+
+#: templates/boxes.html:45
+msgid "Opravdu chcete schránku zrušit?"
+msgstr "Are you sure?"
+
+#: templates/boxes.html:55 templates/redirects.html:58
+msgid "První stránka"
+msgstr "First page"
+
+#: templates/boxes.html:55 templates/redirects.html:58
+msgid "První"
+msgstr "First"
+
+#: templates/boxes.html:56 templates/redirects.html:59
+msgid "Předchozí stránka"
+msgstr "Previous page"
+
+#: templates/boxes.html:56 templates/redirects.html:59
+msgid "Předchozí"
+msgstr "Previous"
+
+#: templates/boxes.html:66 templates/redirects.html:69
+msgid "Další stránka"
+msgstr "Next page"
+
+#: templates/boxes.html:66 templates/redirects.html:69
+msgid "Další"
+msgstr "Next"
+
+#: templates/boxes.html:67 templates/redirects.html:70
+msgid "Poslední stránka"
+msgstr "Last page"
+
+#: templates/boxes.html:67 templates/redirects.html:70
+msgid "Poslední"
+msgstr "Last"
+
+#: templates/boxes.html:76
+msgid "Žádná schránka nebyla ještě vytvořena. Můžete ji přidat"
+msgstr "No e-mail yet. You can create some in"
+
+#: templates/boxes.html:76 templates/redirects.html:79
+msgid "kliknutím sem"
+msgstr "this section"
+
+#: templates/email_info.html:5
+msgid "Administrace > Informace k e-mailům"
+msgstr "Administration > Information about e-mails"
+
+#: templates/email_info.html:12
+msgid "Informace k e-mailům"
+msgstr "Information about e-mails"
+
+#: templates/email_info.html:18
+#, fuzzy
+msgid "<p>E-mailový server běží pod doménou <a href=\\"
+msgstr "<p>Mail server is runnig under domain <a href="
+
+#: templates/email_info.html:19
+msgid ""
+"<p>E-mailové schránky se vytvářejí zde v administraci. Po odeslání žídosti "
+"bude vytvořena během pěti minut. Jejich velikost není nějak softwarově "
+"omezena, ale budeme rádi, když se budete držet řádově v jednotkách GB. Pokud "
+"potřebujete mít velkou a garantovanou kapacitu e-mailových schránek, "
+"kontaktujte nás.</p>"
+msgstr ""
+
+#: templates/email_info.html:20
+msgid ""
+"<p>Můžete také využít e-mailovou schránku na doménách @rosti.cz a @initd.cz, "
+"kterou jste získali společně s účtem v systému. V tomto případě máte pod "
+"kontrolou soubor .mailfilter pro maildrop a kontrolu spamu. Stačí, abyste si "
+"v domácím adresáři vytvořili maildir ~/.maildir, např. zadáním "
+"<code>maildirmake ~/.maildir</code>.</p>"
+msgstr ""
+
+#: templates/email_info.html:21
+msgid ""
+"<p>Pro odesílání pošty můžete použít náš SMTP server na stejné adrese. "
+"Přihlašovací údaje jsou stejné jako u Vašeho SSH účtu.</p>"
+msgstr ""
+"You can use SMTP server mail.rosti.cz. Username and password are same as for "
+"SSH/SFTP."
+
+#: templates/email_info.html:24
+msgid "E-mailový server"
+msgstr "E-mail server"
+
+#: templates/email_info.html:28
+msgid "Webové rozhraní"
+msgstr "Web interface"
+
+#: templates/email_info.html:49
+msgid "Port: 25 a 2525"
+msgstr "Port: 25 and 2525"
+
+#: templates/email_info.html:49
+msgid "pro sítě, které 25 blokují"
+msgstr "when your ISP block port 25"
+
+#: templates/redirects.html:5
+msgid "Administrace > Přesměrování (aliasy)"
+msgstr "Administration > Aliases"
+
+#: templates/redirects.html:25
+msgid "Seznam vytvořených přesměrování"
+msgstr "List of aliases"
+
+#: templates/redirects.html:34
+msgid "Alias"
+msgstr "Alias"
+
+#: templates/redirects.html:35
+msgid "Přesměrovaný na"
+msgstr "Redirected to"
+
+#: templates/redirects.html:48
+msgid "Opravdu chcete přesměrování zrušit?"
+msgstr "Are you sure?"
+
+#: templates/redirects.html:48
+msgid "Smazat"
+msgstr "Remove"
+
+#: templates/redirects.html:79
+msgid "Žádné přesměrování nebylo ještě vytvořeno. Můžete ho vytvořit"
+msgstr "No alias yet. You can create some"
+
+#~ msgid "Schránka vymazána"
+#~ msgstr "E-mail removed"
+
+#~ msgid "Přesměrování vymazáno"
+#~ msgstr "Alias removed"

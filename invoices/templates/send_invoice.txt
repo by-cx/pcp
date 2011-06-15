@@ -1,0 +1,18 @@
+Dobrý den,
+
+v příloze naleznete fakturu za využité služby serveru Roští.cz.
+
+Informace k platbě:
+
+        Účet: {{ BA }}
+        Variabilní symbol: {{ VS }}
+        Částka: {{ cash }} Kč
+
+Detailnější výpis je uveden na faktuře. Pokud se vám bude zdát, že
+částka nesedí, obraťte se prosím na email info@rosti.cz.
+
+--
+S pozdravem,
+Adam Štrauch
+
+Roští.cz

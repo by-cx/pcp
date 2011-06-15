@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg2"
+   inkscape:label="Pozadí"
+   version="1.1"
+   inkscape:version="0.47pre4 r22446"
+   sodipodi:docname="menu.svg">
+  <defs
+     id="defs3">
+    <linearGradient
+       id="linearGradient3589">
+      <stop
+         style="stop-color:#5da157;stop-opacity:1;"
+         offset="0"
+         id="stop3591" />
+      <stop
+         style="stop-color:#95cb91;stop-opacity:0.73837209;"
+         offset="1"
+         id="stop3593" />
+    </linearGradient>
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective9" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3589"
+       id="linearGradient3595"
+       x1="315.4375"
+       y1="476.5625"
+       x2="315.4375"
+       y2="400.54706"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3589"
+       id="linearGradient3719"
+       x1="-258.09399"
+       y1="477.07013"
+       x2="-258.09399"
+       y2="377.54428"
+       gradientUnits="userSpaceOnUse" />
+    <filter
+       inkscape:collect="always"
+       id="filter3750">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.48015625"
+         id="feGaussianBlur3752" />
+    </filter>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.979899"
+     inkscape:cx="-57.159143"
+     inkscape:cy="573.52402"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1680"
+     inkscape:window-height="1003"
+     inkscape:window-x="0"
+     inkscape:window-y="24"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata6">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Vrstva 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       style="fill:url(#linearGradient3595);fill-opacity:1;stroke:#5da157;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="M -114.5625 424.5 C -125.6425 424.5 -134.5625 433.42 -134.5625 444.5 L -134.5625 475.5625 L 765.4375 475.5625 L 765.4375 444.5 C 765.4375 433.42 756.5175 424.5 745.4375 424.5 L -114.5625 424.5 z "
+       id="rect2815"
+       inkscape:export-filename="/home/cx/co/rosti/m/imgs/menu.png"
+       inkscape:export-xdpi="85.21064"
+       inkscape:export-ydpi="85.21064" />
+    <g
+       id="g3754"
+       inkscape:export-filename="/home/cx/co/rosti/m/imgs/reg.png"
+       inkscape:export-xdpi="85.839996"
+       inkscape:export-ydpi="85.839996"
+       style="stroke-width:1.5;stroke-miterlimit:4;stroke-dasharray:none;stroke:#5da157;stroke-opacity:1">
+      <rect
+         rx="20"
+         inkscape:export-ydpi="85"
+         inkscape:export-xdpi="85"
+         inkscape:export-filename="/home/cx/co/rosti/m/imgs/button.png"
+         y="423.54221"
+         x="-424.2641"
+         height="52.527931"
+         width="261.62952"
+         id="rect3707"
+         style="fill:url(#linearGradient3719);fill-opacity:1;stroke:#5da157;stroke-width:1.5;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <flowRoot
+         transform="translate(29.294424,-2.0203051)"
+         style="font-size:20px;font-style:normal;font-weight:normal;fill:#2d5016;fill-opacity:1;stroke:#5da157;font-family:Bitstream Vera Sans;filter:url(#filter3750);stroke-width:1.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="flowRoot3742"
+         xml:space="preserve"><flowRegion
+           id="flowRegion3744"><rect
+             style="fill:#2d5016;stroke-width:1.5;stroke-miterlimit:4;stroke-dasharray:none;stroke:#5da157;stroke-opacity:1"
+             y="432.63361"
+             x="-407.09146"
+             height="33.335033"
+             width="229.30463"
+             id="rect3746" /></flowRegion><flowPara
+           style="font-size:28px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;fill:#2d5016;font-family:Sans;-inkscape-font-specification:Sans Bold;stroke-width:1.5;stroke-miterlimit:4;stroke-dasharray:none;stroke:#5da157;stroke-opacity:1"
+           id="flowPara3748">Registrace</flowPara></flowRoot>    </g>
+  </g>
+</svg>

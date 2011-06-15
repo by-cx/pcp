@@ -1,0 +1,81 @@
+{% extends "admin.html" %}
+{% load i18n %}
+
+{% block title %}
+	{% trans "Administrace > Postgresql databáze" %}
+{% endblock %}
+
+{% block content %}
+<script type="text/javascript">
+	function remove(what) {
+		$("#pg_"+what).load("{% url pgs.views.rm "" %}"+what)
+	}
+</script>
+<div id="message-box"></div>
+
+<h2>Postgresql</h2>
+
+{% blocktrans %}
+<p>Informace týkající se MySQL databází najdete na Wiki na adrese <a href='{{ WIKI_URL }}/sprava_postgresql_databazi' target="_blank">{{ WIKI_URL }}/sprava_postgresql_databazi</a>.</p>
+{% endblocktrans %}
+
+<div id="db_dialog"></div>
+
+<script type="text/javascript">
+	function pg_passwd(db) {
+		$("#db_dialog").dialog({"width": 400, "height": 300});
+		$("#db_dialog").load("{% url pgs.views.passwd "" %}"+db+"/");
+	}
+</script>
+
+<h3>{% trans "Seznam Postgresql databází" %}</h3>
+<table>
+	<thead>
+		<tr>
+		   <th>{% trans "Název databáze" %}</th>
+		   <th>{% trans "Akce" %}</th>
+		</tr>
+	</thead>
+	{% if pgs %}
+	<tbody>
+		{% for pg in pgs.object_list %}
+		<tr>
+			<td>{{ pg }}</td>
+			<td id="pg_{{ pg }}">
+				<a href="#" title="{% trans "Změnit heslo" %}" onclick="pg_passwd('{{ pg }}');">{% trans "Změnit heslo" %}</a>
+				<a href="#" title="{% trans "Smazat" %}" onclick="if(confirm('{% trans "Opravdu chcete smazat tuto databázi" %}?')) remove('{{ pg }}');"><img src="/m/images/icons/cross.png" alt="{% trans "Smazat" %}" /></a>
+			</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+	<tfoot>
+		<tr>
+			<td colspan="2">
+					<div class="pagination">
+						{% if ftps.has_previous %}<a href="{% url pgs.views.show 1 %}" title="{% trans "První stránka" %}">&laquo; {% trans "První" %}</a>{% endif %}
+						{% if ftps.has_previous %}<a href="{% url pgs.views.show pgs.previous_page_number %}" title="{% trans "Předchozí stránka" %}">&laquo; {% trans "Předchozí" %}</a>{% endif %}
+
+						{% for p in paginator.page_range %}
+							{% ifequal p num_page %}
+								<a href="{% url pgs.views.show p %}" class="number current" title="{{ p }}">{{ p }}</a>
+							{% else %}
+								<a href="{% url pgs.views.show p %}" class="number" title="{{ p }}">{{ p }}</a>
+							{% endifequal %}
+						{% endfor %}
+
+						{% if ftps.has_next %}<a href="{% url pgs.views.show pgs.next_page_number %}" title="{% trans "Další stránka" %}">{% trans "Další" %} &raquo;</a>{% endif %}
+						{% if ftps.has_next %}<a href="{% url pgs.views.show paginator.num_pages %}" title="{% trans "Poslední stránka" %}">{% trans "Poslední" %} &raquo;</a>{% endif %}
+					</div>
+					<div class="clear"></div>
+			</td>
+		</tr>
+	</tfoot>
+	{% else %}
+	<tbody>
+	<tr>
+		<td colspan="2">{% trans "Žádná databáze nebyla ještě přidána. Databáze můžete přidávat pomocí nabídky vlevo." %}</td>
+	</tr>
+	</tbody>
+	{% endif%}
+</table>
+{% endblock %}

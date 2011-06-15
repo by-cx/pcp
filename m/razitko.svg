@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg2"
+   inkscape:label="Pozadí"
+   sodipodi:version="0.32"
+   inkscape:version="0.46"
+   sodipodi:docname="razitko.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+  <defs
+     id="defs3">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective9" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1"
+     inkscape:cx="109.19569"
+     inkscape:cy="570.41743"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1680"
+     inkscape:window-height="1001"
+     inkscape:window-x="0"
+     inkscape:window-y="24" />
+  <metadata
+     id="metadata6">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Vrstva 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g3220"
+       transform="translate(1.8030849,-3.1461457e-5)">
+      <flowRoot
+         style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         id="flowRoot2382"
+         xml:space="preserve"><flowRegion
+           id="flowRegion2384"><rect
+             y="336.36218"
+             x="170"
+             height="55"
+             width="123"
+             id="rect2386" /></flowRegion><flowPara
+           style="font-size:14px;font-weight:bold;-inkscape-font-specification:Bitstream Vera Sans Bold"
+           id="flowPara2388">Adam Štrauch</flowPara><flowPara
+           id="flowPara2392"
+           style="font-size:12px">Houští 474</flowPara><flowPara
+           id="flowPara2410"
+           style="font-size:12px">563 01 Lanškroun</flowPara><flowPara
+           id="flowPara2394"
+           style="font-size:13px" /><flowPara
+           style="font-size:13px"
+           id="flowPara2390" /><flowPara
+           id="flowPara2412"
+           style="font-size:13px" /></flowRoot>      <flowRoot
+         transform="translate(-14,-6.5016779e-3)"
+         style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         id="flowRoot2398"
+         xml:space="preserve"><flowRegion
+           id="flowRegion2400"><rect
+             y="338.36218"
+             x="296"
+             height="51"
+             width="118"
+             id="rect2402" /></flowRegion><flowPara
+           style="font-size:12px"
+           id="flowPara2404">Webhosting</flowPara><flowPara
+           id="flowPara3198"
+           style="font-size:12px">Správa serverů</flowPara><flowPara
+           id="flowPara2406"
+           style="font-size:12px">Správa sítí</flowPara></flowRoot>    </g>
+    <g
+       id="g3249">
+      <rect
+         y="385.24524"
+         x="172.95805"
+         height="17.083916"
+         width="205.08391"
+         id="rect2424"
+         style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:2.21608496;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <flowRoot
+         transform="translate(-5.8671799,-35.074983)"
+         style="font-size:40px;font-style:normal;font-weight:normal;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         id="flowRoot2416"
+         xml:space="preserve"><flowRegion
+           id="flowRegion2418"><rect
+             style="fill:#ffffff"
+             y="423.36218"
+             x="184"
+             height="14.000001"
+             width="247"
+             id="rect2420" /></flowRegion><flowPara
+           style="font-size:8px;fill:#ffffff"
+           id="flowPara2422">IČ: 74943421 Tel: 777 636388 Email:cx@initd.cz</flowPara></flowRoot>    </g>
+  </g>
+</svg>

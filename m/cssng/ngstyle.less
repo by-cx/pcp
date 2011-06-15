@@ -1,0 +1,347 @@
+@import url("/m/cssng/bootstrap.less");
+
+/*	Resets
+	------	*/
+
+html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6,
+p, blockquote, pre, a, abbr, address, cite, code, del, dfn, em,
+img, ins, kbd, q, samp, small, strong, sub, sup, var, b, i, hr,
+dl, dt, dd, ol, ul, li, fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, figure, figcaption, hgroup,
+menu, footer, header, nav, section, summary, time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+article, aside, canvas, figure, figure img, figcaption, hgroup,
+footer, header, nav, section, audio, video {
+	display: block;
+}
+
+a img {border: 0;}
+
+/*	Typography presets
+	------------------	*/
+
+.gigantic {
+	font-size: 60px;
+	line-height: 68px;
+	letter-spacing: -2px;
+}
+
+.huge, h1 {
+	font-size: 32px;
+	line-height: 36px;
+	letter-spacing: -1px;
+	margin: 10px 0 30px -10px;
+}
+
+.large, h2 {
+	font-size: 26px;
+	line-height: 32px;
+	margin: 10px 0 25px 0;
+}
+
+.bigger, h3 {
+	font-size: 20px;
+	line-height: 24px;
+	margin: 10px 0 20px 0;
+}
+
+p {
+	margin: 10px 0 10px 10px;
+}
+
+body {
+	font: 16px/20px Georgia, serif;
+}
+
+.small, small {
+	font-size: 12px;
+	line-height: 15px;
+	font-weight: 200;
+}
+
+/* Selection colours (easy to forget) */
+
+::selection 	 	{background: rgb(255,255,158);}
+::-moz-selection 	{background: rgb(255,255,158);}
+img::selection 		{background: transparent;}
+img::-moz-selection	{background: transparent;}
+body {-webkit-tap-highlight-color: rgb(255,255,158);}
+
+@border-color: #B6B6B6;
+@background-color: white;
+@aside-background-color: #1A1A1A;
+@aside-background2-color: black;
+@header-item-color: #528B2C;/*#44AA00;*/
+@header-item-color-hover: #44AA00;/*#FF6868;*/
+@menu-item-color: #44AA00;
+@menu-item-font-color: white;
+@menu-a-color: #808080;
+@box-background-color: #EFEFEF;
+@input-color: #E9F5E7;
+@input-hover-color: #EFEEDD;
+@input-submit-color: #EFEEDD;
+@red-text: red;
+@white-text: white;
+@table-head: #E9FEE3;
+
+.red {
+	color: @red-text;
+}
+
+.white {
+	color: @white-text;
+}
+
+/*input {
+    .border-radius(4px);
+	padding: 5px 10px 5px 10px;
+	border: 1px solid black;
+	background-color: @input-color;
+	width: 140px;
+}
+
+input:hover {
+	background-color: @input-hover-color;
+}
+
+input .submit {
+	background-color: @input-submit-color;
+	width: 50px;
+}
+*/
+header {
+    padding: 0 0 0 8px;
+	/*position: absolute;*/
+	top: 0;
+	left: 0;
+	height: 40px;
+	width: 100%;
+	z-index: 5;
+	background-color: @aside-background-color;
+	position: fixed;
+
+	a {
+		color: white;
+		text-decoration: none;
+	}
+
+	ul {
+		li {
+			max-width: 150px;
+			list-style-type: none;
+			margin: 3px; padding: 5px;
+			background-color: @header-item-color;
+			font-size: 13px;
+			font-weight: bold;
+			color: @menu-item-font-color;
+			text-align: center;
+			display:inline-block;
+
+			.border-radius(6px);
+
+			&:hover {
+				background-color: @header-item-color-hover;
+			}
+
+			&.active {
+				background-color: @header-item-color-hover;
+			}
+		}
+	}
+}
+
+article {
+	margin: 0px 0 0 240px;
+	background-color: @background-color;
+	padding: 20px 50px 10px 50px;
+	overflow: auto;
+
+	a {
+		color: @header-item-color;
+		text-decoration: none;
+
+		&:hover {
+			color: @header-item-color-hover;
+			text-decoration: underline;
+		}
+	}
+
+	ul {
+		li {
+			margin-left: 40px;
+		}
+	}
+}
+
+aside {
+	position: fixed;
+	left: 0;
+	top: 40px;
+	width: 240px;
+	min-height: 100%;
+	background-color: @aside-background-color;
+	text-align: left;
+	/*overflow: visible;*/
+
+	p {
+	    text-align: right;
+		color: @menu-a-color;
+		font-size: 11px;
+		padding: 0 5px 0 0;
+		margin: 0 0 0 0;
+	}
+
+	.line {
+		position: absolute;
+		left: 0;
+		top: -40px;
+		height: 100%;
+		width: 6px;
+		background-color: @aside-background2-color;
+		z-index:10;
+	}
+
+	a {
+		color: @menu-a-color;
+		text-decoration: none;
+
+		&:hover {
+			color: @white-text;
+		}
+	}
+
+	menu {
+		margin: 20px 0 0 0;
+
+		ul {
+			li {
+				background-color: @menu-item-color;
+				width: 190px;
+				margin: 5px 0 5px 40px;
+				list-style-type: none;
+				text-align: right;
+				padding: 5px 10px 5px 0;
+				font-size: 13px;
+				font-weight: bold;
+				color: @menu-item-font-color;
+
+				.border-radius(6px 0 0 6px);
+
+				&.none {
+					background-color: @aside-background-color;
+					margin: 0 0 0 40px;
+				}
+
+				ul {
+					li {
+						list-style-type: none;
+						margin: 0;
+						background-color: @aside-background-color;
+						font-size: 12px;
+						font-weight: normal;
+						padding: 5px 10px 5px 0;
+						color: @menu-a-color;
+					}
+				}
+			}
+		}
+	}
+
+}
+
+table {
+    .border-radius(4px);
+    max-width: 800px;
+	margin: 10px 0 10px 0;
+	border: 1px solid @border-color;
+	border-spacing: 10px;
+	text-align: center;
+	border-collapse: collapse;
+	padding: 20px;
+
+	thead {
+		th{
+			border-bottom: 1px solid @border-color;
+			padding: 5px 15px 5px 15px;
+			text-align: center;
+			background-color: @table-head;
+		}
+	}
+
+	th {
+		background-color: @table-head;
+		padding: 5px 15px 5px 15px;
+	}
+	td {
+			padding: 5px 15px 5px 15px;
+	}
+}
+
+#container {
+	width: 100%;
+	overflow: hidden;
+	text-align: left;
+	margin: 50px auto;
+}
+
+
+.button-edit {
+	background-image: url("/m/icons/page_cross.gif");
+	background-repeat: no-repeat;
+	background-position: center;
+	width: 25px;
+	height: 25px;
+}
+
+.button-remove {
+	background-image: url("/m/icons/page_edit.gif");
+	background-repeat: no-repeat;
+	background-position: center;
+	width: 25px;
+	height: 25px;
+}
+
+.button-add {
+	background-image: url("/m/icons/page_new.gif");
+	background-repeat: no-repeat;
+	background-position: center;
+	width: 25px;
+	height: 25px;
+}
+
+.button-reload {
+	background-image: url("/m/icons/action_refresh.gif");
+	background-repeat: no-repeat;
+	background-position: center;
+	width: 25px;
+	height: 25px;
+}
+
+.button-restart {
+	background-image: url("/m/icons/action_refresh_blue.gif");
+	background-repeat: no-repeat;
+	background-position: center;
+	width: 25px;
+	height: 25px;
+}
+
+.menu-info {
+	color: yellow;
+	vertical-align: super;
+}
+
+.menu-perm {
+	color: red;
+	vertical-align: super;
+}
+
+.notification {
+	border: 1px solid #D9E225;
+	background-color: #E6E25D;
+	font-style: italic;
+}

@@ -1,0 +1,11 @@
+{% extends "admin.html" %}
+{% load i18n %}
+
+{% block title %}
+	Administrace > Chyba
+{% endblock %}
+
+{% block content %}
+	<h2>{% trans "Nebylo možné upravit data v databázi" %}</h2>
+	<p>{% trans "Pravděpodobně již stejná položka kterou zadáváte, v databázi existuje." %}</p>
+{% endblock %}

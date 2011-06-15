@@ -1,0 +1,402 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-05-04 14:47+0200\n"
+"PO-Revision-Date: 2011-02-13 21:33\n"
+"Last-Translator: <cx@initd.cz>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Translated-Using: django-rosetta 0.5.6\n"
+
+#: forms.py:8 templates/login.html:94 templates/login_reg.html:64
+msgid "Heslo"
+msgstr "Password"
+
+#: forms.py:11
+msgid "Heslo musí 6 a více znaků"
+msgstr "Password has to be six letters long at least"
+
+#: forms.py:15
+msgid "Název firmy"
+msgstr ""
+
+#: forms.py:16
+msgid "Jméno a příjmení *"
+msgstr ""
+
+#: forms.py:17
+msgid "Uliče a č.p. *"
+msgstr ""
+
+#: forms.py:18
+msgid "Město *"
+msgstr ""
+
+#: forms.py:19
+msgid "PSČ *"
+msgstr ""
+
+#: forms.py:20
+msgid "IČ"
+msgstr ""
+
+#: forms.py:21
+msgid "DIČ"
+msgstr ""
+
+#: forms.py:22
+#, fuzzy
+msgid "Email *"
+msgstr "E-mail boxes"
+
+#: forms.py:23
+msgid "Telefon/Mobil *"
+msgstr ""
+
+#: forms.py:26
+#, fuzzy
+msgid "Uživatelské jméno *"
+msgstr "Username"
+
+#: forms.py:27
+msgid "Heslo poprvé *"
+msgstr ""
+
+#: forms.py:28
+msgid "Heslo pro kontrolu *"
+msgstr ""
+
+#: forms.py:31
+#, fuzzy
+msgid "Uživatelské jméno je již obsazeno"
+msgstr "Username"
+
+#: forms.py:35
+msgid "Je potřeba vyplnit heslo do obou políček"
+msgstr ""
+
+#: forms.py:36
+#, fuzzy
+msgid "Heslo musí mít alespoň 6 znaků"
+msgstr "Password has to be six letters long at least"
+
+#: forms.py:40
+msgid "První heslo nesouhlasí s druhým"
+msgstr ""
+
+#: forms.py:41
+msgid "Je potřeba vyplnit podruhé heslo pro kontrolu"
+msgstr ""
+
+#: views.py:70
+msgid "Změna hesla do administrace"
+msgstr "Change password for this administration"
+
+#: views.py:71 templates/admin.html:92 templates/admin.html.py:192
+msgid "Změnit heslo"
+msgstr "Change password"
+
+#: views.py:126
+msgid "Byl registrován nový uživatel."
+msgstr ""
+
+#: views.py:127
+#, fuzzy
+msgid "Nová registrace "
+msgstr "Web administration"
+
+#: views.py:138
+#, fuzzy
+msgid "Registrace"
+msgstr "Administration"
+
+#: views.py:139
+msgid "Registrovat"
+msgstr ""
+
+#: templates/admin.html:12 templates/login.html:72 templates/logout.html:71
+#: templates/reg.html:72
+msgid "Webová administrace"
+msgstr "Web administration"
+
+#: templates/admin.html:89 templates/admin.html.py:90
+msgid "superuživatel"
+msgstr "superuser"
+
+#: templates/admin.html:90
+msgid "Přepnuto na:"
+msgstr "Switched to:"
+
+#: templates/admin.html:91
+msgid "Přepnout zpět"
+msgstr "Switch back"
+
+#: templates/admin.html:92 templates/admin.html.py:194
+msgid "Odhlásit"
+msgstr "Logout"
+
+#: templates/admin.html:98
+msgid "Informace"
+msgstr "Informations"
+
+#: templates/admin.html:108
+msgid "Přidat uživatele"
+msgstr "Add user"
+
+#: templates/admin.html:109
+msgid "Seznam uživatelů"
+msgstr "List of users"
+
+#: templates/admin.html:114
+msgid "Faktury"
+msgstr "Invoices"
+
+#: templates/admin.html:118
+msgid "Přidat fakturu"
+msgstr "Add invoice"
+
+#: templates/admin.html:119
+msgid "Seznam faktur"
+msgstr "List of invoices"
+
+#: templates/admin.html:130
+msgid "Přidat již registrovanou doménu"
+msgstr "Add new domain"
+
+#: templates/admin.html:131
+msgid "Správa domén"
+msgstr "Manage your domains"
+
+#: templates/admin.html:136
+msgid "Webové stránky/aplikace"
+msgstr "Websites and applications"
+
+#: templates/admin.html:140
+msgid "Přidat statickou webovou stránku"
+msgstr "Add new static website"
+
+#: templates/admin.html:141
+msgid "Přidat webovou stránku s PHP skriptováním"
+msgstr "Add PHP application"
+
+#: templates/admin.html:142
+msgid "Přidat WSGI aplikaci"
+msgstr "Add WSGI application"
+
+#: templates/admin.html:143
+msgid "Správa aplikaci"
+msgstr "Manage your applications"
+
+#: templates/admin.html:148 templates/info.html:77
+msgid "MySQL databáze"
+msgstr "MySQL databases"
+
+#: templates/admin.html:152 templates/admin.html.py:162
+msgid "Přidat databázi"
+msgstr "Add database"
+
+#: templates/admin.html:153 templates/admin.html.py:163
+msgid "Přehled o databázích"
+msgstr "Manage your databases"
+
+#: templates/admin.html:158
+msgid "Postgresql databáze"
+msgstr "Postgresql databases"
+
+#: templates/admin.html:168 templates/info.html:87
+msgid "FTP účty"
+msgstr "FTP accounts"
+
+#: templates/admin.html:172
+msgid "Přidat FTP účet"
+msgstr "Add FTP account"
+
+#: templates/admin.html:173
+msgid "Přehled o FTP účtech"
+msgstr "Manage your FTP accounts"
+
+#: templates/admin.html:178 templates/info.html:92
+msgid "E-maily"
+msgstr "E-mail boxes"
+
+#: templates/admin.html:182
+msgid "Přidat e-mailovou schránku"
+msgstr "Add e-mail box"
+
+#: templates/admin.html:183
+msgid "E-mailové schránky"
+msgstr "E-mail boxes"
+
+#: templates/admin.html:184
+msgid "Přesměrování"
+msgstr "Redirects"
+
+#: templates/admin.html:189
+msgid "Různé"
+msgstr "Other"
+
+#: templates/admin.html:193
+msgid "Změnit heslo na SSH/SFTP/FTP"
+msgstr "Change password for SSH/SFTP/FTP"
+
+#: templates/admin.html:208
+msgid ""
+"JavaScript je vypnutý a nebo není podporován vaším prohlížečem. Prosím <a "
+"href=\"http://browsehappy.com/\" title=\"Upgrade to a better browser"
+"\">najděte si</a> lepší prohlížeč nebo <a href=\"http://www.google.com/"
+"support/bin/answer.py?answer=23852\" title=\"Enable Javascript in your "
+"browser\">povolte</a> JavaScript.."
+msgstr "Your browser doen't support JavaScript."
+
+#: templates/error.html:9
+msgid "Nebylo možné upravit data v databázi"
+msgstr "It was not possible change database data"
+
+#: templates/error.html:10
+msgid "Pravděpodobně již stejná položka kterou zadáváte, v databázi existuje."
+msgstr "There is already same item"
+
+#: templates/info.html:5
+msgid "Administrace > Souhrné informace"
+msgstr "Administration > Dashboard"
+
+#: templates/info.html:15
+msgid ""
+"Většina služeb na Roští.cz je závislá na doméně a jelikož jste ještě žádnou "
+"nepřidal/a, tak nejlepší místo kde začít je"
+msgstr "Almost all services here depend on domain. You should start with"
+
+#: templates/info.html:15
+msgid "správa domén"
+msgstr "domain manager"
+
+#: templates/info.html:22
+msgid "Informace o Vašem účtu"
+msgstr "Informations about your account"
+
+#: templates/info.html:29
+msgid "Jméno"
+msgstr "Name"
+
+#: templates/info.html:33 templates/login.html:89 templates/login_reg.html:60
+msgid "Uživatelské jméno"
+msgstr "Username"
+
+#: templates/info.html:37
+msgid "Domovský adresář"
+msgstr "Home directory"
+
+#: templates/info.html:41
+msgid "Sleva"
+msgstr "Discount"
+
+#: templates/info.html:45
+msgid "Server"
+msgstr "Server"
+
+#: templates/info.html:55
+msgid "Platby za služby"
+msgstr "Payments for services"
+
+#: templates/info.html:62
+msgid "Služba"
+msgstr "Service"
+
+#: templates/info.html:63
+msgid "Počet"
+msgstr "Count"
+
+#: templates/info.html:64 templates/info.html.py:100
+msgid "Platba za den"
+msgstr "Payment per day"
+
+#: templates/info.html:67
+msgid "Domény"
+msgstr "Domains"
+
+#: templates/info.html:69
+msgid "Více informací v"
+msgstr "More informations in"
+
+#: templates/info.html:69
+msgid "seznamu domén"
+msgstr "domain manager"
+
+#: templates/info.html:72
+msgid "Weby/Aplikace"
+msgstr "Web and applications"
+
+#: templates/info.html:82
+msgid "PostgreSQL databáze"
+msgstr "Postgresql databases"
+
+#: templates/info.html:105
+msgid "Platba za měsíc"
+msgstr "Payment per month"
+
+#: templates/login.html:12 templates/reg.html:12
+msgid "Webová administrace | Přihlášení"
+msgstr "Web administration | login"
+
+#: templates/login.html:84 templates/login_reg.html:54
+msgid "Špatně zadané uživatelské jméno nebo heslo. Zkuste to prosím znovu."
+msgstr "Wrong username or password."
+
+#: templates/login.html:99 templates/login_reg.html:69
+msgid "Přihlásit"
+msgstr "Login"
+
+#: templates/login_reg.html:13 templates/universal.html:4
+msgid "Administrace"
+msgstr "Administration"
+
+#: templates/login_reg.html:21 templates/reg.html:80
+msgid "Kontaktní informace"
+msgstr ""
+
+#: templates/login_reg.html:29 templates/reg.html:85
+msgid "Přihlašovací informace"
+msgstr ""
+
+#: templates/login_reg.html:38 templates/reg.html:92
+msgid ""
+"Registrací souhlasíte se <a href=\"{{ CONTRACT_URL }}\">smluvními "
+"podmínkami</a>."
+msgstr ""
+
+#: templates/logout.html:12
+msgid "Webová administrace | Odhlášení"
+msgstr "Web administration | logout"
+
+#: templates/logout.html:79
+msgid "Odhlášení proběhlo úspěšně"
+msgstr "Logout was successfull"
+
+#: templates/message.html:10
+msgid "Zavřít tuto bublinu"
+msgstr "Close this bubble"
+
+#: templates/reg.html:104
+msgid "Položky označené <strong>*</strong> jsou povinné."
+msgstr ""
+
+#: templates/simplepasswd.html:27
+msgid "Heslo bylo změněno."
+msgstr "Password was changed."
+
+#: templates/universal.html:24
+msgid "Následující doménu jsou použity již u jiné stránky"
+msgstr "Domain is used with another site/app"
+
+#~ msgid "Informace k E-mailům"
+#~ msgstr "E-mails informations"

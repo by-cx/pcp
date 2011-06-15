@@ -1,0 +1,140 @@
+@import url("/m/cssng/bootstrap.less");
+
+/*	Resets
+	------	*/
+
+html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6,
+p, blockquote, pre, a, abbr, address, cite, code, del, dfn, em,
+img, ins, kbd, q, samp, small, strong, sub, sup, var, b, i, hr,
+dl, dt, dd, ol, ul, li, fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, figure, figcaption, hgroup,
+menu, footer, header, nav, section, summary, time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+article, aside, canvas, figure, figure img, figcaption, hgroup,
+footer, header, nav, section, audio, video {
+	display: block;
+}
+
+a img {border: 0;}
+
+/*	Typography presets
+	------------------	*/
+
+.gigantic {
+	font-size: 60px;
+	line-height: 68px;
+	letter-spacing: -2px;
+}
+
+.huge, h1 {
+	font-size: 32px;
+	line-height: 36px;
+	letter-spacing: -1px;
+}
+
+.large, h2 {
+	font-size: 26px;
+	line-height: 32px;
+}
+
+.bigger, h3 {
+	font-size: 20px;
+	line-height: 24px;
+}
+
+body {
+	font: 14px/20px Georgia, serif;
+}
+
+.small, small {
+	font-size: 12px;
+	line-height: 15px;
+	font-weight: 200;
+}
+
+/* Selection colours (easy to forget) */
+
+::selection 	 	{background: rgb(255,255,158);}
+::-moz-selection 	{background: rgb(255,255,158);}
+img::selection 		{background: transparent;}
+img::-moz-selection	{background: transparent;}
+body {-webkit-tap-highlight-color: rgb(255,255,158);}
+
+@border-color: black;
+@box-background-color: #EFEFEF;
+@input-hover-color: #EFEEDD;
+@input-color: #E9F5E7;
+@input-submit-color: #EFEEDD;
+@grid_columns: 16;
+@grid_column_width: 40px;
+@grid_gutter_width: 10px;
+
+input {
+    .border-radius(4px);
+	padding: 5px 10px 5px 10px;
+	border: 1px solid black;
+	background-color: @input-color;
+	width: 140px;
+}
+
+input:hover {
+	background-color: @input-hover-color;
+}
+
+input .submit {
+	background-color: @input-submit-color;
+	width: 50px;
+}
+
+table {
+    width: 100%;
+	margin: 10px 0 10px 0;
+}
+
+table td,th {
+	/*text-align: center;*/
+}
+
+#container {
+	width: (@grid_columns * @grid_column_width) + ((@grid_columns - 1) * @grid_gutter_width);
+	overflow: hidden;
+	text-align: center;
+	margin: 50px auto;
+}
+
+#top {
+    .columns(16);
+	margin: 0 0 50px;
+}
+
+#col1 {
+	.columns(8);
+	height: 700px;
+	display:table;
+	border-right: 1px solid @border-color;
+}
+
+#col1-wrapper {
+	display:table-cell;
+	vertical-align:middle;
+	padding: 10px 50px 10px 10px;
+}
+
+
+#col2 {
+	.columns(7);
+	height: 700px;
+	display:table;
+}
+
+#col2-wrapper {
+	display:table-cell;
+	vertical-align:middle;
+	padding: 10px 10px 10px 40px;
+}
+

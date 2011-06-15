@@ -1,0 +1,133 @@
+{% extends "admin.html" %}
+{% load i18n %}
+
+{% block title %}
+	{% trans "Administrace > Faktury" %}
+{% endblock %}
+
+{% block content %}
+<script type="text/javascript">
+	function send_item(what) {
+		$.get("{% url invoices.views.send_invoice 0 %}"+what, function (data){
+			alert("Odesláno");
+		});
+	}
+	function send_item_warning(what) {
+		$.get("{% url invoices.views.send_invoice 0 %}"+what+"/1/", function (data){
+			alert("Odesláno");
+		});
+	}
+	function remove(what) {
+		$("#invoice_"+what).load("{% url invoices.views.rm 0 %}"+what);
+	}
+	function remove_item(what) {
+		$("#item_"+what).load("{% url invoices.views.rm_item 0 %}"+what);
+	}
+</script>
+<div id="message-box"></div>
+<h3>{% trans "Faktury" %}</h3>
+
+<strong>{% trans "Nezaplacené faktury" %}</strong>
+
+<ul>
+	{% for invoice in not_payed %}
+	<li>{{ invoice.payment_id }} - {{ invoice.total }} - <a href="{% url invoices.views.invoice_get invoice.payment_id %}">{% trans "Stáhnout" %}</a> - {{ invoice.client_address.getName }}</li>
+	{% endfor %}
+</ul>
+
+<p>{% trans "Celkově" %}: {{ total_not_pay }} kč</p>
+
+<strong>{% trans "Peníze z jednotlivých let" %}:</strong>
+
+<ul>
+	{% for year,total in total_years.items %}
+	<li><strong>{{ year }}</strong>: {{ total }} kč</li>
+	{% endfor %}
+</ul>
+
+<h3>{% trans "Seznam faktůr" %}</h3>
+<table>
+	<thead>
+		<tr>
+		   <th>{% trans "Číslo" %}</th>
+		   <th>{% trans "Jméno klienta" %}</th>
+		   <th>{% trans "Datum vytvoření" %}</th>
+		   <th>{% trans "Datum splatnosti" %}</th>
+		   <th>{% trans "Celková částka" %}</th>
+		   <th>{% trans "Akce" %}</th>
+		</tr>
+	</thead>
+	{% if invoices %}
+	<tbody>
+		{% for invoice in invoices.object_list %}
+		<tr>
+			<td{% if not invoice.payed %} style="background-color: #FFA4A4;"{% endif %}>{{ invoice.payment_id }}</td>
+			<td{% if not invoice.payed %} style="background-color: #FFA4A4;"{% endif %}>{{ invoice.client_address.getName }}</td>
+			<td{% if not invoice.payed %} style="background-color: #FFA4A4;"{% endif %}>{{ invoice.date_exposure }}</td>
+			<td{% if not invoice.payed %} style="background-color: #FFA4A4;"{% endif %}>{{ invoice.date_payback }}</td>
+			<td{% if not invoice.payed %} style="background-color: #FFA4A4;"{% endif %}>{{ invoice.total }}</td>
+			<td id="invoice_{{ invoice.id }}"{% if not invoice.payed %} style="background-color: #FFA4A4;"{% endif %}>
+				<a href="{% url invoices.views.add_item invoice.id %}">{% trans "Přidat položku" %}</a>
+				{% if not invoice.payed %}<span id="payback_{{ invoice.id }}"><a href="#" onclick="$('#payback_{{ invoice.id }}').load('{% url invoices.views.payback invoice.id %}')">Zaplaceno</a></span>{% endif %}
+				<a href="{% url invoices.views.invoice_get invoice.payment_id %}">{% trans "Stáhnout" %}</a>
+				<a href="{% url invoices.views.update_invoice invoice.id %}" title="Upravit"><img src="/m/images/icons/pencil.png" alt="Upravit" /></a>
+				<a href="#" title="Smazat" onclick="if(confirm('Opravdu chcete smazat fakturu {{ invoice.payment_id }}?')) remove('{{ invoice.id }}')"><img src="/m/images/icons/cross.png" alt="{% trans "Smazat" %}" /></a>
+				{% if not invoice.sended %}
+					<a href="#" title="Odeslat" onclick="if(confirm('Opravdu chcete odeslat fakturu {{ invoice.payment_id }}?')) send_item('{{ invoice.payment_id }}')">Odeslat</a>
+				{% else %}
+					{% if not invoice.payed %}
+						<a href="#" title="Odeslat" onclick="if(confirm('Opravdu chcete odeslat upomínku {{ invoice.payment_id }}?')) send_item_warning('{{ invoice.payment_id }}')">Odeslat upomínku</a>
+					{% endif %}
+			{% endif %}
+
+			</td>
+		</tr>
+			{% for item in invoice.item_set.all %}
+			<tr>
+				<th></th>
+				<td>{{ item.name }}</td>
+				<td>{{ item.count }}×</td>
+				<td>{{ item.price_per_one }} kč</td>
+				<td>{{ item.total }} kč</td>
+				<td id="item_{{ item.id }}">
+					<a href="{% url invoices.views.update_item item.id %}" title="{% trans "Upravit" %}"><img src="/m/images/icons/pencil.png" alt="Upravit" /></a>
+					<a href="#" title="{% trans "Smazat" %}" onclick="if(confirm('Opravdu chcete smazat položku {{ item.id }}?')) remove_item('{{ item.id }}')"><img src="/m/images/icons/cross.png" alt="Smazat" /></a>
+				</td>
+			</tr>
+			{% endfor %}
+			<tr><td colspan="6"><hr/></td></tr>
+		{% endfor %}
+	</tbody>
+	<tfoot>
+		<tr>
+			<td colspan="6">
+					<div class="pagination">
+						{% if invoices.has_previous %}<a href="{% url invoices.views.show 1 %}" title="{% trans "První stránka" %}">&laquo; {% trans "První" %}</a>{% endif %}
+						{% if invoices.has_previous %}<a href="{% url invoices.views.show invoices.previous_page_number %}" title="{% trans "Předchozí stránka" %}">&laquo; {% trans "Předchozí" %}</a>{% endif %}
+
+						{% for p in paginator.page_range %}
+							{% ifequal p num_page %}
+								<a href="{% url invoices.views.show p %}" class="number current" title="{{ p }}">{{ p }}</a>
+							{% else %}
+								<a href="{% url invoices.views.show p %}" class="number" title="{{ p }}">{{ p }}</a>
+							{% endifequal %}
+						{% endfor %}
+
+						{% if invoices.has_next %}<a href="{% url invoices.views.show invoices.next_page_number %}" title="{% trans "Další stránka" %}">{% trans "Další" %} &raquo;</a>{% endif %}
+						{% if invoices.has_next %}<a href="{% url invoices.views.show paginator.num_pages %}" title="{% trans "Poslední stránka" %}">{% trans "Poslední" %} &raquo;</a>{% endif %}
+					</div>
+					<div class="clear"></div>
+			</td>
+		</tr>
+	</tfoot>
+	{% else %}
+	<tbody>
+	<tr>
+		<td colspan="6">{% trans "Žádná faktura ještě nebyla přidána." %}</td>
+	</tr>
+	</tbody>
+	{% endif %}
+</table>
+
+{% endblock %}
+

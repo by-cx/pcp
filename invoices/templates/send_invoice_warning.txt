@@ -1,0 +1,20 @@
+Dobrý den,
+
+automatickou kontrolou bylo zjištěno, že jste doposud nezaplatil/a
+vystavenou fakturu s číslem {{ VS }} na částku {{ cash }} Kč, jejíž
+splatnost končila {{ expiration }}.
+
+Věřím, že se jedná o nedorozumění. Zde jsou údaje potřebné k platbě:
+
+        Účet: {{ BA }}
+        Variabilní symbol: {{ VS }}
+        Částka: {{ cash }} Kč
+
+Detailnější výpis je uveden v přiložené faktuře. Pokud se vám bude
+zdát, že částka nesedí, obraťte se prosím na email info@rosti.cz.
+
+--
+S pozdravem,
+Adam Štrauch
+
+Roští.cz

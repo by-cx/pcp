@@ -1,0 +1,69 @@
+{% extends "admin.html" %}
+{% load i18n %}
+
+{% block title %}
+	{% trans "Administrace > FTP účty" %}
+{% endblock %}
+
+{% block content %}
+<script type="text/javascript">
+	function remove(what) {
+		$("#ftp_"+what).load("{% url ftps.views.rm 0 %}"+what)
+	}
+</script>
+<div id="message-box"></div>
+<h3>{% trans "Seznam FTP účtů" %}</h3>
+<table>
+	<thead>
+		<tr>
+		   <th>{% trans "Přihlašovací jméno" %}</th>
+		   <th>{% trans "Adresář" %}</th>
+		   <th>{% trans "Akce" %}</th>
+		</tr>
+	</thead>
+	{% if ftps %}
+	<tbody>
+		{% for ftp in ftps.object_list %}
+		<tr>
+			<td>{{ ftp.username }}</td>
+			<td>{{ ftp.dir }}</td>
+			<td id="ftp_{{ ftp.id }}">
+				<a href="{% url ftps.views.passwd ftp.id %}" title="{% trans "Změnit heslo" %}">{% trans "Změnit heslo" %}</a>
+				<a href="{% url ftps.views.update ftp.id %}" title="{% trans "Upravit" %}"><img src="/m/images/icons/pencil.png" alt="{% trans "Upravit" %}" /></a>
+				<a href="#" title="{% trans "Smazat" %}" onclick="if(confirm('Opravdu chcete smazat doménu {{ ftp.name }}?')) remove({{ ftp.id }})"><img src="/m/images/icons/cross.png" alt="{% trans "Smazat" %}" /></a>
+			</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+	<tfoot>
+		<tr>
+			<td colspan="3">
+					<div class="pagination">
+						{% if ftps.has_previous %}<a href="{% url ftps.views.show 1 %}" title="{% trans "První stránka" %}">&laquo; {% trans "První" %}</a>{% endif %}
+						{% if ftps.has_previous %}<a href="{% url ftps.views.show ftps.previous_page_number %}" title="{% trans "Předchozí stránka" %}">&laquo; {% trans "Předchozí" %}</a>{% endif %}
+
+						{% for p in paginator.page_range %}
+							{% ifequal p num_page %}
+								<a href="{% url ftps.views.show p %}" class="number current" title="{{ p }}">{{ p }}</a>
+							{% else %}
+								<a href="{% url ftps.views.show p %}" class="number" title="{{ p }}">{{ p }}</a>
+							{% endifequal %}
+						{% endfor %}
+
+						{% if ftps.has_next %}<a href="{% url ftps.views.show ftps.next_page_number %}" title="{% trans "Další stránka" %}">{% trans "Další" %} &raquo;</a>{% endif %}
+						{% if ftps.has_next %}<a href="{% url ftps.views.show paginator.num_pages %}" title="{% trans "Poslední stránka" %}">{% trans "Poslední" %} &raquo;</a>{% endif %}
+					</div>
+					<div class="clear"></div>
+			</td>
+		</tr>
+	</tfoot>
+	{% else %}
+	<tbody>
+	<tr>
+		<td colspan="3">{% trans "Žádný FTP účet nebyl ještě vytvořen." %}</td>
+	</tr>
+	</tbody>
+	{% endif%}
+</table>
+
+{% endblock %}

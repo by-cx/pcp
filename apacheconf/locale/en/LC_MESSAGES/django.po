@@ -1,0 +1,342 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-05-04 14:47+0200\n"
+"PO-Revision-Date: 2011-02-13 12:41\n"
+"Last-Translator: <cx@initd.cz>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Translated-Using: django-rosetta 0.5.6\n"
+
+#: models.py:14 templates/apache.html:67
+msgid "ServerName"
+msgstr "ServerName"
+
+#: models.py:15
+msgid "ServerAlias"
+msgstr "ServerAlias"
+
+#: models.py:16
+msgid "DocumentRoot"
+msgstr "DocumentRoot"
+
+#: models.py:17
+msgid "htaccess"
+msgstr "htaccess"
+
+#: models.py:18 models.py:81
+msgid "Index adresáře"
+msgstr "Directory index"
+
+#: models.py:19
+msgid "php"
+msgstr "php"
+
+#: models.py:20
+msgid "IPv4"
+msgstr "IPv4"
+
+#: models.py:21
+msgid "IPv6"
+msgstr "IPv6"
+
+#: models.py:22
+msgid "Smazáno"
+msgstr "Deleted"
+
+#: models.py:24
+msgid "Uživatel"
+msgstr "User"
+
+#: models.py:48
+msgid "Žádný/Jiný"
+msgstr "Another"
+
+#: models.py:48
+msgid "Django"
+msgstr "Django"
+
+#: models.py:51
+msgid "Script"
+msgstr "Script"
+
+#: models.py:52
+msgid "Počet procesů"
+msgstr "Processes count"
+
+#: models.py:53
+msgid "Počet threadů"
+msgstr "Threads count"
+
+#: models.py:54
+msgid "Přídavky"
+msgstr "Addons"
+
+#: models.py:55
+msgid "Virtualenv"
+msgstr ""
+
+#: models.py:56
+#, fuzzy
+msgid "Statická data"
+msgstr "Static website"
+
+#: models.py:57 models.py:103
+msgid "Python path"
+msgstr ""
+
+#: models.py:58
+msgid "Stránka"
+msgstr "Page"
+
+#: models.py:59
+#, fuzzy
+msgid "uWSGI"
+msgstr "WSGI"
+
+#: models.py:79
+msgid "Alias"
+msgstr "Alias"
+
+#: models.py:80 models.py:97
+msgid "Adresář"
+msgstr "Directory"
+
+#: models.py:88
+msgid "Specialitky"
+msgstr "Specialities"
+
+#: models.py:95
+msgid "Hlavní doména (ServerName)"
+msgstr "Main domain (ServerName)"
+
+#: models.py:95 models.py:100
+#, fuzzy
+msgid "<br />Hlavní doména, např. example.com"
+msgstr "Main domain (example.com)"
+
+#: models.py:96 models.py:101
+msgid "Další doména (ServerAlias)"
+msgstr "Rest of domain (ServerAlias)"
+
+#: models.py:96 models.py:101
+#, fuzzy
+msgid ""
+"<br />Další domény včetně subdomén oddělené mezerami<br />např.: *.example."
+"com example2.com www.example2.com"
+msgstr ""
+"Rest of domain separed by spaces, ex. *.example.com example2.com www."
+"example2.com"
+
+#: models.py:100
+#, fuzzy
+msgid "Hlavní doména (ServerName) *"
+msgstr "Main domain (ServerName)"
+
+#: models.py:102
+msgid "Adresáře se statickými soubory"
+msgstr ""
+
+#: models.py:102
+msgid ""
+"<br /><strong>~/&lt;zadaná_cesta&gt;</strong> - Jeden řádek, jeden adresář. "
+"Formát <strong>/url/ /cesta/k/mediím/</strong> - Odělovačem je mezera. "
+"Chybné řádky budou při generování konfigurace ignorovány."
+msgstr ""
+
+#: models.py:103
+msgid ""
+"<br /><strong>~/&lt;zadaná_cesta&gt;</strong> - Jeden řádek, jeden adresář. "
+"Formát <strong>/tady/je/moje/aplikace</strong>. Váš domovský adresář bude "
+"automaticky doplněn. uWSGI ignoruje nastavení PYTHON_PATH přes sys.path."
+msgstr ""
+
+#: models.py:104
+msgid "Virtualenv *"
+msgstr ""
+
+#: models.py:104
+msgid ""
+"<br />Pythoní virtuální prostředí. Najdete je ve '<strong>~/virtualenvs/&lt;"
+"zadaná_hodnota&gt;</strong>'. Můžete si si vytvořit vlastní přes SSH."
+msgstr ""
+
+#: models.py:105
+#, fuzzy
+msgid "WSGI skript *"
+msgstr "WSGI script"
+
+#: models.py:106
+msgid "Framework"
+msgstr "Framework"
+
+#: models.py:109
+msgid "Virtualenv nesmí obsahovat znaky ./~"
+msgstr ""
+
+#: models.py:113
+msgid "Toto pole nesmí obsahovat nesmí obsahovat .. a ~"
+msgstr ""
+
+#: views.py:121
+msgid "Přidání statického webu"
+msgstr "New static website"
+
+#: views.py:122
+msgid "Přidání webu s podporou PHP"
+msgstr "New PHP app"
+
+#: views.py:129
+msgid "Přidat web"
+msgstr "New website"
+
+#: views.py:169
+msgid "Úprava statického webu"
+msgstr "Edit static website"
+
+#: views.py:170
+msgid "Upravit web"
+msgstr "Edit webite"
+
+#: views.py:205 views.py:259
+msgid "Nevybráno"
+msgstr "Not selexcted"
+
+#: views.py:242
+msgid "Přidání WSGI aplikace"
+msgstr "New WSGI app"
+
+#: views.py:243 templates/apache.html:19
+msgid "Přidat WSGI aplikaci"
+msgstr "New WSGI app"
+
+#: views.py:296
+msgid "Upravení WSGI aplikace"
+msgstr "Edit WSGI app"
+
+#: views.py:297
+msgid "Upravit WSGI aplikaci"
+msgstr "Edit WSGI app"
+
+#: templates/apache.html:15
+msgid "Webové stránky a aplikace"
+msgstr "Websites and applications"
+
+#: templates/apache.html:17
+msgid "Přidat statickou webovou stránku"
+msgstr "Add new static website"
+
+#: templates/apache.html:18
+#, fuzzy
+msgid "Přidat webovou stránku s PHP skriptováním"
+msgstr "Add new static website"
+
+#: templates/apache.html:22
+#, python-format
+msgid ""
+"\n"
+"<p>Informace týkající se webových aplikací najdete na Wiki na adrese\n"
+"\t<a href='%(WIKI_URL)s/' target=\"_blank\">%(WIKI_URL)s/</a>\n"
+"\tv sekcích <a href='%(WIKI_URL)s/python_hosting' target=\"_blank\">Python</"
+"a> a\n"
+"\t<a href='%(WIKI_URL)s/php_hosting' target=\"_blank\">PHP</a>.</p>\n"
+msgstr ""
+
+#: templates/apache.html:29
+msgid ""
+"\n"
+"<strong>Jak na WSGI</strong>\n"
+"\n"
+"<p>WSGI narozdíl od PHP, potřebuje na Roští.cz trochu pomoci. Při přidávání "
+"nové aplikace, budete požádání o výběr <em>.wsgi</em> souboru. V něm je "
+"potřeba vytvořit WSGI handle, kterým se Apache spojí s vaší aplikací. V "
+"případě Djanga vypadá soubor s malými obměnami takto:</p>\n"
+"\n"
+"<pre>import os, sys\n"
+"sys.path.append('/home/xx/apps/')\n"
+"sys.path.append('/home/xx/apps/app')\n"
+"os.environ['DJANGO_SETTINGS_MODULE'] = 'app.settings'\n"
+"\n"
+"import django.core.handlers.wsgi\n"
+"\n"
+"application = django.core.handlers.wsgi.WSGIHandler()</pre>\n"
+"<br/>\n"
+"<p>Více informací najdete v dokumentaci k jednotlivým frameworkům.</p>\n"
+msgstr ""
+
+#: templates/apache.html:59
+msgid "Seznam provozovaných stránek a aplikací"
+msgstr "Running websites and applications"
+
+#: templates/apache.html:68
+msgid "Akce"
+msgstr "Action"
+
+#: templates/apache.html:79
+msgid "Reload"
+msgstr "Reload"
+
+#: templates/apache.html:83
+msgid "Opravdu chcete web/apliakci zrušit?"
+msgstr "Are you sure?"
+
+#: templates/apache.html:93
+#, fuzzy
+msgid "První stránka"
+msgstr "Page"
+
+#: templates/apache.html:93
+msgid "První"
+msgstr "First"
+
+#: templates/apache.html:94
+msgid "Předchozí stránka"
+msgstr "Previous page"
+
+#: templates/apache.html:94
+msgid "Předchozí"
+msgstr "Previous"
+
+#: templates/apache.html:104
+msgid "Další stránka"
+msgstr "Next page"
+
+#: templates/apache.html:104
+msgid "Další"
+msgstr "Next"
+
+#: templates/apache.html:105
+msgid "Poslední stránka"
+msgstr "Last page"
+
+#: templates/apache.html:105
+msgid "Poslední"
+msgstr "Last"
+
+#: templates/apache.html:114
+msgid ""
+"Žádný web nebyl ještě přidán. Můžete ho přidat pomocí jednoho z odkazů výše "
+"nebo levém menu."
+msgstr "No website or application yet"
+
+#~ msgid "Služba"
+#~ msgstr "Service"
+
+#~ msgid "Cena"
+#~ msgstr "Price"
+
+#~ msgid "PHP"
+#~ msgstr "PHP"
+
+#~ msgid "Ceny jsou uvedeny za jeden měsíc provozu."
+#~ msgstr "Prices are presented for one month of running"

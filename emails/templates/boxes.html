@@ -1,0 +1,75 @@
+{% extends "admin.html" %}
+{% load i18n %}
+
+{% block title %}
+	{% trans "Administrace > E-mailové schránky" %}
+{% endblock %}
+
+{% block content %}
+<script type="text/javascript">
+	function remove(what) {
+		$("#remove_"+what).hide()
+		$("#removed_"+what).load("{% url emails.views.removeBox 0 %}"+what)
+	}
+</script>
+
+<h2>E-mailové schránky</h2>
+{% trans "<p>Všechny informace týkající se e-mailů najdete na Wiki na adrese" %} <a href='{{ WIKI_URL }}/e-maily' target="_blank">{{ WIKI_URL }}/e-maily</a>.</p>
+
+<div id="message-box"></div>
+
+<h3>{% trans "Seznam vytvořených e-mailových schránek" %}</h3>
+<table>
+	<thead>
+		<tr>
+			<th>{% trans "E-mail" %}</th>
+			<th>{% trans "Vytvořeno" %}</th>
+			<th>{% trans "Akce" %}</th>
+		</tr>
+	</thead>
+	{% if emails %}
+	<tbody>
+		{% for email in emails.object_list %}
+		<tr>
+			<td>{{ email.login }}@{{ email.domain.name }}</td>
+			<td>{{ email.pub_date|date:"d.m.Y" }}</td>
+			<td>
+				<a href="{% url emails.views.changePasswdBox email.id %}" title="{% trans "Upravit" %}"><img src="/m/images/icons/pencil.png" alt="Upravit" /></a>
+				<a href="#" id="remove_{{email.id}}" onclick="if(confirm('{% trans "Opravdu chcete schránku zrušit?" %}')) {remove('{{email.id}}');};" class="bold"><img src="/m/images/icons/cross.png" alt="Smazat" /></a>
+				<span id="removed_{{email.id}}" class="info"></span>
+			</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+	<tfoot>
+		<tr>
+			<td colspan="3">
+					<div class="pagination">
+						{% if emails.has_previous %}<a href="{% url emails.views.boxes 1 %}" title="{% trans "První stránka" %}">&laquo; {% trans "První" %}</a>{% endif %}
+						{% if emails.has_previous %}<a href="{% url emails.views.boxes emails.previous_page_number %}" title="{% trans "Předchozí stránka" %}">&laquo; {% trans "Předchozí" %}</a>{% endif %}
+
+						{% for p in paginator.page_range %}
+							{% ifequal p num_page %}
+								<a href="{% url emails.views.boxes p %}" class="number current" title="{{ p }}">{{ p }}</a>
+							{% else %}
+								<a href="{% url emails.views.boxes p %}" class="number" title="{{ p }}">{{ p }}</a>
+							{% endifequal %}
+						{% endfor %}
+
+						{% if emails.has_next %}<a href="{% url emails.views.boxes emails.next_page_number %}" title="{% trans "Další stránka" %}">{% trans "Další" %} &raquo;</a>{% endif %}
+						{% if emails.has_next %}<a href="{% url emails.views.boxes paginator.num_pages %}" title="{% trans "Poslední stránka" %}">{% trans "Poslední" %} &raquo;</a>{% endif %}
+					</div>
+					<div class="clear"></div>
+			</td>
+		</tr>
+	</tfoot>
+	{% else %}
+	<tbody>
+	<tr>
+		<td colspan="3">{% trans "Žádná schránka nebyla ještě vytvořena. Můžete ji přidat" %} <a href="{% url emails.views.addBox %}">{% trans "kliknutím sem" %}</a>.</td>
+	</tr>
+	</tbody>
+	{% endif%}
+</table>
+
+{% endblock %}

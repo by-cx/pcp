@@ -124,6 +124,7 @@ INSTALLED_APPS = (
 	'django.contrib.admin',
 	'debug_toolbar',
 #	'rosetta',
+	'config_factory',
 	'useradmin',
 	'uni_form',
 	'bills',

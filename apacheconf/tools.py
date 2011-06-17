@@ -84,7 +84,6 @@ def gen_vhosts():
 			conf.append("\tSetHandler None")
 			conf.append("</Location>")
 		if configtype == "wsgi" and s.wsgi.static:
-			print s.wsgi.static
 			for static in [x.strip().split(" ") for x in s.wsgi.static.split("\n") if not "#" in x]:
 				print static
 				if len(static) == 2 and len(static[0]) > 1 and static[0][0] == "/" and static[0][-1] == "/" and len(static[1]) > 1 and static[1][0] == "/" and static[1][-1] == "/":

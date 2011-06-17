@@ -1,6 +1,0 @@
-User-agent: *
-Disallow: /admin*
-Disallow: /useradmin*
-Disallow: /invoices*
-Disallow: /django-admin*
-Disallow: /text/podminky*

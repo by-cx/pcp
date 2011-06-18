@@ -16,7 +16,7 @@ def nginx(sites):
 		if wsgi:
 			statics = []
 			for static in [x.strip().split(" ") for x in site.wsgi.static.split("\n") if not "#" in x]:
-				statics.append({"url": static[0],"path": site.owner.parms.home+static[1]})
+				statics.append({"url": static[0], "path": site.owner.parms.home+static[1]})
 
 			conf += render_to_string("nginx_uwsgi.conf", {
 				"domains": site.serverName+" "+site.serverAlias,

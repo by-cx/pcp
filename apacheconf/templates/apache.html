@@ -43,13 +43,12 @@
 		<tr>
 			<td>{{ site.serverName }}{% if site.wsgi.uwsgi %} (uWSGI){% endif %}</td>
 			<td>
-				{% if not site.wsgi %}<a href="{% url apacheconf.views.updateStatic site.id %}"><img src="/m/images/icons/pencil.png" alt="Upravit" /></a>{% endif %}
+				{% if not site.wsgi %}<a href="{% url apacheconf.views.updateStatic site.id %}"><img src="/m/icons/raster/gray_dark/pen_alt_stroke_16x16.png" alt="Upravit" /></a>{% endif %}
 				{% if site.wsgi %}
-					<a href="{% url apacheconf.views.reload site.id %}">{% trans "Reload" %}</a>
-					{% if site.wsgi.uwsgi %}<a href="{% url apacheconf.views.restart site.id %}">{% trans "Restart" %}</a>{% endif %}
-					<a href="{% url apacheconf.views.updateWsgi site.id %}"><img src="/m/images/icons/pencil.png" alt="Upravit" /></a>
+					{% if site.wsgi.uwsgi %}<a href="{% url apacheconf.views.restart site.id %}"><img src="/m/icons/raster/gray_dark/loop_16x16.png" alt="Upravit" /></a>{% endif %}
+					<a href="{% url apacheconf.views.updateWsgi site.id %}"><img src="/m/icons/raster/gray_dark/pen_alt_stroke_16x16.png" alt="Upravit" /></a>
 				{% endif %}
-				<a href="#" id="remove_{{site.id}}" onclick="if(confirm('{% trans "Opravdu chcete web/apliakci zrušit?" %}')) {remove('{{site.id}}');};" class="bold"><img src="/m/images/icons/cross.png" alt="Smazat" /></a>
+				<a href="#" id="remove_{{site.id}}" onclick="if(confirm('{% trans "Opravdu chcete web/apliakci zrušit?" %}')) {remove('{{site.id}}');};" class="bold"><img src="/m/icons/raster/gray_dark/trash_fill_16x16.png" alt="Smazat" /></a>
 				<span id="removed_{{site.id}}" class="info"></span>
 			</td>
 		</tr>

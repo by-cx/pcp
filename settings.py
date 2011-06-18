@@ -64,8 +64,6 @@ USE_I18N = False
 MEDIA_ROOT = ROOT+"m/"
 MEDIA_URL = "/m/"
 
-UWSGI_PIDFILE = "/var/run/uwsgi/app_%d.pid"
-
 LOGIN_URL = "/login/"
 LOGOUT_URL = "/logout/"
 LOGIN_REDIRECT_URL = "/"
@@ -95,9 +93,7 @@ MIDDLEWARE_CLASSES = (
 	#'users.middleware.user_middleware',
 )
 
-ROOT_URLCONF = 'rosti.urls'
-
-WEB = True # Zapnout/vypnout web rosti.cz
+ROOT_URLCONF = 'pcp.urls'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
@@ -164,6 +160,7 @@ IPV6 = True
 APACHE_CONF="/etc/apache2/sites-enabled/99_auto.conf"
 NGINX_CONF="/etc/nginx/sites-enabled/99_auto.conf"
 UWSGI_CONF="/etc/uwsgi/config.xml"
+UWSGI_PIDFILE = "/var/run/uwsgi/app_%d.pid"
 
 ## Logování
 

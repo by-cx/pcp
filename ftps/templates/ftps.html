@@ -28,9 +28,9 @@
 			<td>{{ ftp.username }}</td>
 			<td>{{ ftp.dir }}</td>
 			<td id="ftp_{{ ftp.id }}">
-				<a href="{% url ftps.views.passwd ftp.id %}" title="{% trans "Změnit heslo" %}">{% trans "Změnit heslo" %}</a>
-				<a href="{% url ftps.views.update ftp.id %}" title="{% trans "Upravit" %}"><img src="/m/images/icons/pencil.png" alt="{% trans "Upravit" %}" /></a>
-				<a href="#" title="{% trans "Smazat" %}" onclick="if(confirm('Opravdu chcete smazat doménu {{ ftp.name }}?')) remove({{ ftp.id }})"><img src="/m/images/icons/cross.png" alt="{% trans "Smazat" %}" /></a>
+				<a href="{% url ftps.views.passwd ftp.id %}" title="{% trans "Změnit heslo" %}"><img src="/m/icons/raster/gray_dark/key_stroke_16x16.png" alt="{% trans "Změnit heslo" %}" /></a>
+				<a href="{% url ftps.views.update ftp.id %}" title="{% trans "Upravit" %}"><img src="/m/icons/raster/gray_dark/pen_alt_stroke_16x16.png" alt="{% trans "Upravit" %}" /></a>
+				<a href="#" title="{% trans "Smazat" %}" onclick="if(confirm('Opravdu chcete smazat doménu {{ ftp.name }}?')) remove({{ ftp.id }})"><img src="/m/icons/raster/gray_dark/trash_fill_16x16.png" alt="{% trans "Smazat" %}" /></a>
 			</td>
 		</tr>
 		{% endfor %}

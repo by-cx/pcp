@@ -34,8 +34,8 @@
 			<td>{{ email.login }}@{{ email.domain.name }}</td>
 			<td>{{ email.pub_date|date:"d.m.Y" }}</td>
 			<td>
-				<a href="{% url emails.views.changePasswdBox email.id %}" title="{% trans "Upravit" %}"><img src="/m/images/icons/pencil.png" alt="Upravit" /></a>
-				<a href="#" id="remove_{{email.id}}" onclick="if(confirm('{% trans "Opravdu chcete schránku zrušit?" %}')) {remove('{{email.id}}');};" class="bold"><img src="/m/images/icons/cross.png" alt="Smazat" /></a>
+				<a href="{% url emails.views.changePasswdBox email.id %}" title="{% trans "Upravit" %}"><img src="/m/icons/raster/gray_dark/key_stroke_16x16.png" alt="{% trans "Změnit heslo" %}" /></a>
+				<a href="#" id="remove_{{email.id}}" onclick="if(confirm('{% trans "Opravdu chcete schránku zrušit?" %}')) {remove('{{email.id}}');};" class="bold"><img src="/m/icons/raster/gray_dark/trash_fill_16x16.png" alt="Smazat" /></a>
 				<span id="removed_{{email.id}}" class="info"></span>
 			</td>
 		</tr>

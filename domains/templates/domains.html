@@ -38,7 +38,7 @@
 			<td>{{ domain.pub_date|date:"d.m.Y" }}</td>
 			<td>{{ domain.name }}</td>
 			<td id="domain_{{ domain.id }}">
-				 <a href="#" title="Smazat" onclick="if(confirm('{% trans "Opravdu chcete smazat tuto doménu?" %}')) remove({{ domain.id }})"><img src="/m/images/icons/cross.png" alt="Smazat" /></a>
+				 <a href="#" title="Smazat" onclick="if(confirm('{% trans "Opravdu chcete smazat tuto doménu?" %}')) remove({{ domain.id }})"><img src="/m/icons/raster/gray_dark/trash_fill_16x16.png" alt="Smazat" /></a>
 			</td>
 		</tr>
 		{% endfor %}

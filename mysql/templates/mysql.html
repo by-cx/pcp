@@ -42,8 +42,8 @@
 		<tr>
 			<td>{{ db }}</td>
 			<td id="db_{{ db }}">
-				<a href="#" title="{% trans "Změnit heslo" %}" onclick="my_passwd('{{ db }}');">{% trans "Změnit heslo" %}</a>
-				 <a href="#" title="{% trans "Smazat" %}" onclick="if(confirm('{% trans "Opravdu chcete smazat tuto databázi?" %}')) remove('{{ db }}')"><img src="/m/images/icons/cross.png" alt="{% trans "Smazat" %}" /></a>
+				<a href="#" title="{% trans "Změnit heslo" %}" onclick="my_passwd('{{ db }}');"><img src="/m/icons/raster/gray_dark/key_stroke_16x16.png" alt="{% trans "Změnit heslo" %}" /></a>
+				 <a href="#" title="{% trans "Smazat" %}" onclick="if(confirm('{% trans "Opravdu chcete smazat tuto databázi?" %}')) remove('{{ db }}')"><img src="/m/icons/raster/gray_dark/trash_fill_16x16.png" alt="{% trans "Smazat" %}" /></a>
 			</td>
 		</tr>
 		{% endfor %}

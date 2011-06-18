@@ -14,7 +14,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from pgs.models import *
 from pgs.tools import *
-from rosti.tools import *
+from pcp.tools import *
 from keystore.tools import *
 from requests.tools import request as push_request
 from useradmin.forms import simple_passwd

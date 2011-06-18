@@ -28,8 +28,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 There are some exceptions for 3rd party software:
 
-    * JQuery
+    * JQuery - MIT/GPL License
     * uni-form
-    * Facebox
+    * Facebox - MIT License
+    * icons - Licensed as CC Attribution-Share Alike
 
 This projects are partialy included in /m directory, but has own licence.
+

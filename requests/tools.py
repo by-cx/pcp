@@ -109,18 +109,24 @@ class request(request_raw):
 			self.run("/usr/bin/uwsgi-manager.py -r %s" % str(self.data["web_id"]))
 			#self.run("/usr/bin/uwsgi-manager.py -R %s" % str(self.data["web_id"]))
 
-		elif self.action == "apache_reload":
-			filename = settings.APACHE_CONF
+		elif self.action == "nginx_reload":
 			content = self.data["vhosts"]
-			self.save_file(filename, content)
+			self.save_file(settings.NGINX_CONF, content)
+			self.run("touch /tmp/nginx_reload")
+		elif self.action == "nginx_restart":
+			content = self.data["vhosts"]
+			self.save_file(settings.NGINX_CONF, content)
+			self.run("touch /tmp/nginx_restart")
+		elif self.action == "apache_reload":
+			content = self.data["vhosts"]
+			self.save_file(settings.APACHE_CONF, content)
 			#self.run("chown www-data:www-data /etc/apache2/sites-enabled/99_auto.conf")
 			#self.run("/etc/init.d/apache2 reload")
 			self.run("touch /tmp/apache_reload")
 
 		elif self.action == "apache_restart":
-			filename = "/etc/apache2/sites-enabled/99_auto.conf"
 			content = self.data["vhosts"]
-			self.save_file(filename, content)
+			self.save_file(settings.APACHE_CONF, content)
 			#self.run("/etc/init.d/apache2 restart")
 			self.run("touch /tmp/apache_restart")
 

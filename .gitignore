@@ -1,0 +1,6 @@
+*.pyc
+*.pyo
+*~
+wsgiadmin.egg-info/
+dist/
+build/

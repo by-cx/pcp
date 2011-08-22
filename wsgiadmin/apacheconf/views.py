@@ -14,7 +14,6 @@ from ftps.tools import *
 from django.utils.translation import ugettext_lazy as _
 from apacheconf.tools import gen_vhosts, gen_uwsgi_xml
 from django.template.context import RequestContext
-from config_factory import generator
 
 info = logging.info
 
@@ -111,7 +110,7 @@ def addStatic(request,php="0"):
 
 			#Signal
 			push_request("apache_reload", u.parms.web_machine.ip, {"domain": web.serverName, "user": u.username, "vhosts": gen_vhosts() }).save()
-			push_request("nginx_reload", u.parms.web_machine.ip, {"domain": web.serverName, "user": u.username, "vhosts": generator.nginx() }).save()
+			#push_request("nginx_reload", u.parms.web_machine.ip, {"domain": web.serverName, "user": u.username, "vhosts": generator.nginx() }).save()
 
 			return HttpResponseRedirect(reverse("apacheconf.views.apache"))
 	else:
@@ -193,7 +192,7 @@ def removeSite(request,sid):
 		#Signal
 		push_request("apache_reload", u.parms.web_machine.ip, {"domain": s.serverName, "user": u.username, "vhosts": gen_vhosts()}).save()
 		push_request("uwsgi_config", u.parms.web_machine.ip, {"domain": s.serverName, "user": u.username, "config": gen_uwsgi_xml() }).save()
-		push_request("nginx_reload", u.parms.web_machine.ip, {"domain": s.serverName, "user": u.username, "vhosts": generator.nginx() }).save()
+		#push_request("nginx_reload", u.parms.web_machine.ip, {"domain": s.serverName, "user": u.username, "vhosts": generator.nginx() }).save()
 
 	return HttpResponse("Stránka vymazána")
 
@@ -238,7 +237,7 @@ def addWsgi(request):
 
 			#Signal
 			push_request("apache_reload", u.parms.web_machine.ip, {"domain": web.serverName, "user": u.username, "vhosts": gen_vhosts()}).save()
-			push_request("nginx_reload", u.parms.web_machine.ip, {"domain": web.serverName, "user": u.username, "vhosts": generator.nginx() }).save()
+			#push_request("nginx_reload", u.parms.web_machine.ip, {"domain": web.serverName, "user": u.username, "vhosts": generator.nginx() }).save()
 			if webWsgi.uwsgi:
 				push_request("uwsgi_config", u.parms.web_machine.ip, {"domain": web.serverName, "user": u.username, "config": gen_uwsgi_xml() }).save()
 				push_request("uwsgi_start", u.parms.web_machine.ip, {"web_id": webWsgi.id, "domain": web.serverName, "user": u.username, "config": gen_uwsgi_xml() }).save()

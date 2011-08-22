@@ -120,7 +120,6 @@ INSTALLED_APPS = (
 	'django.contrib.admin',
 	'debug_toolbar',
 #	'rosetta',
-	'config_factory',
 	'useradmin',
 	'uni_form',
 	'bills',
@@ -166,6 +165,6 @@ UWSGI_PIDFILE = "/var/run/uwsgi/app_%d.pid"
 
 import logging
 
-logging.basicConfig(level=logging.INFO, filename=ROOT+'rosti.log',  format = '%(asctime)s %(levelname)s %(message)s')
+logging.basicConfig(level=logging.INFO, filename='/var/log/pcp.log',  format = '%(asctime)s %(levelname)s %(message)s')
 
 from mysettings import *

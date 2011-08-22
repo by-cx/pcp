@@ -15,6 +15,6 @@ ttotal = 0
 for s in site.objects.all():
 	print "%f kč - %s"%(s.pay(), s.serverName)
 
-        ttotal += s.pay()
+		ttotal += s.pay()
 
 print ttotal

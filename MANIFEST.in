@@ -1,0 +1,3 @@
+include pcp/*/templates/*.html
+recursive-include pcp/m/*
+global-include *.js *.css *.less *.png *.jpg *.jpeg

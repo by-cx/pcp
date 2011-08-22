@@ -4,9 +4,9 @@
 import sys,os,SOAPpy,unicodedata,random,time,logging
 
 from django.contrib.auth.models import User as user
-from clients.models import parms
+from wsgiadmin.clients.models import parms
 
-from keystore.tools import *
+from wsgiadmin.keystore.tools import *
 
 class web4u:
 	def __init__(self):

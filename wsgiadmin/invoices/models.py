@@ -10,7 +10,7 @@ import datetime
 
 from django.conf import settings
 
-from clients.models import *
+from wsgiadmin.clients.models import *
 
 PAYTYPE=(("převodem",_(u"převodem")),("hotově",_(u"hotově")))
 

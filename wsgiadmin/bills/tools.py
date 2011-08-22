@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from bills.models import bill,service
-from apacheconf.models import site
-from invoices.models import invoice,item
-from invoices.views import next_payment_id
+from wsgiadmin.bills.models import bill,service
+from wsgiadmin.apacheconf.models import site
+from wsgiadmin.invoices.models import invoice,item
+from wsgiadmin.invoices.views import next_payment_id
 
 from django.contrib.auth.models import User as user
 
-from keystore.tools import *
+from wsgiadmin.keystore.tools import *
 
 import datetime,logging
 

@@ -9,11 +9,11 @@ from django.contrib.auth.models import User as user
 from django.template.context import RequestContext
 from django.template.loader import render_to_string
 from django.views.decorators.csrf import csrf_exempt
-from bills.models import income
+from wsgiadmin.bills.models import income
 
-from invoices.geninvoice import *
-from invoices.models import invoice,item
-from clients.models import *
+from wsgiadmin.invoices.geninvoice import *
+from wsgiadmin.invoices.models import invoice,item
+from wsgiadmin.clients.models import *
 
 from django.utils.translation import ugettext_lazy as _
 

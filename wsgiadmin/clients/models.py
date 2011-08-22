@@ -5,11 +5,11 @@ from django.db import models
 from django.forms import ModelForm
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from requests.tools import request_raw
+from wsgiadmin.requests.tools import request_raw
 from django.conf import settings
 
-from rtools import *
-from keystore.tools import * 
+from wsgiadmin.rtools import *
+from wsgiadmin.keystore.tools import *
 
 #from invoices.models import *
 

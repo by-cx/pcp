@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from keystore.models import *
+from wsgiadmin.keystore.models import *
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 

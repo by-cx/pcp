@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from emails.models import *
-from apacheconf.models import *
+from wsgiadmin.emails.models import *
+from wsgiadmin.apacheconf.models import *
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 

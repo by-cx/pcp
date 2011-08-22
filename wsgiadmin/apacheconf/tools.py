@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from settings import *
-from apacheconf.models import *
+from wsgiadmin.settings import *
+from wsgiadmin.apacheconf.models import *
 
 uwsgi = False
 

@@ -4,15 +4,15 @@ import logging
 from django.core.paginator import Paginator
 from django.shortcuts import render_to_response,get_object_or_404
 from django.contrib.auth.decorators import login_required
-from emails.models import *
+from wsgiadmin.emails.models import *
 from django.core.urlresolvers import reverse
-from clients.models import *
+from wsgiadmin.clients.models import *
 from django.http import HttpResponse,HttpResponseRedirect
-from requests.tools import request as push_request
-from apacheconf.models import *
-from ftps.tools import *
+from wsgiadmin.requests.tools import request as push_request
+from wsgiadmin.apacheconf.models import *
+from wsgiadmin.ftps.tools import *
 from django.utils.translation import ugettext_lazy as _
-from apacheconf.tools import gen_vhosts, gen_uwsgi_xml
+from wsgiadmin.apacheconf.tools import gen_vhosts, gen_uwsgi_xml
 from django.template.context import RequestContext
 
 info = logging.info

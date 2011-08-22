@@ -10,9 +10,9 @@ from reportlab.lib.units import cm, mm, inch, pica
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfbase import pdfmetrics
 
-from settings import *
-from invoices.models import *
-from clients.models import *
+from wsgiadmin.settings import *
+from wsgiadmin.invoices.models import *
+from wsgiadmin.clients.models import *
 
 PROVIDER = parms.objects.filter(id=1)
 if PROVIDER: PROVIDER = PROVIDER[0]

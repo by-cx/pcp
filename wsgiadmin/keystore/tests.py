@@ -2,7 +2,7 @@
 
 from django.test import TestCase
 
-from keystore.tools import *
+from wsgiadmin.keystore.tools import *
 
 class keystore_test(TestCase):
 	def testBasic(self):

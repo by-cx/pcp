@@ -11,14 +11,14 @@ from django.template.context import RequestContext
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
-from mysql.models import *
-from mysql.tools import *
-from keystore.tools import *
-from clients.models import formPassword
-from requests.tools import request as push_request
-from useradmin.forms import simple_passwd
+from wsgiadmin.mysql.models import *
+from wsgiadmin.mysql.tools import *
+from wsgiadmin.keystore.tools import *
+from wsgiadmin.clients.models import formPassword
+from wsgiadmin.requests.tools import request as push_request
+from wsgiadmin.useradmin.forms import simple_passwd
 
-from settings import ROOT
+from wsgiadmin.settings import ROOT
 
 @login_required
 def show(request,p=1):

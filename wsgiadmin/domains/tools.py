@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from domains.models import domain
+from wsgiadmin.domains.models import domain
 import datetime
 
 def gen_zone_config(d):

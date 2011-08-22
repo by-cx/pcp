@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from subprocess import Popen,PIPE
-from requests.tools import request_raw
+from wsgiadmin.requests.tools import request_raw
 
 def user_directories(u):
 	rr = request_raw(u.parms.web_machine.ip)

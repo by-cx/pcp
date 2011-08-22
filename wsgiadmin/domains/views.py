@@ -15,16 +15,16 @@ from django.utils.translation import ugettext as _
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 
-from domains.models import *
+from wsgiadmin.domains.models import *
 #from domains.api import *
-from domains.tools import *
+from wsgiadmin.domains.tools import *
 
 from django.conf import settings
 
-from rtools import *
+from wsgiadmin.rtools import *
 
-from requests.tools import request as push_request
-from keystore.tools import *
+from wsgiadmin.requests.tools import request as push_request
+from wsgiadmin.keystore.tools import *
 
 import logging,datetime
 

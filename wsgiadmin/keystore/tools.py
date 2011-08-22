@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from keystore.models import *
+from wsgiadmin.keystore.models import *
 import datetime,json
 
 def ksez(input):

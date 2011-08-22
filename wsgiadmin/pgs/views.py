@@ -12,12 +12,12 @@ from django.template.context import RequestContext
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
-from pgs.models import *
-from pgs.tools import *
-from pcp.tools import *
-from keystore.tools import *
-from requests.tools import request as push_request
-from useradmin.forms import simple_passwd
+from wsgiadmin.pgs.models import *
+from wsgiadmin.pgs.tools import *
+from wsgiadmin.pcp.tools import *
+from wsgiadmin.keystore.tools import *
+from wsgiadmin.requests.tools import request as push_request
+from wsgiadmin.useradmin.forms import simple_passwd
 
 from django.conf import settings
 

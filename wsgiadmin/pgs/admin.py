@@ -2,7 +2,7 @@
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 
-from pgs.models import *
+from wsgiadmin.pgs.models import *
 
 class pgsql_admin(admin.ModelAdmin):
 	list_display = ('dbname','owner')

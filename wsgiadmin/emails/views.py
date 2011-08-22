@@ -4,11 +4,11 @@ import crypt
 from django.core.paginator import Paginator
 from django.shortcuts import render_to_response,get_object_or_404
 from django.contrib.auth.decorators import login_required
-from emails.models import *
+from wsgiadmin.emails.models import *
 from django.core.urlresolvers import reverse
-from clients.models import *
+from wsgiadmin.clients.models import *
 from django.http import HttpResponse,HttpResponseRedirect
-from requests.tools import request as push_request
+from wsgiadmin.requests.tools import request as push_request
 from django.template.context import RequestContext
 
 from django.utils.translation import ugettext_lazy as _

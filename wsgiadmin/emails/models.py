@@ -5,7 +5,7 @@ from django.forms import ModelForm
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
-import domains.models as domains
+import wsgiadmin.domains.models as domains
 
 class email(models.Model):
 	pub_date	= models.DateField(auto_now=True)

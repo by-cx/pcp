@@ -9,9 +9,9 @@ from django.template.context import RequestContext
 from django.core.mail import send_mail
 from django.conf import settings
 
-from clients.models import *
-from invoices.models import invoice
-from useradmin.forms import formReg, formReg2, form_reg_payment
+from wsgiadmin.clients.models import *
+from wsgiadmin.invoices.models import invoice
+from wsgiadmin.useradmin.forms import formReg, formReg2, form_reg_payment
 
 @login_required
 def info(request):

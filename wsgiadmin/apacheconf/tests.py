@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 #from django.utils import unittest
 import unittest, os
 from django.test.client import Client
-from users.tests import setUpUser
+from wsgiadmin.users.tests import setUpUser
 
 class apacheCase(unittest.TestCase):
 	def setUp(self):

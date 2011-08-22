@@ -9,11 +9,11 @@ from django.template.context import RequestContext
 
 from django.utils.translation import ugettext_lazy as _
 
-from clients.models import *
-from requests.tools import request as push_request, request_raw
+from wsgiadmin.clients.models import *
+from wsgiadmin.requests.tools import request as push_request, request_raw
 
-from rtools import *
-from mysql.tools import *
+from wsgiadmin.rtools import *
+from wsgiadmin.mysql.tools import *
 
 @login_required
 def show(request,p=1):

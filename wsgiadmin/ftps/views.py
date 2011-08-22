@@ -13,10 +13,10 @@ from django.contrib.auth.models import User as user
 from subprocess import Popen,PIPE
 from django.views.decorators.csrf import csrf_exempt
 
-from settings import ROOT
-from ftps.models import *
+from wsgiadmin.settings import ROOT
+from wsgiadmin.ftps.models import *
 
-from ftps.tools import *
+from wsgiadmin.ftps.tools import *
 
 @login_required
 def show(request,p=1):

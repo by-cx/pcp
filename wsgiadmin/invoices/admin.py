@@ -2,7 +2,7 @@
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 
-from invoices.models import *
+from wsgiadmin.invoices.models import *
 
 class invoiceAdmin(admin.ModelAdmin):
 	list_display = ('payment_id','name','total','date_exposure','date_payback','paytype','sended','payed','downloadLink')

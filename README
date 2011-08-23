@@ -1,6 +1,12 @@
-Python Control Panel
+WSGIAdmin
+=========
 
-This is control panel writed for Rosti.cz hosting service. You can grab it, change it and use it. I would appreciate if you join to development.
+Web interface for you server writted in Python. You can try it
+and help me, but it is not working now. I have to rewrite some
+parts and because of that I destroy almost everything what works.
+
+If you want working version, try first commit in repo.
 
 --
-Cx
+Adam 'cx' Strauch
+cx@initd.cz

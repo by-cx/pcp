@@ -21,8 +21,6 @@ from wsgiadmin.domains.tools import *
 
 from django.conf import settings
 
-from wsgiadmin.rtools import *
-
 from wsgiadmin.requests.tools import request as push_request
 from wsgiadmin.keystore.tools import *
 

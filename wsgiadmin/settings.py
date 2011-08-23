@@ -161,6 +161,9 @@ NGINX_CONF="/etc/nginx/sites-enabled/99_auto.conf"
 UWSGI_CONF="/etc/uwsgi/config.xml"
 UWSGI_PIDFILE = "/var/run/uwsgi/app_%d.pid"
 
+from wsgiadmin.requests.request import SSHHandler
+HANDLER = SSHHandler
+
 ## Logování
 
 import logging

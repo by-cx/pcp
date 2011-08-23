@@ -7,7 +7,7 @@ from wsgiadmin.requests.models import Request
 class RequestException(Exception): pass
 
 class SSHHandler(object):
-	def __init__(self, machine, user):
+	def __init__(self, user, machine):
 		self.machine = machine
 		self.user = user
 
@@ -146,7 +146,9 @@ class SSHHandler(object):
 class JSONRPCHandler(object): pass
 
 class Service(settings.HANDLER):
-	def __init__(self, init_script):
+	def __init__(self, user, machine, init_script):
+		super(Service, self).__init__(user, machine)
+		
 		self.init_script = init_script
 
 	def state(self):
@@ -155,14 +157,22 @@ class Service(settings.HANDLER):
 	def start(self):
 		"""Start service"""
 
+		self.run("%s start" % self.init_script)
+
 	def stop(self):
 		"""Stop service"""
+
+		self.run("%s stop" % self.init_script)
 
 	def restart(self):
 		"""Restart service"""
 
+		self.run("%s restart" % self.init_script)
+
 	def reload(self):
 		"""Reload service"""
+
+		self.run("%s reload" % self.init_script)
 
 class UWSGIRequest(settings.HANDLER):
 	"""uwsgi_config

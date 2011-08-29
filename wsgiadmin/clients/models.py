@@ -135,11 +135,11 @@ class formPassword(forms.Form):
 		return self.cleaned_data["password2"]
 
 class parms(models.Model):
-	home		= models.CharField(_(u"Home"),max_length=100)
-	note		= models.TextField(_(u"Poznámka"),blank=True)
+	home		= models.CharField(_(u"Home"), max_length=100)
+	note		= models.TextField(_(u"Poznámka"), blank=True)
 	uid			= models.IntegerField(_(u"UID"))
 	gid			= models.IntegerField(_(u"GID"))
-	discount	= models.IntegerField(_(u"Sleva"),default=0) # v procentech
+	discount	= models.IntegerField(_(u"Sleva"), default=0) # v procentech
 	fee         = models.IntegerField(_(u"Paušál"), default=0)
 	currency    = models.CharField(_("Měna"), max_length=20, choices=settings.CURRENCY, default="czk")
 	enable      = models.BooleanField(_("Stav účtu"), default=True)

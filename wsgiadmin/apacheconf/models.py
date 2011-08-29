@@ -5,96 +5,108 @@ from django.contrib.auth.models import User as user
 from django.db import models
 from django.forms import ModelForm
 from django import forms
+from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 import re
 
-class site(models.Model):
+class Site(models.Model):
 	pub_date		= models.DateField(auto_now_add=True)
 	end_date		= models.DateField(blank=True,null=True)
-	serverName		= models.CharField(_(u"ServerName"),max_length=100)
-	serverAlias		= models.CharField(_(u"ServerAlias"),max_length=200,blank=True)
-	documentRoot	= models.CharField(_(u"DocumentRoot"),max_length=200,blank=True)
-	htaccess		= models.BooleanField(_(u"htaccess"),default=True)
-	indexes			= models.BooleanField(_(u"Index adresáře"),default=True)
-	php				= models.BooleanField(_(u"php"),default=False)
-	ipv4			= models.BooleanField(_(u"IPv4"),default=True)
-	ipv6			= models.BooleanField(_(u"IPv6"),default=True)
-	removed			= models.BooleanField(_(u"Smazáno"),default=False) # nezmizí dokud se nezaplatí
+	type            = models.CharField(_(u"Type"), max_length=20, choices=[("uwsgi","uWSGI"), ("modwsgi","mod_wsgi"), ("php","PHP"), ("static","Static")])
 
-	owner			= models.ForeignKey(user, verbose_name=_('Uživatel'))
+	domains         = models.CharField(_(u"ServerName"), max_length=1024)
 	
+	documentRoot	= models.CharField(_(u"DocumentRoot"), max_length=200,blank=True)
+	htaccess		= models.BooleanField(_(u"htaccess"), default=True)
+	indexes			= models.BooleanField(_(u"Index adresáře"), default=True)
+	allow_ips	    = models.TextField(_(u"Whitelist"), default="", blank=True)
+	deny_ips	    = models.TextField(_(u"Blacklist"), default="", blank=True, help_text=_("One IP per one line"))
+
+	script		    = models.CharField(_(u"Script"), max_length=100)
+	processes   	= models.IntegerField(_(u"Počet procesů"), default=1)
+	threads	    	= models.IntegerField(_(u"Počet threadů"), default=5)
+	virtualenv  	= models.CharField(_(u"Virtualenv"), default="default", max_length=100)
+	static	    	= models.TextField(_(u"Statická data"), default="", blank=True)
+	python_path	    = models.TextField(_(u"Python path"), default="", blank=True)
+
+	extra           = models.TextField(_(u"Extra configuration"), blank=True, null=True, default="")
+
+	removed			= models.BooleanField(_(u"Smazáno"),default=False) # nezmizí dokud se nezaplatí
+	owner			= models.ForeignKey(user, verbose_name=_('Uživatel'))
+
+	@property
+	def serverNameSlugged(self):
+		return slugify(self.serverName)
+
+	@property
+	def pythonPathList(self):
+		return [x.strip() for x in self.python_path.split("\n") if x.strip()]
+
+	@property
+	def staticList(self):
+		statics = []
+		for line in self.static.split("\n"):
+			line = line.strip().split(" ")
+			if len(line) == 2:
+				statics.append({"url": line[0], "dir": self.owner.parms.home+""+line[1]})
+		return statics
+
+	@property
+	def serverName(self):
+		domains = self.domains.split(" ")
+		if len(domains) > 0:
+			return domains[0]
+		else:
+			return "no-domain"
+
+	@property
+	def serverAlias(self):
+		domains = self.domains.split(" ")
+		if len(domains) > 0:
+			return " ".join(domains[1:])
+		else:
+			return ""
+
+	@property
+	def pidfile(self):
+		return self.site.owner.parms.home+"/uwsgi/%s.pid" % self.site.serverName
+
+	@property
+	def logfile(self):
+		return self.site.owner.parms.home+"/uwsgi/%s.log" % self.site.serverName
+
+	@property
+	def socket(self):
+		return self.site.owner.parms.home+"/uwsgi/%s.sock" % self.site.serverName
+
+	@property
+	def virtualenv_path(self):
+		return self.site.owner.parms.home+"/virtualenvs/%s" % self.virtualenv
+
+	@property
+	def fastcgiWrapper(self):
+		return settings.PCP_SETTINGS["fastcgi_wrapper"] % self.owner
+
+	@property
 	def pay(self):
 		"""
 			Výpočítá cenu stránky za den včetně slevy
 		"""
 		if self.owner.parms.fee:
 			return 0
-
-		try:
-			self.wsgi
-			wsgi = True
-		except:
-			wsgi = False
 			
-		if wsgi:
+		if self.type == "uwsgi" or self.type == "modwsgi":
 			return (settings.PAYMENT_WSGI[self.owner.parms.currency]/30.0)*self.owner.parms.dc()
-		elif self.php:
+		elif self.type == "php":
 			return (settings.PAYMENT_PHP[self.owner.parms.currency]/30.0)*self.owner.parms.dc()
 		else:
 			return (settings.PAYMENT_STATIC[self.owner.parms.currency]/30.0)*self.owner.parms.dc()
 	
 	def __repr__(self):
-		return "<Stránka %s>"%self.serverName
+		return "<Web %s>" % self.serverName
 	def __unicode__(self):
-		return "%s"%(self.serverName)
-
-APPENDS = (("None",_(u"Žádný/Jiný")),("Django",_(u"Django")))
-
-class wsgi(models.Model):
-	script		= models.CharField(_(u"Script"),max_length=100)
-	processes	= models.IntegerField(_(u"Počet procesů"),default=1)
-	threads		= models.IntegerField(_(u"Počet threadů"),default=5)
-	append		= models.CharField(_(u"Přídavky"),choices=APPENDS,max_length=100) # Přídavky (django, atd.)
-	virtualenv	= models.CharField(_(u"Virtualenv"),default="default", max_length=100)
-	static		= models.TextField(_(u"Statická data"),default="", blank=True)
-	python_path	= models.TextField(_(u"Python path"),default="", blank=True)
-	allow_ips	= models.TextField(_(u"Povolené IP adresy"),default="", blank=True)
-	site		= models.OneToOneField(site, verbose_name=_('Stránka'))
-	uwsgi		= models.BooleanField(_(u"uWSGI"), default=True)
-
-	def pidfile(self):
-		return self.site.owner.parms.home+"/uwsgi/%s.pid" % self.site.serverName
-
-	def logfile(self):
-		return self.site.owner.parms.home+"/uwsgi/%s.log" % self.site.serverName
-
-	def socket(self):
-		return self.site.owner.parms.home+"/uwsgi/%s.sock" % self.site.serverName
-
-	def virtualenv_path(self):
-		return self.site.owner.parms.home+"/virtualenvs/%s" % self.virtualenv
-
-	def __repr__(self):
-		return "<wsgi %s>"%self.script
-	def __unicode__(self):
-		return "%s"%(self.script)
-
-class alias(models.Model):
-	name		= models.CharField(_(u"Alias"),max_length=100)
-	directory	= models.CharField(_(u"Adresář"),max_length=100)
-	indexes		= models.BooleanField(_(u"Index adresáře"),default=True)
-	site		= models.ForeignKey(site)
-
-	def __unicode__(self):
-		return "%s"%(self.name)
-
-class custom(models.Model):
-	conf		= models.TextField(_(u"Specialitky"))
-	site		= models.ForeignKey(site)
-
-	def __unicode__(self):
-		return "Custom %s"%(self.id)
+		return "%s" % (self.serverName)
 
 class formStatic(forms.Form):
 	serverName		= forms.CharField(label=_(u"Hlavní doména (ServerName)"),help_text=_(u"<br />Hlavní doména, např. example.com"))

@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from django.conf import settings
 import subprocess, shlex, datetime, json
+from django.template.loader import render_to_string
+from wsgiadmin.apacheconf.models import Site
+from wsgiadmin.domains.models import Domain
 from wsgiadmin.requests.models import Request
+from django.conf import settings
 
 class RequestException(Exception): pass
 
@@ -143,7 +146,7 @@ class SSHHandler(object):
 
 				request.save()
 
-class JSONRPCHandler(object): pass
+#class JSONRPCHandler(object): pass
 
 class Service(settings.HANDLER):
 	def __init__(self, user, machine, init_script):
@@ -175,69 +178,128 @@ class Service(settings.HANDLER):
 		self.run("%s reload" % self.init_script)
 
 class UWSGIRequest(settings.HANDLER):
-	"""uwsgi_config
-	uwsgi_start
-	uwsgi_restart
-	uwsgi_stop
-	uwsgi_reload"""
+	def start(self, site):
+		self.run("/usr/bin/uwsgi-manager.py -s %s" % str(site.id))
+	def restart(self, site):
+		self.run("/usr/bin/uwsgi-manager.py -R %s" % str(site.id))
+	def stop(self, site):
+		self.run("/usr/bin/uwsgi-manager.py -S %s" % str(site.id))
+	def reload(self, site):
+		self.run("/usr/bin/uwsgi-manager.py -r %s" % str(site.id))
 
 class NginxRequest(Service):
-	def modVHost(self, site):
-		pass
+	def modVHosts(self):
+		config = []
+		for site in Site.objects.filter(removed=False, owner__parms__enable=True):
+			if site.type == "uwsgi" or site.type == "modwsgi":
+				config.append(render_to_string("nginx_vhost_wsgi.conf", {
+					"site": site
+				}))
+			elif site.type == "php":
+				# PHP always throw Apache
+				config.append(render_to_string("nginx_vhost_proxy.conf" % site.type, {
+					"site": site
+				}))
+			elif site.type == "static":
+				config.append(render_to_string("nginx_vhost_static.conf" % site.type, {
+					"site": site
+				}))
+		self.write(settings.PCP_SETTINGS["nginx_conf"], "\n".join(config))
 
 class ApacheRequest(Service):
-	def modVHost(self, site):
-		pass
+	def modVHosts(self):
+		config = []
+		for site in Site.objects.filter(removed=False, owner__parms__enable=True):
+			if site.type == "uwsgi" or site.type == "modwsgi":
+				# Nginx mode cancel handling wsgi by Apache
+				if settings.PCP_SETTINGS["mode"] != "apache": continue
+				
+				config.append(render_to_string("apache_vhost_wsgi.conf", {
+					"site": site
+				}))
+			else:
+				config.append(render_to_string("apache_vhost_%s.conf" % site.type, {
+					"site": site
+				}))
+		self.write(settings.PCP_SETTINGS["apache_conf"], "\n".join(config))
 
-class BindRequest(settings.HANDLER):
-	def __init__(self, domain):
-		self.domain = domain
-
-	def _zoneFileName(self):
-		pass
-
-	def modZone(self, zone): pass
+class BindRequest(Service):
+	def modZone(self, domain):
+		config =render_to_string("bind_zone.conf", {
+			"domain": domain
+		})
+		self.write(settings.PCP_SETTINGS["bind_zone_conf"] % domain.name, config)
 	
-	def removeZone(self): pass
+	def removeZone(self, domain):
+		self.unlink(settings.PCP_SETTINGS["bind_zone_conf"] % domain.name)
+		self.modConfig()
 
-	def modConfig(self): pass
+	def modConfig(self):
+		config =render_to_string("bind.conf", {
+			"domains": Domain.objects.all(),
+		    "dns": settings.PCP_SETTINGS["dns"],
+		})
+		self.write(settings.PCP_SETTINGS["bind_conf"], config)
 
 class EMailRequest(settings.HANDLER):
-	def __init__(self, email):
-		self.email = email
+	def CreateMailbox(self, email):
+		homedir = settings.PCP_SETTINGS["maildir"]+"/"+email.domain.name+"/"
+		maildir = homedir+email.login+"/"
 
-	def CreateMailbox(self):
-		pass
+		self.run("/bin/mkdir -p %s" % homedir)
+		self.run("/bin/chown email:email %s -R" % homedir)
+		self.run("/usr/bin/maildirmake %s" % maildir)
+		self.run("/bin/chown email:email %s -R" % maildir)
+		self.run("/usr/bin/maildirmake %s" % maildir+".Spam")
+		self.run("/bin/chown email:email %s -R" % maildir+"/Spam")
 
 class PostgreSQLRequest(settings.HANDLER):
-	def __init__(self, db):
-		self.db = db
+	def addDb(self, db, password):
+		self.run("createuser -D -R -S %s" % db)
+		self.run("createdb -O %s %s" % (db, db))
+		
+		self.passwdDb(db, password)
 
-	def addDb(self):
-		pass
+	def removeDb(self, db):
+		self.run("dropdb %s" % db)
+		self.run("dropuser %s" % db)
 
-	def removeDb(self):
-		pass
-
-	def passwdDb(self, password):
-		pass
+	def passwdDb(self, db, password):
+		sql = "ALTER USER %s WITH PASSWORD '%s';" % (db, password)
+		self.run("psql template1", stdin=sql)
 
 class MySQLRequest(settings.HANDLER):
-	def __init__(self, db):
-		self.db = db
+	def addDb(self, db, password):
+		sql = []
 
-	def addDb(self):
+		sql.append("CREATE DATABASE %s;" % db)
+		sql.append("CREATE USER '%s'@'localhost' IDENTIFIED BY '%s';" % (db, password))
+		sql.append("GRANT ALL PRIVILEGES ON %s.* TO '%s'@'localhost' WITH GRANT OPTION;" % (db,db))
+
+		for x in sql:
+			self.run("mysql -u root", stdin=x)
+
+	def removeDb(self, db):
+		sql = []
+
+		sql.append("DROP DATABASE %s;" % db)
+		sql.append("DROP USER '%s'@'localhost';" % db)
+
+		for x in sql:
+			self.run("mysql -u root", stdin=x)
+
+	def passwdDb(self, db, password):
+		sql = []
+
+		sql.append("UPDATE mysql.user SET Password = PASSWORD('%s') WHERE User = '%s';" % (password, db))
+		sql.append("FLUSH PRIVILEGES;")
+
+		for x in sql:
+			self.run("mysql -u root", stdin=x)
+
+class SystemRequest(settings.HANDLER):
+	def install(self, user):
 		pass
-
-	def removeDb(self):
-		pass
-
-	def passwdDb(self, password):
-		pass
-
-class PAMRequest(settings.HANDLER):
-	def __init__(self, user):
-		self.user = user
 
 	def passwd(self, password):
-		pass
+		self.run("/usr/sbin/chpasswd", stdin= "%s:%s" % (self.user.username, password))

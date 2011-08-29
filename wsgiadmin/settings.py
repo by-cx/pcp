@@ -151,15 +151,32 @@ DEBUG_TOOLBAR_CONFIG = {
 	'INTERCEPT_REDIRECTS': False,
 }
 
-PRIMARY_DNS = None
-SECONDARY_DNS = None
-
-IPV6 = True
-
-APACHE_CONF="/etc/apache2/sites-enabled/99_auto.conf"
-NGINX_CONF="/etc/nginx/sites-enabled/99_auto.conf"
-UWSGI_CONF="/etc/uwsgi/config.xml"
-UWSGI_PIDFILE = "/var/run/uwsgi/app_%d.pid"
+PCP_SETTINGS = {
+	"mode": "apache", # main web server, (apache/nginx)
+	"primary_dns": None,
+	"secondary_dns": None,
+	"ipv6": True,
+	"apache_conf": "/etc/apache2/sites-enabled/99_auto.conf",
+    "fastcgi_wrapper_dir": "/var/www/%s/php5-wrap",
+	"nginx_conf": "/etc/nginx/sites-enabled/99_auto.conf",
+	"uwsgi_conf": "/etc/uwsgi/config.xml",
+	"uwsgi_pidfile": "/var/run/uwsgi/app_%d.pid",
+    "bind_conf": "",
+    "bind_zone_conf": "",
+    "maildir": "/var/mail",
+    "dns": {
+	    "master": "87.236.194.121",
+        "slave": "89.111.104.70",
+        "ns1": "ns1.rosti.cz",
+        "ns2": "ns2.rosti.cz",
+        "mx": "mail.rosti.cz",
+        "email": "info.rosti.cz",
+		"Refresh": 3600,
+		"Retry": 1800,
+		"Expire": 604800,
+		"Minimum": 30,
+    },
+}
 
 from wsgiadmin.requests.request import SSHHandler
 HANDLER = SSHHandler

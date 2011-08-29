@@ -9,7 +9,7 @@ from django.conf import settings
 
 from django.utils.translation import ugettext_lazy as _
 
-class domain(models.Model):
+class Domain(models.Model):
 	name		= models.CharField(_(u"Název domény"),max_length=100,unique=True)
 	pub_date	= models.DateField(auto_now=True)
 	serial		= models.IntegerField(_(u"Sériové číslo domény"),default=0)

@@ -22,7 +22,7 @@ setup(
         "Topic :: Utilities",
         "License :: OSI Approved :: BSD License",
     ],
-    package_data = {"": ["*.html"]},
+    package_data = {"": ["*.html", "*.conf"]},
     include_package_data = True,
     install_requires=[
         

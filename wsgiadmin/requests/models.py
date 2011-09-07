@@ -15,6 +15,7 @@ ACTIONS = (
 class Request(models.Model):
 	add_date = models.DateTimeField(_("Add date"), auto_now_add=True)
 	done_date = models.DateTimeField(_("Done date"), default=None, null=True, blank=True)
+	plan_to_date = models.DateTimeField(_("Plan date"), default=None, null=True, blank=True)
 	done = models.BooleanField(_("Done"), default=False)
 	action = models.CharField(_("Action"), choices=ACTIONS, max_length=20)
 	data = models.TextField(_("Data"), blank=True)

@@ -7,14 +7,10 @@ from django.core.paginator import Paginator, InvalidPage
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User as user
 
-#from users.models import *
-from keystore.tools import *
-from requests.tools import request_raw
+from wsgiadmin.keystore.tools import *
+from wsgiadmin.requests.tools import request_raw
 
-from rtools import *
-#from mysql.tools import *
-
-from useradmin.views import info
+from wsgiadmin.tools import *
 
 class user_middleware:
 	"""

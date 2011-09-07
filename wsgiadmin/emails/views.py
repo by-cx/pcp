@@ -8,7 +8,7 @@ from wsgiadmin.emails.models import *
 from django.core.urlresolvers import reverse
 from wsgiadmin.clients.models import *
 from django.http import HttpResponse,HttpResponseRedirect
-from wsgiadmin.requests.tools import request as push_request
+from wsgiadmin.requests.request import EMailRequest
 from django.template.context import RequestContext
 
 from django.utils.translation import ugettext_lazy as _
@@ -70,16 +70,8 @@ def addBox(request):
 			email.password = crypt.crypt(form.cleaned_data["password1"],form.cleaned_data["login"])
 			email.save()
 
-			# Vytvořit schránku fyzicky
-			homedir = "%s/%s"%("/var/mail",email.domain.name)
-			maildir = "%s/%s/%s/"%("/var/mail",email.domain.name,email.login)
-
-			if "./" not in maildir and ".." not in maildir and ";" not in maildir and ".." not in homedir and ";" not in homedir and "./" not in homedir:
-				#Signal
-				push_request("create_mailbox", u.parms.mail_machine.ip, {"homedir": homedir, "maildir": maildir}).save()
-
-			#open(ROOT+"signals/mail","w").close()
-
+			er = EMailRequest(u, u.parms.mail_machine)
+			er.create_mailbox(email)
 
 			return HttpResponseRedirect(reverse("emails.views.boxes"))
 	else:
@@ -109,6 +101,9 @@ def removeBox(request,eid):
 			if email.id == eid:
 				email.remove = True
 				email.save()
+
+				er = EMailRequest(u, u.parms.mail_machine)
+				er.remove_mailbox(email)
 
 				return HttpResponse("Schránka vymazána")
 	return HttpResponse(status=404)

@@ -6,12 +6,7 @@ sys.path.append('/home/cx/co/')
 sys.path.append('/home/cx/co/rosti')
 os.environ['DJANGO_SETTINGS_MODULE'] = 'rosti.settings'
 
-from django.conf import settings
-
-from rtools import *
-from keystore.tools import *
-from django.contrib.auth.models import User as user
-from clients.models import *
+from wsgiadmin.clients.models import *
 
 for iu in user.objects.all():
 	iu.parms

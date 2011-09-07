@@ -9,7 +9,6 @@ from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse,HttpResponseRedirect
 from django.core.mail import send_mail
-from django.db import IntegrityError
 from django.template.context import RequestContext
 from django.views.decorators.csrf import csrf_exempt
 
@@ -19,12 +18,9 @@ from wsgiadmin.domains.tools import *
 from django.conf import settings
 from wsgiadmin.requests.request import BindRequest
 
-from wsgiadmin.requests.tools import request as push_request
 from wsgiadmin.keystore.tools import *
 
 import logging,datetime
-
-domain_api = None#web4u()
 
 @login_required
 def show(request,p=1):

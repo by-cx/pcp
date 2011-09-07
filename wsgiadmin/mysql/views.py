@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from django.http import HttpResponse,HttpResponseRedirect,HttpResponseRedirect
-from django.shortcuts import render_to_response,get_object_or_404,get_list_or_404
-from django.core.paginator import Paginator, InvalidPage
+from django.http import HttpResponse,HttpResponseRedirect
+from django.shortcuts import render_to_response
+from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
-from django.contrib.auth.models import User as user
 from django.contrib.auth.decorators import login_required
 from django.template.context import RequestContext
 
@@ -12,13 +11,9 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
 from wsgiadmin.mysql.models import *
-from wsgiadmin.mysql.tools import *
 from wsgiadmin.keystore.tools import *
-from wsgiadmin.clients.models import formPassword
-from wsgiadmin.requests.tools import request as push_request
+from wsgiadmin.requests.request import MySQLRequest
 from wsgiadmin.useradmin.forms import simple_passwd
-
-from wsgiadmin.settings import ROOT
 
 @login_required
 def show(request,p=1):
@@ -67,7 +62,8 @@ def add(request):
 			m.owner = u
 			m.save()
 
-			push_request("my_add_db", u.parms.mysql_machine.ip, {"dbname":db, "dbpass":form.cleaned_data["password"]}).save()
+			mr = MySQLRequest(u, u.parms.mysql_machine)
+			mr.add_db(db, form.cleaned_data["password"])
 
 			return HttpResponseRedirect(reverse("mysql.views.show"))
 	else:
@@ -100,7 +96,8 @@ def passwd(request, db):
 		if form.is_valid():
 
 			if u.mysqldb_set.filter(dbname=db):
-				push_request("my_passwd_db", u.parms.mysql_machine.ip, {"dbname": db, "dbpass": form.cleaned_data["password"]}).save()
+				mr = MySQLRequest(u, u.parms.mysql_machine)
+				mr.passwd_db(db, form.cleaned_data["password"])
 				return HttpResponse("OK")
 
 	else:
@@ -129,7 +126,8 @@ def rm(request,db):
 	m = u.mysqldb_set.filter(dbname=db)
 
 	if m:
-		push_request("my_rm_db", u.parms.mysql_machine.ip, {"dbname": db}).save()
+		mr = MySQLRequest(u, u.parms.mysql_machine)
+		mr.remove_db(db)
 		m[0].delete()
 
 		return HttpResponse("Databáze vymazána")

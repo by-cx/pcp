@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from django.shortcuts import render_to_response,get_object_or_404,get_list_or_404
+from django.shortcuts import render_to_response,get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse,HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.utils.translation import ugettext_lazy as _
 from django.template.context import RequestContext
 from django.core.mail import send_mail
-from django.conf import settings
 
 from wsgiadmin.clients.models import *
 from wsgiadmin.invoices.models import invoice
@@ -56,7 +55,7 @@ def message(request,t,m):
 
 
 @login_required
-def changePasswd(request):
+def change_passwd(request):
 	u = request.session.get('switched_user', request.user)
 	superuser = request.user
 

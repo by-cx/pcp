@@ -45,7 +45,7 @@ class SSHHandler(object):
 
 		return stdout, stderr, retcode
 
-	def run(self, cmd, stdin=None):
+	def run(self, cmd, stdin=None, plan_to=None):
 		"""Add cmd into queue.
 		"""
 		r = Request()
@@ -53,6 +53,7 @@ class SSHHandler(object):
 		r.action = "run"
 		r.data = json.dumps({"action": "run", "server": self._server_name(), "cmd": cmd, "stdin": stdin})
 		r.user = self.user
+		if plan_to: r.plan_to_date = plan_to
 		r.save()
 
 	def instant_run(self, cmd, stdin=None):
@@ -75,22 +76,24 @@ class SSHHandler(object):
 
 		return stdout, stderr, retcode
 
-	def write(self, filename, content):
+	def write(self, filename, content, plan_to=None):
 		"""Add request into queue to write the content into filename."""
 		r = Request()
 
 		r.action = "write"
 		r.data = json.dumps({"action": "write", "server": self._server_name(), "filename": filename, "content": content})
 		r.user = self.user
+		if plan_to: r.plan_to_date = plan_to
 		r.save()
 
-	def unlink(self, filename):
+	def unlink(self, filename, plan_to=None):
 		"""Add request into queue to unlink filename."""
 		r = Request()
 
 		r.action = "unlink"
 		r.data = json.dumps({"action": "unlink", "server": self._server_name(), "filename": filename})
 		r.user = self.user
+		if plan_to: r.plan_to_date = plan_to
 		r.save()
 
 	def read(self, filename):
@@ -145,6 +148,8 @@ class SSHHandler(object):
 	def commit(self):
 		"""Process the queue and writes the result into db"""
 		for request in Request.objects.filter(done=False).order_by("add_date"):
+			if request.plan_to_date and request.plan_to_date > datetime.datetime.today(): continue
+
 			data = json.loads(request.data)
 			ret = None
 
@@ -322,6 +327,11 @@ class EMailRequest(SSHHandler):
 		self.run("/usr/bin/maildirmake %s" % maildir+".Spam")
 		self.run("/bin/chown email:email %s -R" % maildir+"/Spam")
 
+	def remove_mailbox(self, email):
+		homedir = settings.PCP_SETTINGS["maildir"] + "/" + email.domain.name+"/"
+		maildir = homedir + email.login + "/"
+		self.run("rm -rf %s" % maildir, plan_to=datetime.datetime.today()+datetime.timedelta(90))
+
 class PostgreSQLRequest(SSHHandler):
 	def add_db(self, db, password):
 		self.run("createuser -D -R -S %s" % db)
@@ -368,10 +378,23 @@ class MySQLRequest(SSHHandler):
 
 class SystemRequest(SSHHandler):
 	def install(self, user):
-		pass
+		HOME="/home/%s"%user.username
+	
+		self.run("useradd -m -s /bin/bash %s" % user.username)
+		self.run("chmod 750 %s " % HOME)
+		self.run("cp -R /var/www/cx /var/www/%s" % user.username)
+		self.run("chown -R %s:%s /var/www/%s" % (user.username, user.username, user.username))
+		self.run("usermod -G %s -a %s" % (user.username, user.username))
+		self.run("usermod -G www-data -a %s" % user.username)
+		self.run("usermod -G clients -a %s" % user.username)
+		self.run("su %s -c \"mkdir -p ~/virtualenvs\"" % user.username)
+		self.run("su %s -c  \"virtualenv ~/virtualenvs/default\"" % user.username)
+		self.run("su %s -c \"mkdir -p ~/uwsgi\"" % user.username)
 
 	def passwd(self, password):
 		self.run("/usr/sbin/chpasswd", stdin= "%s:%s" % (self.user.username, password))
+
+#TODO:E-mail request
 
 def main():
 	from wsgiadmin.clients.models import Machine, Parms

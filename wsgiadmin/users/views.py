@@ -10,10 +10,7 @@ from django.template.context import RequestContext
 from django.utils.translation import ugettext_lazy as _
 
 from wsgiadmin.clients.models import *
-from wsgiadmin.requests.tools import request as push_request, request_raw
-
-from wsgiadmin.rtools import *
-from wsgiadmin.mysql.tools import *
+from wsgiadmin.requests.request import SystemRequest
 
 @login_required
 def show(request,p=1):
@@ -35,8 +32,8 @@ def show(request,p=1):
 		page = paginator.page(p)	
 			
 	ssh_users = []
-	rr = request_raw(u.parms.web_machine.ip)
-	data = rr.run("cat /etc/passwd")["stdout"]
+	sr = SystemRequest(u, u.parms.web_machine)
+	data = sr.instant_run("cat /etc/passwd")[0]
 			
 	for line in [x.strip().split(":") for x in data.split("\n") if x]:
 		ssh_users.append(line[0])
@@ -95,22 +92,13 @@ def install(request,uid):
 	
 	if iuser.username and not ";" in iuser.username:
 
-		rr = request_raw(iuser.parms.web_machine.ip)
-
 		# System user
 		HOME="/home/%s"%iuser.username
 
-		rr.run("useradd -m -s /bin/bash %s" % iuser.username)
-		rr.run("chmod 750 %s " % HOME)
-		rr.run("cp -R /var/www/cx /var/www/%s" % iuser.username)
-		rr.run("chown -R %s:%s /var/www/%s" % (iuser.username, iuser.username, iuser.username))
-		rr.run("usermod -G %s -a %s" % (iuser.username, iuser.username))
-		rr.run("usermod -G www-data -a %s" % (iuser.username))
-		rr.run("usermod -G clients -a %s" % iuser.username)
-		rr.run("su %s -c \"mkdir -p ~/virtualenvs\"" % iuser.username)
-		rr.run("su %s -c  \"virtualenv ~/virtualenvs/default\"" % iuser.username)
-		rr.run("su %s -c \"mkdir -p ~/uwsgi\"" % iuser.username)
-		data = rr.run("cat /etc/passwd")["stdout"]
+		sr = SystemRequest(u, iuser.parms.web_machine)
+		sr.install(iuser)
+
+		data = sr.instant_run("cat /etc/passwd")[0]
 
 		for line in [x.strip() for x in data.split("\n")]:
 			if iuser.username in line:
@@ -242,11 +230,10 @@ def rm(request,uid):
 
 	if iparms: iparms.delete()
 	if not ";" in iuser.username:
-		#do_sql_query("DROP USER %s@localhost;"%iuser.username)
-		rr = request_raw(u.parms.pgsql_machine.ip)
-		rr.run("dropuser %s" % iuser.username)
-		rr.run("userdel %s" % iuser.username)
-		rr.run("groupdel %s" % iuser.username)
+		sr = SystemRequest(u, iuser.parms.web_machine)
+		sr.run("dropuser %s" % iuser.username)
+		sr.run("userdel %s" % iuser.username)
+		sr.run("groupdel %s" % iuser.username)
 	iuser.delete()
 	
 	return HttpResponse("Smazáno")
@@ -259,7 +246,8 @@ def ssh_passwd(request):
 	if request.method == 'POST':
 		form = formPassword(request.POST)
 		if form.is_valid():
-			push_request("ssh_passwd", u.parms.web_machine.ip, {"username":u.username, "password":form.cleaned_data["password1"]}).save()
+			sr = SystemRequest(u, u.parms.web_machine)
+			sr.passwd(form.cleaned_data["password1"])
 			
 			return HttpResponseRedirect(reverse("useradmin.views.ok"))
 	else:

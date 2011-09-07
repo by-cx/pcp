@@ -2,7 +2,7 @@
 
 #Local settings
 
-DEBUG=False
+DEBUG=True
 
 ADMINS = (
 	('Adam Strauch', 'cx@initd.cz'),

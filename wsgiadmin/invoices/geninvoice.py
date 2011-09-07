@@ -14,7 +14,7 @@ from wsgiadmin.settings import *
 from wsgiadmin.invoices.models import *
 from wsgiadmin.clients.models import *
 
-PROVIDER = parms.objects.filter(id=1)
+PROVIDER = Parms.objects.filter(id=1)
 if PROVIDER: PROVIDER = PROVIDER[0]
 
 class genInvoice:

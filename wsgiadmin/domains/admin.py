@@ -28,5 +28,4 @@ class domainAdmin(admin.ModelAdmin):
     
 	has_delete_permission = has_change_permission  
 
-admin.site.register(domain,domainAdmin)
-admin.site.register(registration_request)
+admin.site.register(Domain,domainAdmin)

@@ -3,7 +3,8 @@
 
 #from django.utils.translation import ugettext_lazy as _
 
-import os
+import os,sys
+sys.path.append("/home/cx/co/pcp/")
 ROOT = os.path.realpath(os.path.dirname(__file__))+"/"
 
 DEBUG = False
@@ -93,7 +94,7 @@ MIDDLEWARE_CLASSES = (
 	#'users.middleware.user_middleware',
 )
 
-ROOT_URLCONF = 'pcp.urls'
+ROOT_URLCONF = 'wsgiadmin.urls'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
@@ -120,6 +121,7 @@ INSTALLED_APPS = (
 	'django.contrib.admin',
 	'debug_toolbar',
 #	'rosetta',
+	'requests',
 	'useradmin',
 	'uni_form',
 	'bills',
@@ -159,10 +161,13 @@ PCP_SETTINGS = {
 	"apache_conf": "/etc/apache2/sites-enabled/99_auto.conf",
     "fastcgi_wrapper_dir": "/var/www/%s/php5-wrap",
 	"nginx_conf": "/etc/nginx/sites-enabled/99_auto.conf",
+    "nginx_init_script": "/etc/init.d/nginx",
+    "apache_init_script": "/etc/init.d/apache2",
 	"uwsgi_conf": "/etc/uwsgi/config.xml",
 	"uwsgi_pidfile": "/var/run/uwsgi/app_%d.pid",
-    "bind_conf": "",
-    "bind_zone_conf": "",
+    "bind_conf": "/etc/bind/named.pandora.auto",
+    "bind_zone_conf": "/etc/bind/pri_auto/%s.zone",
+    "bind_init_script": "/etc/init.d/bind9",
     "maildir": "/var/mail",
     "dns": {
 	    "master": "87.236.194.121",
@@ -178,13 +183,10 @@ PCP_SETTINGS = {
     },
 }
 
-from wsgiadmin.requests.request import SSHHandler
-HANDLER = SSHHandler
-
 ## Logování
 
 import logging
 
 logging.basicConfig(level=logging.INFO, filename='/var/log/pcp.log',  format = '%(asctime)s %(levelname)s %(message)s')
 
-from mysettings import *
+from wsgiadmin.mysettings import *

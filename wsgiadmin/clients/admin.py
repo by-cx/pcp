@@ -24,7 +24,7 @@ class address_admin(admin.ModelAdmin):
 		}),
 	)
 
-admin.site.register(address,address_admin)
-admin.site.register(parms)
-admin.site.register(machine,machine_admin)
+admin.site.register(Address,address_admin)
+admin.site.register(Parms)
+admin.site.register(Machine,machine_admin)
 

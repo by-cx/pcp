@@ -15,7 +15,7 @@ from wsgiadmin.clients.models import *
 PAYTYPE=(("převodem",_(u"převodem")),("hotově",_(u"hotově")))
 
 def getMe():
-	return address.objects.get(residency_ic="74943421")
+	return Address.objects.get(residency_ic="74943421")
 	#return address.objects.get(id=4)
 
 class invoice(models.Model):
@@ -28,7 +28,7 @@ class invoice(models.Model):
 	paytype			= models.CharField(_(u"Typ platby"),max_length=20,choices=PAYTYPE,default=_(u"prevodem"))
 	currency        = models.CharField(_("Měna"), max_length=20, choices=settings.CURRENCY)
 	
-	client_address	= models.ForeignKey(address,related_name="Client")
+	client_address	= models.ForeignKey(Address,related_name="Client")
 
 	sended			= models.BooleanField(_(u"Odesláno?"),default=False)
 	payed			= models.BooleanField(_(u"Zaplaceno?"),default=False)

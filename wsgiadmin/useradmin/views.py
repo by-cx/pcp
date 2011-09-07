@@ -102,7 +102,7 @@ def reg(request):
 			u.is_active = False
 			u.save()
 			# adresa
-			a = address()
+			a = Address()
 			a.company				= form1.cleaned_data["company"]
 			a.residency_name		= form1.cleaned_data["name"]
 			a.residency_street		= form1.cleaned_data["street"]
@@ -114,12 +114,12 @@ def reg(request):
 			a.residency_phone		= form1.cleaned_data["phone"]
 			a.save()
 			# machine
-			m_web = get_object_or_404(machine,name=settings.DEFAULT_WEB_MACHINE)
-			m_mail = get_object_or_404(machine,name=settings.DEFAULT_MAIL_MACHINE)
-			m_mysql = get_object_or_404(machine,name=settings.DEFAULT_MYSQL_MACHINE)
-			m_pgsql = get_object_or_404(machine,name=settings.DEFAULT_PGSQL_MACHINE)
+			m_web = get_object_or_404(Machine,name=settings.DEFAULT_WEB_MACHINE)
+			m_mail = get_object_or_404(Machine,name=settings.DEFAULT_MAIL_MACHINE)
+			m_mysql = get_object_or_404(Machine,name=settings.DEFAULT_MYSQL_MACHINE)
+			m_pgsql = get_object_or_404(Machine,name=settings.DEFAULT_PGSQL_MACHINE)
 			# parms
-			p = parms()
+			p = Parms()
 			p.home		    = "/home/"+form2.cleaned_data["username"]
 			p.note		    = ""
 			p.uid		    = 0

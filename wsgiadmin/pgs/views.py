@@ -14,7 +14,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from wsgiadmin.pgs.models import *
 from wsgiadmin.pgs.tools import *
-from wsgiadmin.pcp.tools import *
+from wsgiadmin.tools import *
 from wsgiadmin.keystore.tools import *
 from wsgiadmin.requests.tools import request as push_request
 from wsgiadmin.useradmin.forms import simple_passwd

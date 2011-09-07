@@ -18,7 +18,7 @@ class form_user(ModelForm):
 		model = user
 		exclude = ("password","is_staff","is_superuser","last_login","date_joined","groups","user_permissions")
 
-class machine(models.Model):
+class Machine(models.Model):
 	name		= models.CharField(_(u"Název serveru"),max_length=50)
 	domain		= models.CharField(_(u"Doménová adresa serveru"),max_length=50)
 	ip			= models.CharField(_(u"IP adresa serveru"),max_length=50)
@@ -36,9 +36,9 @@ class machine(models.Model):
 
 class form_machine(ModelForm):
 	class Meta:
-		model = machine
+		model = Machine
 
-class address(models.Model):
+class Address(models.Model):
 	# sídlo
 	company			= models.CharField(_(u"Jméno společnosti"),max_length=250,blank=True)
 
@@ -118,7 +118,7 @@ class address(models.Model):
 
 class form_address(ModelForm):
 	class Meta:
-		model = address
+		model = Address
 
 class formPassword(forms.Form):
 	password1 = forms.CharField(label=_(u"Heslo poprvé"),widget=forms.PasswordInput(render_value=False))
@@ -134,7 +134,7 @@ class formPassword(forms.Form):
 		if not "password2" in self.cleaned_data: raise forms.ValidationError(_(u"Je potřeba vyplnit podruhé heslo pro kontrolu"))
 		return self.cleaned_data["password2"]
 
-class parms(models.Model):
+class Parms(models.Model):
 	home		= models.CharField(_(u"Home"), max_length=100)
 	note		= models.TextField(_(u"Poznámka"), blank=True)
 	uid			= models.IntegerField(_(u"UID"))
@@ -145,11 +145,11 @@ class parms(models.Model):
 	enable      = models.BooleanField(_("Stav účtu"), default=True)
 
 	#address		= models.ForeignKey("address")
-	address	    	= models.OneToOneField(address)
-	web_machine		= models.ForeignKey(machine, related_name="web")
-	mail_machine	= models.ForeignKey(machine, related_name="mail")
-	mysql_machine	= models.ForeignKey(machine, related_name="mysql")
-	pgsql_machine	= models.ForeignKey(machine, related_name="pgsql")
+	address	    	= models.OneToOneField(Address)
+	web_machine		= models.ForeignKey(Machine, related_name="web")
+	mail_machine	= models.ForeignKey(Machine, related_name="mail")
+	mysql_machine	= models.ForeignKey(Machine, related_name="mysql")
+	pgsql_machine	= models.ForeignKey(Machine, related_name="pgsql")
 
 	user = models.OneToOneField(user, verbose_name=_('Uživatel'))
 
@@ -225,6 +225,6 @@ class parms(models.Model):
 
 class form_parms(ModelForm):
 	class Meta:
-		model = parms
+		model = Parms
 		exclude = ("address","user","home","uid","gid")
 

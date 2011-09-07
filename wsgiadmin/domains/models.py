@@ -46,7 +46,7 @@ YEARS=[("1","1 rok"),("2","2 roky"),("3","3 roky")]
 class form_registration_request(forms.Form):
 	domain		= forms.CharField(label=_(u"Doména"))
 	ipv4        = forms.BooleanField(label="Vést záznamy o IPv4 adresách", required=False, initial=True)
-	ipv6        = forms.BooleanField(label="Vést záznamy o IPv6 adresách", required=False, initial=settings.IPV6)
+	ipv6        = forms.BooleanField(label="Vést záznamy o IPv6 adresách", required=False, initial=True)
 	def clean_domain(self):
 		if not re.search("[a-z0-9\-\.]*\.[a-z]{2,5}",self.cleaned_data["domain"]): raise forms.ValidationError(_(u"Doména má špatný formát"))
 		return self.cleaned_data["domain"]

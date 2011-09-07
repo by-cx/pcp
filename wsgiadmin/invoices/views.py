@@ -220,7 +220,7 @@ def payback(request,iid):
 	iinvoice.payed = True 
 	iinvoice.save()
 
-	parm = parms.objects.filter(address=iinvoice.client_address)
+	parm = Parms.objects.filter(address=iinvoice.client_address)
 
 	if parm:
 		i = income()

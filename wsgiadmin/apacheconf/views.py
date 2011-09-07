@@ -4,18 +4,21 @@ import logging
 from django.core.paginator import Paginator
 from django.shortcuts import render_to_response,get_object_or_404
 from django.contrib.auth.decorators import login_required
-from wsgiadmin.emails.models import *
 from django.core.urlresolvers import reverse
 from wsgiadmin.clients.models import *
 from django.http import HttpResponse,HttpResponseRedirect
-from wsgiadmin.requests.tools import request as push_request
 from wsgiadmin.apacheconf.models import *
-from wsgiadmin.ftps.tools import *
 from django.utils.translation import ugettext_lazy as _
-from wsgiadmin.apacheconf.tools import gen_vhosts, gen_uwsgi_xml
 from django.template.context import RequestContext
+from wsgiadmin.requests.request import ApacheRequest,NginxRequest, UWSGIRequest, SSHHandler
 
 info = logging.info
+
+def user_directories(u):
+	sh = SSHHandler(u, u.parms.web_machine)
+	dirs = sh.instant_run("/usr/bin/find %s -maxdepth 2 -type d" % u.parms.home)[0].split("\n")
+
+	return [d.strip() for d in dirs if d and not "/." in d]
 
 @login_required
 def apache(request,p=1):
@@ -23,7 +26,7 @@ def apache(request,p=1):
 	superuser = request.user
 	p = int(p)
 
-	paginator = Paginator(list(u.site_set.filter(removed=False)), 25)
+	paginator = Paginator(list(u.Site_set.filter(removed=False)), 25)
 
 	if paginator.count == 0:
 		page = None
@@ -41,49 +44,45 @@ def apache(request,p=1):
 							})
 
 @login_required
-def serverNameAliasCheck(request,form,thisSite=None):
+def domain_check(request,form,this_site=None):
 	u = request.session.get('switched_user', request.user)
 	superuser = request.user
 
-	serverName = form.data["serverName"].strip()
-	serverAlias = form.data["serverAlias"]
-
 	domains = [] # domény u aktuální stránky
-	usedDomains = [] # Všechny domény použité u aplikací
-	errorDomains = []
-	domains.append(serverName)
+	used_domains = [] # Všechny domény použité u aplikací
+	my_domains = []
+	error_domains = []
 
-	domains += [domain.strip() for domain in serverAlias.split(" ") if domain]
+	if this_site:
+		domains = this_site.domains.split(" ")
 
-	#Použití domény
-	for site in u.site_set.filter(removed=False):
-		if thisSite and thisSite == site:
-			continue
-		usedDomains.append(site.serverName)
-		for domain in site.serverAlias.split(" "):
-			if domain:
-				usedDomains.append(domain.strip())
+	for site in Site.objects.filter(removed=False):
+		if this_site and this_site == site: continue
+		used_domains += site.domains.split(" ")
 
-	#test vlastnictví
+	for site in u.Site_set.filter(removed=False):
+		my_domains += site.domains.split(" ")
+
+	# Perm test
 	for domain in domains:
-		test = False
-		for ownDomain in [d.name for d in u.domain_set.all()]:
-			if ownDomain in domain:
-				test = True
-				break
-		if not test:
-			errorDomains.append(domain)
+		error = True
+		for my_domain in my_domains:
+			if domain in my_domain:
+				error = False
 
-	#použité domény
+		if error and domain+_(" - chybí oprávnění") not in error_domains:
+			error_domains.append(domain+_(" - chybí oprávnění"))
+
+	# Used test
 	for domain in domains:
-		if domain in usedDomains:
-			if not domain in errorDomains: errorDomains.append(domain)
+		if domain not in used_domains and domain+_(" - už je použitá") not in error_domains:
+			error_domains.append(domain+_(" - už je použitá"))
 
-	return errorDomains
+	return error_domains
 
 
 @login_required
-def addStatic(request,php="0"):
+def add_static(request,php="0"):
 	u = request.session.get('switched_user', request.user)
 	superuser = request.user
 	siteErrors = []
@@ -91,30 +90,35 @@ def addStatic(request,php="0"):
 	choices = [(d,d) for d in user_directories(u)]
 
 	if request.method == 'POST':
-		form = formStatic(request.POST)
+		form = form_static(request.POST)
 		form.fields["documentRoot"].choices = choices
-		siteErrors = serverNameAliasCheck(request,form)
+		siteErrors = domain_check(request,form)
 		if not siteErrors and form.is_valid():
-			web = site()
-			web.serverName = form.cleaned_data["serverName"]
-			web.serverAlias = form.cleaned_data["serverAlias"]
+			web = Site()
+			web.domains = form.cleaned_data["domains"]
 			web.documentRoot = form.cleaned_data["documentRoot"]
 
 			if php == "0":
-				web.php = False
+				web.type = "static"
 			else:
-				web.php = True
+				web.type = "php"
 			    
 			web.owner = u
 			web.save()
 
-			#Signal
-			push_request("apache_reload", u.parms.web_machine.ip, {"domain": web.serverName, "user": u.username, "vhosts": gen_vhosts() }).save()
-			#push_request("nginx_reload", u.parms.web_machine.ip, {"domain": web.serverName, "user": u.username, "vhosts": generator.nginx() }).save()
+			# Requsts
+
+			ar = ApacheRequest(u, u.parms.web_machine)
+			ar.mod_vhosts()
+			ar.reload()
+			
+			nr = NginxRequest(u, u.parms.web_machine)
+			nr.mod_vhosts()
+			nr.reload()
 
 			return HttpResponseRedirect(reverse("apacheconf.views.apache"))
 	else:
-		form = formStatic()
+		form = form_static()
 		form.fields["documentRoot"].choices = choices
 
 	if php == "0": title = _(u"Přidání statického webu")
@@ -135,32 +139,36 @@ def addStatic(request,php="0"):
 							)
 
 @login_required
-def updateStatic(request,sid):
+def update_static(request,sid):
 	u = request.session.get('switched_user', request.user)
 	superuser = request.user
 	siteErrors = []
 	sid = int(sid)
 
-	s = get_object_or_404(site,id=sid)
+	s = get_object_or_404(Site,id=sid)
 	choices = [(d,d) for d in user_directories(u)]
 
 	if request.method == 'POST':
-		form = formStatic(request.POST)
+		form = form_static(request.POST)
 		form.fields["documentRoot"].choices = choices
-		siteErrors = serverNameAliasCheck(request,form,s)
+		siteErrors = domain_check(request,form,s)
 		if not siteErrors and form.is_valid():
-			s.serverName = form.cleaned_data["serverName"]
-			s.serverAlias = form.cleaned_data["serverAlias"]
+			s.domains = form.cleaned_data["domains"]
 			s.documentRoot = form.cleaned_data["documentRoot"]
 			s.save()
 
 			#Signal
-			push_request("apache_reload", u.parms.web_machine.ip, {"domain": s.serverName, "user": u.username, "vhosts": gen_vhosts()}).save()
-			push_request("nginx_reload", u.parms.web_machine.ip, {"domain": s.serverName, "user": u.username, "vhosts": generator.nginx() }).save()
+			ar = ApacheRequest(u, u.parms.web_machine)
+			ar.mod_vhosts()
+			ar.reload()
+
+			nr = NginxRequest(u, u.parms.web_machine)
+			nr.mod_vhosts()
+			nr.reload()
 
 			return HttpResponseRedirect(reverse("apacheconf.views.apache"))
 	else:
-		form = formStatic(initial={"serverName":s.serverName,"serverAlias":s.serverAlias,"documentRoot":s.documentRoot})
+		form = form_static(initial={"domains":s.domains,"documentRoot":s.documentRoot})
 		form.fields["documentRoot"].choices = choices
 
 	return render_to_response('universal.html',
@@ -178,32 +186,41 @@ def updateStatic(request,sid):
 							)
 
 @login_required
-def removeSite(request,sid):
+def remove_site(request,sid):
 	u = request.session.get('switched_user', request.user)
 	superuser = request.user
 	sid = int(sid)
 
-	s = get_object_or_404(site,id=sid)
+	s = get_object_or_404(Site,id=sid)
 	if s.owner == u:
+		ur = UWSGIRequest(u, u.parms.web_machine)
+		ur.stop(s)
+
 		s.removed = True
 		s.end_date = datetime.date.today()
 		s.save()
 
 		#Signal
-		push_request("apache_reload", u.parms.web_machine.ip, {"domain": s.serverName, "user": u.username, "vhosts": gen_vhosts()}).save()
-		push_request("uwsgi_config", u.parms.web_machine.ip, {"domain": s.serverName, "user": u.username, "config": gen_uwsgi_xml() }).save()
-		#push_request("nginx_reload", u.parms.web_machine.ip, {"domain": s.serverName, "user": u.username, "vhosts": generator.nginx() }).save()
+		ar = ApacheRequest(u, u.parms.web_machine)
+		ar.mod_vhosts()
+		ar.reload()
+
+		nr = NginxRequest(u, u.parms.web_machine)
+		nr.mod_vhosts()
+		nr.reload()
+
+		ur.mod_config()
 
 	return HttpResponse("Stránka vymazána")
 
 @login_required
-def addWsgi(request):
+def add_wsgi(request):
 	u = request.session.get('switched_user', request.user)
 	superuser = request.user
 	siteErrors = []
 
-	rr = request_raw(u.parms.web_machine.ip)
-	wsgis = rr.run(("/usr/bin/find %s -maxdepth 5 -name *.wsgi" % u.parms.home))["stdout"]
+	sh = SSHHandler(u, u.parms.web_machine)
+	wsgis = sh.instant_run("/usr/bin/find %s -maxdepth 5 -name *.wsgi" % u.parms.home)[0]
 	if wsgis:
 		wsgis = wsgis.split("\n")
 	else:
@@ -211,40 +228,43 @@ def addWsgi(request):
 
 	choices = [("",_(u"Nevybráno"))]+[(x.strip(),x.strip()) for x in wsgis if x]
 
-	virtualenvs = rr.run(("/usr/bin/find %s/virtualenvs/ -maxdepth 1 -type d" % u.parms.home))["stdout"].split("\n")
+	sh = SSHHandler(u, u.parms.web_machine)
+	virtualenvs = sh.instant_run("/usr/bin/find %s/virtualenvs/ -maxdepth 1 -type d" % u.parms.home)[0].split("\n")
 	virtualenvs_choices = [(x[len(u.parms.home+"/virtualenvs/"):],x[len(u.parms.home+"/virtualenvs/"):]) for x in virtualenvs if x[len(u.parms.home+"/virtualenvs/"):]]
 
 	if request.method == 'POST':
-		form = formWsgi(request.POST)
+		form = form_wsgi(request.POST)
 		form.fields["script"].choices = choices
 		form.fields["virtualenv"].choices = virtualenvs_choices
-		siteErrors = serverNameAliasCheck(request,form)
+		siteErrors = domain_check(request,form)
 		if not siteErrors and form.is_valid():
-			web = site()
-			web.serverName = form.cleaned_data["serverName"]
-			web.serverAlias = form.cleaned_data["serverAlias"]
-			web.owner = u
-			web.save()
-
-			webWsgi = wsgi()
-			webWsgi.virtualenv = form.cleaned_data["virtualenv"]
-			webWsgi.static = form.cleaned_data["static"]
-			webWsgi.python_path = form.cleaned_data["python_path"]
-			webWsgi.script = form.cleaned_data["script"]
-			webWsgi.allow_ips = form.cleaned_data["allow_ips"]
-			webWsgi.site = web
-			webWsgi.save()
+			site = Site()
+			site.domains = form.cleaned_data["domains"]
+			site.owner = u
+			site.virtualenv = form.cleaned_data["virtualenv"]
+			site.static = form.cleaned_data["static"]
+			site.python_path = form.cleaned_data["python_path"]
+			site.script = form.cleaned_data["script"]
+			site.allow_ips = form.cleaned_data["allow_ips"]
+			site.type = "uwsgi"
+			site.save()
 
 			#Signal
-			push_request("apache_reload", u.parms.web_machine.ip, {"domain": web.serverName, "user": u.username, "vhosts": gen_vhosts()}).save()
-			#push_request("nginx_reload", u.parms.web_machine.ip, {"domain": web.serverName, "user": u.username, "vhosts": generator.nginx() }).save()
-			if webWsgi.uwsgi:
-				push_request("uwsgi_config", u.parms.web_machine.ip, {"domain": web.serverName, "user": u.username, "config": gen_uwsgi_xml() }).save()
-				push_request("uwsgi_start", u.parms.web_machine.ip, {"web_id": webWsgi.id, "domain": web.serverName, "user": u.username, "config": gen_uwsgi_xml() }).save()
+			ar = ApacheRequest(u, u.parms.web_machine)
+			ar.mod_vhosts()
+			ar.reload()
+
+			nr = NginxRequest(u, u.parms.web_machine)
+			nr.mod_vhosts()
+			nr.reload()
+			if site.type == "uwsgi":
+				ur = UWSGIRequest(u, u.parms.web_machine)
+				ur.mod_config()
+				ur.restart(site)
 
 			return HttpResponseRedirect(reverse("apacheconf.views.apache"))
 	else:
-		form = formWsgi()
+		form = form_wsgi()
 		form.fields["script"].choices = choices
 		form.fields["virtualenv"].choices = virtualenvs_choices
 
@@ -263,54 +283,64 @@ def addWsgi(request):
 							)
 
 @login_required
-def updateWsgi(request,sid):
+def update_wsgi(request,sid):
 	u = request.session.get('switched_user', request.user)
 	superuser = request.user
 	siteErrors = []
 
-	rr = request_raw(u.parms.web_machine.ip)
-	wsgis = rr.run(("/usr/bin/find %s -maxdepth 5 -name *.wsgi" % u.parms.home))["stdout"]
+	sh = SSHHandler(u, u.parms.web_machine)
+	wsgis = sh.instant_run("/usr/bin/find %s -maxdepth 5 -name *.wsgi" % u.parms.home)[0]
 	if wsgis:
 		wsgis = wsgis.split("\n")
 	else:
 		wsgis = []
 	choices = [("",_(u"Nevybráno"))]+[(x.strip(),x.strip()) for x in wsgis if x]
 
-	virtualenvs = rr.run(("/usr/bin/find %s/virtualenvs/ -maxdepth 1 -type d" % u.parms.home))["stdout"].split("\n")
+	sh = SSHHandler(u, u.parms.web_machine)
+	virtualenvs = sh.instant_run("/usr/bin/find %s/virtualenvs/ -maxdepth 1 -type d" % u.parms.home)[0].split("\n")
 	virtualenvs_choices = [(x[len(u.parms.home+"/virtualenvs/"):],x[len(u.parms.home+"/virtualenvs/"):]) for x in virtualenvs if x[len(u.parms.home+"/virtualenvs/"):]]
 
-	#TODO:make secure update
 	sid = int(sid)
-	s = get_object_or_404(site,id=sid)
+	site = get_object_or_404(u.Site_set,id=sid)
 
 	if request.method == 'POST':
-		form = formWsgi(request.POST)
+		form = form_wsgi(request.POST)
 		form.fields["script"].choices = choices
 		form.fields["virtualenv"].choices = virtualenvs_choices
-		siteErrors = serverNameAliasCheck(request,form,s)
+		siteErrors = domain_check(request,form,site)
 		if not siteErrors and form.is_valid():
-			s.serverName = form.cleaned_data["serverName"]
-			s.serverAlias = form.cleaned_data["serverAlias"]
-			s.save()
-
-			s.wsgi.virtualenv = form.cleaned_data["virtualenv"]
-			s.wsgi.static = form.cleaned_data["static"]
-			s.wsgi.script = form.cleaned_data["script"]
-			s.wsgi.python_path = form.cleaned_data["python_path"]
-			s.wsgi.allow_ips = form.cleaned_data["allow_ips"]
-			s.wsgi.save()
+			site.domains = form.cleaned_data["domains"]
+			site.virtualenv = form.cleaned_data["virtualenv"]
+			site.static = form.cleaned_data["static"]
+			site.script = form.cleaned_data["script"]
+			site.python_path = form.cleaned_data["python_path"]
+			site.allow_ips = form.cleaned_data["allow_ips"]
+			site.save()
 
 			#Signal
-			if s.wsgi.uwsgi:
-				push_request("uwsgi_config", u.parms.web_machine.ip, {"domain": s.serverName, "user": u.username, "config": gen_uwsgi_xml() }).save()
-				push_request("uwsgi_restart", u.parms.web_machine.ip, {"web_id": s.id, "domain": s.serverName, "user": u.username, "config": gen_uwsgi_xml() }).save()
-				push_request("apache_reload", u.parms.web_machine.ip, {"domain": s.serverName, "user": u.username, "vhosts": gen_vhosts()}).save()
+			if site.wsgi.uwsgi:
+				ur = UWSGIRequest(u, u.parms.web_machine)
+				ur.mod_config()
+				ur.restart(site)
+				ar = ApacheRequest(u, u.parms.web_machine)
+				ar.mod_vhosts()
+				ar.reload()
+
+				nr = NginxRequest(u, u.parms.web_machine)
+				nr.mod_vhosts()
+				nr.reload()
 			else:
-				push_request("apache_reload", u.parms.web_machine.ip, {"domain": s.serverName, "user": u.username, "vhosts": gen_vhosts()}).save()
+				ar = ApacheRequest(u, u.parms.web_machine)
+				ar.mod_vhosts()
+				ar.reload()
+
+				nr = NginxRequest(u, u.parms.web_machine)
+				nr.mod_vhosts()
+				nr.reload()
 
 			return HttpResponseRedirect(reverse("apacheconf.views.apache"))
 	else:
-		form = formWsgi(initial={"serverName":s.serverName,"serverAlias":s.serverAlias,"script":s.wsgi.script,"allow_ips":s.wsgi.allow_ips,"static": s.wsgi.static,"virtualenv": s.wsgi.virtualenv, "python_path": s.wsgi.python_path})
+		form = form_wsgi(initial={"domains":site.domains,"script":site.script,"allow_ips":site.allow_ips,"static": site.static,"virtualenv": site.virtualenv, "python_path": site.python_path})
 		form.fields["script"].choices = choices
 		form.fields["virtualenv"].choices = virtualenvs_choices
 
@@ -320,7 +350,7 @@ def updateWsgi(request,sid):
 									"form":form,
 									"title":_(u"Upravení WSGI aplikace"),
 									"submit":_(u"Upravit WSGI aplikaci"),
-									"action":reverse("apacheconf.views.updateWsgi",args=[s.id]),
+									"action":reverse("apacheconf.views.updateWsgi",args=[site.id]),
 									"u":u,
 									"superuser":superuser,
 								    "menu_active": "webapps",
@@ -333,14 +363,21 @@ def reload(request, sid):
 	superuser = request.user
 	
 	sid = int(sid)
-	s = get_object_or_404(site,id=sid)
+	s = get_object_or_404(Site,id=sid)
 
 	#Signal
 	if s.wsgi.uwsgi:
-		push_request("uwsgi_config", u.parms.web_machine.ip, {"domain": s.serverName, "user": u.username, "config": gen_uwsgi_xml() }).save()
-		push_request("uwsgi_reload", u.parms.web_machine.ip, {"web_id": s.wsgi.id, "domain": s.serverName, "user": u.username, "config": gen_uwsgi_xml() }).save()
+		ur = UWSGIRequest(u, u.parms.web_machine)
+		ur.mod_config()
+		ur.restart(s)
 	else:
-		push_request("apache_reload", u.parms.web_machine.ip, {"domain": s.serverName, "user": u.username, "vhosts": gen_vhosts()}).save()
+		ar = ApacheRequest(u, u.parms.web_machine)
+		ar.mod_vhosts()
+		ar.reload()
+
+		nr = NginxRequest(u, u.parms.web_machine)
+		nr.mod_vhosts()
+		nr.reload()
 	
 	return HttpResponseRedirect(reverse("apacheconf.views.apache"))
 
@@ -350,14 +387,20 @@ def restart(request, sid):
 	superuser = request.user
 
 	sid = int(sid)
-	s = get_object_or_404(site,id=sid)
+	s = get_object_or_404(Site,id=sid)
 
 	#Signal
 	if s.wsgi.uwsgi:
-		push_request("uwsgi_config", u.parms.web_machine.ip, {"domain": s.serverName, "user": u.username, "config": gen_uwsgi_xml() }).save()
-		push_request("uwsgi_restart", u.parms.web_machine.ip, {"web_id": s.wsgi.id, "domain": s.serverName, "user": u.username, "config": gen_uwsgi_xml() }).save()
+		ur = UWSGIRequest(u, u.parms.web_machine)
+		ur.mod_config()
+		ur.restart(s)
 	else:
-		push_request("apache_restart", u.parms.web_machine.ip, {"domain": s.serverName, "user": u.username, "vhosts": gen_vhosts()}).save()
-		#push_request("nginx_restart", u.parms.web_machine.ip, {"domain": s.serverName, "user": u.username, "vhosts": generator.nginx() }).save()
+		ar = ApacheRequest(u, u.parms.web_machine)
+		ar.mod_vhosts()
+		ar.restart()
+
+		nr = NginxRequest(u, u.parms.web_machine)
+		nr.mod_vhosts()
+		nr.restart()
 
 	return HttpResponseRedirect(reverse("apacheconf.views.apache"))

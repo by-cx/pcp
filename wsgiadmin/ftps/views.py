@@ -1,22 +1,24 @@
 # -*- coding: utf-8 -*-
 import crypt
-from django.http import HttpResponse
-from django.core.paginator import Paginator, InvalidPage
-from django.shortcuts import render_to_response,get_object_or_404,get_list_or_404
+from django.core.paginator import Paginator
+from django.shortcuts import render_to_response,get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse,HttpResponseRedirect
 from django.template.context import RequestContext
 
-from django.contrib.auth.models import User as user
 
-from subprocess import Popen,PIPE
 from django.views.decorators.csrf import csrf_exempt
+from wsgiadmin.requests.request import SSHHandler
 
-from wsgiadmin.settings import ROOT
 from wsgiadmin.ftps.models import *
 
-from wsgiadmin.ftps.tools import *
+
+def user_directories(u):
+	sh = SSHHandler(u, u.parms.web_machine)
+	dirs = sh.instant_run("/usr/bin/find %s -maxdepth 2 -type d" % u.parms.home)[0].split("\n")
+
+	return [d.strip() for d in dirs if d and not "/." in d]
 
 @login_required
 def show(request,p=1):

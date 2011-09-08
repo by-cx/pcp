@@ -65,7 +65,7 @@ def add(request):
 			mr = MySQLRequest(u, u.parms.mysql_machine)
 			mr.add_db(db, form.cleaned_data["password"])
 
-			return HttpResponseRedirect(reverse("mysql.views.show"))
+			return HttpResponseRedirect(reverse("wsgiadmin.mysql.views.show"))
 	else:
 		form = form_db()
 		form.u = u
@@ -75,7 +75,7 @@ def add(request):
 								"form":form,
 								"title":_(u"Vytvoření MySQL databáze"),
 								"submit":_(u"Vytvořit databázi"),
-								"action":reverse("mysql.views.add"),
+								"action":reverse("wsgiadmin.mysql.views.add"),
 								"u":u,
 								"superuser":superuser,
 							    "menu_active": "dbs",
@@ -108,7 +108,7 @@ def passwd(request, db):
 								"form":form,
 								"title":_(u"Heslo k mysql databázi %s")%db,
 								"submit":_(u"Změni heslo"),
-								"action":reverse("mysql.views.passwd", args=[db]),
+								"action":reverse("wsgiadmin.mysql.views.passwd", args=[db]),
 								"u":u,
 								"superuser":superuser,
 								"menu_active": "dbs",

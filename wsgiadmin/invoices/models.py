@@ -55,7 +55,7 @@ class invoice(models.Model):
 		return self.client_address.residency_name
 	
 	def downloadLink(self):
-		return _(u"<a href=\"%s\">Stáhnout</a>")%reverse("invoices.views.invoice_get",args=[self.payment_id])
+		return _(u"<a href=\"%s\">Stáhnout</a>")%reverse("wsgiadmin.invoices.views.invoice_get",args=[self.payment_id])
 		downloadLink.short_description = 'Stáhnout PDF'
 		downloadLink.allow_tags = True
 	

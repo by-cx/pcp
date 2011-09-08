@@ -73,7 +73,7 @@ def addBox(request):
 			er = EMailRequest(u, u.parms.mail_machine)
 			er.create_mailbox(email)
 
-			return HttpResponseRedirect(reverse("emails.views.boxes"))
+			return HttpResponseRedirect(reverse("wsgiadmin.emails.views.boxes"))
 	else:
 		form = formEmail()
 		form.fields["xdomain"].choices = domains
@@ -83,7 +83,7 @@ def addBox(request):
 									"form":form,
 									"title":_(u"Přidání e-mailové schránky"),
 									"submit":_(u"Přidat schránku"),
-									"action":reverse("emails.views.addBox"),
+									"action":reverse("wsgiadmin.emails.views.addBox"),
 									"u":u,
 									"superuser":superuser,
 								    "menu_active": "emails",
@@ -129,7 +129,7 @@ def changePasswdBox(request,eid):
 			email = form.save(commit=False)
 			email.password = crypt.crypt(form.cleaned_data["password1"],email.login)
 			email.save()
-			return HttpResponseRedirect(reverse("emails.views.boxes"))
+			return HttpResponseRedirect(reverse("wsgiadmin.emails.views.boxes"))
 	else:
 		form = formEmailPassword(instance=e)
 
@@ -138,7 +138,7 @@ def changePasswdBox(request,eid):
 								"form":form,
 								"title":_(u"Změna hesla e-mailové schránky"),
 								"submit":_(u"Změnit heslo"),
-								"action":reverse("emails.views.changePasswdBox",args=[e.id]),
+								"action":reverse("wsgiadmin.emails.views.changePasswdBox",args=[e.id]),
 								"u":u,
 								"superuser":superuser,
 							    "menu_active": "emails",
@@ -210,7 +210,7 @@ def changeRedirect(request,rid):
 			fredirect = form.save(commit=False)
 			fredirect.domain = get_object_or_404(u.domain_set,name=form.cleaned_data["_domain"])
 			fredirect.save()
-			return HttpResponseRedirect(reverse("emails.views.redirects"))
+			return HttpResponseRedirect(reverse("wsgiadmin.emails.views.redirects"))
 	else:
 		form = formRedirect(instance=r)
 		form.fields["_domain"].choices = domains
@@ -220,7 +220,7 @@ def changeRedirect(request,rid):
 									"form":form,
 									"title":_(u"Upravení přesměrování"),
 									"submit":_(u"Upravit přesměrování"),
-									"action":reverse("emails.views.changeRedirect",args=[rid]),
+									"action":reverse("wsgiadmin.emails.views.changeRedirect",args=[rid]),
 									"u":u,
 									"superuser":superuser,
 								    "menu_active": "emails",
@@ -244,7 +244,7 @@ def addRedirect(request):
 			redirect.domain = get_object_or_404(u.domain_set,name=form.cleaned_data["_domain"])
 			redirect.pub_date = datetime.date.today()
 			redirect.save()
-			return HttpResponseRedirect(reverse("emails.views.redirects"))
+			return HttpResponseRedirect(reverse("wsgiadmin.emails.views.redirects"))
 	else:
 		form = formRedirect()
 		form.fields["_domain"].choices = domains
@@ -254,7 +254,7 @@ def addRedirect(request):
 									"form":form,
 									"title":_(u"Přidání redirectu"),
 									"submit":_(u"Přidat redirect"),
-									"action":reverse("emails.views.addRedirect"),
+									"action":reverse("wsgiadmin.emails.views.addRedirect"),
 									"u":u,
 									"superuser":superuser,
 								    "menu_active": "emails",

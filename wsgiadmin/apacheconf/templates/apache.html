@@ -9,14 +9,14 @@
 	<script type="text/javascript">
 		function remove(what) {
 			$("#remove_"+what).hide()
-			$("#removed_"+what).load("{% url apacheconf.views.removeSite 0 %}"+what)
+			$("#removed_"+what).load("{% url wsgiadmin.apacheconf.views.remove_site 0 %}"+what)
 		}
 	</script>
 	<h2>{% trans "Webové stránky a aplikace" %}</h2>
 	<ul>
-		<li><a href="{% url apacheconf.views.addStatic "0" %}">{% trans "Přidat statickou webovou stránku" %}</a></li>
-		<li><a href="{% url apacheconf.views.addStatic "1" %}">{% trans "Přidat webovou stránku s PHP skriptováním" %}</a></li>
-		<li><a href="{% url apacheconf.views.addWsgi %}">{% trans "Přidat WSGI aplikaci" %}</a></li>
+		<li><a href="{% url wsgiadmin.apacheconf.views.add_static "0" %}">{% trans "Přidat statickou webovou stránku" %}</a></li>
+		<li><a href="{% url wsgiadmin.apacheconf.views.add_static "1" %}">{% trans "Přidat webovou stránku s PHP skriptováním" %}</a></li>
+		<li><a href="{% url wsgiadmin.apacheconf.views.add_wsgi %}">{% trans "Přidat WSGI aplikaci" %}</a></li>
 	</ul>
 
 	<div id="message-box"></div>
@@ -41,12 +41,12 @@
 	<tbody>
 		{% for site in sites.object_list %}
 		<tr>
-			<td>{{ site.serverName }}{% if site.wsgi.uwsgi %} (uWSGI){% endif %}</td>
+			<td>{{ site.serverName }}{% if site.type == "uwsgi" %} (uWSGI){% endif %}</td>
 			<td>
-				{% if not site.wsgi %}<a href="{% url apacheconf.views.updateStatic site.id %}"><img src="/m/icons/raster/gray_dark/pen_alt_stroke_16x16.png" alt="Upravit" /></a>{% endif %}
-				{% if site.wsgi %}
-					{% if site.wsgi.uwsgi %}<a href="{% url apacheconf.views.restart site.id %}"><img src="/m/icons/raster/gray_dark/loop_16x16.png" alt="Upravit" /></a>{% endif %}
-					<a href="{% url apacheconf.views.updateWsgi site.id %}"><img src="/m/icons/raster/gray_dark/pen_alt_stroke_16x16.png" alt="Upravit" /></a>
+				{% if site.type == "php" or site.type == "static" %}<a href="{% url wsgiadmin.apacheconf.views.update_static site.id %}"><img src="/m/icons/raster/gray_dark/pen_alt_stroke_16x16.png" alt="Upravit" /></a>{% endif %}
+				{% if site.type == "uwsgi" or site.type == "modwsgi" %}
+					{% if site.type == "uwsgi" %}<a href="{% url wsgiadmin.apacheconf.views.restart site.id %}"><img src="/m/icons/raster/gray_dark/loop_16x16.png" alt="Upravit" /></a>{% endif %}
+					<a href="{% url wsgiadmin.apacheconf.views.update_wsgi site.id %}"><img src="/m/icons/raster/gray_dark/pen_alt_stroke_16x16.png" alt="Upravit" /></a>
 				{% endif %}
 				<a href="#" id="remove_{{site.id}}" onclick="if(confirm('{% trans "Opravdu chcete web/apliakci zrušit?" %}')) {remove('{{site.id}}');};" class="bold"><img src="/m/icons/raster/gray_dark/trash_fill_16x16.png" alt="Smazat" /></a>
 				<span id="removed_{{site.id}}" class="info"></span>
@@ -58,19 +58,19 @@
 		<tr>
 			<td colspan="2">
 					<div class="pagination">
-						{% if sites.has_previous %}<a href="{% url apacheconf.views.apache 1 %}" title="{% trans "První stránka" %}">&laquo; {% trans "První" %}</a>{% endif %}
-						{% if sites.has_previous %}<a href="{% url apacheconf.views.apache sites.previous_page_number %}" title="{% trans "Předchozí stránka" %}">&laquo; {% trans "Předchozí" %}</a>{% endif %}
+						{% if sites.has_previous %}<a href="{% url wsgiadmin.apacheconf.views.apache 1 %}" title="{% trans "První stránka" %}">&laquo; {% trans "První" %}</a>{% endif %}
+						{% if sites.has_previous %}<a href="{% url wsgiadmin.apacheconf.views.apache sites.previous_page_number %}" title="{% trans "Předchozí stránka" %}">&laquo; {% trans "Předchozí" %}</a>{% endif %}
 
 						{% for p in paginator.page_range %}
 							{% ifequal p num_page %}
-								<a href="{% url apacheconf.views.apache p %}" class="number current" title="{{ p }}">{{ p }}</a>
+								<a href="{% url wsgiadmin.apacheconf.views.apache p %}" class="number current" title="{{ p }}">{{ p }}</a>
 							{% else %}
-								<a href="{% url apacheconf.views.apache p %}" class="number" title="{{ p }}">{{ p }}</a>
+								<a href="{% url wsgiadmin.apacheconf.views.apache p %}" class="number" title="{{ p }}">{{ p }}</a>
 							{% endifequal %}
 						{% endfor %}
 
-						{% if sites.has_next %}<a href="{% url apacheconf.views.apache sites.next_page_number %}" title="{% trans "Další stránka" %}">{% trans "Další" %} &raquo;</a>{% endif %}
-						{% if sites.has_next %}<a href="{% url apacheconf.views.apache paginator.num_pages %}" title="{% trans "Poslední stránka" %}">{% trans "Poslední" %} &raquo;</a>{% endif %}
+						{% if sites.has_next %}<a href="{% url wsgiadmin.apacheconf.views.apache sites.next_page_number %}" title="{% trans "Další stránka" %}">{% trans "Další" %} &raquo;</a>{% endif %}
+						{% if sites.has_next %}<a href="{% url wsgiadmin.apacheconf.views.apache paginator.num_pages %}" title="{% trans "Poslední stránka" %}">{% trans "Poslední" %} &raquo;</a>{% endif %}
 					</div>
 					<div class="clear"></div>
 			</td>

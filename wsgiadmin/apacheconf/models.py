@@ -70,19 +70,19 @@ class Site(models.Model):
 
 	@property
 	def pidfile(self):
-		return self.site.owner.parms.home+"/uwsgi/%s.pid" % self.site.serverName
+		return self.owner.parms.home+"/uwsgi/%s.pid" % self.serverName
 
 	@property
 	def logfile(self):
-		return self.site.owner.parms.home+"/uwsgi/%s.log" % self.site.serverName
+		return self.owner.parms.home+"/uwsgi/%s.log" % self.serverName
 
 	@property
 	def socket(self):
-		return self.site.owner.parms.home+"/uwsgi/%s.sock" % self.site.serverName
+		return self.owner.parms.home+"/uwsgi/%s.sock" % self.serverName
 
 	@property
 	def virtualenv_path(self):
-		return self.site.owner.parms.home+"/virtualenvs/%s" % self.virtualenv
+		return self.owner.parms.home+"/virtualenvs/%s" % self.virtualenv
 
 	@property
 	def fastcgiWrapper(self):
@@ -109,11 +109,11 @@ class Site(models.Model):
 		return "%s" % (self.serverName)
 
 class form_static(forms.Form):
-	domain		= forms.CharField(label=_(u"Domény *"),help_text=_(u"<br />Domény na kterých bude web server naslouchat oddělené mezerou. Například 'rosti.cz www.rosti.cz ' apod. První doména je brána jako hlavní."))
+	domains		= forms.CharField(label=_(u"Domény *"),help_text=_(u"<br />Domény na kterých bude web server naslouchat oddělené mezerou. Například 'rosti.cz www.rosti.cz ' apod. První doména je brána jako hlavní."))
 	documentRoot	= forms.ChoiceField(label=_(u"Adresář"))
 
 class form_wsgi(forms.Form):
-	domain		= forms.CharField(label=_(u"Domény *"),help_text=_(u"<br />Domény na kterých bude web server naslouchat oddělené mezerou. Například 'rosti.cz www.rosti.cz ' apod. První doména je brána jako hlavní."))
+	domains		= forms.CharField(label=_(u"Domény *"),help_text=_(u"<br />Domény na kterých bude web server naslouchat oddělené mezerou. Například 'rosti.cz www.rosti.cz ' apod. První doména je brána jako hlavní."))
 	static		= forms.CharField(label=_(u"Adresáře se statickými soubory"), widget=forms.Textarea, help_text=_(u"<br /><strong>~/&lt;zadaná_cesta&gt;</strong> - Jeden řádek, jeden adresář. Formát <strong>/url/ /cesta/k/mediím/</strong> - Odělovačem je mezera. Chybné řádky budou při generování konfigurace ignorovány."), required=False)
 	python_path	= forms.CharField(label=_(u"Python path"), widget=forms.Textarea, help_text=_(u"<br /><strong>~/&lt;zadaná_cesta&gt;</strong> - Jeden řádek, jeden adresář. Formát <strong>/tady/je/moje/aplikace</strong>. Váš domovský adresář bude automaticky doplněn. uWSGI ignoruje nastavení PYTHON_PATH přes sys.path."), required=False)
 	virtualenv	= forms.ChoiceField(label=_(u"Virtualenv *"),choices=(("default","default"),), initial="default", help_text=_(u"<br />Pythoní virtuální prostředí. Najdete je ve '<strong>~/virtualenvs/&lt;zadaná_hodnota&gt;</strong>'. Můžete si si vytvořit vlastní přes SSH."), required=True)

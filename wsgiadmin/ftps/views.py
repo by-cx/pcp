@@ -65,7 +65,7 @@ def add(request):
 			iftp.owner		= u
 			iftp.save()
 			
-			return HttpResponseRedirect(reverse("ftps.views.show"))
+			return HttpResponseRedirect(reverse("wsgiadmin.ftps.views.show"))
 	else:
 		form = form_ftp()
 		form.u = u
@@ -77,7 +77,7 @@ def add(request):
 									"title":"Přidání FTP účtu",
 									"submit":"Přidat FTP účet",
 									"note":["* Před uživatelské jméno bude automaticky přidáno %s_"%u.username],
-									"action":reverse("ftps.views.add"),
+									"action":reverse("wsgiadmin.ftps.views.add"),
 									"u":u,
 									"superuser":superuser,
 								    "menu_active": "ftps",
@@ -106,9 +106,9 @@ def update(request,fid):
 				iftp.dir		= form.cleaned_data["dir"]
 				#iftp.password	= form.cleaned_data["password1"]
 				iftp.save()
-				return HttpResponseRedirect(reverse("ftps.views.show"))
+				return HttpResponseRedirect(reverse("wsgiadmin.ftps.views.show"))
 			else:
-				return HttpResponseRedirect(reverse("useradmin.views.error"))
+				return HttpResponseRedirect(reverse("wsgiadmin.useradmin.views.error"))
 	else:
 		form = form_ftp_update()
 		form.u = u
@@ -121,7 +121,7 @@ def update(request,fid):
 									"title":"Úprava FTP účtu",
 									"submit":"Upravit FTP účet",
 									"note":["* Před uživatelské jméno bude automaticky přidáno %s_"%u.username],
-									"action":reverse("ftps.views.update",args=[fid]),
+									"action":reverse("wsgiadmin.ftps.views.update",args=[fid]),
 									"u":u,
 									"superuser":superuser,
 								    "menu_active": "ftps",
@@ -145,9 +145,9 @@ def passwd(request,fid):
 			if iftp.owner == u:
 				iftp.password	= crypt.crypt(form.cleaned_data["password1"],iftp.owner.username)
 				iftp.save()
-				return HttpResponseRedirect(reverse("ftps.views.show"))
+				return HttpResponseRedirect(reverse("wsgiadmin.ftps.views.show"))
 			else:
-				return HttpResponseRedirect(reverse("useradmin.views.error"))
+				return HttpResponseRedirect(reverse("wsgiadmin.useradmin.views.error"))
 	else:
 		form = form_ftp_passwd()
 
@@ -156,7 +156,7 @@ def passwd(request,fid):
 									"form":form,
 									"title":"Úprava FTP účtu",
 									"submit":"Upravit FTP účet",
-									"action":reverse("ftps.views.passwd",args=[fid]),
+									"action":reverse("wsgiadmin.ftps.views.passwd",args=[fid]),
 									"u":u,
 									"superuser":superuser,
 								    "menu_active": "ftps",

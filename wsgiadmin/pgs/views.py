@@ -65,7 +65,7 @@ def add(request):
 			pr = PostgreSQLRequest(u, u.parms.pgsql_machine)
 			pr.add_db(db, form.cleaned_data["password"])
 
-			return HttpResponseRedirect(reverse("pgs.views.show"))
+			return HttpResponseRedirect(reverse("wsgiadmin.pgs.views.show"))
 	else:
 		form = form_db()
 		form.u = u
@@ -75,7 +75,7 @@ def add(request):
 								"form":form,
 								"title":_(u"Vytvoření Postgresql databáze"),
 								"submit":_(u"Vytvořit databázi"),
-								"action":reverse("pgs.views.add"),
+								"action":reverse("wsgiadmin.pgs.views.add"),
 								"u":u,
 								"superuser":superuser,
 							    "menu_active": "dbs",
@@ -129,7 +129,7 @@ def passwd(request, db):
 								"form":form,
 								"title":_(u"Heslo k pgsql databázi %s")%db,
 								"submit":_(u"Změni heslo"),
-								"action":reverse("pgs.views.passwd", args=[db]),
+								"action":reverse("wsgiadmin.pgs.views.passwd", args=[db]),
 								"u":u,
 								"superuser":superuser,
 							    "menu_active": "dbs",

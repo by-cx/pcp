@@ -7,7 +7,7 @@ import os,sys
 sys.path.append("/home/cx/co/pcp/")
 ROOT = os.path.realpath(os.path.dirname(__file__))+"/"
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 #APPEND_SLASH = True
@@ -170,8 +170,10 @@ PCP_SETTINGS = {
     "bind_init_script": "/etc/init.d/bind9",
     "maildir": "/var/mail",
     "dns": {
-	    "master": "87.236.194.121",
-        "slave": "89.111.104.70",
+	    #"master": "87.236.194.121",
+        #"slave": "89.111.104.70",
+		"master": "89.111.104.66",
+		"slave": "89.111.104.66",
         "ns1": "ns1.rosti.cz",
         "ns2": "ns2.rosti.cz",
         "mx": "mail.rosti.cz",

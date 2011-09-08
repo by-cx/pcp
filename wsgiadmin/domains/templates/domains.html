@@ -8,7 +8,7 @@
 {% block content %}
 <script type="text/javascript">
 	function remove(what) {
-		$("#domain_"+what).load("{% url domains.views.rm 0 %}"+what);
+		$("#domain_"+what).load("{% url wsgiadmin.domains.views.rm 0 %}"+what);
 	}
 </script>
 <div id="message-box"></div>
@@ -19,7 +19,7 @@
 <p>Informace týkající se domén najdete na Wiki na adrese <a href='{{ WIKI_URL }}/registrace_domen' target="_blank">{{ WIKI_URL }}/registrace_domen</a>.</p>
 {% endblocktrans %}
 
-<p><a href="{% url domains.views.add %}">{% trans "Přidat již registrovanou doménu" %}</a>.</p>
+<p><a href="{% url wsgiadmin.domains.views.add %}">{% trans "Přidat již registrovanou doménu" %}</a>.</p>
 
 <h3>{% trans "Seznam vedených domén" %}</h3>
 
@@ -47,19 +47,19 @@
 		<tr>
 			<td colspan="3">
 					<div class="pagination">
-						{% if domains.has_previous %}<a href="{% url domains.views.show 1 %}" title="{% trans "První stránka" %}">&laquo; {% trans "První" %}</a>{% endif %}
-						{% if domains.has_previous %}<a href="{% url domains.views.show domains.previous_page_number %}" title="{% trans "Předchozí stránka" %}">&laquo; {% trans "Předchozí" %}</a>{% endif %}
+						{% if domains.has_previous %}<a href="{% url wsgiadmin.domains.views.show 1 %}" title="{% trans "První stránka" %}">&laquo; {% trans "První" %}</a>{% endif %}
+						{% if domains.has_previous %}<a href="{% url wsgiadmin.domains.views.show domains.previous_page_number %}" title="{% trans "Předchozí stránka" %}">&laquo; {% trans "Předchozí" %}</a>{% endif %}
 
 						{% for p in paginator.page_range %}
 							{% ifequal p num_page %}
-								<a href="{% url domains.views.show p %}" class="number current" title="{{ p }}">{{ p }}</a>
+								<a href="{% url wsgiadmin.domains.views.show p %}" class="number current" title="{{ p }}">{{ p }}</a>
 							{% else %}
-								<a href="{% url domains.views.show p %}" class="number" title="{{ p }}">{{ p }}</a>
+								<a href="{% url wsgiadmin.domains.views.show p %}" class="number" title="{{ p }}">{{ p }}</a>
 							{% endifequal %}
 						{% endfor %}
 
-						{% if domains.has_next %}<a href="{% url domains.views.show domains.next_page_number %}" title="{% trans "Další stránka" %}">{% trans "Další" %} &raquo;</a>{% endif %}
-						{% if domains.has_next %}<a href="{% url domains.views.show paginator.num_pages %}" title="{% trans "Poslední stránka" %}">{% trans "Poslední" %} &raquo;</a>{% endif %}
+						{% if domains.has_next %}<a href="{% url wsgiadmin.domains.views.show domains.next_page_number %}" title="{% trans "Další stránka" %}">{% trans "Další" %} &raquo;</a>{% endif %}
+						{% if domains.has_next %}<a href="{% url wsgiadmin.domains.views.show paginator.num_pages %}" title="{% trans "Poslední stránka" %}">{% trans "Poslední" %} &raquo;</a>{% endif %}
 					</div>
 					<div class="clear"></div>
 			</td>

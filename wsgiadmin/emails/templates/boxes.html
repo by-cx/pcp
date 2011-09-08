@@ -9,7 +9,7 @@
 <script type="text/javascript">
 	function remove(what) {
 		$("#remove_"+what).hide()
-		$("#removed_"+what).load("{% url emails.views.removeBox 0 %}"+what)
+		$("#removed_"+what).load("{% url wsgiadmin.emails.views.removeBox 0 %}"+what)
 	}
 </script>
 
@@ -34,7 +34,7 @@
 			<td>{{ email.login }}@{{ email.domain.name }}</td>
 			<td>{{ email.pub_date|date:"d.m.Y" }}</td>
 			<td>
-				<a href="{% url emails.views.changePasswdBox email.id %}" title="{% trans "Upravit" %}"><img src="/m/icons/raster/gray_dark/key_stroke_16x16.png" alt="{% trans "Změnit heslo" %}" /></a>
+				<a href="{% url wsgiadmin.emails.views.changePasswdBox email.id %}" title="{% trans "Upravit" %}"><img src="/m/icons/raster/gray_dark/key_stroke_16x16.png" alt="{% trans "Změnit heslo" %}" /></a>
 				<a href="#" id="remove_{{email.id}}" onclick="if(confirm('{% trans "Opravdu chcete schránku zrušit?" %}')) {remove('{{email.id}}');};" class="bold"><img src="/m/icons/raster/gray_dark/trash_fill_16x16.png" alt="Smazat" /></a>
 				<span id="removed_{{email.id}}" class="info"></span>
 			</td>
@@ -45,19 +45,19 @@
 		<tr>
 			<td colspan="3">
 					<div class="pagination">
-						{% if emails.has_previous %}<a href="{% url emails.views.boxes 1 %}" title="{% trans "První stránka" %}">&laquo; {% trans "První" %}</a>{% endif %}
-						{% if emails.has_previous %}<a href="{% url emails.views.boxes emails.previous_page_number %}" title="{% trans "Předchozí stránka" %}">&laquo; {% trans "Předchozí" %}</a>{% endif %}
+						{% if emails.has_previous %}<a href="{% url wsgiadmin.emails.views.boxes 1 %}" title="{% trans "První stránka" %}">&laquo; {% trans "První" %}</a>{% endif %}
+						{% if emails.has_previous %}<a href="{% url wsgiadmin.emails.views.boxes emails.previous_page_number %}" title="{% trans "Předchozí stránka" %}">&laquo; {% trans "Předchozí" %}</a>{% endif %}
 
 						{% for p in paginator.page_range %}
 							{% ifequal p num_page %}
-								<a href="{% url emails.views.boxes p %}" class="number current" title="{{ p }}">{{ p }}</a>
+								<a href="{% url wsgiadmin.emails.views.boxes p %}" class="number current" title="{{ p }}">{{ p }}</a>
 							{% else %}
-								<a href="{% url emails.views.boxes p %}" class="number" title="{{ p }}">{{ p }}</a>
+								<a href="{% url wsgiadmin.emails.views.boxes p %}" class="number" title="{{ p }}">{{ p }}</a>
 							{% endifequal %}
 						{% endfor %}
 
-						{% if emails.has_next %}<a href="{% url emails.views.boxes emails.next_page_number %}" title="{% trans "Další stránka" %}">{% trans "Další" %} &raquo;</a>{% endif %}
-						{% if emails.has_next %}<a href="{% url emails.views.boxes paginator.num_pages %}" title="{% trans "Poslední stránka" %}">{% trans "Poslední" %} &raquo;</a>{% endif %}
+						{% if emails.has_next %}<a href="{% url wsgiadmin.emails.views.boxes emails.next_page_number %}" title="{% trans "Další stránka" %}">{% trans "Další" %} &raquo;</a>{% endif %}
+						{% if emails.has_next %}<a href="{% url wsgiadmin.emails.views.boxes paginator.num_pages %}" title="{% trans "Poslední stránka" %}">{% trans "Poslední" %} &raquo;</a>{% endif %}
 					</div>
 					<div class="clear"></div>
 			</td>
@@ -66,7 +66,7 @@
 	{% else %}
 	<tbody>
 	<tr>
-		<td colspan="3">{% trans "Žádná schránka nebyla ještě vytvořena. Můžete ji přidat" %} <a href="{% url emails.views.addBox %}">{% trans "kliknutím sem" %}</a>.</td>
+		<td colspan="3">{% trans "Žádná schránka nebyla ještě vytvořena. Můžete ji přidat" %} <a href="{% url wsgiadmin.emails.views.addBox %}">{% trans "kliknutím sem" %}</a>.</td>
 	</tr>
 	</tbody>
 	{% endif%}

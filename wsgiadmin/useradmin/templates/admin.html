@@ -25,17 +25,17 @@
 <div id="container">
 	<header>
 		<ul>
-			<li{% if menu_active == "dashboard" %} class="active"{% endif %}><a href="{% url useradmin.views.info %}">{% trans "Dashboard" %}</a></li>
+			<li{% if menu_active == "dashboard" %} class="active"{% endif %}><a href="{% url wsgiadmin.useradmin.views.info %}">{% trans "Dashboard" %}</a></li>
 			{% if superuser.is_superuser %}
-			<li{% if menu_active == "users" %} class="active"{% endif %}><a href="{% url users.views.show %}" class="red">{% trans "Uživatelé" %}</a></li>
-			<li{% if menu_active == "invoices" %} class="active"{% endif %}><a href="{% url invoices.views.show %}" class="red">{% trans "Faktury" %}</a></li>
+			<li{% if menu_active == "users" %} class="active"{% endif %}><a href="{% url wsgiadmin.users.views.show %}" class="red">{% trans "Uživatelé" %}</a></li>
+			<li{% if menu_active == "invoices" %} class="active"{% endif %}><a href="{% url wsgiadmin.invoices.views.show %}" class="red">{% trans "Faktury" %}</a></li>
 			{% endif %}
-			<li{% if menu_active == "domains" %} class="active"{% endif %}><a href="{% url domains.views.show %}">{% trans "Domény" %}</a></li>
-			<li{% if menu_active == "webapps" %} class="active"{% endif %}><a href="{% url apacheconf.views.apache %}">{% trans "Webové aplikace" %}</a></li>
-			<li{% if menu_active == "dbs" %} class="active"{% endif %}><a href="{% url pgs.views.show %}">{% trans "Databáze" %}</a></li>
-			<li{% if menu_active == "ftps" %} class="active"{% endif %}><a href="{% url ftps.views.show %}">{% trans "FTP" %}</a></li>
-			<li{% if menu_active == "emails" %} class="active"{% endif %}><a href="{% url emails.views.boxes %}">{% trans "E-maily" %}</a></li>
-			<li{% if menu_active == "settings" %} class="active"{% endif %}><a href="{% url users.views.ssh_passwd %}">{% trans "Nastavení" %}</a></li>
+			<li{% if menu_active == "domains" %} class="active"{% endif %}><a href="{% url wsgiadmin.domains.views.show %}">{% trans "Domény" %}</a></li>
+			<li{% if menu_active == "webapps" %} class="active"{% endif %}><a href="{% url wsgiadmin.apacheconf.views.apache %}">{% trans "Webové aplikace" %}</a></li>
+			<li{% if menu_active == "dbs" %} class="active"{% endif %}><a href="{% url wsgiadmin.pgs.views.show %}">{% trans "Databáze" %}</a></li>
+			<li{% if menu_active == "ftps" %} class="active"{% endif %}><a href="{% url wsgiadmin.ftps.views.show %}">{% trans "FTP" %}</a></li>
+			<li{% if menu_active == "emails" %} class="active"{% endif %}><a href="{% url wsgiadmin.emails.views.boxes %}">{% trans "E-maily" %}</a></li>
+			<li{% if menu_active == "settings" %} class="active"{% endif %}><a href="{% url wsgiadmin.users.views.ssh_passwd %}">{% trans "Nastavení" %}</a></li>
 		</ul>
 	</header>
 
@@ -46,9 +46,9 @@
 		<p>
 			{% ifnotequal u superuser %}{{ superuser.username }} <span class="red">({% trans "superuživatel" %})</span> <br>{% endifnotequal %}
 			{% ifnotequal u superuser %}{% trans "Přepnuto na:" %} {% endifnotequal %}{{ u.username }}{% if u.is_superuser %} (<span class="red">{% trans "superuživatel" %}</span>){% endif %}<br />
-			{% ifnotequal u superuser %}<a href="{% url users.views.switch_to_admin 1 %}">{% trans "Přepnout zpět" %}</a><br />{% endifnotequal %}
+			{% ifnotequal u superuser %}<a href="{% url wsgiadmin.users.views.switch_to_admin 1 %}">{% trans "Přepnout zpět" %}</a><br />{% endifnotequal %}
 			<span class="white">
-				<a href="{% url useradmin.views.changePasswd %}" title="{% trans "Změnit heslo" %}">{% trans "Změnit heslo" %}</a> | <a href="{% url django.contrib.auth.views.logout %}" title="{% trans "Odhlásit" %}">{% trans "Odhlásit" %}</a>
+				<a href="{% url wsgiadmin.useradmin.views.change_passwd %}" title="{% trans "Změnit heslo" %}">{% trans "Změnit heslo" %}</a> | <a href="{% url django.contrib.auth.views.logout %}" title="{% trans "Odhlásit" %}">{% trans "Odhlásit" %}</a>
 			</span>
 		</p>
 
@@ -58,9 +58,9 @@
 				<li>{% trans "Dashboard" %}</li>
 				<li class="none">
 					<ul>
-						<li><a href="{% url useradmin.views.info %}">{% trans "Informace" %}</a></li>
-						<li><a href="{% url bills.views.show "income" 1 %}">{% trans "Přichozí platby" %}</a></li>
-						<li><a href="{% url bills.views.show "bills" 1 %}">{% trans "Platby za služby" %}</a></li>
+						<li><a href="{% url wsgiadmin.useradmin.views.info %}">{% trans "Informace" %}</a></li>
+						<li><a href="{% url wsgiadmin.bills.views.show "income" 1 %}">{% trans "Přichozí platby" %}</a></li>
+						<li><a href="{% url wsgiadmin.bills.views.show "bills" 1 %}">{% trans "Platby za služby" %}</a></li>
 					</ul>
 				</li>
 			</ul>
@@ -70,7 +70,7 @@
 				<li>{% trans "Uživatelé" %}</li>
 				<li class="none">
 					<ul>
-						<li><a href="{% url users.views.show %}">{% trans "Seznam uživatelů" %}</a></li>
+						<li><a href="{% url wsgiadmin.users.views.show %}">{% trans "Seznam uživatelů" %}</a></li>
 					</ul>
 				</li>
 			</ul>
@@ -80,8 +80,8 @@
 				<li>{% trans "Faktury" %}</li>
 				<li class="none">
 					<ul>
-						<li><a href="{% url invoices.views.add_invoice %}">{% trans "Přidat fakturu" %}</a></li>
-						<li><a href="{% url invoices.views.show %}">{% trans "Seznam faktur" %}</a></li>
+						<li><a href="{% url wsgiadmin.invoices.views.add_invoice %}">{% trans "Přidat fakturu" %}</a></li>
+						<li><a href="{% url wsgiadmin.invoices.views.show %}">{% trans "Seznam faktur" %}</a></li>
 					</ul>
 				</li>
 			</ul>
@@ -91,8 +91,8 @@
 				<li>{% trans "Domény" %}<sup class="menu-info">{{ u.parms.count_domains }}</sup></li>
 				<li class="none">
 					<ul>
-						<li><a href="{% url domains.views.add %}">{% trans "Přidat již registrovanou doménu" %}</a></li>
-						<li><a href="{% url domains.views.show %}">{% trans "Správa domén" %}</a></li>
+						<li><a href="{% url wsgiadmin.domains.views.add %}">{% trans "Přidat již registrovanou doménu" %}</a></li>
+						<li><a href="{% url wsgiadmin.domains.views.show %}">{% trans "Správa domén" %}</a></li>
 					</ul>
 				</li>
 			</ul>
@@ -102,10 +102,10 @@
 				<li>{% trans "Webové aplikace" %}<sup class="menu-info">{{ u.parms.count_sites }}</sup></li>
 				<li class="none">
 					<ul>
-						<li><a href="{% url apacheconf.views.addStatic "0" %}">{% trans "Přidat statickou webovou stránku" %}</a></li>
-						<li><a href="{% url apacheconf.views.addStatic "1" %}">{% trans "Přidat webovou stránku s PHP skriptováním" %}</a></li>
-						<li><a href="{% url apacheconf.views.addWsgi %}">{% trans "Přidat WSGI aplikaci" %}</a></li>
-						<li><a href="{% url apacheconf.views.apache %}">{% trans "Správa aplikaci" %}</a></li>
+						<li><a href="{% url wsgiadmin.apacheconf.views.add_static "0" %}">{% trans "Přidat statickou webovou stránku" %}</a></li>
+						<li><a href="{% url wsgiadmin.apacheconf.views.add_static "1" %}">{% trans "Přidat webovou stránku s PHP skriptováním" %}</a></li>
+						<li><a href="{% url wsgiadmin.apacheconf.views.add_wsgi %}">{% trans "Přidat WSGI aplikaci" %}</a></li>
+						<li><a href="{% url wsgiadmin.apacheconf.views.apache %}">{% trans "Správa aplikaci" %}</a></li>
 					</ul>
 				</li>
 			</ul>
@@ -115,10 +115,10 @@
 				<li>{% trans "Databáze" %}<sup class="menu-info">{{ u.parms.count_mys }}|{{ u.parms.count_pgs }}</sup></li>
 				<li class="none">
 					<ul>
-						<li><a href="{% url mysql.views.add %}">{% trans "Přidat MySQL databázi" %}</a></li>
-						<li><a href="{% url mysql.views.show %}">{% trans "Přehled o MySQL databázích" %}</a></li>
-						<li><a href="{% url pgs.views.add %}">{% trans "Přidat PgSQL databázi" %}</a></li>
-						<li><a href="{% url pgs.views.show %}">{% trans "Přehled o PgSQL databázích" %}</a></li>
+						<li><a href="{% url wsgiadmin.mysql.views.add %}">{% trans "Přidat MySQL databázi" %}</a></li>
+						<li><a href="{% url wsgiadmin.mysql.views.show %}">{% trans "Přehled o MySQL databázích" %}</a></li>
+						<li><a href="{% url wsgiadmin.pgs.views.add %}">{% trans "Přidat PgSQL databázi" %}</a></li>
+						<li><a href="{% url wsgiadmin.pgs.views.show %}">{% trans "Přehled o PgSQL databázích" %}</a></li>
 					</ul>
 				</li>
 			</ul>
@@ -128,10 +128,10 @@
 				<li>{% trans "E-maily" %}<sup class="menu-info">{{ u.parms.count_emails }}</sup></li>
 				<li class="none">
 					<ul>
-						<li><a href="{% url emails.views.addBox %}">{% trans "Přidat e-mailovou schránku" %}</a></li>
-						<li><a href="{% url emails.views.boxes %}">{% trans "E-mailové schránky" %}</a></li>
-						<li><a href="{% url emails.views.addRedirect %}">{% trans "Přidat přesměrování" %}</a></li>
-						<li><a href="{% url emails.views.redirects %}">{% trans "Přesměrování" %}</a></li>
+						<li><a href="{% url wsgiadmin.emails.views.addBox %}">{% trans "Přidat e-mailovou schránku" %}</a></li>
+						<li><a href="{% url wsgiadmin.emails.views.boxes %}">{% trans "E-mailové schránky" %}</a></li>
+						<li><a href="{% url wsgiadmin.emails.views.addRedirect %}">{% trans "Přidat přesměrování" %}</a></li>
+						<li><a href="{% url wsgiadmin.emails.views.redirects %}">{% trans "Přesměrování" %}</a></li>
 					</ul>
 				</li>
 			</ul>
@@ -141,8 +141,8 @@
 				<li>{% trans "FTP" %}<sup class="menu-info">{{ u.parms.count_ftps }}</sup></li>
 				<li class="none">
 					<ul>
-						<li><a href="{% url ftps.views.add %}">{% trans "Přidat FTP účet" %}</a></li>
-						<li><a href="{% url ftps.views.show %}">{% trans "Přehled o FTP účtech" %}</a></li>
+						<li><a href="{% url wsgiadmin.ftps.views.add %}">{% trans "Přidat FTP účet" %}</a></li>
+						<li><a href="{% url wsgiadmin.ftps.views.show %}">{% trans "Přehled o FTP účtech" %}</a></li>
 					</ul>
 				</li>
 			</ul>
@@ -152,8 +152,8 @@
 				<li>{% trans "Nastavení" %}</li>
 				<li class="none">
 					<ul>
-						<li><a href="{% url useradmin.views.changePasswd %}">{% trans "Změnit heslo" %}</a></li>
-						<li><a href="{% url users.views.ssh_passwd %}">{% trans "Změnit heslo na SSH/SFTP/FTP" %}</a></li>
+						<li><a href="{% url wsgiadmin.useradmin.views.change_passwd %}">{% trans "Změnit heslo" %}</a></li>
+						<li><a href="{% url wsgiadmin.users.views.ssh_passwd %}">{% trans "Změnit heslo na SSH/SFTP/FTP" %}</a></li>
 						<li><a href="{% url django.contrib.auth.views.logout %}">{% trans "Odhlásit" %}</a></li>
 					</ul>
 				</li>

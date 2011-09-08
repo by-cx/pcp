@@ -64,7 +64,7 @@ def change_passwd(request):
 		if form.is_valid():
 			u.set_password(form.cleaned_data["password1"])
 			u.save()
-			return HttpResponseRedirect(reverse("useradmin.views.ok"))
+			return HttpResponseRedirect(reverse("wsgiadmin.useradmin.views.ok"))
 	else:
 		form = formPassword()
 
@@ -73,7 +73,7 @@ def change_passwd(request):
 								"form":form,
 								"title":_(u"Změna hesla do administrace"),
 								"submit":_(u"Změnit heslo"),
-								"action":reverse("useradmin.views.changePasswd"),
+								"action":reverse("wsgiadmin.useradmin.views.change_passwd"),
 								"u":u,
 								"superuser":superuser,
 							    "menu_active": "settings",
@@ -139,7 +139,7 @@ def reg(request):
 			message = _(u"Byl registrován nový uživatel.")
 			send_mail(_('Nová registrace ')+form1.cleaned_data["name"]+' '+form1.cleaned_data["company"],message,'info@rosti.cz',['cx@initd.cz'],fail_silently=False)
 
-			return HttpResponseRedirect(reverse("useradmin.views.regok"))
+			return HttpResponseRedirect(reverse("wsgiadmin.useradmin.views.regok"))
 	else:
 		form1 = formReg()
 		form2 = formReg2()
@@ -152,7 +152,7 @@ def reg(request):
 							    "form3":form3,
 								"title":_(u"Registrace"),
 								"submit":_(u"Registrovat"),
-								"action":reverse("useradmin.views.reg")
+								"action":reverse("wsgiadmin.useradmin.views.reg")
 							},
 							context_instance=RequestContext(request)
 						)

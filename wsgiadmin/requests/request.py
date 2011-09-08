@@ -18,13 +18,18 @@ class SSHHandler(object):
 		self.machine = machine
 		self.user = user
 
+		self.commit_machine = None
+
 	def _server_name(self):
-		return str(self.machine.name)
+		if self.commit_machine:
+			return self.commit_machine
+		else:
+			return str(self.machine.name)
 
 	def _run(self, cmd, stdin=None):
 		cmd = "ssh %s %s" % (self._server_name(), cmd)
 
-		if stdin: stdin_flag = subprocess.PIPE
+		if stdin != None: stdin_flag = subprocess.PIPE
 		else: stdin_flag = None
 
 		p = subprocess.Popen(shlex.split(str(cmd)), stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=stdin_flag)
@@ -36,7 +41,7 @@ class SSHHandler(object):
 
 		stdout, stderr, retcode = self._run(cmd, stdin=content)
 
-		return stdout, stderr
+		return stdout, stderr, retcode
 
 	def _unlink(self, filename):
 		cmd = "rm %s" % filename
@@ -51,7 +56,8 @@ class SSHHandler(object):
 		r = Request()
 
 		r.action = "run"
-		r.data = json.dumps({"action": "run", "server": self._server_name(), "cmd": cmd, "stdin": stdin})
+		r.machine = self._server_name()
+		r.data = json.dumps({"action": "run", "cmd": cmd, "stdin": stdin})
 		r.user = self.user
 		if plan_to: r.plan_to_date = plan_to
 		r.save()
@@ -61,7 +67,8 @@ class SSHHandler(object):
 		r = Request()
 
 		r.action = "run"
-		r.data = json.dumps({"action": "run", "server": self._server_name(), "cmd": cmd, "stdin": stdin})
+		r.machine = self._server_name()
+		r.data = json.dumps({"action": "run", "cmd": cmd, "stdin": stdin})
 		r.user = self.user
 		r.save()
 
@@ -81,7 +88,8 @@ class SSHHandler(object):
 		r = Request()
 
 		r.action = "write"
-		r.data = json.dumps({"action": "write", "server": self._server_name(), "filename": filename, "content": content})
+		r.machine = self._server_name()
+		r.data = json.dumps({"action": "write", "filename": filename, "content": content})
 		r.user = self.user
 		if plan_to: r.plan_to_date = plan_to
 		r.save()
@@ -91,7 +99,8 @@ class SSHHandler(object):
 		r = Request()
 
 		r.action = "unlink"
-		r.data = json.dumps({"action": "unlink", "server": self._server_name(), "filename": filename})
+		r.machine = self._server_name()
+		r.data = json.dumps({"action": "unlink", "filename": filename})
 		r.user = self.user
 		if plan_to: r.plan_to_date = plan_to
 		r.save()
@@ -103,7 +112,8 @@ class SSHHandler(object):
 		r = Request()
 
 		r.action = "read"
-		r.data = json.dumps({"action": "read", "server": self._server_name(), "cmd": cmd})
+		r.machine = self._server_name()
+		r.data = json.dumps({"action": "read", "cmd": cmd})
 		r.user = self.user
 		r.save()
 
@@ -126,7 +136,8 @@ class SSHHandler(object):
 		r = Request()
 
 		r.action = "read"
-		r.data = json.dumps({"action": "isfile", "server": self._server_name(), "cmd": cmd})
+		r.machine = self._server_name()
+		r.data = json.dumps({"action": "isfile", "cmd": cmd})
 		r.user = self.user
 		r.save()
 
@@ -150,6 +161,8 @@ class SSHHandler(object):
 		for request in Request.objects.filter(done=False).order_by("add_date"):
 			if request.plan_to_date and request.plan_to_date > datetime.datetime.today(): continue
 
+			self.commit_machine = request.machine
+
 			data = json.loads(request.data)
 			ret = None
 
@@ -157,7 +170,7 @@ class SSHHandler(object):
 				ret = self._run(data["cmd"])
 			elif request.action == "write":
 				ret = self._write(data["filename"], data["content"])
-			elif request["action"] == "unlink":
+			elif request.action == "unlink":
 				ret = self._unlink(data["filename"])
 
 			if ret:
@@ -213,15 +226,15 @@ class UWSGIRequest(SSHHandler):
 			uwsgi.append("\t<no-orphans/>")
 			uwsgi.append("\t<processes>%s</processes>" % site.processes)
 			uwsgi.append("\t<optimize>0</optimize>")
-			uwsgi.append("\t<home>%s</home>" % site.virtualenv_path())
+			uwsgi.append("\t<home>%s</home>" % site.virtualenv_path)
 			uwsgi.append("\t<limit-as>128</limit-as>")
 			uwsgi.append("\t<chmod-socket>660</chmod-socket>")
 			uwsgi.append("\t<uid>%s</uid>" % site.owner.username)
 			uwsgi.append("\t<gid>%s</gid>" % site.owner.username)
-			uwsgi.append("\t<pidfile>%s</pidfile>" % site.pidfile())
-			uwsgi.append("\t<socket>%s</socket>" % site.socket())
+			uwsgi.append("\t<pidfile>%s</pidfile>" % site.pidfile)
+			uwsgi.append("\t<socket>%s</socket>" % site.socket)
 			uwsgi.append("\t<wsgi-file>%s</wsgi-file>" % site.script)
-			uwsgi.append("\t<daemonize>%s</daemonize>" % site.logfile())
+			uwsgi.append("\t<daemonize>%s</daemonize>" % site.logfile)
 			uwsgi.append("\t<chdir>%s</chdir>" % pp)
 
 			uwsgi.append("</uwsgi>")
@@ -296,7 +309,8 @@ class BindRequest(Service):
 
 	def mod_zone(self, domain):
 		config =render_to_string("bind_zone.conf", {
-			"domain": domain
+			"domain": domain,
+		    "dns": settings.PCP_SETTINGS.get("dns"),
 		})
 		self.write(settings.PCP_SETTINGS["bind_zone_conf"] % domain.name, config)
 	
@@ -397,6 +411,10 @@ class SystemRequest(SSHHandler):
 #TODO:E-mail request
 
 def main():
+	"""from wsgiadmin.requests.request import main
+main()
+"""
+	
 	from wsgiadmin.clients.models import Machine, Parms
 	m = Machine.objects.all()[0]
 	u = Parms.objects.all()[0].user
@@ -406,7 +424,7 @@ def main():
 
 	sh = SSHHandler(u, m)
 	#print sh.instant_run("uptime")
-	sh._write("/tmp/writetest", "můj obsah")
+	#sh._write("/tmp/writetest", "můj obsah")
 	sh.commit()
 
 

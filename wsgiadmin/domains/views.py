@@ -19,6 +19,7 @@ from django.conf import settings
 from wsgiadmin.requests.request import BindRequest
 
 from wsgiadmin.keystore.tools import *
+from django.utils.translation import ugettext_lazy as _
 
 import logging,datetime
 
@@ -58,9 +59,9 @@ def rm(request,did):
 		
 		pri_br = BindRequest(u, "master")
 		pri_br.remove_zone(d)
+		pri_br.mod_config()
 		pri_br.reload()
 		d.delete()
-		pri_br.mod_config()
 		sec_br = BindRequest(u, "slave")
 		sec_br.mod_config()
 		sec_br.reload()
@@ -99,7 +100,7 @@ def add(request):
 			message = _(u"Nová doména %s přidána")%name
 			send_mail('Byla přidána nová doména: '+name,message,settings.EMAIL_FROM,[x[1] for x in settings.ADMINS],fail_silently=False)
 				
-			return HttpResponseRedirect(reverse("domains.views.show"))
+			return HttpResponseRedirect(reverse("wsgiadmin.domains.views.show"))
 	else:
 		form = form_registration_request()
 		
@@ -108,7 +109,7 @@ def add(request):
 								"form":form,
 								"title":_(u"Přidání domény"),
 								"submit":_(u"Přidat doménu do databáze"),
-								"action":reverse("domains.views.add"),
+								"action":reverse("wsgiadmin.domains.views.add"),
 								"u":u,
 								"superuser":superuser,
 							    "menu_active": "domains",

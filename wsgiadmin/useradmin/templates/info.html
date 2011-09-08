@@ -11,7 +11,7 @@
 {% if not u.parms.count_domains %}
 <div class="notification">
 	<div>
-		<p>{% trans "Většina služeb na Roští.cz je závislá na doméně a jelikož jste ještě žádnou nepřidal/a, tak nejlepší místo kde začít je" %} <a href="{% url domains.views.show %}">{% trans "správa domén" %}</a>.</p>
+		<p>{% trans "Většina služeb na Roští.cz je závislá na doméně a jelikož jste ještě žádnou nepřidal/a, tak nejlepší místo kde začít je" %} <a href="{% url wsgiadmin.domains.views.show %}">{% trans "správa domén" %}</a>.</p>
 	</div>
 </div>
 {% endif %}
@@ -57,7 +57,7 @@
 <tr>
 	<th>{% trans "Domény" %}</th>
 	<td>{{ u.parms.count_domains }}×</td>
-	<td>{% trans "Více informací v" %} <a href="{% url domains.views.show %}">{% trans "seznamu domén" %}</a></td>
+	<td>{% trans "Více informací v" %} <a href="{% url wsgiadmin.domains.views.show %}">{% trans "seznamu domén" %}</a></td>
 </tr>
 {% if u.parms.fee %}
 <tr>
@@ -114,7 +114,7 @@
 			<td>
 				{{ invoice.payed|yesno:"zaplacená,nezaplacená,nevím" }}
 			</td>
-			<td><a href="{% url invoices.views.invoice_get invoice.payment_id %}">{% trans "Stáhnout" %}</a></td>
+			<td><a href="{% url wsgiadmin.invoices.views.invoice_get invoice.payment_id %}">{% trans "Stáhnout" %}</a></td>
 		</tr>
 		{% endfor %}
 	</table>

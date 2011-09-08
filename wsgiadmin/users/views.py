@@ -114,7 +114,7 @@ def install(request,uid):
 		iuser.parms.save()
 		iuser.save()
 
-		return HttpResponseRedirect(reverse("useradmin.views.ok"))
+		return HttpResponseRedirect(reverse("wsgiadmin.useradmin.views.ok"))
 	
 
 @login_required
@@ -148,7 +148,7 @@ def add(request):
 			
 			set_user_on_server(request,instance_user.id)
 			
-			return HttpResponseRedirect(reverse("useradmin.views.ok"))
+			return HttpResponseRedirect(reverse("wsgiadmin.useradmin.views.ok"))
 	else:
 		f_user = form_user()
 		f_parms = form_parms()
@@ -161,7 +161,7 @@ def add(request):
 								"form_address":f_address,
 								"title":_(u"Přidání uživatele"),
 								"submit":_(u"Přidat uživatele"),
-								"action":reverse("users.views.add"),
+								"action":reverse("wsgiadmin.users.views.add"),
 								"u":u,
 								"superuser":superuser,
 							},
@@ -191,7 +191,7 @@ def update(request,uid):
 			instance_address = f_address.save()
 			instance_parms = f_parms.save()
 				
-			return HttpResponseRedirect(reverse("useradmin.views.ok"))
+			return HttpResponseRedirect(reverse("wsgiadmin.useradmin.views.ok"))
 	else:
 		f_user = form_user(instance=iuser)
 		f_parms = form_parms(instance=iparms)
@@ -204,7 +204,7 @@ def update(request,uid):
 								"form_address":f_address,
 								"title":_(u"Upravení uživatele"),
 								"submit":_(u"Upravit uživatele"),
-								"action":reverse("users.views.update",args=[uid]),
+								"action":reverse("wsgiadmin.users.views.update",args=[uid]),
 								"u":u,
 								"superuser":superuser,
 							},
@@ -249,7 +249,7 @@ def ssh_passwd(request):
 			sr = SystemRequest(u, u.parms.web_machine)
 			sr.passwd(form.cleaned_data["password1"])
 			
-			return HttpResponseRedirect(reverse("useradmin.views.ok"))
+			return HttpResponseRedirect(reverse("wsgiadmin.useradmin.views.ok"))
 	else:
 		form = formPassword()
 		
@@ -258,7 +258,7 @@ def ssh_passwd(request):
 								"form":form,
 								"title":_(u"Změna hesla k SSH/SFTP/FTP"),
 								"submit":_(u"Změnit heslo"),
-								"action":reverse("users.views.ssh_passwd"),
+								"action":reverse("wsgiadmin.users.views.ssh_passwd"),
 								"u":u,
 								"superuser":superuser,
 							    "menu_active": "settings",

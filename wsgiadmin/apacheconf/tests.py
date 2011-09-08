@@ -15,7 +15,7 @@ class apacheCase(unittest.TestCase):
 
 	def test_sitelist(self):
 		print "apacheconf: Sitelist test"
-		response = self.c.get(reverse("apacheconf.views.apache"))
+		response = self.c.get(reverse("wsgiadmin.apacheconf.views.apache"))
 		self.assertEqual(response.status_code, 200)
 
 
@@ -43,17 +43,17 @@ class apacheCase(unittest.TestCase):
 		os.system("sudo mkdir /home/testuser/teststatic")
 
 		print "apacheconf: addStatic - static"
-		response = self.c.get(reverse("apacheconf.views.addStatic",args=[0]))
+		response = self.c.get(reverse("wsgiadmin.apacheconf.views.addStatic",args=[0]))
 		self.assertEqual(response.status_code, 200)
 
 		print "apacheconf: addStatic - php"
-		response = self.c.get(reverse("apacheconf.views.addStatic",args=[1]))
+		response = self.c.get(reverse("wsgiadmin.apacheconf.views.addStatic",args=[1]))
 		self.assertEqual(response.status_code, 200)
 
 		print "apacheconf: addStatic - add static web"
 		data = {"serverName": "static.example.com", "serverAlias": "www.static.example.com",
 		        "documentRoot": "/home/testuser/teststatic"}
-		response = self.c.post(reverse("apacheconf.views.addStatic",args=[0]),data, follow=True)
+		response = self.c.post(reverse("wsgiadmin.apacheconf.views.addStatic",args=[0]),data, follow=True)
 
 		self.assertEqual(response.status_code, 200)
 		self.assertEqual("Úpravy byly provedeny úspěšně" in response.content,True)
@@ -61,7 +61,7 @@ class apacheCase(unittest.TestCase):
 		print "apacheconf: addStatic - add php web"
 		data = {"serverName": "php.example.com", "serverAlias": "www.php.example.com",
 		"documentRoot": "/home/testuser/teststatic"}
-		response = self.c.post(reverse("apacheconf.views.addStatic",args=[1]),data, follow=True)
+		response = self.c.post(reverse("wsgiadmin.apacheconf.views.addStatic",args=[1]),data, follow=True)
 		self.assertEqual(response.status_code, 200)
 		self.assertEqual("Úpravy byly provedeny úspěšně" in response.content,True)
 

@@ -16,7 +16,7 @@
 	<div id="col1">
 	<div id="col1-wrapper">
 		<h2>Registrace</h2>
-		<form action="{% url useradmin.views.reg %}" method="post" id="regform">
+		<form action="{% url wsgiadmin.useradmin.views.reg %}" method="post" id="regform">
 			{% csrf_token %}
 			<h3>{% trans "Kontaktní informace" %}</h3>
 

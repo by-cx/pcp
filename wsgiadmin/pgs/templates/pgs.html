@@ -8,7 +8,7 @@
 {% block content %}
 <script type="text/javascript">
 	function remove(what) {
-		$("#pg_"+what).load("{% url pgs.views.rm "" %}"+what)
+		$("#pg_"+what).load("{% url wsgiadmin.pgs.views.rm "" %}"+what)
 	}
 </script>
 <div id="message-box"></div>
@@ -24,7 +24,7 @@
 <script type="text/javascript">
 	function pg_passwd(db) {
 		$("#db_dialog").dialog({"width": 400, "height": 300});
-		$("#db_dialog").load("{% url pgs.views.passwd "" %}"+db+"/");
+		$("#db_dialog").load("{% url wsgiadmin.pgs.views.passwd "" %}"+db+"/");
 	}
 </script>
 
@@ -52,19 +52,19 @@
 		<tr>
 			<td colspan="2">
 					<div class="pagination">
-						{% if ftps.has_previous %}<a href="{% url pgs.views.show 1 %}" title="{% trans "První stránka" %}">&laquo; {% trans "První" %}</a>{% endif %}
-						{% if ftps.has_previous %}<a href="{% url pgs.views.show pgs.previous_page_number %}" title="{% trans "Předchozí stránka" %}">&laquo; {% trans "Předchozí" %}</a>{% endif %}
+						{% if ftps.has_previous %}<a href="{% url wsgiadmin.pgs.views.show 1 %}" title="{% trans "První stránka" %}">&laquo; {% trans "První" %}</a>{% endif %}
+						{% if ftps.has_previous %}<a href="{% url wsgiadmin.pgs.views.show pgs.previous_page_number %}" title="{% trans "Předchozí stránka" %}">&laquo; {% trans "Předchozí" %}</a>{% endif %}
 
 						{% for p in paginator.page_range %}
 							{% ifequal p num_page %}
-								<a href="{% url pgs.views.show p %}" class="number current" title="{{ p }}">{{ p }}</a>
+								<a href="{% url wsgiadmin.pgs.views.show p %}" class="number current" title="{{ p }}">{{ p }}</a>
 							{% else %}
-								<a href="{% url pgs.views.show p %}" class="number" title="{{ p }}">{{ p }}</a>
+								<a href="{% url wsgiadmin.pgs.views.show p %}" class="number" title="{{ p }}">{{ p }}</a>
 							{% endifequal %}
 						{% endfor %}
 
-						{% if ftps.has_next %}<a href="{% url pgs.views.show pgs.next_page_number %}" title="{% trans "Další stránka" %}">{% trans "Další" %} &raquo;</a>{% endif %}
-						{% if ftps.has_next %}<a href="{% url pgs.views.show paginator.num_pages %}" title="{% trans "Poslední stránka" %}">{% trans "Poslední" %} &raquo;</a>{% endif %}
+						{% if ftps.has_next %}<a href="{% url wsgiadmin.pgs.views.show pgs.next_page_number %}" title="{% trans "Další stránka" %}">{% trans "Další" %} &raquo;</a>{% endif %}
+						{% if ftps.has_next %}<a href="{% url wsgiadmin.pgs.views.show paginator.num_pages %}" title="{% trans "Poslední stránka" %}">{% trans "Poslední" %} &raquo;</a>{% endif %}
 					</div>
 					<div class="clear"></div>
 			</td>

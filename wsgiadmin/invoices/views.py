@@ -83,7 +83,7 @@ def add_invoice(request):
 		if form.is_valid():
 			instance = form.save()
 				
-			return HttpResponseRedirect(reverse("invoices.views.show"))
+			return HttpResponseRedirect(reverse("wsgiadmin.invoices.views.show"))
 	else:
 		form = form_invoice(initial={"payment_id":next_payment_id(request,False)})
 		
@@ -92,7 +92,7 @@ def add_invoice(request):
 								"form":form,
 								"title":_(u"Přidání faktury"),
 								"submit":_(u"Přidat fakturu"),
-								"action":reverse("invoices.views.add_invoice"),
+								"action":reverse("wsgiadmin.invoices.views.add_invoice"),
 								"u":u,
 								"superuser":superuser,
 							    "menu_active": "invoices",
@@ -116,7 +116,7 @@ def update_invoice(request,iid):
 		if form.is_valid():
 			instance = form.save()
 				
-			return HttpResponseRedirect(reverse("invoices.views.show"))
+			return HttpResponseRedirect(reverse("wsgiadmin.invoices.views.show"))
 	else:
 		form = form_invoice(instance=iinvoice)
 		
@@ -125,7 +125,7 @@ def update_invoice(request,iid):
 								"form":form,
 								"title":_(u"Upravení faktury"),
 								"submit":_(u"Upravit fakturu"),
-								"action":reverse("invoices.views.update_invoice",args=[iid]),
+								"action":reverse("wsgiadmin.invoices.views.update_invoice",args=[iid]),
 								"u":u,
 								"superuser":superuser,
 							    "menu_active": "invoices",
@@ -154,7 +154,7 @@ def add_item(request,iid):
 			instance.invoice = iinvoice
 			instance.save()
 				
-			return HttpResponseRedirect(reverse("invoices.views.show"))
+			return HttpResponseRedirect(reverse("wsgiadmin.invoices.views.show"))
 	else:
 		form = form_item()
 		
@@ -163,7 +163,7 @@ def add_item(request,iid):
 								"form":form,
 								"title":_(u"Přidání položky faktury"),
 								"submit":_(u"Přidat položku fakturu"),
-								"action":reverse("invoices.views.add_item",args=[iid]),
+								"action":reverse("wsgiadmin.invoices.views.add_item",args=[iid]),
 								"u":u,
 								"superuser":superuser,
 							    "menu_active": "invoices",
@@ -189,7 +189,7 @@ def update_item(request,iid):
 		if form.is_valid():
 			instance = form.save()
 				
-			return HttpResponseRedirect(reverse("invoices.views.show"))
+			return HttpResponseRedirect(reverse("wsgiadmin.invoices.views.show"))
 	else:
 		form = form_item(instance=iitem)
 		
@@ -198,7 +198,7 @@ def update_item(request,iid):
 								"form":form,
 								"title":_(u"Upravení položky faktury"),
 								"submit":_(u"Upravit položku fakturu"),
-								"action":reverse("invoices.views.update_item",args=[iid]),
+								"action":reverse("wsgiadmin.invoices.views.update_item",args=[iid]),
 								"u":u,
 								"superuser":superuser,
 							    "menu_active": "invoices",

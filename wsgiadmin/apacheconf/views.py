@@ -26,7 +26,7 @@ def apache(request,p=1):
 	superuser = request.user
 	p = int(p)
 
-	paginator = Paginator(list(u.Site_set.filter(removed=False)), 25)
+	paginator = Paginator(list(u.site_set.filter(removed=False)), 25)
 
 	if paginator.count == 0:
 		page = None
@@ -48,35 +48,30 @@ def domain_check(request,form,this_site=None):
 	u = request.session.get('switched_user', request.user)
 	superuser = request.user
 
-	domains = [] # domény u aktuální stránky
+	domains = form.data["domains"].split(" ") # domény u aktuální stránky
+	print domains
 	used_domains = [] # Všechny domény použité u aplikací
-	my_domains = []
+	my_domains = [x.name for x in u.domain_set.all()]
 	error_domains = []
 
-	if this_site:
-		domains = this_site.domains.split(" ")
-
-	for site in Site.objects.filter(removed=False):
-		if this_site and this_site == site: continue
+	for site in u.site_set.filter(removed=False):
+		if site == this_site: continue
 		used_domains += site.domains.split(" ")
-
-	for site in u.Site_set.filter(removed=False):
-		my_domains += site.domains.split(" ")
 
 	# Perm test
 	for domain in domains:
 		error = True
 		for my_domain in my_domains:
-			if domain in my_domain:
+			if my_domain in domain:
 				error = False
 
-		if error and domain+_(" - chybí oprávnění") not in error_domains:
-			error_domains.append(domain+_(" - chybí oprávnění"))
+		if error and "%s - %s" % (domain, ("chybí oprávnění k použití")) not in error_domains:
+			error_domains.append("%s - %s" % (domain, ("chybí oprávnění k použití")))
 
 	# Used test
 	for domain in domains:
-		if domain not in used_domains and domain+_(" - už je použitá") not in error_domains:
-			error_domains.append(domain+_(" - už je použitá"))
+		if domain in used_domains and "%s - %s" % (domain, _("už je použitá")) not in error_domains:
+			error_domains.append("%s - %s" % (domain, _("už je použitá")))
 
 	return error_domains
 
@@ -116,7 +111,7 @@ def add_static(request,php="0"):
 			nr.mod_vhosts()
 			nr.reload()
 
-			return HttpResponseRedirect(reverse("apacheconf.views.apache"))
+			return HttpResponseRedirect(reverse("wsgiadmin.apacheconf.views.apache"))
 	else:
 		form = form_static()
 		form.fields["documentRoot"].choices = choices
@@ -130,7 +125,7 @@ def add_static(request,php="0"):
 									"form":form,
 									"title":title,
 									"submit":_(u"Přidat web"),
-									"action":reverse("apacheconf.views.addStatic",args=[php]),
+									"action":reverse("wsgiadmin.apacheconf.views.addStatic",args=[php]),
 									"u":u,
 									"superuser":superuser,
 								    "menu_active": "webapps",
@@ -166,7 +161,7 @@ def update_static(request,sid):
 			nr.mod_vhosts()
 			nr.reload()
 
-			return HttpResponseRedirect(reverse("apacheconf.views.apache"))
+			return HttpResponseRedirect(reverse("wsgiadmin.apacheconf.views.apache"))
 	else:
 		form = form_static(initial={"domains":s.domains,"documentRoot":s.documentRoot})
 		form.fields["documentRoot"].choices = choices
@@ -177,7 +172,7 @@ def update_static(request,sid):
 									"form":form,
 									"title":_(u"Úprava statického webu"),
 									"submit":_(u"Upravit web"),
-									"action":reverse("apacheconf.views.updateStatic",args=[s.id]),
+									"action":reverse("wsgiadmin.apacheconf.views.update_static",args=[s.id]),
 									"u":u,
 									"superuser":superuser,
 								    "menu_active": "webapps",
@@ -262,7 +257,7 @@ def add_wsgi(request):
 				ur.mod_config()
 				ur.restart(site)
 
-			return HttpResponseRedirect(reverse("apacheconf.views.apache"))
+			return HttpResponseRedirect(reverse("wsgiadmin.apacheconf.views.apache"))
 	else:
 		form = form_wsgi()
 		form.fields["script"].choices = choices
@@ -274,7 +269,7 @@ def add_wsgi(request):
 									"form":form,
 									"title":_(u"Přidání WSGI aplikace"),
 									"submit":_(u"Přidat WSGI aplikaci"),
-									"action":reverse("apacheconf.views.addWsgi"),
+									"action":reverse("wsgiadmin.apacheconf.views.add_wsgi"),
 									"u":u,
 									"superuser":superuser,
 								    "menu_active": "webapps",
@@ -301,7 +296,7 @@ def update_wsgi(request,sid):
 	virtualenvs_choices = [(x[len(u.parms.home+"/virtualenvs/"):],x[len(u.parms.home+"/virtualenvs/"):]) for x in virtualenvs if x[len(u.parms.home+"/virtualenvs/"):]]
 
 	sid = int(sid)
-	site = get_object_or_404(u.Site_set,id=sid)
+	site = get_object_or_404(u.site_set,id=sid)
 
 	if request.method == 'POST':
 		form = form_wsgi(request.POST)
@@ -318,7 +313,7 @@ def update_wsgi(request,sid):
 			site.save()
 
 			#Signal
-			if site.wsgi.uwsgi:
+			if site.type == "uwsgi":
 				ur = UWSGIRequest(u, u.parms.web_machine)
 				ur.mod_config()
 				ur.restart(site)
@@ -338,7 +333,7 @@ def update_wsgi(request,sid):
 				nr.mod_vhosts()
 				nr.reload()
 
-			return HttpResponseRedirect(reverse("apacheconf.views.apache"))
+			return HttpResponseRedirect(reverse("wsgiadmin.apacheconf.views.apache"))
 	else:
 		form = form_wsgi(initial={"domains":site.domains,"script":site.script,"allow_ips":site.allow_ips,"static": site.static,"virtualenv": site.virtualenv, "python_path": site.python_path})
 		form.fields["script"].choices = choices
@@ -350,7 +345,7 @@ def update_wsgi(request,sid):
 									"form":form,
 									"title":_(u"Upravení WSGI aplikace"),
 									"submit":_(u"Upravit WSGI aplikaci"),
-									"action":reverse("apacheconf.views.updateWsgi",args=[site.id]),
+									"action":reverse("wsgiadmin.apacheconf.views.update_wsgi",args=[site.id]),
 									"u":u,
 									"superuser":superuser,
 								    "menu_active": "webapps",
@@ -379,7 +374,7 @@ def reload(request, sid):
 		nr.mod_vhosts()
 		nr.reload()
 	
-	return HttpResponseRedirect(reverse("apacheconf.views.apache"))
+	return HttpResponseRedirect(reverse("wsgiadmin.apacheconf.views.apache"))
 
 @login_required
 def restart(request, sid):
@@ -403,4 +398,4 @@ def restart(request, sid):
 		nr.mod_vhosts()
 		nr.restart()
 
-	return HttpResponseRedirect(reverse("apacheconf.views.apache"))
+	return HttpResponseRedirect(reverse("wsgiadmin.apacheconf.views.apache"))

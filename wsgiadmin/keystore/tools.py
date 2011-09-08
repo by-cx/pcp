@@ -14,72 +14,6 @@ def kdez(input):
 
 	return json.loads(input)
 
-## Nový přístup do redisu
-
-#r = redis.Redis(
-#					host=settings.REDIS_HOST,
-#					port=settings.REDIS_PORT,
-#					db=settings.REDIS_DB,
-#					password=settings.REDIS_PASSWORD,
-#				)
-#
-#def kget(key,default=None):
-#	"""
-#		Vrací hodnotu uloženou pod klíčem a nebo default
-#	"""
-#	
-#	value = r.get(key)
-#	if not value:
-#		return default
-#	return value
-#
-
-#def kset(key,value,expire=0):
-#	"""
-#		Nastavuje hodnotu pod klíč
-#		
-#		expirace v minutách
-#	"""
-#	
-#	r.set(key, value)
-#	
-#	if expire:
-#		r.expire(key,expire*60)
-#	
-#	return True
-
-
-#def krm(key):
-#	"""
-#		Smaže klíč
-#	"""
-#	
-#	r.delete(key)
-#	
-#	return True
-#
-
-#def klist(pattern="*"):
-#	"""
-#		List uložených klíčů
-#	"""
-#	
-#	return r.keys(pattern)
-#
-
-#def knative():
-#	"""
-#		Vrací spojení k redisu
-#	"""
-#	
-#	return r
-#
-##TODO Mongo keystore
-
-#db = settings.get_db()
-
-## Starý přístup do DB
-
 def kget(key,default=None):
 	"""
 		Vrací hodnotu uloženou pod klíčem a nebo default
@@ -127,8 +61,3 @@ def klist():
 	"""
 
 	return [x.key for x in store.objects.all()]
-
-
-def from_old_to_new():
-	for key in klist_old():
-		kset(key,kget_old(key))

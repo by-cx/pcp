@@ -91,7 +91,6 @@ MIDDLEWARE_CLASSES = (
 	'django.middleware.common.CommonMiddleware',
 	'django.middleware.transaction.TransactionMiddleware',
 	'debug_toolbar.middleware.DebugToolbarMiddleware',
-	#'users.middleware.user_middleware',
 )
 
 ROOT_URLCONF = 'wsgiadmin.urls'

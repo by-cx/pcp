@@ -26,7 +26,7 @@ def apache(request,p=1):
 	superuser = request.user
 	p = int(p)
 
-	paginator = Paginator(list(u.site_set.filter(removed=False)), 25)
+	paginator = Paginator(list(u.site_set.filter(removed=False).order_by("pub_date")), 25)
 
 	if paginator.count == 0:
 		page = None
@@ -125,7 +125,7 @@ def add_static(request,php="0"):
 									"form":form,
 									"title":title,
 									"submit":_(u"Přidat web"),
-									"action":reverse("wsgiadmin.apacheconf.views.addStatic",args=[php]),
+									"action":reverse("wsgiadmin.apacheconf.views.add_static",args=[php]),
 									"u":u,
 									"superuser":superuser,
 								    "menu_active": "webapps",

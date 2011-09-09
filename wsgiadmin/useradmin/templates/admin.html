@@ -1,10 +1,8 @@
 {% load i18n %}
-{% load i18n %}
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Nový design administrace</title>
-
+	<title>Administrace Roští.cz</title>
 
 	<link rel="stylesheet/less" type="text/css" href="/m/cssng/ngstyle.less">
 	<link rel="stylesheet" type="text/css" href="/m/uni-form/css/uni-form.css">
@@ -59,6 +57,8 @@
 				<li class="none">
 					<ul>
 						<li><a href="{% url wsgiadmin.useradmin.views.info %}">{% trans "Informace" %}</a></li>
+						{% if superuser.is_superuser %}<li><a href="{% url wsgiadmin.useradmin.views.master %}" class="red">{% trans "Master panel" %}</a></li>{% endif %}
+						<li><a href="{% url wsgiadmin.useradmin.views.requests %}">{% trans "Posledních 20 požadavků" %}</a></li>
 						<li><a href="{% url wsgiadmin.bills.views.show "income" 1 %}">{% trans "Přichozí platby" %}</a></li>
 						<li><a href="{% url wsgiadmin.bills.views.show "bills" 1 %}">{% trans "Platby za služby" %}</a></li>
 					</ul>

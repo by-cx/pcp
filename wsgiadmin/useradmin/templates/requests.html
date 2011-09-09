@@ -1,0 +1,31 @@
+{% extends "admin.html" %}
+{% load i18n %}
+
+{% block title %}
+	{% trans "Administrace > Souhrné informace" %}
+{% endblock %}
+
+{% block content %}
+
+<h2>{% trans "Posledních 20 požadavků" %}</h2>
+
+<table>
+	<tr>
+		<th>{% trans "Datum" %}</th>
+		<th>{% trans "Stav" %}</th>
+		<th>{% trans "Akce" %}</th>
+		<th>{% trans "Server" %}</th>
+		<th>{% trans "Návratový kód" %}</th>
+	</tr>
+{% for request in requests %}
+	<tr>
+		<td>{{ request.add_date }}</td>
+		<td>{{ request.done }}</td>
+		<td>{{ request.action }}</td>
+		<td>{{ request.machine }}</td>
+		<td>{{ request.retcode }}</td>
+	</tr>
+{% endfor %}
+</table>
+
+{% endblock %}

@@ -20,19 +20,14 @@
 	</ul>
 
 	<div id="message-box"></div>
-	
-{% blocktrans %}
-<p>Informace týkající se webových aplikací najdete na Wiki na adrese
-	<a href='{{ WIKI_URL }}/' target="_blank">{{ WIKI_URL }}/</a>
-	v sekcích <a href='{{ WIKI_URL }}/python_hosting' target="_blank">Python</a> a
-	<a href='{{ WIKI_URL }}/php_hosting' target="_blank">PHP</a>.</p>
-{% endblocktrans %}
 
 <h3>{% trans "Seznam provozovaných stránek a aplikací" %}</h3>
 
 <table>
 	<thead>
 		<tr>
+			<th>{% trans "Datum přidání" %}</th>
+			<th>{% trans "Typ" %}</th>
 			<th>{% trans "ServerName" %}</th>
 			<th>{% trans "Akce" %}</th>
 		</tr>
@@ -41,7 +36,9 @@
 	<tbody>
 		{% for site in sites.object_list %}
 		<tr>
-			<td>{{ site.serverName }}{% if site.type == "uwsgi" %} (uWSGI){% endif %}</td>
+			<td>{{ site.pub_date }}</td>
+			<td>{{ site.type }}</td>
+			<td>{{ site.serverName }}</td>
 			<td>
 				{% if site.type == "php" or site.type == "static" %}<a href="{% url wsgiadmin.apacheconf.views.update_static site.id %}"><img src="/m/icons/raster/gray_dark/pen_alt_stroke_16x16.png" alt="Upravit" /></a>{% endif %}
 				{% if site.type == "uwsgi" or site.type == "modwsgi" %}
@@ -56,7 +53,7 @@
 	</tbody>
 	<tfoot>
 		<tr>
-			<td colspan="2">
+			<td colspan="4">
 					<div class="pagination">
 						{% if sites.has_previous %}<a href="{% url wsgiadmin.apacheconf.views.apache 1 %}" title="{% trans "První stránka" %}">&laquo; {% trans "První" %}</a>{% endif %}
 						{% if sites.has_previous %}<a href="{% url wsgiadmin.apacheconf.views.apache sites.previous_page_number %}" title="{% trans "Předchozí stránka" %}">&laquo; {% trans "Předchozí" %}</a>{% endif %}
@@ -79,7 +76,7 @@
 	{% else %}
 	<tbody>
 	<tr>
-		<td colspan="2">{% trans "Žádný web nebyl ještě přidán. Můžete ho přidat pomocí jednoho z odkazů výše nebo levém menu." %}</td>
+		<td colspan="4">{% trans "Žádný web nebyl ještě přidán. Můžete ho přidat pomocí jednoho z odkazů výše nebo levém menu." %}</td>
 	</tr>
 	</tbody>
 	{% endif%}

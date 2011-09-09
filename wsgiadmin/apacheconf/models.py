@@ -32,6 +32,9 @@ class Site(models.Model):
 
 	extra           = models.TextField(_(u"Extra configuration"), blank=True, null=True, default="")
 
+	#ssl_cert        = models.CharField()
+	#ssl_key        = models.CharField()
+
 	removed			= models.BooleanField(_(u"Smazáno"),default=False) # nezmizí dokud se nezaplatí
 	owner			= models.ForeignKey(user, verbose_name=_('Uživatel'))
 

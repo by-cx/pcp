@@ -159,6 +159,8 @@ PCP_SETTINGS = {
 	"ipv6": True,
 	"apache_conf": "/etc/apache2/sites-enabled/99_auto.conf",
     "fastcgi_wrapper_dir": "/var/www/%s/php5-wrap",
+    "nginx": True,
+    "apache_url": "127.0.0.1:8080", # for nginx as proxy
 	"nginx_conf": "/etc/nginx/sites-enabled/99_auto.conf",
     "nginx_init_script": "/etc/init.d/nginx",
     "apache_init_script": "/etc/init.d/apache2",

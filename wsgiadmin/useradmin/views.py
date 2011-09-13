@@ -7,11 +7,14 @@ from django.http import HttpResponseRedirect
 from django.utils.translation import ugettext_lazy as _
 from django.template.context import RequestContext
 from django.core.mail import send_mail
+from django.conf import settings
 
 from wsgiadmin.clients.models import *
 from wsgiadmin.invoices.models import invoice
 from wsgiadmin.useradmin.forms import formReg, formReg2, form_reg_payment
 from wsgiadmin.clients.models import Parms
+
+from os.path import join
 
 @login_required
 def info(request):
@@ -128,7 +131,7 @@ def reg(request):
             m_pgsql = get_object_or_404(Machine, name=settings.DEFAULT_PGSQL_MACHINE)
             # parms
             p = Parms()
-            p.home = "/home/" + form2.cleaned_data["username"]
+            p.home = join("/home/",  form2.cleaned_data["username"])
             p.note = ""
             p.uid = 0
             p.gid = 0
@@ -147,7 +150,8 @@ def reg(request):
 
             message = _(u"Byl registrován nový uživatel.")
             send_mail(_('Nová registrace ') + form1.cleaned_data["name"] + ' ' + form1.cleaned_data["company"], message,
-                'info@rosti.cz', ['cx@initd.cz'], fail_silently=False)
+                settings.EMAIL_FROM, [address for (name, address) in settings.ADMINS], fail_silently=True)
+                #fail_silently - nechci 500 kvuli neodeslanemu mailu
 
             return HttpResponseRedirect(reverse("wsgiadmin.useradmin.views.regok"))
     else:

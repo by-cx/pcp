@@ -1,23 +1,31 @@
+from os.path import join
+
 from django.conf.urls.defaults import *
-from django.contrib import admin
-
-admin.autodiscover()
-
 from django.conf import settings
 
-urlpatterns = patterns('',
-	(r'^django-admin/', include(admin.site.urls)),
-	(r'^favicon\.ico$', 'django.views.generic.simple.redirect_to', {'url': '/m/favicon.ico'}),
-	url(r'^m/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.ROOT+'m', 'show_indexes': True}),
-	(r'^invoices', include('wsgiadmin.invoices.urls')),
+from django.contrib import admin
+admin.autodiscover()
+
+
+urlpatterns = patterns('')
+
+if getattr(settings, 'ENABLE_DEBUG_URLS', False):
+    urlpatterns += patterns('',
+        url(r'^m/(?P<path>.*)$', 'django.views.static.serve', {'document_root': join(settings.ROOT, 'm'), 'show_indexes': True}),
+    )
+
+urlpatterns += patterns('',
+    (r'^django-admin/', include(admin.site.urls)),
+    (r'^favicon\.ico$', 'django.views.generic.simple.redirect_to', {'url': '/m/favicon.ico'}),
+    (r'^invoices', include('wsgiadmin.invoices.urls')),
     (r'^i18n/', include('django.conf.urls.i18n')),
 )
 
 if 'rosetta' in settings.INSTALLED_APPS:
-	urlpatterns += patterns('',
-		url(r'^rosetta/', include('rosetta.urls')),
-	)
+    urlpatterns += patterns('',
+        url(r'^rosetta/', include('rosetta.urls')),
+    )
 
 urlpatterns += patterns('',
-	(r'^', include('wsgiadmin.useradmin.urls')),
+    (r'^', include('wsgiadmin.useradmin.urls')),
 )

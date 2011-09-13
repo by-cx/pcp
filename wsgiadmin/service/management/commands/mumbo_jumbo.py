@@ -62,7 +62,7 @@ class Command(NoArgsCommand):
 
         if use_core_syncdb:
             #za tohle pujdu do pekla
-            from pcp.bills.models import balance
+            from wsgiadmin.bills.models import balance
             balance._meta.managed = True
             syncdb.Command().execute(**options)
             balance._meta.managed = False

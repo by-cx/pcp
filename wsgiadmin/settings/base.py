@@ -1,15 +1,20 @@
 # -*- coding: utf-8 -*-.
 # Django settings for manager project.
 
-#from django.utils.translation import ugettext_lazy as _
+_ = lambda x: x
 
 import os,sys
 sys.path.append("/home/cx/co/pcp/")
-ROOT = os.path.realpath(os.path.dirname(__file__))+"/"
+
+
+from os.path import join, abspath, pardir, dirname
+ROOT = abspath(join(dirname(__file__), pardir))
+
 
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 DEBUG_TOOLBAR = DEBUG
+ENABLE_DEBUG_URLS = DEBUG
 
 #APPEND_SLASH = True
 
@@ -31,8 +36,8 @@ DATABASES = {
 BANK = "mBank"
 BANK_ACCOUNT = "670100-2206514444/6210"
 MY_ADDRESS_ID = 1 
-STAMP_SIGN = ROOT+"m/razitko.png"
-STAMP_NOSIGN = ROOT+"m/razitko-nosign.png"
+STAMP_SIGN = join(ROOT, "m", "razitko.png")
+STAMP_NOSIGN = join(ROOT, "m", "razitko-nosign.png")
 
 CURRENCY = (("czk","CZK"), ("eur","EUR"), ("usd","USD"),)
 
@@ -63,7 +68,7 @@ SITE_ID = 1
 USE_I18N = False
 #USE_L10N = True
 
-MEDIA_ROOT = ROOT+"m/"
+MEDIA_ROOT = join(ROOT, "m")
 MEDIA_URL = "/m/"
 
 LOGIN_URL = "/login/"
@@ -132,6 +137,7 @@ INSTALLED_APPS = (
 	'users',
 	'apacheconf',
 	'keystore',
+    'service',
 )
 
 PCP_SETTINGS = {

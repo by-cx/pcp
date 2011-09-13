@@ -65,8 +65,8 @@ def domain_check(request,form,this_site=None):
 			if my_domain in domain:
 				error = False
 
-		if error and "%s - %s" % (domain, ("chybí oprávnění k použití")) not in error_domains:
-			error_domains.append("%s - %s" % (domain, ("chybí oprávnění k použití")))
+		if error and "%s - %s" % (domain, (u"chybí oprávnění k použití")) not in error_domains:
+			error_domains.append("%s - %s" % (domain, (u"chybí oprávnění k použití")))
 
 	# Used test
 	for domain in domains:

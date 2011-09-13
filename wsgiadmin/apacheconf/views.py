@@ -1,18 +1,21 @@
 # -*- coding: utf-8 -*-
 
 import logging
+info = logging.info
+
 from django.core.paginator import Paginator
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
-from wsgiadmin.clients.models import *
 from django.http import HttpResponse, HttpResponseRedirect
-from wsgiadmin.apacheconf.models import *
 from django.utils.translation import ugettext_lazy as _
 from django.template.context import RequestContext
+
+from wsgiadmin.clients.models import *
+from wsgiadmin.apacheconf.models import *
+from wsgiadmin.apacheconf.forms import form_static, form_wsgi
 from wsgiadmin.requests.request import ApacheRequest, NginxRequest, UWSGIRequest, SSHHandler
 
-info = logging.info
 
 def user_directories(u):
     sh = SSHHandler(u, u.parms.web_machine)
@@ -68,12 +71,12 @@ def domain_check(request, form, this_site=None):
                 error = False
 
         if error and "%s - %s" % (domain, (u"chybí oprávnění k použití")) not in error_domains:
-            error_domains.append("%s - %s" % (domain, ("chybí oprávnění k použití")))
+            error_domains.append("%s - %s" % (domain, (u"chybí oprávnění k použití")))
 
     # Used test
     for domain in domains:
-        if domain in used_domains and "%s - %s" % (domain, _("už je použitá")) not in error_domains:
-            error_domains.append("%s - %s" % (domain, _("už je použitá")))
+        if domain in used_domains and "%s - %s" % (domain, _(u"už je použitá")) not in error_domains:
+            error_domains.append("%s - %s" % (domain, _(u"už je použitá")))
 
     return error_domains
 

@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-.
-
-#Local settings
-
-DEBUG=True
-
 ADMINS = (
 	('Adam Strauch', 'cx@initd.cz'),
 )

@@ -7,7 +7,7 @@ from django.contrib.auth.models import User as user
 
 from django.utils.translation import ugettext_lazy as _
 
-from wsgiadmin.pgs.tools import *
+#from wsgiadmin.pgs.tools import *
 
 class pgsql(models.Model):
 	dbname  = models.CharField(_(u"Název PgSQL databáze"), max_length=50)

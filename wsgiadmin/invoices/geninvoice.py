@@ -2,13 +2,16 @@
 # -*- coding: utf-8 -*-
 
 import sys,os
-import reportlab.rl_config
-from reportlab.pdfgen.canvas import Canvas
+try:
+    import reportlab.rl_config
+    from reportlab.pdfgen.canvas import Canvas
 
-from reportlab.lib.pagesizes import letter
-from reportlab.lib.units import cm, mm, inch, pica
-from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.pdfbase import pdfmetrics
+    from reportlab.lib.pagesizes import letter
+    from reportlab.lib.units import cm, mm, inch, pica
+    from reportlab.pdfbase.ttfonts import TTFont
+    from reportlab.pdfbase import pdfmetrics
+except ImportError:
+    pass
 
 from wsgiadmin.settings import *
 from wsgiadmin.invoices.models import *

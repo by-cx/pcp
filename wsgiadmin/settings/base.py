@@ -7,8 +7,9 @@ import os,sys
 sys.path.append("/home/cx/co/pcp/")
 ROOT = os.path.realpath(os.path.dirname(__file__))+"/"
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
+DEBUG_TOOLBAR = DEBUG
 
 #APPEND_SLASH = True
 
@@ -90,7 +91,6 @@ MIDDLEWARE_CLASSES = (
 	'django.middleware.locale.LocaleMiddleware',
 	'django.middleware.common.CommonMiddleware',
 	'django.middleware.transaction.TransactionMiddleware',
-	'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
 ROOT_URLCONF = 'wsgiadmin.urls'
@@ -103,7 +103,6 @@ TEMPLATE_DIRS = (
 
 TEMPLATE_CONTEXT_PROCESSORS = (
 	"django.contrib.auth.context_processors.auth",
-	"django.core.context_processors.debug",
 	"django.core.context_processors.i18n",
 	"django.core.context_processors.media",
 	"django.core.context_processors.static",
@@ -118,7 +117,6 @@ INSTALLED_APPS = (
 	'django.contrib.sessions',
 	'django.contrib.sites',
 	'django.contrib.admin',
-	'debug_toolbar',
 #	'rosetta',
 	'requests',
 	'useradmin',
@@ -135,22 +133,6 @@ INSTALLED_APPS = (
 	'apacheconf',
 	'keystore',
 )
-
-DEBUG_TOOLBAR_PANELS = (
-	'debug_toolbar.panels.version.VersionDebugPanel',
-	'debug_toolbar.panels.timer.TimerDebugPanel',
-	'debug_toolbar.panels.settings_vars.SettingsVarsDebugPanel',
-	'debug_toolbar.panels.headers.HeaderDebugPanel',
-	'debug_toolbar.panels.request_vars.RequestVarsDebugPanel',
-	'debug_toolbar.panels.template.TemplateDebugPanel',
-	'debug_toolbar.panels.sql.SQLDebugPanel',
-	'debug_toolbar.panels.signals.SignalDebugPanel',
-	'debug_toolbar.panels.logger.LoggingPanel',
-)
-
-DEBUG_TOOLBAR_CONFIG = {
-	'INTERCEPT_REDIRECTS': False,
-}
 
 PCP_SETTINGS = {
 	"mode": "apache", # main web server, (apache/nginx)
@@ -188,6 +170,8 @@ PCP_SETTINGS = {
 
 import logging
 
-logging.basicConfig(level=logging.INFO, filename='/var/log/pcp.log',  format = '%(asctime)s %(levelname)s %(message)s')
+try:
+    logging.basicConfig(level=logging.INFO, filename='/var/log/pcp.log',  format = '%(asctime)s %(levelname)s %(message)s')
+except IOError:
+    pass
 
-from wsgiadmin.mysettings import *

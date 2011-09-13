@@ -1,0 +1,39 @@
+[
+    {
+        "pk": 1,
+        "model": "auth.user",
+        "fields": {
+            "username": "yed",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": true,
+            "is_staff": true,
+            "last_login": "2011-07-01 22:52:44",
+            "groups": [],
+            "user_permissions": [],
+            "password": "sha1$b1679$b363b62895c3e574b0e2db4ed6f9e0c3341dae0b",
+            "email": "foo@vanyli.net",
+            "date_joined": "2011-07-01 22:52:44"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "auth.user",
+        "fields": {
+            "username": "customer",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": false,
+            "is_staff": true,
+            "last_login": "2011-07-01 22:52:44",
+            "groups": [],
+            "user_permissions": [],
+            "password": "sha1$b1679$b363b62895c3e574b0e2db4ed6f9e0c3341dae0b",
+            "email": "foo@vanyli.net",
+            "date_joined": "2011-07-01 22:52:44"
+        }
+    }
+]
+

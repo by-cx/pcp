@@ -8,7 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 from wsgiadmin.requests.tools import request_raw
 from django.conf import settings
 
-from wsgiadmin.rtools import *
+#from wsgiadmin.rtools import *
 from wsgiadmin.keystore.tools import *
 
 #from invoices.models import *

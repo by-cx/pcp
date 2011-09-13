@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import logging
-info = logging.info
+from django.contrib.sites.models import Site
+from os.path import join
 
 from django.core.paginator import Paginator
 from django.shortcuts import render_to_response, get_object_or_404
@@ -10,12 +11,14 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.utils.translation import ugettext_lazy as _
 from django.template.context import RequestContext
+from django.conf import settings
 
 from wsgiadmin.clients.models import *
 from wsgiadmin.apacheconf.models import *
 from wsgiadmin.apacheconf.forms import form_static, form_wsgi
 from wsgiadmin.requests.request import ApacheRequest, NginxRequest, UWSGIRequest, SSHHandler
 
+info = logging.info
 
 def user_directories(u):
     sh = SSHHandler(u, u.parms.web_machine)
@@ -32,7 +35,7 @@ def apache(request, p=1):
 
     paginator = Paginator(list(u.site_set.filter(removed=False)), 25)
 
-    if paginator.count == 0:
+    if not paginator.count:
         page = None
     else:
         page = paginator.page(p)
@@ -97,16 +100,11 @@ def add_static(request, php="0"):
             web = Site()
             web.domains = form.cleaned_data["domains"]
             web.documentRoot = form.cleaned_data["documentRoot"]
-
-            if php == "0":
-                web.type = "static"
-            else:
-                web.type = "php"
-
+            web.type = "static" if php == "0" else "php" 
             web.owner = u
             web.save()
 
-            # Requsts
+            # Requests
 
             ar = ApacheRequest(u, u.parms.web_machine)
             ar.mod_vhosts()
@@ -121,8 +119,10 @@ def add_static(request, php="0"):
         form = form_static()
         form.fields["documentRoot"].choices = choices
 
-    if php == "0": title = _(u"Přidání statického webu")
-    else: title = _(u"Přidání webu s podporou PHP")
+    if php == "0":
+        title = _(u"Přidání statického webu")
+    else:
+        title = _(u"Přidání webu s podporou PHP")
 
     return render_to_response('universal.html',
             {
@@ -232,8 +232,11 @@ def add_wsgi(request):
     choices = [("", _(u"Nevybráno"))] + [(x.strip(), x.strip()) for x in wsgis if x]
 
     sh = SSHHandler(u, u.parms.web_machine)
-    virtualenvs = sh.instant_run("/usr/bin/find %s/virtualenvs/ -maxdepth 1 -type d" % u.parms.home)[0].split("\n")
-    virtualenvs_choices = [(x[len(u.parms.home + "/virtualenvs/"):], x[len(u.parms.home + "/virtualenvs/"):]) for x in virtualenvs if x[len(u.parms.home + "/virtualenvs/"):]]
+
+    venv_location = join(u.parms.home, settings.VIRTUALENVS_DIR)
+    virtualenvs = sh.instant_run("/usr/bin/find %s -maxdepth 1 -type d" % venv_location)[0].split("\n")
+    
+    virtualenvs_choices = [(x[len(venv_location):], x[len(venv_location):]) for x in virtualenvs if x[len(venv_location):]]
 
     if request.method == 'POST':
         form = form_wsgi(request.POST)
@@ -301,8 +304,10 @@ def update_wsgi(request, sid):
     choices = [("", _(u"Nevybráno"))] + [(x.strip(), x.strip()) for x in wsgis if x]
 
     sh = SSHHandler(u, u.parms.web_machine)
-    virtualenvs = sh.instant_run("/usr/bin/find %s/virtualenvs/ -maxdepth 1 -type d" % u.parms.home)[0].split("\n")
-    virtualenvs_choices = [(x[len(u.parms.home + "/virtualenvs/"):], x[len(u.parms.home + "/virtualenvs/"):]) for x in virtualenvs if x[len( u.parms.home + "/virtualenvs/"):]]
+
+    venv_location = join(u.parms.home, settings.VIRTUALENVS_DIR)
+    virtualenvs = sh.instant_run("/usr/bin/find %s -maxdepth 1 -type d" % venv_location)[0].split("\n")
+    virtualenvs_choices = [(x[len(venv_location):], x[len(venv_location):]) for x in virtualenvs if x[len(venv_location):]]
 
     sid = int(sid)
     site = get_object_or_404(u.site_set, id=sid)

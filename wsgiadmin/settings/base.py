@@ -3,13 +3,13 @@
 
 _ = lambda x: x
 
-import os,sys
+import os, sys
+
 sys.path.append("/home/cx/co/pcp/")
 
-
 from os.path import join, abspath, pardir, dirname
-ROOT = abspath(join(dirname(__file__), pardir))
 
+ROOT = abspath(join(dirname(__file__), pardir))
 
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
@@ -22,24 +22,24 @@ ADMINS = ()
 
 MANAGERS = ADMINS
 
-INTERNAL_IPS = ('127.0.0.1','89.111.104.66')
+INTERNAL_IPS = ('127.0.0.1', '89.111.104.66')
 
 DATABASES = {
-			'default': {
-				'ENGINE': 'django.db.backends.postgresql_psycopg2',
-				'NAME': 'rosti'
-			}
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'rosti'
+    }
 }
 
 ## Faktury
 
 BANK = "mBank"
 BANK_ACCOUNT = "670100-2206514444/6210"
-MY_ADDRESS_ID = 1 
+MY_ADDRESS_ID = 1
 STAMP_SIGN = join(ROOT, "m", "razitko.png")
 STAMP_NOSIGN = join(ROOT, "m", "razitko-nosign.png")
 
-CURRENCY = (("czk","CZK"), ("eur","EUR"), ("usd","USD"),)
+CURRENCY = (("czk", "CZK"), ("eur", "EUR"), ("usd", "USD"),)
 
 ##########
 
@@ -55,9 +55,9 @@ TIME_ZONE = 'Europe/Prague'
 LANGUAGE_CODE = 'cs'
 
 LANGUAGES = (
-	('cs', 'Česky'),
-	('en', 'English'),
-)
+('cs', 'Česky'),
+('en', 'English'),
+    )
 
 #EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
@@ -85,99 +85,102 @@ SECRET_KEY = 'l=!i_!9q8tc9@jn@m*n*z6zri01$kvjdh94v^1_bzw!8ja5z=*'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
-	'django.template.loaders.filesystem.Loader',
-	'django.template.loaders.app_directories.Loader',
-)
+'django.template.loaders.filesystem.Loader',
+'django.template.loaders.app_directories.Loader',
+    )
 
 MIDDLEWARE_CLASSES = (
-	'django.contrib.sessions.middleware.SessionMiddleware',
-	'django.middleware.csrf.CsrfViewMiddleware',
-	'django.contrib.auth.middleware.AuthenticationMiddleware',
-	'django.middleware.locale.LocaleMiddleware',
-	'django.middleware.common.CommonMiddleware',
-	'django.middleware.transaction.TransactionMiddleware',
-)
+'django.contrib.sessions.middleware.SessionMiddleware',
+'django.middleware.csrf.CsrfViewMiddleware',
+'django.contrib.auth.middleware.AuthenticationMiddleware',
+'django.middleware.locale.LocaleMiddleware',
+'django.middleware.common.CommonMiddleware',
+'django.middleware.transaction.TransactionMiddleware',
+    )
 
 ROOT_URLCONF = 'wsgiadmin.urls'
 
 TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
+# Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
+# Always use forward slashes, even on Windows.
+# Don't forget to use absolute paths, not relative paths.
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
-	"django.contrib.auth.context_processors.auth",
-	"django.core.context_processors.i18n",
-	"django.core.context_processors.media",
-	"django.core.context_processors.static",
-	"django.contrib.messages.context_processors.messages",
-	"useradmin.context.rosti_context"
-)
-
+"django.contrib.auth.context_processors.auth",
+"django.core.context_processors.i18n",
+"django.core.context_processors.media",
+"django.core.context_processors.static",
+"django.contrib.messages.context_processors.messages",
+"useradmin.context.rosti_context"
+    )
 
 INSTALLED_APPS = (
-	'django.contrib.auth',
-	'django.contrib.contenttypes',
-	'django.contrib.sessions',
-	'django.contrib.sites',
-	'django.contrib.admin',
+'django.contrib.auth',
+'django.contrib.contenttypes',
+'django.contrib.sessions',
+'django.contrib.sites',
+'django.contrib.admin',
 #	'rosetta',
-	'requests',
-	'useradmin',
-	'uni_form',
-	'bills',
-	'invoices',
-	'clients',
-	'domains',
-	'emails',
-	'ftps',
-	'pgs',
-	'mysql',
-	'users',
-	'apacheconf',
-	'keystore',
-    'service',
-)
+'requests',
+'useradmin',
+'uni_form',
+'bills',
+'invoices',
+'clients',
+'domains',
+'emails',
+'ftps',
+'pgs',
+'mysql',
+'users',
+'apacheconf',
+'keystore',
+'service',
+    )
 
 PCP_SETTINGS = {
-	"mode": "apache", # main web server, (apache/nginx)
-	"primary_dns": None,
-	"secondary_dns": None,
-	"ipv6": True,
-	"apache_conf": "/etc/apache2/sites-enabled/99_auto.conf",
+    "mode": "apache", # main web server, (apache/nginx)
+    "primary_dns": None,
+    "secondary_dns": None,
+    "ipv6": True,
+    "apache_conf": "/etc/apache2/sites-enabled/99_auto.conf",
     "fastcgi_wrapper_dir": "/var/www/%s/php5-wrap",
-	"nginx_conf": "/etc/nginx/sites-enabled/99_auto.conf",
+    "nginx_conf": "/etc/nginx/sites-enabled/99_auto.conf",
     "nginx_init_script": "/etc/init.d/nginx",
     "apache_init_script": "/etc/init.d/apache2",
-	"uwsgi_conf": "/etc/uwsgi/config.xml",
-	"uwsgi_pidfile": "/var/run/uwsgi/app_%d.pid",
+    "uwsgi_conf": "/etc/uwsgi/config.xml",
+    "uwsgi_pidfile": "/var/run/uwsgi/app_%d.pid",
     "bind_conf": "/etc/bind/named.pandora.auto",
     "bind_zone_conf": "/etc/bind/pri_auto/%s.zone",
     "bind_init_script": "/etc/init.d/bind9",
     "maildir": "/var/mail",
     "dns": {
-	    #"master": "87.236.194.121",
+        #"master": "87.236.194.121",
         #"slave": "89.111.104.70",
-		"master": "89.111.104.66",
-		"slave": "89.111.104.66",
+        "master": "89.111.104.66",
+        "slave": "89.111.104.66",
         "ns1": "ns1.rosti.cz",
         "ns2": "ns2.rosti.cz",
         "mx": "mail.rosti.cz",
         "email": "info.rosti.cz",
-		"Refresh": 3600,
-		"Retry": 1800,
-		"Expire": 604800,
-		"Minimum": 30,
-    },
-}
+        "Refresh": 3600,
+        "Retry": 1800,
+        "Expire": 604800,
+        "Minimum": 30,
+        },
+    }
+
+VIRTUALENVS_DIR = 'virtualenvs'
 
 ## Logování
 
 import logging
 
 try:
-    logging.basicConfig(level=logging.INFO, filename='/var/log/pcp.log',  format = '%(asctime)s %(levelname)s %(message)s')
+    logging.basicConfig(level=logging.INFO, filename='/var/log/pcp.log', format='%(asctime)s %(levelname)s %(message)s')
 except IOError:
     pass
+
+
 

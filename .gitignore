@@ -4,3 +4,4 @@
 wsgiadmin.egg-info/
 dist/
 build/
+wsgiadmin/settings/local.py

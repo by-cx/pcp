@@ -56,15 +56,18 @@ def rm(request,did):
 	d = get_object_or_404(Domain,id=did)
 	if d.owner == u:
 		logging.info(_(u"Mažu doménu %s")%d.name)
-		
-		pri_br = BindRequest(u, "master")
-		pri_br.remove_zone(d)
-		pri_br.mod_config()
-		pri_br.reload()
-		d.delete()
-		sec_br = BindRequest(u, "slave")
-		sec_br.mod_config()
-		sec_br.reload()
+
+		if settings.PCP_SETTINGS.get("dns"):
+			pri_br = BindRequest(u, "master")
+			pri_br.remove_zone(d)
+			pri_br.mod_config()
+			pri_br.reload()
+			d.delete()
+			sec_br = BindRequest(u, "slave")
+			sec_br.mod_config()
+			sec_br.reload()
+		else:
+			d.delete()
 		
 		return HttpResponse("Doména vymazána")
 	else:
@@ -87,13 +90,14 @@ def add(request):
 			instance.owner = u
 			instance.save()
 
-			pri_br = BindRequest(u, "master")
-			pri_br.mod_zone(instance)
-			pri_br.mod_config()
-			pri_br.reload()
-			sec_br = BindRequest(u, "slave")
-			sec_br.mod_config()
-			sec_br.reload()
+			if settings.PCP_SETTINGS.get("dns"):
+				pri_br = BindRequest(u, "master")
+				pri_br.mod_zone(instance)
+				pri_br.mod_config()
+				pri_br.reload()
+				sec_br = BindRequest(u, "slave")
+				sec_br.mod_config()
+				sec_br.reload()
 				
 			logging.info(_(u"Přidána doména %s")%name)
 				

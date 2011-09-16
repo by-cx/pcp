@@ -20,9 +20,11 @@ from wsgiadmin.clients.models import *
 from wsgiadmin.apacheconf.models import *
 from wsgiadmin.apacheconf.forms import form_static, form_wsgi
 from wsgiadmin.requests.request import ApacheRequest, NginxRequest, UWSGIRequest, SSHHandler
-from wsgiadmin.apacheconf.tools import find_user_wsgis
+from wsgiadmin.apacheconf.tools import find_user_wsgis, find_user_venvs
 
 info = logging.info
+
+__all__ = ['refresh_venv', 'refresh_wsgi']
 
 
 class JsonResponse(HttpResponse):
@@ -229,16 +231,6 @@ def remove_site(request, sid):
 
 
 @login_required
-def refresh_wsgi(request):
-    if not (request.method == 'POST' and request.is_ajax()):
-        pass#raise Http404('.(')
-
-    wsgis = find_user_wsgis(request.session.get('switched_user', request.user))
-    print wsgis
-    return JsonResponse('OK', wsgis)
-
-
-@login_required
 def add_wsgi(request):
     u = request.session.get('switched_user', request.user)
     superuser = request.user
@@ -253,11 +245,13 @@ def add_wsgi(request):
 
 
     sh = SSHHandler(u, u.parms.web_machine)
+    virtualenvs = cache.get('user_venvs_%s' % u.pk)
+    if not virtualenvs:
+        virtualenvs = find_user_venvs(u)
+        if virtualenvs:
+            cache.set('user_venvs_%s' % u.pk, virtualenvs, timeout=2600*24*7)
+    virtualenvs_choices = [("", _(u"Nevybráno"))] + [(one, one) for one in virtualenvs]
 
-    venv_location = join(u.parms.home, settings.VIRTUALENVS_DIR)
-    virtualenvs = sh.instant_run("/usr/bin/find %s -maxdepth 1 -type d" % venv_location)[0].split("\n")
-    
-    virtualenvs_choices = [(x[len(venv_location):], x[len(venv_location):]) for x in virtualenvs if x[len(venv_location):]]
 
     if request.method == 'POST':
         form = form_wsgi(request.POST)
@@ -316,19 +310,23 @@ def update_wsgi(request, sid):
     superuser = request.user
     siteErrors = []
 
-    sh = SSHHandler(u, u.parms.web_machine)
-    wsgis = sh.instant_run("/usr/bin/find %s -maxdepth 5 -name *.wsgi" % u.parms.home)[0]
-    if wsgis:
-        wsgis = wsgis.split("\n")
-    else:
-        wsgis = []
-    choices = [("", _(u"Nevybráno"))] + [(x.strip(), x.strip()) for x in wsgis if x]
 
     sh = SSHHandler(u, u.parms.web_machine)
+    wsgis = cache.get('user_wsgis_%s' % u.pk)
+    if not wsgis:
+        wsgis = find_user_wsgis(u)
+        if wsgis:
+            cache.set('user_wsgis_%s' % u.pk, wsgis, timeout=3600*24*7)
+    choices = [("", _(u"Nevybráno"))] + [(x, x) for x in wsgis]
 
-    venv_location = join(u.parms.home, settings.VIRTUALENVS_DIR)
-    virtualenvs = sh.instant_run("/usr/bin/find %s -maxdepth 1 -type d" % venv_location)[0].split("\n")
-    virtualenvs_choices = [(x[len(venv_location):], x[len(venv_location):]) for x in virtualenvs if x[len(venv_location):]]
+
+    sh = SSHHandler(u, u.parms.web_machine)
+    virtualenvs = cache.get('user_venvs_%s' % u.pk)
+    if not virtualenvs:
+        virtualenvs = find_user_venvs(u)
+        if virtualenvs:
+            cache.set('user_venvs_%s' % u.pk, virtualenvs, timeout=2600*24*7)
+    virtualenvs_choices = [("", _(u"Nevybráno"))] + [(one, one) for one in virtualenvs]
 
     sid = int(sid)
     site = get_object_or_404(u.site_set, id=sid)
@@ -439,3 +437,20 @@ def restart(request, sid):
         nr.restart()
 
     return HttpResponseRedirect(reverse("wsgiadmin.apacheconf.views.apache"))
+
+
+@login_required
+def refresh_wsgi(request):
+    if not (request.method == 'POST' and request.is_ajax()):
+        pass#raise Http404('.(')
+
+    wsgis = find_user_wsgis(request.session.get('switched_user', request.user))
+    return JsonResponse('OK', wsgis)
+
+@login_required
+def refresh_venv(request):
+    if not (request.method == 'POST' and request.is_ajax()):
+        pass#raise Http404('.(')
+
+    venvs = find_user_venvs(request.session.get('switched_user', request.user))
+    return JsonResponse('OK', venvs)

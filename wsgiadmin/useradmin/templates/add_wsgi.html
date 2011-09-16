@@ -42,32 +42,46 @@
 
 $(function() {
 
-	$refresh = $('<div class="ajax_refresh" id="wsgi_refresh">refresh</div>');
-	$("#div_id_script").prepend($refresh);
+	add_refresh_handler = function(ids_object) {
+		$refresh = $('<div class="ajax_refresh">refresh</div>');
 
-	$refresh.click(function() {
-		$.ajax({
-			url: "{% url refresh_wsgi %}",
-			type: "POST",
-			data: { 'csrfmiddlewaretoken': '{{ csrf_token }}' },
-			dataType: "json",
-			beforeSend: function() {
-				$("#wsgi_refresh").addClass('running');
-			},
-			complete: function(){
-				$("#wsgi_refresh").removeClass('running');
-			},
-			success: function(data) {
-				var combo = $("#id_script")[0]
-				combo.options.length = 1;
-				msgs = data['messages']
-				var l = msgs.length;
-				for (var i=0; i < l; i++){
-					combo.options[i+1] = new Option(msgs[i], msgs[i]);
+		$("#div_" + ids_object[1]).prepend($refresh);
+
+		$refresh.click(function() {
+			$.ajax({
+				url: ids_object[0],
+				type: "POST",
+				data: { 'csrfmiddlewaretoken': '{{ csrf_token }}' },
+				dataType: "json",
+				beforeSend: function() {
+					$("#wsgi_refresh").addClass('running');
+				},
+				complete: function(){
+					$("#wsgi_refresh").removeClass('running');
+				},
+				success: function(data) {
+					var combo = $("#" + ids_object[1] )
+					var old_selected = combo.find(":selected").val();
+					combo[0].options.length = 1;
+					msgs = data['messages'];
+					var l = msgs.length;
+					for (var i=0; i < l; i++){
+						combo[0].options[i+1] = new Option(msgs[i], msgs[i], (msgs[i] == old_selected));
+					}
 				}
-			}
-		});
-	})
+			});
+		}) //eof refresh
+
+	} // eof add_refresh_handler
+
+	var refreshs = [
+		["{% url refresh_wsgi %}", 'id_script'],
+		["{% url refresh_venv %}", 'id_virtualenv'],
+	];
+
+	for (var fce in refreshs) {
+		add_refresh_handler(refreshs[fce]);
+	}
 
 });
 

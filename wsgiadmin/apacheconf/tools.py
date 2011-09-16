@@ -1,20 +1,33 @@
 # -*- coding: utf-8 -*-
 
+from os.path import join
+
 from wsgiadmin.settings import *
 from wsgiadmin.apacheconf.models import *
 from wsgiadmin.requests.request import SSHHandler
+
+from django.conf import settings
 
 uwsgi = False
 
 def find_user_wsgis(user):
 
     sh = SSHHandler(user, user.parms.web_machine)
-    wsgis = sh.instant_run("/usr/bin/find %s -maxdepth 5 -name *.wsgi" % user.parms.home)[0]
+    wsgis = sh.instant_run("/usr/bin/find %s -maxdepth 5 -type f -name '*.wsgi'" % user.parms.home)[0]
     if wsgis:
         wsgis = [one.strip() for one in wsgis.split("\n") if one]
     else:
         wsgis = []
     return wsgis
+
+
+def find_user_venvs(user):
+    sh = SSHHandler(user, user.parms.web_machine)
+    venv_location = join(user.parms.home, settings.VIRTUALENVS_DIR)
+    root_len = len(venv_location)
+    output = sh.instant_run("/usr/bin/find %s -maxdepth 1 -type d" % venv_location)[0].split("\n")
+    venvs = [one[root_len:] for one in output if one[root_len:]]
+    return venvs
 
 
 def gen_vhosts():

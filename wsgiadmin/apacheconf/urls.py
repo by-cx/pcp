@@ -1,5 +1,5 @@
 from django.conf.urls.defaults import *
-from wsgiadmin.apacheconf.views import refresh_wsgi
+from wsgiadmin.apacheconf.views import *
 
 
 urlpatterns = patterns('wsgiadmin.apacheconf.views',
@@ -13,4 +13,5 @@ urlpatterns = patterns('wsgiadmin.apacheconf.views',
     (r'^restart/([0-9]*)/?$', 'restart'),
     (r'^addWsgi/?$', 'add_wsgi'),
     url('^refresh_wsgi/?$', refresh_wsgi, name="refresh_wsgi"),
+    url('^refresh_venv/?$', refresh_venv, name="refresh_venv"),
 )

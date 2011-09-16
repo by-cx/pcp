@@ -74,14 +74,17 @@ $(function() {
 
 	} // eof add_refresh_handler
 
-	var refreshs = [
-		["{% url refresh_wsgi %}", 'id_script'],
-		["{% url refresh_venv %}", 'id_virtualenv'],
-	];
+	{% if dynamic_refreshs %}
+		var refreshs = [
+			{% for url, input_id in dynamic_refreshs %}
+				["{{ url }}", "{{ input_id }}"]{% if not forloop.last %},{% endif %}
+			{% endfor %}
+		];
 
-	for (var fce in refreshs) {
-		add_refresh_handler(refreshs[fce]);
-	}
+		for (var fce in refreshs) {
+			add_refresh_handler(refreshs[fce]);
+		}
+	{% endif %}
 
 });
 

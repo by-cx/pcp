@@ -21,7 +21,7 @@ from wsgiadmin.apacheconf.tools import get_user_wsgis, get_user_venvs, user_dire
 
 info = logging.info
 
-__all__ = ['refresh_venv', 'refresh_wsgi', 'add_static']
+__all__ = ['refresh_venv', 'refresh_wsgi', 'add_static', 'refresh_userdirs']
 
 
 class JsonResponse(HttpResponse):
@@ -96,7 +96,7 @@ def add_static(request, php="0"):
     superuser = request.user
     siteErrors = []
 
-    choices = [(d, d) for d in user_directories(u)]
+    choices = [("", _(u"Nevybráno"))] + [(d, d) for d in user_directories(u, True)]
 
     if request.method == 'POST':
         form = form_static(request.POST)
@@ -130,8 +130,14 @@ def add_static(request, php="0"):
     else:
         title = _(u"Přidání webu s podporou PHP")
 
-    return render_to_response('universal.html',
+
+    dynamic_refreshs = (
+        (reverse("refresh_userdirs"), 'id_documentRoot'),
+    )
+
+    return render_to_response('add_site.html',
             {
+            "dynamic_refreshs": dynamic_refreshs,
             "siteErrors": siteErrors,
             "form": form,
             "title": title,
@@ -153,7 +159,7 @@ def update_static(request, sid):
     sid = int(sid)
 
     s = get_object_or_404(Site, id=sid)
-    choices = [(d, d) for d in user_directories(u)]
+    choices = [("", _(u"Nevybráno"))] + [(d, d) for d in user_directories(u)]
 
     if request.method == 'POST':
         form = form_static(request.POST)
@@ -178,8 +184,14 @@ def update_static(request, sid):
         form = form_static(initial={"domains": s.domains, "documentRoot": s.documentRoot})
         form.fields["documentRoot"].choices = choices
 
-    return render_to_response('universal.html',
+
+    dynamic_refreshs = (
+        (reverse("refresh_userdirs"), 'id_documentRoot'),
+    )
+
+    return render_to_response('add_site.html',
             {
+            "dynamic_refreshs": dynamic_refreshs,
             "siteErrors": siteErrors,
             "form": form,
             "title": _(u"Úprava statického webu"),
@@ -271,8 +283,15 @@ def add_wsgi(request):
         form.fields["script"].choices = choices
         form.fields["virtualenv"].choices = virtualenvs_choices
 
-    return render_to_response('add_wsgi.html',
+
+    dynamic_refreshs = (
+        (reverse("refresh_wsgi"), 'id_script'),
+        (reverse("refresh_venv"), 'id_virtualenv'),
+    )
+
+    return render_to_response('add_site.html',
             {
+            "dynamic_refreshs": dynamic_refreshs,
             "siteErrors": siteErrors,
             "form": form,
             "title": _(u"Přidání WSGI aplikace"),
@@ -424,3 +443,12 @@ def refresh_venv(request):
 
     venvs = get_user_venvs(request.session.get('switched_user', request.user), False)
     return JsonResponse('OK', venvs)
+
+
+@login_required
+def refresh_userdirs(request):
+    if not (request.method == 'POST' and request.is_ajax()):
+        raise Exception('non ajax not allowed')
+
+    user_dirs = user_directories(request.session.get('switched_user', request.user), False)
+    return JsonResponse('OK', user_dirs)

@@ -3,6 +3,7 @@
 import logging
 from django.contrib.sites.models import Site
 from os.path import join
+from datetime import date
 
 from django.core.paginator import Paginator
 from django.shortcuts import render_to_response, get_object_or_404
@@ -199,7 +200,7 @@ def remove_site(request, sid):
         ur.stop(s)
 
         s.removed = True
-        s.end_date = datetime.date.today()
+        s.end_date = date.today()
         s.save()
 
         #Signal

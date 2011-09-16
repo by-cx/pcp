@@ -84,10 +84,10 @@ class request(request_raw):
     server = ""
     data = {}
 
-    def __init__(self, action="", server="", data={}):
+    def __init__(self, action="", server="", data=None):
         self.action = action
         self.server = server
-        self.data = data
+        self.data = data or {}
 
     def done(self):
         self.status = "done"

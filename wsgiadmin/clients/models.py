@@ -127,14 +127,15 @@ class formPassword(forms.Form):
     password2 = forms.CharField(label=_(u"Heslo pro kontrolu"), widget=forms.PasswordInput(render_value=False))
 
     def clean_password1(self):
-        if not "password1" in self.cleaned_data: raise forms.ValidationError(
-            _(u"Je potřeba vyplnit heslo do obou políček"))
-        if len(self.cleaned_data["password1"]) < 6: raise forms.ValidationError(_(u"Heslo musí mít alespoň 6 znaků"))
+        if not "password1" in self.cleaned_data:
+            raise forms.ValidationError(_(u"Je potřeba vyplnit heslo do obou políček"))
+        if len(self.cleaned_data["password1"]) < 6:
+            raise forms.ValidationError(_(u"Heslo musí mít alespoň 6 znaků"))
         return self.cleaned_data["password1"]
 
     def clean_password2(self):
         if not ("password1" in self.cleaned_data and "password2" in self.cleaned_data):
-            raise forms.ValidationError(_(u"Je potřeba vyplnit obe pole pro kontrolu"))
+            raise forms.ValidationError(_(u"Je potřeba vyplnit heslo do obou políček"))
 
         if self.cleaned_data["password1"] != self.cleaned_data["password2"]:
             raise forms.ValidationError(_(u"První heslo nesouhlasí s druhým"))
@@ -149,8 +150,8 @@ class Parms(models.Model):
     gid = models.IntegerField(_(u"GID"))
     discount = models.IntegerField(_(u"Sleva"), default=0) # v procentech
     fee = models.IntegerField(_(u"Paušál"), default=0)
-    currency = models.CharField(_("Měna"), max_length=20, choices=settings.CURRENCY, default="czk")
-    enable = models.BooleanField(_("Stav účtu"), default=True)
+    currency = models.CharField(_(u"Měna"), max_length=20, choices=settings.CURRENCY, default="czk")
+    enable = models.BooleanField(_(u"Stav účtu"), default=True)
 
     #address		= models.ForeignKey("address")
     address = models.OneToOneField(Address)

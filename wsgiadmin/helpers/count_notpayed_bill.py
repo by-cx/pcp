@@ -1,7 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import os,sys,datetime
+import os, sys
+
 sys.path.append('/home/cx/co/')
 sys.path.append('/home/cx/co/rosti')
 os.environ['DJANGO_SETTINGS_MODULE'] = 'rosti.settings'
@@ -16,10 +17,10 @@ from bills.tools import *
 total = 0
 
 for u in user.objects.all():
-	data = aggregate(u)
-	for item in data:
-		print "%d kč - %s"%(data[item][0],item)
-		total += data[item][0]
+    data = aggregate(u)
+    for item in data:
+        print "%d kč - %s" % (data[item][0], item)
+        total += data[item][0]
 
 print
-print "Celkem",total,"kč"
+print "Celkem", total, "kč"

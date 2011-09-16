@@ -27,16 +27,19 @@ def info(request):
         invoices = []
 
     return render_to_response('info.html',
-            {"u": u, "superuser": superuser, "menu_active": "dashboard", "invoices": invoices},
-        context_instance=RequestContext(request)
+            {"u": u, "superuser": superuser, "menu_active": "dashboard",
+             "invoices": invoices},
+                              context_instance=RequestContext(request)
     )
+
 
 @login_required
 def ok(request):
     u = request.session.get('switched_user', request.user)
     superuser = request.user
     return render_to_response('ok.html',
-            {"u": u, "superuser": superuser, }, context_instance=RequestContext(request)
+            {"u": u, "superuser": superuser, },
+                              context_instance=RequestContext(request)
     )
 
 
@@ -45,7 +48,8 @@ def error(request):
     u = request.session.get('switched_user', request.user)
     superuser = request.user
     return render_to_response('error.html',
-            {"u": u, "superuser": superuser, }, context_instance=RequestContext(request)
+            {"u": u, "superuser": superuser, },
+                              context_instance=RequestContext(request)
     )
 
 
@@ -60,7 +64,7 @@ def message(request, t, m):
             "u": u,
             "superuser": superuser,
             },
-        context_instance=RequestContext(request)
+                              context_instance=RequestContext(request)
     )
 
 
@@ -88,14 +92,13 @@ def change_passwd(request):
             "superuser": superuser,
             "menu_active": "settings",
             },
-        context_instance=RequestContext(request)
+                              context_instance=RequestContext(request)
     )
 
 
 @login_required
 def pg(request):
     u = request.session.get('switched_user', request.user)
-    superuser = request.user
     return render_to_response('info.html',
             {"u": u}, context_instance=RequestContext(request)
     )
@@ -108,8 +111,9 @@ def reg(request):
         form3 = form_reg_payment(request.POST)
         if form1.is_valid() and form2.is_valid() and form3.is_valid():
             # user
-            u = user.objects.create_user(form2.cleaned_data["username"], form1.cleaned_data["email"],
-                form2.cleaned_data["password1"])
+            u = user.objects.create_user(form2.cleaned_data["username"],
+                                         form1.cleaned_data["email"],
+                                         form2.cleaned_data["password1"])
             u.is_active = False
             u.save()
             # adresa
@@ -125,13 +129,17 @@ def reg(request):
             a.residency_phone = form1.cleaned_data["phone"]
             a.save()
             # machine
-            m_web = get_object_or_404(Machine, name=settings.DEFAULT_WEB_MACHINE)
-            m_mail = get_object_or_404(Machine, name=settings.DEFAULT_MAIL_MACHINE)
-            m_mysql = get_object_or_404(Machine, name=settings.DEFAULT_MYSQL_MACHINE)
-            m_pgsql = get_object_or_404(Machine, name=settings.DEFAULT_PGSQL_MACHINE)
+            m_web = get_object_or_404(Machine,
+                                      name=settings.DEFAULT_WEB_MACHINE)
+            m_mail = get_object_or_404(Machine,
+                                       name=settings.DEFAULT_MAIL_MACHINE)
+            m_mysql = get_object_or_404(Machine,
+                                        name=settings.DEFAULT_MYSQL_MACHINE)
+            m_pgsql = get_object_or_404(Machine,
+                                        name=settings.DEFAULT_PGSQL_MACHINE)
             # parms
             p = Parms()
-            p.home = join("/home/",  form2.cleaned_data["username"])
+            p.home = join("/home", form2.cleaned_data["username"])
             p.note = ""
             p.uid = 0
             p.gid = 0
@@ -149,11 +157,16 @@ def reg(request):
                 p.save()
 
             message = _(u"Byl registrován nový uživatel.")
-            send_mail(_('Nová registrace ') + form1.cleaned_data["name"] + ' ' + form1.cleaned_data["company"], message,
-                settings.EMAIL_FROM, [address for (name, address) in settings.ADMINS], fail_silently=True)
-                #fail_silently - nechci 500 kvuli neodeslanemu mailu
+            send_mail(_('Nová registrace %s %s' % (
+                form1.cleaned_data["name"], form1.cleaned_data["company"])),
+                      message,
+                      settings.EMAIL_FROM,
+                [address for (name, address) in settings.ADMINS],
+                      fail_silently=True)
+            #fail_silently - nechci 500 kvuli neodeslanemu mailu
 
-            return HttpResponseRedirect(reverse("wsgiadmin.useradmin.views.regok"))
+            return HttpResponseRedirect(
+                reverse("wsgiadmin.useradmin.views.regok"))
     else:
         form1 = formReg()
         form2 = formReg2()
@@ -168,9 +181,10 @@ def reg(request):
             "submit": _(u"Registrovat"),
             "action": reverse("wsgiadmin.useradmin.views.reg")
         },
-        context_instance=RequestContext(request)
+                              context_instance=RequestContext(request)
     )
 
 
 def regok(request):
-    return render_to_response('regok.html', context_instance=RequestContext(request))
+    return render_to_response('regok.html',
+                              context_instance=RequestContext(request))

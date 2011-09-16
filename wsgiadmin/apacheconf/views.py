@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import logging
-from os.path import join
 from datetime import date
 import anyjson
 
@@ -10,10 +9,9 @@ from django.core.paginator import Paginator
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.http import HttpResponse, HttpResponseRedirect
 from django.utils.translation import ugettext_lazy as _
 from django.template.context import RequestContext
-from django.conf import settings
 from django.core.cache import cache
 
 from wsgiadmin.clients.models import *
@@ -442,7 +440,7 @@ def restart(request, sid):
 @login_required
 def refresh_wsgi(request):
     if not (request.method == 'POST' and request.is_ajax()):
-        raise Http404('.(')
+        raise Exception('non ajax not allowed')
 
     wsgis = find_user_wsgis(request.session.get('switched_user', request.user))
     return JsonResponse('OK', wsgis)
@@ -450,7 +448,7 @@ def refresh_wsgi(request):
 @login_required
 def refresh_venv(request):
     if not (request.method == 'POST' and request.is_ajax()):
-        raise Http404('.(')
+        raise Exception('non ajax not allowed')
 
     venvs = find_user_venvs(request.session.get('switched_user', request.user))
     return JsonResponse('OK', venvs)

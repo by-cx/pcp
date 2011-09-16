@@ -265,7 +265,7 @@ class UWSGIRequest(SSHHandler):
 
 class NginxRequest(Service):
     def __init__(self, user, machine):
-        Service.__init__(self, user, machine, settings.PCP_SETTINGS.get("nginx_init_script", "/etc/init.d/nginx"))
+        super(NginxRequest, self).__init__(user, machine, settings.PCP_SETTINGS.get("nginx_init_script", "/etc/init.d/nginx"))
 
     def mod_vhosts(self):
         config = []
@@ -288,7 +288,7 @@ class NginxRequest(Service):
 
 class ApacheRequest(Service):
     def __init__(self, user, machine):
-        Service.__init__(self, user, machine, settings.PCP_SETTINGS.get("apache_init_script", "/etc/init.d/apache"))
+        super(ApacheRequest, self).__init__(user, machine, settings.PCP_SETTINGS.get("apache_init_script", "/etc/init.d/apache"))
 
     def mod_vhosts(self):
         config = []

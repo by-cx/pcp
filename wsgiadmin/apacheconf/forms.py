@@ -37,12 +37,14 @@ class form_wsgi(forms.Form):
         return self.cleaned_data["allow_ips"]
 
     def clean_virtualenv(self):
-        if "." in self.cleaned_data["virtualenv"] or "~" in self.cleaned_data["virtualenv"] or "/" in self.cleaned_data[
-                                                                                                      "virtualenv"]: raise forms.ValidationError(
-            _(u"Virtualenv nesmí obsahovat znaky ./~"))
+        if "." in self.cleaned_data["virtualenv"] or \
+           "~" in self.cleaned_data["virtualenv"] or \
+           "/" in self.cleaned_data["virtualenv"]:
+            raise forms.ValidationError(_(u"Virtualenv nesmí obsahovat znaky ./~"))
         return self.cleaned_data["virtualenv"]
 
     def clean_static(self):
-        if ".." in self.cleaned_data["static"] or "~" in self.cleaned_data["static"]: raise forms.ValidationError(
-            _(u"Toto pole nesmí obsahovat nesmí obsahovat .. a ~"))
+        if ".." in self.cleaned_data["static"] or \
+           "~" in self.cleaned_data["static"]:
+            raise forms.ValidationError(_(u"Toto pole nesmí obsahovat nesmí obsahovat .. a ~"))
         return self.cleaned_data["static"]

@@ -79,42 +79,38 @@ class Address(models.Model):
             return "%s" % (self.residency_name)
 
     def getInvoiceAddress(self):
-        addr = ""
+        addr = []
+        if self.company:
+            addr.append(self.company)
         if not self.different:
-            if len(self.company) == 0:
-                addr += self.residency_name + "\n"
-            else:
-                addr += self.company + "\n"
-            addr += self.residency_street + "\n"
-            addr += self.residency_city_num
-            addr += "  " + self.residency_city + "\n"
+            if not self.company:
+                addr.append(self.residency_name)
+            addr.append(self.residency_street)
+            addr.append("%s %s" % (self.residency_city_num, self.residency_city))
         else:
-            if len(self.company) == 0:
-                addr += self.invoice_name + "\n"
-            else:
-                addr += self.company + "\n"
-            addr += self.invoice_street + "\n"
-            addr += self.invoice_city_num
-            addr += "  " + self.invoice_city + "\n"
+            if not self.company:
+                addr.append(self.invoice_name)
+            addr.append(self.invoice_street)
+            addr.append("%s %s" % (self.invoice_city_num, self.invoice_city))
 
-        addr += "\n"
-        tail = ""
-        if self.id == 1: tail = "Neplátce DPH"
-        if len(self.residency_ic) > 0: addr += "IČ" + ": " + self.residency_ic + "   " + tail + "\n"
-        if len(self.residency_dic) > 0: addr += "DIČ" + ": " + self.residency_dic + "\n"
+        addr.append(" ")
+        if self.residency_ic:
+            tail = "Neplátce DPH" if self.id == 1 else ""
+            addr.append("IČ: %s %s" % (self.residency_ic, tail))
+        if self.residency_dic:
+            addr.append("DIČ: %s" % self.residency_dic)
 
-        return str(addr)
+        return "\n".join(addr)
 
     def getInvoiceContact(self):
-        contact = ""
+        contact = []
         if not self.different:
-            contact += "Telefon" + ": " + self.residency_phone + "\n"
-            contact += "Email" + ": " + self.residency_email + "\n"
+            contact.append("Telefon: %" % self.residency_phone)
+            contact.append("Email: %s" % self.residency_email)
         else:
-            contact += "Telefon" + ": " + self.invoice_phone + "\n"
-            contact += "Email" + ": " + self.invoice_email + "\n"
-
-        return str(contact)
+            contact.append("Telefon: %s" % self.invoice_phone)
+            contact.append("Email: %s" % self.invoice_email)
+        return "\n".join(contact)
 
     class Meta:
         verbose_name = _(u"Adresa")

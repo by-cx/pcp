@@ -58,7 +58,6 @@ class SSHHandler(object):
         """
         Add cmd into queue.
         """
-
         r = Request()
 
         r.action = "run"
@@ -271,7 +270,7 @@ class NginxRequest(Service):
     def mod_vhosts(self):
         config = []
         for site in Site.objects.filter(removed=False, owner__parms__enable=True):
-            if site.type == "uwsgi" or site.type == "modwsgi":
+            if site.type in ("uwsgi", "modwsgi"):
                 config.append(render_to_string("nginx_vhost_wsgi.conf", {
                     "site": site
                 }))
@@ -294,7 +293,7 @@ class ApacheRequest(Service):
     def mod_vhosts(self):
         config = []
         for site in Site.objects.filter(removed=False, owner__parms__enable=True):
-            if site.type == "uwsgi" or site.type == "modwsgi":
+            if site.type in ("uwsgi", "modwsgi"):
                 # Nginx mode cancel handling wsgi by Apache
                 if settings.PCP_SETTINGS["mode"] != "apache": continue
 
@@ -418,8 +417,8 @@ class SystemRequest(SSHHandler):
         self.run("usermod -G %s -a %s" % (user.username, user.username))
         self.run("usermod -G www-data -a %s" % user.username)
         self.run("usermod -G clients -a %s" % user.username)
-        self.run("su %s -c \"mkdir -p ~/virtualenvs\"" % user.username)
-        self.run("su %s -c  \"virtualenv ~/virtualenvs/default\"" % user.username)
+        self.run("su %s -c \"mkdir -p ~/%s\"" % (user.username, settings.VIRTUALENVS_DIR))
+        self.run("su %s -c  \"virtualenv ~/%s/default\"" % (user.username, settings.VIRTUALENVS_DIR))
         self.run("su %s -c \"mkdir -p ~/uwsgi\"" % user.username)
 
     def passwd(self, password):

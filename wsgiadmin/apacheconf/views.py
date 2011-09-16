@@ -1,25 +1,36 @@
 # -*- coding: utf-8 -*-
 
 import logging
-from django.contrib.sites.models import Site
 from os.path import join
 from datetime import date
+import anyjson
 
+from django.contrib.sites.models import Site
 from django.core.paginator import Paginator
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.utils.translation import ugettext_lazy as _
 from django.template.context import RequestContext
 from django.conf import settings
+from django.core.cache import cache
 
 from wsgiadmin.clients.models import *
 from wsgiadmin.apacheconf.models import *
 from wsgiadmin.apacheconf.forms import form_static, form_wsgi
 from wsgiadmin.requests.request import ApacheRequest, NginxRequest, UWSGIRequest, SSHHandler
+from wsgiadmin.apacheconf.tools import find_user_wsgis
 
 info = logging.info
+
+
+class JsonResponse(HttpResponse):
+
+    def __init__(self, result, messages):
+        content = anyjson.serialize(dict(result=result, messages=messages))
+        super(JsonResponse, self).__init__(content, content_type='application/jsonrequest')
+
 
 def user_directories(u):
     sh = SSHHandler(u, u.parms.web_machine)
@@ -131,7 +142,7 @@ def add_static(request, php="0"):
             "form": form,
             "title": title,
             "submit": _(u"Přidat web"),
-            "action": reverse("wsgiadmin.apacheconf.views.addStatic", args=[php]),
+            "action": reverse("add_static", args=[php]),
             "u": u,
             "superuser": superuser,
             "menu_active": "webapps",
@@ -218,19 +229,28 @@ def remove_site(request, sid):
 
 
 @login_required
+def refresh_wsgi(request):
+    if not (request.method == 'POST' and request.is_ajax()):
+        pass#raise Http404('.(')
+
+    wsgis = find_user_wsgis(request.session.get('switched_user', request.user))
+    print wsgis
+    return JsonResponse('OK', wsgis)
+
+
+@login_required
 def add_wsgi(request):
     u = request.session.get('switched_user', request.user)
     superuser = request.user
     siteErrors = []
 
-    sh = SSHHandler(u, u.parms.web_machine)
-    wsgis = sh.instant_run("/usr/bin/find %s -maxdepth 5 -name *.wsgi" % u.parms.home)[0]
-    if wsgis:
-        wsgis = wsgis.split("\n")
-    else:
-        wsgis = []
+    wsgis = cache.get('user_caches_%s' % u.pk)
+    if not wsgis:
+        wsgis = find_user_wsgis(u)
+        if wsgis:
+            cache.set('user_caches_%s' % u.pk, wsgis, timeout=3600*24*7)
+    choices = [("", _(u"Nevybráno"))] + [(x, x) for x in wsgis]
 
-    choices = [("", _(u"Nevybráno"))] + [(x.strip(), x.strip()) for x in wsgis if x]
 
     sh = SSHHandler(u, u.parms.web_machine)
 
@@ -275,7 +295,7 @@ def add_wsgi(request):
         form.fields["script"].choices = choices
         form.fields["virtualenv"].choices = virtualenvs_choices
 
-    return render_to_response('universal.html',
+    return render_to_response('add_wsgi.html',
             {
             "siteErrors": siteErrors,
             "form": form,

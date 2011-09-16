@@ -1,0 +1,74 @@
+{% extends "universal.html" %}
+{% load uni_form_tags %}
+{% load i18n %}
+
+{% block content %}
+
+<h3>{{ title }}</h3>
+
+{% if not next_step %}
+<p class="error-text">{{ valid }}</p>
+{% endif %}
+{% if next_step %}
+<p class="ok-text">{{ valid }}</p>
+{% endif %}
+
+{% if siteErrors %}
+<p>{% trans "Následující doménu jsou použity již u jiné stránky nebo je nemáte zadané:" %}:</p>
+<ul>
+	{% for x in siteErrors %}
+	<li>{{ x }}</li>
+	{% endfor %}
+</ul>
+{% endif %}
+
+<fieldset>
+	<form action="{{ action }}" enctype="multipart/form-data" method="post" id="myform" class="uniForm">
+		{% csrf_token %}
+		{{ form|as_uni_form }}
+
+		{% if note %}
+		{% for x in note%}
+		<p><em>{{ x }}</em></p>
+		{% endfor %}
+		{% endif %}
+
+		<p><input type="submit" value="{{ submit }}"/></p>
+	</form>
+</fieldset>
+{% endblock %}
+{% block jsblock %}
+{{ block.super }}
+
+$(function() {
+
+	$refresh = $('<div class="ajax_refresh" id="wsgi_refresh">refresh</div>');
+	$("#div_id_script").prepend($refresh);
+
+	$refresh.click(function() {
+		$.ajax({
+			url: "{% url refresh_wsgi %}",
+			type: "POST",
+			data: { 'csrfmiddlewaretoken': '{{ csrf_token }}' },
+			dataType: "json",
+			beforeSend: function() {
+				$("#wsgi_refresh").addClass('running');
+			},
+			complete: function(){
+				$("#wsgi_refresh").removeClass('running');
+			},
+			success: function(data) {
+				var combo = $("#id_script")[0]
+				combo.options.length = 1;
+				msgs = data['messages']
+				var l = msgs.length;
+				for (var i=0; i < l; i++){
+					combo.options[i+1] = new Option(msgs[i], msgs[i]);
+				}
+			}
+		});
+	})
+
+});
+
+{% endblock %}

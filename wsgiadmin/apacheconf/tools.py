@@ -2,8 +2,20 @@
 
 from wsgiadmin.settings import *
 from wsgiadmin.apacheconf.models import *
+from wsgiadmin.requests.request import SSHHandler
 
 uwsgi = False
+
+def find_user_wsgis(user):
+
+    sh = SSHHandler(user, user.parms.web_machine)
+    wsgis = sh.instant_run("/usr/bin/find %s -maxdepth 5 -name *.wsgi" % user.parms.home)[0]
+    if wsgis:
+        wsgis = [one.strip() for one in wsgis.split("\n") if one]
+    else:
+        wsgis = []
+    return wsgis
+
 
 def gen_vhosts():
     first = []

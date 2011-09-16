@@ -5,55 +5,72 @@
 	{% trans "Administrace > MySQL databáze" %}
 {% endblock %}
 
+{% block jsblock %}
+	{{ block.super }}
+
+	$(function() {
+		$("#dblist .db_pwdchange").click(function() {
+			var db = $(this).data('id');
+			$("#db_dialog").dialog({"width": 400, "height": 300});
+			$("#db_dialog").load("{% url wsgiadmin.mysql.views.passwd "" %}" + db + "/");
+		});
+
+		$("#dblist .db_delete").click(function() {
+			var orly = confirm('{% trans "Opravdu chcete smazat tuto databázi?" %}');
+			if (orly) {
+				var db = $(this).data('id');
+				$("#db_" +  db).load("{% url wsgiadmin.mysql.views.rm "" %}" + db);
+			}
+		});
+	});
+{% endblock %}
+
 {% block content %}
-<script type="text/javascript">
-	function remove(what) {
-		$("#db_"+what).load("{% url wsgiadmin.mysql.views.rm "" %}"+what)
-	}
-</script>
-<div id="message-box"></div>
+	<div id="message-box"></div>
 
-<h2>MySQL</h2>
+	<h2>MySQL</h2>
 
-{% blocktrans %}
-<p>Informace týkající se MySQL databází najdete na Wiki na adrese <a href='{{ WIKI_URL }}/sprava_mysql_databazi' target="_blank">{{ WIKI_URL }}/sprava_mysql_databazi</a>.</p>
-{% endblocktrans %}
+	{% blocktrans %}
+		<p>Informace týkající se MySQL databází najdete na Wiki na adrese
+			<a href='{{ WIKI_URL }}/sprava_mysql_databazi' target="_blank">{{ WIKI_URL }}/sprava_mysql_databazi</a>.
+		</p>
+	{% endblocktrans %}
 
-<div id="db_dialog"></div>
+	<div id="db_dialog"></div>
 
-<script type="text/javascript">
-	function my_passwd(db) {
-		$("#db_dialog").dialog({"width": 400, "height": 300});
-		$("#db_dialog").load("{% url wsgiadmin.mysql.views.passwd "" %}"+db+"/");
-	}
-</script>
 
-<h3>{% trans "Seznam MySQL databází" %}</h3>
-<table>
-	<thead>
+	<h3>{% trans "Seznam MySQL databází" %}</h3>
+	<table id="dblist">
+		<thead>
 		<tr>
-		   <th>{% trans "Název databáze" %}</th>
-		   <th>{% trans "Akce" %}</th>
+			<th>{% trans "Název databáze" %}</th>
+			<th>{% trans "Akce" %}</th>
 		</tr>
-	</thead>
-	{% if dbs %}
-	<tbody>
-		{% for db in dbs.object_list %}
-		<tr>
-			<td>{{ db }}</td>
-			<td id="db_{{ db }}">
-				<a href="#" title="{% trans "Změnit heslo" %}" onclick="my_passwd('{{ db }}');"><img src="/m/icons/raster/gray_dark/key_stroke_16x16.png" alt="{% trans "Změnit heslo" %}" /></a>
-				 <a href="#" title="{% trans "Smazat" %}" onclick="if(confirm('{% trans "Opravdu chcete smazat tuto databázi?" %}')) remove('{{ db }}')"><img src="/m/icons/raster/gray_dark/trash_fill_16x16.png" alt="{% trans "Smazat" %}" /></a>
-			</td>
-		</tr>
-		{% endfor %}
-	</tbody>
-	<tfoot>
-		<tr>
-			<td colspan="2">
+		</thead>
+		{% if dbs %}
+			<tbody>
+			{% for db in dbs.object_list %}
+				<tr>
+					<td>{{ db }}</td>
+					<td id="db_{{ db }}">
+						<a href="#" class="db_pwdchange" title="{% trans "Změnit heslo" %}" data-id="{{ db }}">
+							<img src="/m/icons/raster/gray_dark/key_stroke_16x16.png" alt="{% trans "Změnit heslo" %}"/>
+						</a>
+						<a href="#" class="db_delete" title="{% trans "Smazat" %}" data-id="{{ db }}">
+							<img src="/m/icons/raster/gray_dark/trash_fill_16x16.png" alt="{% trans "Smazat" %}"/>
+						</a>
+					</td>
+				</tr>
+			{% endfor %}
+			</tbody>
+			<tfoot>
+			<tr>
+				<td colspan="2">
 					<div class="pagination">
-						{% if ftps.has_previous %}<a href="{% url wsgiadmin.mysql.views.show 1 %}" title="{% trans "První stránka" %}">&laquo; {% trans "První" %}</a>{% endif %}
-						{% if ftps.has_previous %}<a href="{% url wsgiadmin.mysql.views.show dbs.previous_page_number %}" title="{% trans "Předchozí stránka" %}">&laquo; {% trans "Předchozí" %}</a>{% endif %}
+						{% if ftps.has_previous %}
+							<a href="{% url wsgiadmin.mysql.views.show 1 %}" title="{% trans "První stránka" %}">&laquo; {% trans "První" %}</a>{% endif %}
+						{% if ftps.has_previous %}
+							<a href="{% url wsgiadmin.mysql.views.show dbs.previous_page_number %}" title="{% trans "Předchozí stránka" %}">&laquo; {% trans "Předchozí" %}</a>{% endif %}
 
 						{% for p in paginator.page_range %}
 							{% ifequal p num_page %}
@@ -63,20 +80,22 @@
 							{% endifequal %}
 						{% endfor %}
 
-						{% if ftps.has_next %}<a href="{% url wsgiadmin.mysql.views.show dbs.next_page_number %}" title="{% trans "Další stránka" %}">{% trans "Další" %} &raquo;</a>{% endif %}
-						{% if ftps.has_next %}<a href="{% url wsgiadmin.mysql.views.show paginator.num_pages %}" title="{% trans "Poslední stránka" %}">{% trans "Poslední" %} &raquo;</a>{% endif %}
+						{% if ftps.has_next %}
+							<a href="{% url wsgiadmin.mysql.views.show dbs.next_page_number %}" title="{% trans "Další stránka" %}">{% trans "Další" %} &raquo;</a>{% endif %}
+						{% if ftps.has_next %}
+							<a href="{% url wsgiadmin.mysql.views.show paginator.num_pages %}" title="{% trans "Poslední stránka" %}">{% trans "Poslední" %} &raquo;</a>{% endif %}
 					</div>
 					<div class="clear"></div>
-			</td>
-		</tr>
-	</tfoot>
-	{% else %}
-	<tbody>
-	<tr>
-		<td colspan="2">{% trans "Žádná databáze nebyla ještě přidána. Databáze můžete přidávat pomocí nabídky vlevo." %}</td>
-	</tr>
-	</tbody>
-	{% endif%}
-</table>
+				</td>
+			</tr>
+			</tfoot>
+		{% else %}
+			<tbody>
+			<tr>
+				<td colspan="2">{% trans "Žádná databáze nebyla ještě přidána. Databáze můžete přidávat pomocí nabídky vlevo." %}</td>
+			</tr>
+			</tbody>
+		{% endif %}
+	</table>
 
 {% endblock %}

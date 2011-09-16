@@ -7,8 +7,6 @@ from django.contrib.auth.models import User as user
 
 from django.utils.translation import ugettext_lazy as _
 
-from mysql.tools import *
-
 class mysqldb(models.Model):
 	dbname  = models.CharField(_(u"Název MySQL databáze"), max_length=50)
 	owner   = models.ForeignKey(user, verbose_name=_(u"Uživatel"))

@@ -8,16 +8,10 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.template.context import RequestContext
 
 from django.views.decorators.csrf import csrf_exempt
-from wsgiadmin.requests.request import SSHHandler
+from wsgiadmin.apacheconf.tools import user_directories
+
 
 from wsgiadmin.ftps.models import *
-
-
-def user_directories(u):
-    sh = SSHHandler(u, u.parms.web_machine)
-    dirs = sh.instant_run("/usr/bin/find %s -maxdepth 2 -type d" % u.parms.home)[0].split("\n")
-
-    return [d.strip() for d in dirs if d and not "/." in d]
 
 
 @login_required
@@ -28,7 +22,7 @@ def show(request, p=1):
 
     paginator = Paginator(list(u.ftp_set.all()), 10)
 
-    if paginator.count == 0:
+    if not paginator.count:
         page = None
     else:
         page = paginator.page(p)

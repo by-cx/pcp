@@ -12,17 +12,16 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.utils.translation import ugettext_lazy as _
 from django.template.context import RequestContext
-from django.core.cache import cache
 
 from wsgiadmin.clients.models import *
 from wsgiadmin.apacheconf.models import *
 from wsgiadmin.apacheconf.forms import form_static, form_wsgi
 from wsgiadmin.requests.request import ApacheRequest, NginxRequest, UWSGIRequest, SSHHandler
-from wsgiadmin.apacheconf.tools import find_user_wsgis, find_user_venvs
+from wsgiadmin.apacheconf.tools import get_user_wsgis, get_user_venvs, user_directories
 
 info = logging.info
 
-__all__ = ['refresh_venv', 'refresh_wsgi']
+__all__ = ['refresh_venv', 'refresh_wsgi', 'add_static']
 
 
 class JsonResponse(HttpResponse):
@@ -32,11 +31,6 @@ class JsonResponse(HttpResponse):
         super(JsonResponse, self).__init__(content, content_type='application/jsonrequest')
 
 
-def user_directories(u):
-    sh = SSHHandler(u, u.parms.web_machine)
-    dirs = sh.instant_run("/usr/bin/find %s -maxdepth 2 -type d" % u.parms.home)[0].split("\n")
-
-    return [d.strip() for d in dirs if d and not "/." in d]
 
 
 @login_required
@@ -234,20 +228,10 @@ def add_wsgi(request):
     superuser = request.user
     siteErrors = []
 
-    wsgis = cache.get('user_caches_%s' % u.pk)
-    if not wsgis:
-        wsgis = find_user_wsgis(u)
-        if wsgis:
-            cache.set('user_caches_%s' % u.pk, wsgis, timeout=3600*24*7)
+    wsgis = get_user_wsgis(u)
     choices = [("", _(u"Nevybráno"))] + [(x, x) for x in wsgis]
 
-
-    sh = SSHHandler(u, u.parms.web_machine)
-    virtualenvs = cache.get('user_venvs_%s' % u.pk)
-    if not virtualenvs:
-        virtualenvs = find_user_venvs(u)
-        if virtualenvs:
-            cache.set('user_venvs_%s' % u.pk, virtualenvs, timeout=2600*24*7)
+    virtualenvs = get_user_venvs(u)
     virtualenvs_choices = [("", _(u"Nevybráno"))] + [(one, one) for one in virtualenvs]
 
 
@@ -308,22 +292,10 @@ def update_wsgi(request, sid):
     superuser = request.user
     siteErrors = []
 
-
-    sh = SSHHandler(u, u.parms.web_machine)
-    wsgis = cache.get('user_wsgis_%s' % u.pk)
-    if not wsgis:
-        wsgis = find_user_wsgis(u)
-        if wsgis:
-            cache.set('user_wsgis_%s' % u.pk, wsgis, timeout=3600*24*7)
+    wsgis = get_user_wsgis(u)
     choices = [("", _(u"Nevybráno"))] + [(x, x) for x in wsgis]
 
-
-    sh = SSHHandler(u, u.parms.web_machine)
-    virtualenvs = cache.get('user_venvs_%s' % u.pk)
-    if not virtualenvs:
-        virtualenvs = find_user_venvs(u)
-        if virtualenvs:
-            cache.set('user_venvs_%s' % u.pk, virtualenvs, timeout=2600*24*7)
+    virtualenvs = get_user_venvs(u)
     virtualenvs_choices = [("", _(u"Nevybráno"))] + [(one, one) for one in virtualenvs]
 
     sid = int(sid)
@@ -442,7 +414,7 @@ def refresh_wsgi(request):
     if not (request.method == 'POST' and request.is_ajax()):
         raise Exception('non ajax not allowed')
 
-    wsgis = find_user_wsgis(request.session.get('switched_user', request.user))
+    wsgis = get_user_wsgis(request.session.get('switched_user', request.user), False)
     return JsonResponse('OK', wsgis)
 
 @login_required
@@ -450,5 +422,5 @@ def refresh_venv(request):
     if not (request.method == 'POST' and request.is_ajax()):
         raise Exception('non ajax not allowed')
 
-    venvs = find_user_venvs(request.session.get('switched_user', request.user))
+    venvs = get_user_venvs(request.session.get('switched_user', request.user), False)
     return JsonResponse('OK', venvs)

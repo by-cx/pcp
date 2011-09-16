@@ -442,7 +442,7 @@ def restart(request, sid):
 @login_required
 def refresh_wsgi(request):
     if not (request.method == 'POST' and request.is_ajax()):
-        pass#raise Http404('.(')
+        raise Http404('.(')
 
     wsgis = find_user_wsgis(request.session.get('switched_user', request.user))
     return JsonResponse('OK', wsgis)
@@ -450,7 +450,7 @@ def refresh_wsgi(request):
 @login_required
 def refresh_venv(request):
     if not (request.method == 'POST' and request.is_ajax()):
-        pass#raise Http404('.(')
+        raise Http404('.(')
 
     venvs = find_user_venvs(request.session.get('switched_user', request.user))
     return JsonResponse('OK', venvs)

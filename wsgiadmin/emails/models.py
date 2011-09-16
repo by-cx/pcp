@@ -33,7 +33,7 @@ class formEmail(ModelForm):
 	password2	= forms.CharField(label=_(u"Heslo pro kontrolu"),widget=forms.PasswordInput(render_value=False))
 
 	def clean_login(self):
-		d = domains.domain.objects.filter(name=self.data["xdomain"])[0]
+		d = domains.Domain.objects.filter(name=self.data["xdomain"])[0]
 		#d = self.data["domain"][0]
 		if len(email.objects.filter(remove=False,domain=d,login=self.cleaned_data["login"])) == 0:
 			return self.cleaned_data["login"]

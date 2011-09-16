@@ -20,6 +20,8 @@ urlpatterns = patterns('',
 		(r'^ok/?$', 'wsgiadmin.useradmin.views.ok'),
 		(r'^error/?$', 'wsgiadmin.useradmin.views.error'),
 		(r'^info/?$', 'wsgiadmin.useradmin.views.info'),
+		(r'^master/?$', 'wsgiadmin.useradmin.views.master'),
+		(r'^requests/?$', 'wsgiadmin.useradmin.views.requests'),
 		(r'^pg/?$', 'wsgiadmin.useradmin.views.pg'),
 
 )

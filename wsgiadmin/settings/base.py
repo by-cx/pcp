@@ -146,8 +146,10 @@ PCP_SETTINGS = {
     "ipv6": True,
     "apache_conf": "/etc/apache2/sites-enabled/99_auto.conf",
     "fastcgi_wrapper_dir": "/var/www/%s/php5-wrap",
+    "nginx": True,
     "nginx_conf": "/etc/nginx/sites-enabled/99_auto.conf",
     "nginx_init_script": "/etc/init.d/nginx",
+    "apache_url": "127.0.0.1:8080", # for nginx as proxy
     "apache_init_script": "/etc/init.d/apache2",
     "uwsgi_conf": "/etc/uwsgi/config.xml",
     "uwsgi_pidfile": "/var/run/uwsgi/app_%d.pid",
@@ -155,6 +157,7 @@ PCP_SETTINGS = {
     "bind_zone_conf": "/etc/bind/pri_auto/%s.zone",
     "bind_init_script": "/etc/init.d/bind9",
     "maildir": "/var/mail",
+    "handle_dns": False,
     "dns": {
         #"master": "87.236.194.121",
         #"slave": "89.111.104.70",

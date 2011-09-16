@@ -277,7 +277,8 @@ class NginxRequest(Service):
             elif site.type == "php":
                 # PHP always throw Apache
                 config.append(render_to_string("nginx_vhost_proxy.conf", {
-                    "site": site
+                    "site": site,
+                    "proxy": settings.PCP_SETTINGS.get("apache_url"),
                 }))
             elif site.type == "static":
                 config.append(render_to_string("nginx_vhost_static.conf", {
@@ -298,7 +299,7 @@ class ApacheRequest(Service):
                 if settings.PCP_SETTINGS["mode"] != "apache": continue
 
                 config.append(render_to_string("apache_vhost_wsgi.conf", {
-                    "site": site
+                    "site": site,
                 }))
             else:
                 config.append(render_to_string("apache_vhost_%s.conf" % site.type, {

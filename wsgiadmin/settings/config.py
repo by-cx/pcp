@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-.
 ADMINS = (
-	('Adam Strauch', 'cx@initd.cz'),
-)
+('Adam Strauch', 'cx@initd.cz'),
+    )
 
 DATABASES = {
-		'default': {
-			'ENGINE': 'django.db.backends.postgresql_psycopg2',
-			'NAME': 'rosti'
-		}
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'rosti'
+    }
 }
 
 EMAIL_FROM = "info@rosti.cz"
@@ -17,7 +17,7 @@ NODE_KEY = "qpS7GkX3tWTRe+EWzLTACofEYRQf4dPROPGWb3lTL"
 
 WIKI_URL = "http://wiki.rosti.cz"
 CONTRACT_URL = "http://rosti.cz/text/podminky"
-SERVER_NAME = "Roští.cz"
+SERVER_NAME = u"Roští.cz"
 
 IPv6 = True
 

@@ -3,11 +3,11 @@
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.utils.translation import ugettext_lazy as _
 from django.template.context import RequestContext
 from django.core.mail import send_mail
-from django.conf import settings
+from wsgiadmin.apacheconf.models import Site
 
 from wsgiadmin.clients.models import *
 from wsgiadmin.invoices.models import invoice
@@ -15,6 +15,28 @@ from wsgiadmin.useradmin.forms import formReg, formReg2, form_reg_payment
 from wsgiadmin.clients.models import Parms
 
 from os.path import join
+
+@login_required
+def master(request):
+    u = request.session.get('switched_user', request.user)
+    superuser = request.user
+    if not superuser.is_superuser:
+        return HttpResponse("Chyba oprávnění")
+
+    balance_day = 0
+    for site in Site.objects.filter(removed=False):
+        balance_day += site.pay
+    balance_month = balance_day * 30
+
+    return render_to_response('master.html', {
+        "u": u,
+        "superuser": superuser,
+        "menu_active": "dashboard",
+        "balance_day": balance_day,
+        "balance_month": balance_month,
+        },
+        context_instance=RequestContext(request)
+    )
 
 @login_required
 def info(request):
@@ -27,9 +49,29 @@ def info(request):
         invoices = []
 
     return render_to_response('info.html',
-            {"u": u, "superuser": superuser, "menu_active": "dashboard",
+            {"u": u,
+             "superuser": superuser,
+             "menu_active": "dashboard",
              "invoices": invoices},
                               context_instance=RequestContext(request)
+    )
+
+
+@login_required
+def requests(request):
+    u = request.session.get('switched_user', request.user)
+    superuser = request.user
+
+    requests = u.request_set.order_by("add_date").reverse()
+    if len(requests) > 20:
+        requests = requests[0:20]
+
+    return render_to_response('requests.html', {
+            "u": u,
+            "superuser": superuser,
+            "menu_active": "dashboard",
+            "requests": requests
+        }, context_instance=RequestContext(request)
     )
 
 

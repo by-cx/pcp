@@ -39,7 +39,7 @@ def apache(request, p=1):
     superuser = request.user
     p = int(p)
 
-    paginator = Paginator(list(u.site_set.filter(removed=False)), 25)
+    paginator = Paginator(list(u.site_set.filter(removed=False).order_by("pub_date")), 25)
 
     if not paginator.count:
         page = None
@@ -116,9 +116,10 @@ def add_static(request, php="0"):
             ar.mod_vhosts()
             ar.reload()
 
-            nr = NginxRequest(u, u.parms.web_machine)
-            nr.mod_vhosts()
-            nr.reload()
+            if settings.PCP_SETTINGS.get("nginx"):
+                nr = NginxRequest(u, u.parms.web_machine)
+                nr.mod_vhosts()
+                nr.reload()
 
             return HttpResponseRedirect(reverse("wsgiadmin.apacheconf.views.apache"))
     else:
@@ -175,9 +176,10 @@ def update_static(request, sid):
             ar.mod_vhosts()
             ar.reload()
 
-            nr = NginxRequest(u, u.parms.web_machine)
-            nr.mod_vhosts()
-            nr.reload()
+            if settings.PCP_SETTINGS.get("nginx"):
+                nr = NginxRequest(u, u.parms.web_machine)
+                nr.mod_vhosts()
+                nr.reload()
 
             return HttpResponseRedirect(reverse("wsgiadmin.apacheconf.views.apache"))
     else:
@@ -204,7 +206,6 @@ def update_static(request, sid):
         context_instance=RequestContext(request)
     )
 
-
 @login_required
 def remove_site(request, sid):
     u = request.session.get('switched_user', request.user)
@@ -225,9 +226,10 @@ def remove_site(request, sid):
         ar.mod_vhosts()
         ar.reload()
 
-        nr = NginxRequest(u, u.parms.web_machine)
-        nr.mod_vhosts()
-        nr.reload()
+        if settings.PCP_SETTINGS.get("nginx"):
+            nr = NginxRequest(u, u.parms.web_machine)
+            nr.mod_vhosts()
+            nr.reload()
 
         ur.mod_config()
 
@@ -269,9 +271,10 @@ def add_wsgi(request):
             ar.mod_vhosts()
             ar.reload()
 
-            nr = NginxRequest(u, u.parms.web_machine)
-            nr.mod_vhosts()
-            nr.reload()
+            if settings.PCP_SETTINGS.get("nginx"):
+                nr = NginxRequest(u, u.parms.web_machine)
+                nr.mod_vhosts()
+                nr.reload()
             if site.type == "uwsgi":
                 ur = UWSGIRequest(u, u.parms.web_machine)
                 ur.mod_config()
@@ -343,17 +346,19 @@ def update_wsgi(request, sid):
                 ar.mod_vhosts()
                 ar.reload()
 
-                nr = NginxRequest(u, u.parms.web_machine)
-                nr.mod_vhosts()
-                nr.reload()
+                if settings.PCP_SETTINGS.get("nginx"):
+                    nr = NginxRequest(u, u.parms.web_machine)
+                    nr.mod_vhosts()
+                    nr.reload()
             else:
                 ar = ApacheRequest(u, u.parms.web_machine)
                 ar.mod_vhosts()
                 ar.reload()
 
-                nr = NginxRequest(u, u.parms.web_machine)
-                nr.mod_vhosts()
-                nr.reload()
+                if settings.PCP_SETTINGS.get("nginx"):
+                    nr = NginxRequest(u, u.parms.web_machine)
+                    nr.mod_vhosts()
+                    nr.reload()
 
             return HttpResponseRedirect(reverse("wsgiadmin.apacheconf.views.apache"))
     else:
@@ -396,9 +401,10 @@ def reload(request, sid):
         ar.mod_vhosts()
         ar.reload()
 
-        nr = NginxRequest(u, u.parms.web_machine)
-        nr.mod_vhosts()
-        nr.reload()
+        if settings.PCP_SETTINGS.get("nginx"):
+            nr = NginxRequest(u, u.parms.web_machine)
+            nr.mod_vhosts()
+            nr.reload()
 
     return HttpResponseRedirect(reverse("wsgiadmin.apacheconf.views.apache"))
 
@@ -421,9 +427,10 @@ def restart(request, sid):
         ar.mod_vhosts()
         ar.restart()
 
-        nr = NginxRequest(u, u.parms.web_machine)
-        nr.mod_vhosts()
-        nr.restart()
+        if settings.PCP_SETTINGS.get("nginx"):
+            nr = NginxRequest(u, u.parms.web_machine)
+            nr.mod_vhosts()
+            nr.restart()
 
     return HttpResponseRedirect(reverse("wsgiadmin.apacheconf.views.apache"))
 

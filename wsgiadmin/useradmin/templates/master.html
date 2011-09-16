@@ -1,0 +1,40 @@
+{% extends "admin.html" %}
+{% load i18n %}
+
+{% block title %}
+	{% trans "Administrace > Souhrné informace" %}
+{% endblock %}
+
+{% block content %}
+	<h2>{% trans "Master panel" %}</h2>
+
+	<table>
+		<tr>
+			<th>{% trans "Incoming per day and month" %}</th>
+			<td>{{ balance_day|floatformat:2 }} Kč/{{ balance_month|floatformat:2 }} Kč</td>
+		</tr>
+	</table>
+
+	<h3>{% trans "Mass actions" %}</h3>
+
+	<ul>
+		<li>{% trans "Reload DNS zones (remove all zones and recreate them)" %} - {% trans "remove old zones" %}</li>
+		<li></li>
+	</ul>
+
+	<h3>{% trans "Users under 300 Kč" %}</h3>
+
+	<table>
+		<tr>
+			<th>{% trans "Username" %}</th>
+			<th>{% trans "Balance" %}</th>
+		</tr>
+		{% for balance in balanes %}
+		<tr>
+			<td>{{ balance.username }}</td>
+			<td>{{ balance.cost }} Kč</td>
+		</tr>
+		{% endfor %}
+	</table>
+
+{% endblock %}

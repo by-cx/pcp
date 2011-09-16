@@ -24,7 +24,7 @@ class income(models.Model):
 	pub_date	= models.DateTimeField(auto_now_add=True)
 	cash        = models.FloatField(_(u"Částka"))
 	note        = models.CharField(_(u"Poznámka"), max_length=1024)
-	currency    = models.CharField(_("Měna"), max_length=20, choices=settings.CURRENCY)
+	currency    = models.CharField(_(u"Měna"), max_length=20, choices=settings.CURRENCY)
 
 	user		= models.ForeignKey(user)
 
@@ -36,7 +36,7 @@ class bill(models.Model):
 	price		= models.FloatField(_(u"Částka"))
 	info		= models.CharField(_(u"Doplňující informace"),max_length=250)
 	processed	= models.BooleanField(_(u"Zpracováno do faktury"),default=False)
-	currency    = models.CharField(_("Měna"), max_length=20, choices=settings.CURRENCY)
+	currency    = models.CharField(_(u"Měna"), max_length=20, choices=settings.CURRENCY)
 	
 	user		= models.ForeignKey(user)
 	

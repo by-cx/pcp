@@ -9,6 +9,10 @@ from wsgiadmin.requests.request import SSHHandler
 from wsgiadmin.clients.models import Machine
 from django.contrib.auth.models import User
 
+print "=" * 80
+print "this command is deprecated, use ./manage.py commit instead"
+print "=" * 80
+
 m = Machine.objects.all()[0]
 u = User.objects.all()[0]
 

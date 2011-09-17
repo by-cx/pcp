@@ -171,7 +171,6 @@ def update_static(request, sid):
                 nr = NginxRequest(u, u.parms.web_machine)
                 nr.mod_vhosts()
                 nr.reload()
-            raise Exception('x')
             return HttpResponseRedirect(reverse("wsgiadmin.apacheconf.views.apache"))
     else:
         form = form_static(initial={"domains": s.domains, "documentRoot": s.documentRoot})

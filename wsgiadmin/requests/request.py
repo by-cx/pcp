@@ -227,7 +227,7 @@ class UWSGIRequest(SSHHandler):
 			uwsgi.append("\t<processes>%s</processes>" % site.processes)
 			uwsgi.append("\t<optimize>0</optimize>")
 			uwsgi.append("\t<home>%s</home>" % site.virtualenv_path)
-			uwsgi.append("\t<limit-as>128</limit-as>")
+			uwsgi.append("\t<limit-as>256</limit-as>")
 			uwsgi.append("\t<chmod-socket>660</chmod-socket>")
 			uwsgi.append("\t<uid>%s</uid>" % site.owner.username)
 			uwsgi.append("\t<gid>%s</gid>" % site.owner.username)
@@ -352,7 +352,7 @@ class PostgreSQLRequest(SSHHandler):
 		self.run("createuser -D -R -S %s" % db)
 		self.run("createdb -O %s %s" % (db, db))
 		
-		self.passwdDb(db, password)
+		self.passwd_db(db, password)
 
 	def remove_db(self, db):
 		self.run("dropdb %s" % db)

@@ -97,6 +97,7 @@ def install(request,uid):
 
 		sr = SystemRequest(u, iuser.parms.web_machine)
 		sr.install(iuser)
+		sr.commit()
 
 		data = sr.instant_run("cat /etc/passwd")[0]
 

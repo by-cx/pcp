@@ -13,7 +13,6 @@ from django.template.context import RequestContext
 from django.views.decorators.csrf import csrf_exempt
 
 from wsgiadmin.domains.models import Domain, form_registration_request
-from wsgiadmin.domains.tools import *
 
 from django.conf import settings
 from wsgiadmin.requests.request import BindRequest

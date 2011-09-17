@@ -8,14 +8,14 @@ class Migration(SchemaMigration):
 
     def forwards(self, orm):
         
-        # Adding index on 'Request', fields ['plan_to_date']
-        db.create_index('requests_request', ['plan_to_date'])
+        # Adding index on 'Request', fields ['done']
+        db.create_index('requests_request', ['done'])
 
 
     def backwards(self, orm):
         
-        # Removing index on 'Request', fields ['plan_to_date']
-        db.delete_index('requests_request', ['plan_to_date'])
+        # Removing index on 'Request', fields ['done']
+        db.delete_index('requests_request', ['done'])
 
 
     models = {
@@ -60,11 +60,11 @@ class Migration(SchemaMigration):
             'action': ('django.db.models.fields.CharField', [], {'max_length': '20'}),
             'add_date': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'data': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'done': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'done': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'db_index': 'True'}),
             'done_date': ('django.db.models.fields.DateTimeField', [], {'default': 'None', 'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'machine': ('django.db.models.fields.CharField', [], {'default': "'localhost'", 'max_length': '100'}),
-            'plan_to_date': ('django.db.models.fields.DateTimeField', [], {'default': 'None', 'null': 'True', 'db_index': 'True', 'blank': 'True'}),
+            'plan_to_date': ('django.db.models.fields.DateTimeField', [], {'default': 'None', 'null': 'True', 'blank': 'True'}),
             'retcode': ('django.db.models.fields.IntegerField', [], {'default': '-1'}),
             'stderr': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'stdout': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),

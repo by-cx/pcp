@@ -2,7 +2,6 @@
 
 import re
 from django.db import models
-from django.forms import ModelForm
 from django import forms
 from django.contrib.auth.models import User as user
 
@@ -47,8 +46,9 @@ class form_registration_request(forms.Form):
     ipv6 = forms.BooleanField(label="Vést záznamy o IPv6 adresách", required=False, initial=True)
 
     def clean_domain(self):
-        if not re.search("[a-z0-9\-\.]*\.[a-z]{2,5}", self.cleaned_data["domain"]): raise forms.ValidationError(
-            _(u"Doména má špatný formát"))
+        if not re.search("[a-z0-9\-\.]*\.[a-z]{2,5}", self.cleaned_data["domain"]):
+            raise forms.ValidationError(_(u"Doména má špatný formát"))
+
         return self.cleaned_data["domain"]
 
 

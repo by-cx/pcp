@@ -89,7 +89,9 @@ class SSHHandler(object):
         return stdout, stderr, retcode
 
     def write(self, filename, content, plan_to=None):
-        """Add request into queue to write the content into filename."""
+        """
+        Add request into queue to write the content into filename.
+        """
         r = Request()
 
         r.action = "write"

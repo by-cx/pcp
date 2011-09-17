@@ -6,6 +6,11 @@ try:
 except ImportError:
     pass
 
+try:
+    from wsgiadmin.settings.prod import *
+except ImportError:
+    pass
+
 #logging.basicConfig(level=logging.INFO, filename=ROOT + 'rosti.log',
 #                    format='%(asctime)s %(levelname)s %(message)s')
 

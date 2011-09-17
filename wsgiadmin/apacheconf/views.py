@@ -16,12 +16,12 @@ from django.template.context import RequestContext
 from wsgiadmin.clients.models import *
 from wsgiadmin.apacheconf.models import *
 from wsgiadmin.apacheconf.forms import form_static, form_wsgi
-from wsgiadmin.requests.request import ApacheRequest, NginxRequest, UWSGIRequest, SSHHandler
+from wsgiadmin.requests.request import ApacheRequest, NginxRequest, UWSGIRequest
 from wsgiadmin.apacheconf.tools import get_user_wsgis, get_user_venvs, user_directories
 
 info = logging.info
 
-__all__ = ['refresh_venv', 'refresh_wsgi', 'add_static', 'refresh_userdirs']
+__all__ = ['refresh_venv', 'refresh_wsgi', 'add_static', 'refresh_userdirs', 'update_static']
 
 
 class JsonResponse(HttpResponse):
@@ -29,8 +29,6 @@ class JsonResponse(HttpResponse):
     def __init__(self, result, messages):
         content = anyjson.serialize(dict(result=result, messages=messages))
         super(JsonResponse, self).__init__(content, content_type='application/jsonrequest')
-
-
 
 
 @login_required
@@ -63,7 +61,6 @@ def domain_check(request, form, this_site=None):
     superuser = request.user
 
     domains = form.data["domains"].split(" ") # domény u aktuální stránky
-    print domains
     used_domains = [] # Všechny domény použité u aplikací
     my_domains = [x.name for x in u.domain_set.all()]
     error_domains = []
@@ -76,8 +73,7 @@ def domain_check(request, form, this_site=None):
     for domain in domains:
         error = True
         for my_domain in my_domains:
-            if my_domain in domain:
-                error = False
+            error = my_domain not in domain
 
         if error and "%s - %s" % (domain, (u"chybí oprávnění k použití")) not in error_domains:
             error_domains.append("%s - %s" % (domain, (u"chybí oprávnění k použití")))
@@ -94,9 +90,11 @@ def domain_check(request, form, this_site=None):
 def add_static(request, php="0"):
     u = request.session.get('switched_user', request.user)
     superuser = request.user
+    title = _(u"Přidání statického webu") if php == "0" else _(u"Přidání webu s podporou PHP")
+
     siteErrors = []
 
-    choices = [("", _(u"Nevybráno"))] + [(d, d) for d in user_directories(u, True)]
+    choices = [(d, d) for d in user_directories(u, True)]
 
     if request.method == 'POST':
         form = form_static(request.POST)
@@ -120,17 +118,10 @@ def add_static(request, php="0"):
                 nr = NginxRequest(u, u.parms.web_machine)
                 nr.mod_vhosts()
                 nr.reload()
-
             return HttpResponseRedirect(reverse("wsgiadmin.apacheconf.views.apache"))
     else:
         form = form_static()
-        form.fields["documentRoot"].choices = choices
-
-    if php == "0":
-        title = _(u"Přidání statického webu")
-    else:
-        title = _(u"Přidání webu s podporou PHP")
-
+        form.fields["documentRoot"].choices = [("", _(u"Nevybráno"))] + choices
 
     dynamic_refreshs = (
         (reverse("refresh_userdirs"), 'id_documentRoot'),
@@ -160,7 +151,7 @@ def update_static(request, sid):
     sid = int(sid)
 
     s = get_object_or_404(Site, id=sid)
-    choices = [("", _(u"Nevybráno"))] + [(d, d) for d in user_directories(u)]
+    choices = [(d, d) for d in user_directories(u)]
 
     if request.method == 'POST':
         form = form_static(request.POST)
@@ -180,11 +171,11 @@ def update_static(request, sid):
                 nr = NginxRequest(u, u.parms.web_machine)
                 nr.mod_vhosts()
                 nr.reload()
-
+            raise Exception('x')
             return HttpResponseRedirect(reverse("wsgiadmin.apacheconf.views.apache"))
     else:
         form = form_static(initial={"domains": s.domains, "documentRoot": s.documentRoot})
-        form.fields["documentRoot"].choices = choices
+        form.fields["documentRoot"].choices = [("", _(u"Nevybráno"))] + choices
 
 
     dynamic_refreshs = (
@@ -198,7 +189,7 @@ def update_static(request, sid):
             "form": form,
             "title": _(u"Úprava statického webu"),
             "submit": _(u"Upravit web"),
-            "action": reverse("wsgiadmin.apacheconf.views.update_static", args=[s.id]),
+            "action": reverse("update_static", args=[s.id]),
             "u": u,
             "superuser": superuser,
             "menu_active": "webapps",
@@ -209,7 +200,6 @@ def update_static(request, sid):
 @login_required
 def remove_site(request, sid):
     u = request.session.get('switched_user', request.user)
-    superuser = request.user
     sid = int(sid)
 
     s = get_object_or_404(Site, id=sid)
@@ -412,7 +402,6 @@ def reload(request, sid):
 @login_required
 def restart(request, sid):
     u = request.session.get('switched_user', request.user)
-    superuser = request.user
 
     sid = int(sid)
     s = get_object_or_404(Site, id=sid)

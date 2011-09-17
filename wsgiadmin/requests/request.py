@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import subprocess
-import datetime
+from datetime import datetime, timedelta
 import json
 import shlex
 from os.path import join
+from django.db.models.query_utils import Q
 
 from django.template.loader import render_to_string
 from django.conf import settings
@@ -79,7 +80,7 @@ class SSHHandler(object):
 
         stdout, stderr, retcode = self._run(cmd, stdin)
 
-        r.done_date = datetime.datetime.today()
+        r.done_date = datetime.today()
         r.done = True
         r.stdout = stdout
         r.stderr = stderr
@@ -126,7 +127,7 @@ class SSHHandler(object):
 
         stdout, stderr, retcode = self._run(cmd)
 
-        r.done_date = datetime.datetime.today()
+        r.done_date = datetime.today()
         r.done = True
         r.stdout = stdout
         r.stderr = stderr
@@ -150,7 +151,7 @@ class SSHHandler(object):
 
         stdout, stderr, retcode = self._run(cmd)
 
-        r.done_date = datetime.datetime.today()
+        r.done_date = datetime.today()
         r.done = True
         r.stdout = stdout
         r.stderr = stderr
@@ -161,10 +162,12 @@ class SSHHandler(object):
         return stdout.strip() == "1"
 
     def commit(self):
-        """Process the queue and writes the result into db"""
-        for request in Request.objects.filter(done=False).order_by("add_date"):
-            if request.plan_to_date and request.plan_to_date > datetime.datetime.today(): continue
-
+        """
+        Process the queue and writes the result into db
+        """
+        for request in Request.objects. \
+                filter(Q(plan_to_date__lte=datetime.today()) | Q(plan_to_date__isnull=True), done=False).\
+                order_by("add_date"):
             self.commit_machine = request.machine
 
             data = json.loads(request.data)
@@ -178,7 +181,7 @@ class SSHHandler(object):
                 ret = self._unlink(data["filename"])
 
             if ret:
-                request.done_date = datetime.datetime.today()
+                request.done_date = datetime.today()
                 request.done = True
                 request.stdout = ret[0]
                 request.stderr = ret[1]
@@ -360,7 +363,7 @@ class EMailRequest(SSHHandler):
     def remove_mailbox(self, email):
         homedir = settings.PCP_SETTINGS["maildir"] + "/" + email.domain.name + "/"
         maildir = homedir + email.login + "/"
-        self.run("rm -rf %s" % maildir, plan_to=datetime.datetime.today() + datetime.timedelta(90))
+        self.run("rm -rf %s" % maildir, plan_to=datetime.today() + timedelta(90))
 
 
 class PostgreSQLRequest(SSHHandler):

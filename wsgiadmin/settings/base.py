@@ -137,6 +137,7 @@ INSTALLED_APPS = (
     'apacheconf',
     'keystore',
     'service',
+    'south',
 )
 
 PCP_SETTINGS = {

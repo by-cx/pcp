@@ -5,3 +5,4 @@ wsgiadmin.egg-info/
 dist/
 build/
 wsgiadmin/settings/local.py
+wsgiadmin/settings/prod.py

@@ -427,9 +427,9 @@ class SystemRequest(SSHHandler):
         self.run("usermod -G %s -a %s" % (user.username, user.username))
         self.run("usermod -G www-data -a %s" % user.username)
         self.run("usermod -G clients -a %s" % user.username)
-        self.run("su %s -c \"mkdir -p ~/%s\"" % (user.username, settings.VIRTUALENVS_DIR))
-        self.run("su %s -c  \"virtualenv ~/%s/default\"" % (user.username, settings.VIRTUALENVS_DIR))
-        self.run("su %s -c \"mkdir -p ~/uwsgi\"" % user.username)
+        self.run('su %s -c "mkdir -p ~/%s"' % (user.username, settings.VIRTUALENVS_DIR))
+        self.run('su %s -c  "virtualenv ~/%s/default"' % (user.username, settings.VIRTUALENVS_DIR))
+        self.run('su %s -c "mkdir -p ~/uwsgi"' % user.username)
 
     def passwd(self, password):
         self.run("/usr/sbin/chpasswd", stdin="%s:%s" % (self.user.username, password))

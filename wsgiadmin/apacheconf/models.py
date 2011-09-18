@@ -87,7 +87,7 @@ class Site(models.Model):
 
     @property
     def fastcgiWrapper(self):
-        return settings.PCP_SETTINGS["fastcgi_wrapper"] % self.owner
+        return settings.PCP_SETTINGS["fastcgi_wrapper_dir"] % self.owner
 
     @property
     def pay(self):

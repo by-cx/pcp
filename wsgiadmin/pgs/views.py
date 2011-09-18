@@ -93,7 +93,7 @@ def rm(request,db):
 
 	if p:
 		pr = PostgreSQLRequest(u, u.parms.pgsql_machine)
-		pr.add_db(db)
+		pr.remove_db(db)
 
 		p[0].delete()
 

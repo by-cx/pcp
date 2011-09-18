@@ -222,6 +222,7 @@ class Service(SSHHandler):
 
 
 class UWSGIRequest(SSHHandler):
+
     def mod_config(self):
         uwsgi = ["<rosti>"]
 
@@ -367,11 +368,10 @@ class EMailRequest(SSHHandler):
 
 
 class PostgreSQLRequest(SSHHandler):
+
     def add_db(self, db, password):
         self.run("createuser -D -R -S %s" % db)
-        self.run("createdb -O %s %s" % (db, db))
-
-        self.passwdDb(db, password)
+        self.passwd_db(db, password)
 
     def remove_db(self, db):
         self.run("dropdb %s" % db)

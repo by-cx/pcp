@@ -100,7 +100,7 @@ def add_static(request, php="0"):
         form.fields["documentRoot"].choices = choices
         siteErrors = domain_check(request, form)
         if not siteErrors and form.is_valid():
-            web = Site()
+            web = UserSite()
             web.domains = form.cleaned_data["domains"]
             web.documentRoot = form.cleaned_data["documentRoot"]
             web.type = "static" if php == "0" else "php" 
@@ -243,15 +243,10 @@ def add_wsgi(request):
         form.fields["virtualenv"].choices = virtualenvs_choices
         siteErrors = domain_check(request, form)
         if not siteErrors and form.is_valid():
-            site = Site()
-            site.domains = form.cleaned_data["domains"]
-            site.owner = u
-            site.virtualenv = form.cleaned_data["virtualenv"]
-            site.static = form.cleaned_data["static"]
-            site.python_path = form.cleaned_data["python_path"]
-            site.script = form.cleaned_data["script"]
-            site.allow_ips = form.cleaned_data["allow_ips"]
-            site.type = "uwsgi"
+            site = UserSite(owner=u, type='wsgi')
+            for key, val in form.cleaned_data.items():
+                if hasattr(site, key):
+                    setattr(site, key, val)
             site.save()
 
             #Signal

@@ -2,13 +2,15 @@
 
 from django.contrib.auth.models import User as user
 from django.db import models
-from django.forms import ModelForm
 from django import forms
+from django.forms import ModelForm
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 
+from wsgiadmin.apacheconf.models import UserSite
 from wsgiadmin.keystore.tools import *
 from wsgiadmin.requests.tools import request_raw
+from wsgiadmin.tools import size_format
 
 
 class form_user(ModelForm):
@@ -160,7 +162,7 @@ class Parms(models.Model):
     mysql_machine = models.ForeignKey(Machine, related_name="mysql")
     pgsql_machine = models.ForeignKey(Machine, related_name="pgsql")
 
-    user = models.OneToOneField(user, verbose_name=_('Uživatel'))
+    user = models.OneToOneField(user, verbose_name=_(u'Uživatel'))
 
     def prefix(self):
         if len(self.user.username) > 3:
@@ -188,7 +190,7 @@ class Parms(models.Model):
         return self.user.mysqldb_set.count()
 
     def count_sites(self):
-        return self.user.site_set.filter(removed=False).count()
+        return UserSite.objects.filter(owner=self.user).count()
 
     def count_emails(self):
         count = 0

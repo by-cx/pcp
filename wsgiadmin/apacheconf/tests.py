@@ -6,7 +6,6 @@ from django.core.urlresolvers import reverse
 #from django.utils import unittest
 import unittest
 from django.test.client import RequestFactory
-from wsgiadmin.apacheconf.models import Site
 from wsgiadmin.apacheconf.views import apache, restart, reload, update_wsgi, add_wsgi, remove_site, update_static, add_static
 from wsgiadmin.clients.models import Machine, Address, Parms
 

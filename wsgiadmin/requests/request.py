@@ -10,7 +10,7 @@ from django.db.models.query_utils import Q
 from django.template.loader import render_to_string
 from django.conf import settings
 
-from wsgiadmin.apacheconf.models import Site
+from wsgiadmin.apacheconf.models import UserSite
 from wsgiadmin.domains.models import Domain
 from wsgiadmin.requests.models import Request
 from wsgiadmin.clients.models import Machine
@@ -226,7 +226,8 @@ class UWSGIRequest(SSHHandler):
     def mod_config(self):
         uwsgi = ["<rosti>"]
 
-        for site in Site.objects.filter(type="uwsgi"):
+        sites = UserSite.objects.filter(type="uwsgi")
+        for site in sites:
             uwsgi.append("<uwsgi id=\"%d\">" % site.id)
             pp = site.owner.parms.home
             for pp in [site.owner.parms.home + x.strip() for x in site.python_path.split("\n") if x.strip()]:
@@ -275,7 +276,8 @@ class NginxRequest(Service):
 
     def mod_vhosts(self):
         config = []
-        for site in Site.objects.filter(removed=False, owner__parms__enable=True):
+        sites = UserSite.objects.filter(removed=False, owner__parms__enable=True)
+        for site in sites:
             if site.type in ("uwsgi", "modwsgi"):
                 config.append(render_to_string("nginx_vhost_wsgi.conf", {
                     "site": site
@@ -299,7 +301,8 @@ class ApacheRequest(Service):
 
     def mod_vhosts(self):
         config = []
-        for site in Site.objects.filter(removed=False, owner__parms__enable=True):
+        sites = UserSite.objects.filter(removed=False, owner__parms__enable=True)
+        for site in sites:
             if site.type in ("uwsgi", "modwsgi"):
                 # Nginx mode cancel handling wsgi by Apache
                 if settings.PCP_SETTINGS["mode"] != "apache": continue

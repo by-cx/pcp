@@ -9,7 +9,7 @@ from django.conf import settings
 from os.path import join
 
 
-class Site(models.Model):
+class UserSite(models.Model):
     pub_date = models.DateField(auto_now_add=True)
     end_date = models.DateField(blank=True, null=True)
     type = models.CharField(_(u"Type"), max_length=20,
@@ -36,6 +36,9 @@ class Site(models.Model):
     removed = models.BooleanField(_(u"Smazáno"), default=False) # nezmizí dokud se nezaplatí
     owner = models.ForeignKey(user, verbose_name=_('Uživatel'))
 
+    class Meta:
+        db_table = 'apacheconf_site'
+
     @property
     def serverNameSlugged(self):
         return slugify(self.serverName)
@@ -50,7 +53,7 @@ class Site(models.Model):
         for line in self.static.split("\n"):
             line = line.strip().split(" ")
             if len(line) == 2:
-                statics.append({"url": line[0], "dir": self.owner.parms.home + "" + line[1]})
+                statics.append({"url": line[0], "dir": "%s%s" (self.owner.parms.home, line[1])})
         return statics
 
     @property

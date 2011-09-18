@@ -7,4 +7,4 @@ class site_admin(admin.ModelAdmin):
     list_display = ("serverName", "pub_date", "documentRoot", "removed")
     list_display_links = ("serverName",)
 
-admin.site.register(Site, site_admin)
+admin.site.register(UserSite, site_admin)

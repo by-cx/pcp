@@ -28,7 +28,7 @@ class form_wsgi(forms.Form):
         help_text=_(u"<br />Jedna IP adresa na jeden řádek. Pokud je pole prázdné, fungují všechny."), required=False)
 
     def clean_allow_ips(self):
-        ips = [x.strip() for x in self.cleaned_data["allow_ips"].split("\n") if x]
+        ips = [x.strip() for x in self.cleaned_data["allow_ips"].split("\n") if x.strip()]
 
         for ip in ips:
             if not re.match("[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}", ip):

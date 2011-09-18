@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from wsgiadmin.bills.models import bill, service
-from wsgiadmin.apacheconf.models import site
 from wsgiadmin.invoices.models import invoice, item
 from wsgiadmin.invoices.views import next_payment_id
 

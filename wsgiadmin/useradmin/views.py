@@ -3,11 +3,11 @@
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseForbidden
 from django.utils.translation import ugettext_lazy as _
 from django.template.context import RequestContext
 from django.core.mail import send_mail
-from wsgiadmin.apacheconf.models import Site
+from wsgiadmin.apacheconf.models import UserSite
 
 from wsgiadmin.clients.models import *
 from wsgiadmin.invoices.models import invoice
@@ -21,10 +21,11 @@ def master(request):
     u = request.session.get('switched_user', request.user)
     superuser = request.user
     if not superuser.is_superuser:
-        return HttpResponse("Chyba oprávnění")
+        return HttpResponseForbidden("Chyba oprávnění")
 
     balance_day = 0
-    for site in Site.objects.filter(removed=False):
+    sites = UserSite.objects.filter(removed=False)
+    for site in sites:
         balance_day += site.pay
     balance_month = balance_day * 30
 
@@ -42,11 +43,7 @@ def master(request):
 def info(request):
     u = request.session.get('switched_user', request.user)
     superuser = request.user
-
-    try:
-        invoices = invoice.objects.filter(client_address=u.parms.address)
-    except Parms.DoesNotExist:
-        invoices = []
+    invoices = invoice.objects.filter(client_address=u.parms.address)
 
     return render_to_response('info.html',
             {"u": u,
@@ -199,7 +196,7 @@ def reg(request):
                 p.save()
 
             message = _(u"Byl registrován nový uživatel.")
-            send_mail(_('Nová registrace %s %s' % (
+            send_mail(_(u'Nová registrace %s %s' % (
                 form1.cleaned_data["name"], form1.cleaned_data["company"])),
                       message,
                       settings.EMAIL_FROM,

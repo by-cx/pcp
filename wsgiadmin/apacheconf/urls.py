@@ -15,5 +15,4 @@ urlpatterns = patterns('wsgiadmin.apacheconf.views',
     url('^refresh_wsgi/?$', refresh_wsgi, name="refresh_wsgi"),
     url('^refresh_venv/?$', refresh_venv, name="refresh_venv"),
     url('^refresh_userdirs/?$', refresh_userdirs, name="refresh_userdirs"),
-
 )

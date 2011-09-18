@@ -112,7 +112,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.media",
     "django.core.context_processors.static",
     "django.contrib.messages.context_processors.messages",
-    "useradmin.context.rosti_context"
+    "wsgiadmin.useradmin.context.rosti_context"
 )
 
 INSTALLED_APPS = (

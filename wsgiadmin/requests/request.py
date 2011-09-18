@@ -102,9 +102,7 @@ class SSHHandler(object):
 
     def unlink(self, filename, plan_to=None):
         """Add request into queue to unlink filename."""
-        r = Request()
-
-        r.action = "unlink"
+        r = Request(action='unlink')
         r.machine = self._server_name()
         r.data = json.dumps({"action": "unlink", "filename": filename})
         r.user = self.user
@@ -115,9 +113,7 @@ class SSHHandler(object):
         """Read filename promtly."""
         cmd = "cat %s" % filename
 
-        r = Request()
-
-        r.action = "read"
+        r = Request(action="read")
         r.machine = self._server_name()
         r.data = json.dumps({"action": "read", "cmd": cmd})
         r.user = self.user
@@ -139,9 +135,7 @@ class SSHHandler(object):
         """Return true, if filename is exists."""
         cmd = "if [ `ls %s 2> /dev/null` ]; then echo 1; fi;" % filename
 
-        r = Request()
-
-        r.action = "read"
+        r = Request(action="read")
         r.machine = self._server_name()
         r.data = json.dumps({"action": "isfile", "cmd": cmd})
         r.user = self.user

@@ -110,7 +110,7 @@ def add_static(request, php="0"):
             ar.mod_vhosts()
             ar.reload()
 
-            if settings.PCP_SETTINGS.get("nginx"):
+            if settings.PCP_SETTINGS['mode'] == 'nginx':
                 nr = NginxRequest(u, u.parms.web_machine)
                 nr.mod_vhosts()
                 nr.reload()
@@ -166,7 +166,7 @@ def update_static(request, sid):
             ar.mod_vhosts()
             ar.reload()
 
-            if settings.PCP_SETTINGS.get("nginx"):
+            if settings.PCP_SETTINGS['mode'] == "nginx":
                 nr = NginxRequest(u, u.parms.web_machine)
                 nr.mod_vhosts()
                 nr.reload()
@@ -216,7 +216,7 @@ def remove_site(request, sid):
     ar.mod_vhosts()
     ar.reload()
 
-    if settings.PCP_SETTINGS.get("nginx"):
+    if settings.PCP_SETTINGS['mode'] == 'nginx':
         nr = NginxRequest(u, u.parms.web_machine)
         nr.mod_vhosts()
         nr.reload()
@@ -249,7 +249,7 @@ def add_wsgi(request):
             ar.mod_vhosts()
             ar.reload()
 
-            if settings.PCP_SETTINGS.get("nginx"):
+            if settings.PCP_SETTINGS['mode'] == 'nginx':
                 nr = NginxRequest(u, u.parms.web_machine)
                 nr.mod_vhosts()
                 nr.reload()
@@ -312,7 +312,7 @@ def update_wsgi(request, sid):
                 ar.mod_vhosts()
                 ar.reload()
 
-                if settings.PCP_SETTINGS.get("nginx"):
+                if settings.PCP_SETTINGS['mode'] == 'nginx':
                     nr = NginxRequest(u, u.parms.web_machine)
                     nr.mod_vhosts()
                     nr.reload()
@@ -321,7 +321,7 @@ def update_wsgi(request, sid):
                 ar.mod_vhosts()
                 ar.reload()
 
-                if settings.PCP_SETTINGS.get("nginx"):
+                if settings.PCP_SETTINGS['mode'] == 'nginx':
                     nr = NginxRequest(u, u.parms.web_machine)
                     nr.mod_vhosts()
                     nr.reload()
@@ -363,7 +363,7 @@ def reload(request, sid):
         ar.mod_vhosts()
         ar.reload()
 
-        if settings.PCP_SETTINGS.get("nginx"):
+        if settings.PCP_SETTINGS['mode'] == 'nginx':
             nr = NginxRequest(u, u.parms.web_machine)
             nr.mod_vhosts()
             nr.reload()
@@ -388,7 +388,7 @@ def restart(request, sid):
         ar.mod_vhosts()
         ar.restart()
 
-        if settings.PCP_SETTINGS.get("nginx"):
+        if settings.PCP_SETTINGS['mode'] == 'nginx':
             nr = NginxRequest(u, u.parms.web_machine)
             nr.mod_vhosts()
             nr.restart()
@@ -399,7 +399,7 @@ def restart(request, sid):
 @login_required
 def refresh_wsgi(request):
     if not (request.method == 'POST' and request.is_ajax()):
-        raise Exception('non ajax not allowed')
+        return HttpResponseForbidden('non ajax not allowed')
 
     wsgis = get_user_wsgis(request.session.get('switched_user', request.user), False)
     return JsonResponse('OK', wsgis)
@@ -407,7 +407,7 @@ def refresh_wsgi(request):
 @login_required
 def refresh_venv(request):
     if not (request.method == 'POST' and request.is_ajax()):
-        raise Exception('non ajax not allowed')
+        return HttpResponseForbidden('non ajax not allowed')
 
     venvs = get_user_venvs(request.session.get('switched_user', request.user), False)
     return JsonResponse('OK', venvs)
@@ -416,7 +416,7 @@ def refresh_venv(request):
 @login_required
 def refresh_userdirs(request):
     if not (request.method == 'POST' and request.is_ajax()):
-        raise Exception('non ajax not allowed')
+        return HttpResponseForbidden('non ajax not allowed')
 
     user_dirs = user_directories(request.session.get('switched_user', request.user), False)
     return JsonResponse('OK', user_dirs)

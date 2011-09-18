@@ -6,10 +6,15 @@
 	background-repeat: no-repeat;
 	padding-left: 30px;
 	cursor: pointer;
+	width: 100px;
 }
 
 .ajax_refresh.running {
 	background-image: url('/m/icons/ajax-loader.gif');
+}
+
+.ajax_refresh .status {
+	padding-left: 10px;
 }
 
 .error {

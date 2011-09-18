@@ -330,8 +330,15 @@ def update_wsgi(request, sid):
     else:
         form = FormWsgi(user=u, instance=site)
 
-    return render_to_response('universal.html',
+
+    dynamic_refreshs = (
+        (reverse("refresh_wsgi"), 'id_script'),
+        (reverse("refresh_venv"), 'id_virtualenv'),
+    )
+
+    return render_to_response('add_site.html',
             {
+            "dynamic_refreshs": dynamic_refreshs,
             "siteErrors": siteErrors,
             "form": form,
             "title": _(u"Upravení WSGI aplikace"),

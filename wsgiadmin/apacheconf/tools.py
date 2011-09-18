@@ -53,7 +53,7 @@ def get_user_venvs(user, use_cache=True):
     if not venvs:
         sh = SSHHandler(user, user.parms.web_machine)
         venv_location = join(user.parms.home, settings.VIRTUALENVS_DIR)
-        root_len = len(venv_location)
+        root_len = len(venv_location) + 1
         output = sh.instant_run("/usr/bin/find %s -maxdepth 1 -type d" % venv_location)[0].split("\n")
         venvs = [one[root_len:] for one in output if one[root_len:]]
 
@@ -143,10 +143,8 @@ def gen_vhosts():
             conf.append("</Location>")
         if configtype == "wsgi" and s.wsgi.static:
             for static in [x.strip().split(" ") for x in s.wsgi.static.split("\n") if not "#" in x]:
-                print static
                 if len(static) == 2 and len(static[0]) > 1 and static[0][0] == "/" and static[0][-1] == "/" and len(
                     static[1]) > 1 and static[1][0] == "/" and static[1][-1] == "/":
-                    print "2", static
                     conf.append("Alias \"%s\"     \"%s\"" % (static[0], s.owner.parms.home + static[1]))
                     conf.append("<Directory \"%s\">" % (s.owner.parms.home + static[1]))
                     conf.append("\tOrder deny,allow")

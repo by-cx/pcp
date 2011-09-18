@@ -83,7 +83,7 @@ class Site(models.Model):
 
     @property
     def virtualenv_path(self):
-        return join(self.owner.parms.home, settings.VIRUALENVS_DIR, "%s" % self.virtualenv)
+        return join(self.owner.parms.home, settings.VIRTUALENVS_DIR, "%s" % self.virtualenv)
 
     @property
     def fastcgiWrapper(self):

@@ -58,7 +58,6 @@ def apache(request, p=1):
 @login_required
 def domain_check(request, form, this_site=None):
     u = request.session.get('switched_user', request.user)
-    superuser = request.user
 
     domains = form.data["domains"].split(" ") # domény u aktuální stránky
     used_domains = [] # Všechny domény použité u aplikací

@@ -46,11 +46,11 @@
 						{% if items.has_previous %}<a href="{% url wsgiadmin.bills.views.show type emails.previous_page_number %}" title="{% trans "Předchozí stránka" %}">&laquo; {% trans "Předchozí" %}</a>{% endif %}
 
 						{% for p in paginator.page_range %}
-							{% ifequal p num_page %}
+							{% if p == num_page %}
 								<a href="{% url wsgiadmin.bills.views.show type p %}" class="number current" title="{{ p }}">{{ p }}</a>
 							{% else %}
 								<a href="{% url wsgiadmin.bills.views.show type p %}" class="number" title="{{ p }}">{{ p }}</a>
-							{% endifequal %}
+							{% endif %}
 						{% endfor %}
 
 						{% if items.has_next %}<a href="{% url wsgiadmin.bills.views.show type items.next_page_number %}" title="{% trans "Další stránka" %}">{% trans "Další" %} &raquo;</a>{% endif %}

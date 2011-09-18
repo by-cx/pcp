@@ -5,12 +5,14 @@
 	Administrace > Uživatelé
 {% endblock %}
 
-{% block content %}
-<script type="text/javascript">
+{% block jsblock %}
+	{{ block.super }}
 	function remove(what) {
 		$("#user_"+what).load("{% url wsgiadmin.users.views.rm 0 %}"+what)
 	}
-</script>
+{% endblock %}
+
+{% block content %}
 <div id="message-box"></div>
 <div class="clear"></div>
 <div class="content-box">
@@ -66,11 +68,11 @@
 									{% if users.has_previous %}<a href="{% url wsgiadmin.users.views.show users.previous_page_number %}" title="{% trans "Předchozí stránka" %}">&laquo; {% trans "Předchozí" %}</a>{% endif %}
 				
 									{% for p in paginator.page_range %}
-										{% ifequal p num_page %}
+										{% if p == num_page %}
 											<a href="{% url wsgiadmin.users.views.show p %}" class="number current" title="{{ p }}">{{ p }}</a>
 										{% else %}
 											<a href="{% url wsgiadmin.users.views.show p %}" class="number" title="{{ p }}">{{ p }}</a>
-										{% endifequal %}
+										{% endif %}
 									{% endfor %}
 				
 									{% if users.has_next %}<a href="{% url wsgiadmin.users.views.show users.next_page_number %}" title="{% trans "Další stránka" %}">{% trans "Další" %} &raquo;</a>{% endif %}

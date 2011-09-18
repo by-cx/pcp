@@ -5,13 +5,15 @@
 	Administrace > Webová stránky a aplikace
 {% endblock %}
 
-{% block content %}
-	<script type="text/javascript">
-		function remove(what) {
+{% block jsblock %}
+{{ block.super }}
+function remove(what) {
 			$("#remove_"+what).hide()
 			$("#removed_"+what).load("{% url wsgiadmin.apacheconf.views.remove_site 0 %}"+what)
 		}
-	</script>
+{% endblock %}
+
+{% block content %}
 	<h2>{% trans "Webové stránky a aplikace" %}</h2>
 	<ul>
 		<li><a href="{% url wsgiadmin.apacheconf.views.add_static "0" %}">{% trans "Přidat statickou webovou stránku" %}</a></li>
@@ -59,11 +61,11 @@
 						{% if sites.has_previous %}<a href="{% url wsgiadmin.apacheconf.views.apache sites.previous_page_number %}" title="{% trans "Předchozí stránka" %}">&laquo; {% trans "Předchozí" %}</a>{% endif %}
 
 						{% for p in paginator.page_range %}
-							{% ifequal p num_page %}
+							{% if p == num_page %}
 								<a href="{% url wsgiadmin.apacheconf.views.apache p %}" class="number current" title="{{ p }}">{{ p }}</a>
 							{% else %}
 								<a href="{% url wsgiadmin.apacheconf.views.apache p %}" class="number" title="{{ p }}">{{ p }}</a>
-							{% endifequal %}
+							{% endif %}
 						{% endfor %}
 
 						{% if sites.has_next %}<a href="{% url wsgiadmin.apacheconf.views.apache sites.next_page_number %}" title="{% trans "Další stránka" %}">{% trans "Další" %} &raquo;</a>{% endif %}

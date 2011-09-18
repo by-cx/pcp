@@ -5,12 +5,14 @@
 	Administrace > Domény
 {% endblock %}
 
-{% block content %}
-<script type="text/javascript">
-	function remove(what) {
+{% block jsblock %}
+{{ block.super }}
+function remove(what) {
 		$("#domain_"+what).load("{% url wsgiadmin.domains.views.rm 0 %}"+what);
 	}
-</script>
+{% endblock %}
+
+{% block content %}
 <div id="message-box"></div>
 
 <h3>Domény</h3>
@@ -51,11 +53,11 @@
 						{% if domains.has_previous %}<a href="{% url wsgiadmin.domains.views.show domains.previous_page_number %}" title="{% trans "Předchozí stránka" %}">&laquo; {% trans "Předchozí" %}</a>{% endif %}
 
 						{% for p in paginator.page_range %}
-							{% ifequal p num_page %}
+							{% if p == num_page %}
 								<a href="{% url wsgiadmin.domains.views.show p %}" class="number current" title="{{ p }}">{{ p }}</a>
 							{% else %}
 								<a href="{% url wsgiadmin.domains.views.show p %}" class="number" title="{{ p }}">{{ p }}</a>
-							{% endifequal %}
+							{% endif %}
 						{% endfor %}
 
 						{% if domains.has_next %}<a href="{% url wsgiadmin.domains.views.show domains.next_page_number %}" title="{% trans "Další stránka" %}">{% trans "Další" %} &raquo;</a>{% endif %}

@@ -5,12 +5,14 @@
 	{% trans "Administrace > FTP účty" %}
 {% endblock %}
 
-{% block content %}
-<script type="text/javascript">
-	function remove(what) {
+{% block jsblock %}
+function remove(what) {
 		$("#ftp_"+what).load("{% url wsgiadmin.ftps.views.rm 0 %}"+what)
 	}
-</script>
+{% endblock %}
+
+{% block content %}
+
 <div id="message-box"></div>
 <h3>{% trans "Seznam FTP účtů" %}</h3>
 <table>
@@ -43,11 +45,11 @@
 						{% if ftps.has_previous %}<a href="{% url wsgiadmin.ftps.views.show ftps.previous_page_number %}" title="{% trans "Předchozí stránka" %}">&laquo; {% trans "Předchozí" %}</a>{% endif %}
 
 						{% for p in paginator.page_range %}
-							{% ifequal p num_page %}
+							{% if p == num_page %}
 								<a href="{% url wsgiadmin.ftps.views.show p %}" class="number current" title="{{ p }}">{{ p }}</a>
 							{% else %}
 								<a href="{% url wsgiadmin.ftps.views.show p %}" class="number" title="{{ p }}">{{ p }}</a>
-							{% endifequal %}
+							{% endif %}
 						{% endfor %}
 
 						{% if ftps.has_next %}<a href="{% url wsgiadmin.ftps.views.show ftps.next_page_number %}" title="{% trans "Další stránka" %}">{% trans "Další" %} &raquo;</a>{% endif %}

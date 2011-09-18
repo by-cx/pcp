@@ -5,16 +5,18 @@
 	{% trans "Administrace > Přesměrování (aliasy)" %}
 {% endblock %}
 
-{% block content %}
-<script type="text/javascript">
+{% block jsblock %}
 	function remove(what) {
-		var removed_id = "#removed_"+what;
-		$("#remove_"+what).hide();
-		$.get("{% url wsgiadmin.emails.views.removeRedirect 0 %}"+what, function (data){
-			document.location = '{% url wsgiadmin.emails.views.redirects %}';
-		});
-	}
-	</script>
+			var removed_id = "#removed_"+what;
+			$("#remove_"+what).hide();
+			$.get("{% url wsgiadmin.emails.views.removeRedirect 0 %}"+what, function (data){
+				document.location = '{% url wsgiadmin.emails.views.redirects %}';
+			});
+		}
+
+{% endblock %}
+
+{% block content %}
 
 <h2>Přesměrování</h2>
 
@@ -57,11 +59,11 @@
 						{% if redirects.has_previous %}<a href="{% url wsgiadmin.emails.views.redirects redirects.previous_page_number %}" title="{% trans "Předchozí stránka" %}">&laquo; {% trans "Předchozí" %}</a>{% endif %}
 
 						{% for p in paginator.page_range %}
-							{% ifequal p num_page %}
+							{% if p == num_page %}
 								<a href="{% url wsgiadmin.emails.views.redirects p %}" class="number current" title="{{ p }}">{{ p }}</a>
 							{% else %}
 								<a href="{% url wsgiadmin.emails.views.redirects p %}" class="number" title="{{ p }}">{{ p }}</a>
-							{% endifequal %}
+							{% endif %}
 						{% endfor %}
 
 						{% if redirects.has_next %}<a href="{% url wsgiadmin.emails.views.redirects redirects.next_page_number %}" title="{% trans "Další stránka" %}">{% trans "Další" %} &raquo;</a>{% endif %}

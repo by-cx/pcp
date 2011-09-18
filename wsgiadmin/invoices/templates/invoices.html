@@ -5,9 +5,9 @@
 	{% trans "Administrace > Faktury" %}
 {% endblock %}
 
-{% block content %}
-<script type="text/javascript">
-	function send_item(what) {
+{% block jsblock %}
+{{ block.super }}
+function send_item(what) {
 		$.get("{% url wsgiadmin.invoices.views.send_invoice 0 %}"+what, function (data){
 			alert("Odesláno");
 		});
@@ -23,7 +23,10 @@
 	function remove_item(what) {
 		$("#item_"+what).load("{% url wsgiadmin.invoices.views.rm_item 0 %}"+what);
 	}
-</script>
+{% endblock %}
+
+{% block content %}
+
 <div id="message-box"></div>
 <h3>{% trans "Faktury" %}</h3>
 
@@ -106,11 +109,11 @@
 						{% if invoices.has_previous %}<a href="{% url wsgiadmin.invoices.views.show invoices.previous_page_number %}" title="{% trans "Předchozí stránka" %}">&laquo; {% trans "Předchozí" %}</a>{% endif %}
 
 						{% for p in paginator.page_range %}
-							{% ifequal p num_page %}
+							{% if p == num_page %}
 								<a href="{% url wsgiadmin.invoices.views.show p %}" class="number current" title="{{ p }}">{{ p }}</a>
 							{% else %}
 								<a href="{% url wsgiadmin.invoices.views.show p %}" class="number" title="{{ p }}">{{ p }}</a>
-							{% endifequal %}
+							{% endif %}
 						{% endfor %}
 
 						{% if invoices.has_next %}<a href="{% url wsgiadmin.invoices.views.show invoices.next_page_number %}" title="{% trans "Další stránka" %}">{% trans "Další" %} &raquo;</a>{% endif %}
@@ -130,4 +133,3 @@
 </table>
 
 {% endblock %}
-

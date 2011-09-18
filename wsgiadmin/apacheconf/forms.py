@@ -1,31 +1,54 @@
 # -*- coding: utf-8 -*-
 
-from django.utils.translation import ugettext_lazy as _
-from django import forms
-
 import re
+
+from django import forms
+from django.forms.models import ModelForm
+from django.utils.translation import ugettext_lazy as _
+
+from wsgiadmin.apacheconf.models import UserSite
+from wsgiadmin.apacheconf.tools import get_user_wsgis, get_user_venvs
+
 
 class form_static(forms.Form):
     domains = forms.CharField(label=_(u"Domény *"), help_text=_(u"<br />Domény na kterých bude web server naslouchat oddělené mezerou. Například 'rosti.cz www.rosti.cz ' apod. První doména je brána jako hlavní."))
     documentRoot = forms.ChoiceField(label=_(u"Adresář"))
 
 
-class form_wsgi(forms.Form):
-    domains = forms.CharField(label=_(u"Domény *"), help_text=_(
-        u"<br />Domény na kterých bude web server naslouchat oddělené mezerou. Například 'rosti.cz www.rosti.cz ' apod. První doména je brána jako hlavní."))
-    static = forms.CharField(label=_(u"Adresáře se statickými soubory"), widget=forms.Textarea, help_text=_(
-        u"<br /><strong>~/&lt;zadaná_cesta&gt;</strong> - Jeden řádek, jeden adresář. Formát <strong>/url/ /cesta/k/mediím/</strong> - Odělovačem je mezera. Chybné řádky budou při generování konfigurace ignorovány.")
-        , required=False)
-    python_path = forms.CharField(label=_(u"Python path"), widget=forms.Textarea, help_text=_(
-        u"<br /><strong>~/&lt;zadaná_cesta&gt;</strong> - Jeden řádek, jeden adresář. Formát <strong>/tady/je/moje/aplikace</strong>. Váš domovský adresář bude automaticky doplněn.<br />uWSGI ignoruje nastavení PYTHON_PATH přes sys.path.")
-        , required=False)
-    virtualenv = forms.ChoiceField(label=_(u"Virtualenv *"), choices=(("default", "default"),), initial="default",
-        help_text=_(
-            u"<br />Pythoní virtuální prostředí. Najdete je ve '<strong>~/virtualenvs/&lt;zadaná_hodnota&gt;</strong>'. Můžete si si vytvořit vlastní přes SSH.")
-        , required=True)
-    script = forms.ChoiceField(label=_(u"WSGI skript *"))
-    allow_ips = forms.CharField(label=_(u"Povolené IPv4 adresy"), widget=forms.Textarea,
-        help_text=_(u"<br />Jedna IP adresa na jeden řádek. Pokud je pole prázdné, fungují všechny."), required=False)
+class FormWsgi(ModelForm):
+
+    class Meta:
+        model = UserSite
+        fields = ('domains', 'static', 'python_path', 'virtualenv', 'script', 'allow_ips')
+        widgets = {
+            'static': forms.Textarea,
+            'python_path': forms.Textarea,
+            'allow_ips': forms.Textarea,
+            'virtualenv': forms.Select,
+            'script': forms.Select,
+        }
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user')
+
+        super(FormWsgi, self).__init__(*args, **kwargs)
+
+        self.fields['domains'].help_text = _(u"<br />Domény na kterých bude web server naslouchat oddělené mezerou. Například 'rosti.cz www.rosti.cz ' apod. První doména je brána jako hlavní.")
+        self.fields['static'].help_text = _(u"<br /><strong>~/&lt;zadaná_cesta&gt;</strong> - Jeden řádek, jeden adresář. Formát <strong>/url/ /cesta/k/mediím/</strong> - Odělovačem je mezera. Chybné řádky budou při generování konfigurace ignorovány.")
+        self.fields['python_path'].help_text=_(u"<br /><strong>~/&lt;zadaná_cesta&gt;</strong> - Jeden řádek, jeden adresář. Formát <strong>/tady/je/moje/aplikace</strong>. Váš domovský adresář bude automaticky doplněn.<br />uWSGI ignoruje nastavení PYTHON_PATH přes sys.path.")
+        self.fields['virtualenv'].help_text= _(u"<br />Pythoní virtuální prostředí. Najdete je ve '<strong>~/virtualenvs/&lt;zadaná_hodnota&gt;</strong>'. Můžete si si vytvořit vlastní přes SSH.")
+        self.fields['allow_ips'].help_text = help_text=_(u"<br />Jedna IP adresa na jeden řádek. Pokud je pole prázdné, fungují všechny.")
+
+        wsgis = get_user_wsgis(self.user)
+        wsgis_choices = [("", _(u"Nevybráno"))] + [(x, x) for x in wsgis]
+
+        virtualenvs = get_user_venvs(self.user)
+        virtualenvs_choices = [("", _(u"Nevybráno"))] + [(one, one) for one in virtualenvs]
+
+        self.fields["virtualenv"].widget.choices = virtualenvs_choices
+        self.fields['script'].widget.choices = wsgis_choices
+        
+
 
     def clean_allow_ips(self):
         ips = [x.strip() for x in self.cleaned_data["allow_ips"].split("\n") if x.strip()]

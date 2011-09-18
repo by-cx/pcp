@@ -16,7 +16,7 @@ class UserSite(models.Model):
         choices=[("uwsgi", "uWSGI"), ("modwsgi", "mod_wsgi"), ("php", "PHP"), ("static", "Static")])
 
     domains = models.CharField(_(u"Domains"), max_length=1024,
-        help_text="Domény na kterých bude web server naslouchat oddělené mezerou. Například 'rosti.cz www.rosti.cz ' apod. První doména je brána jako hlavní.")
+        help_text=u"Domény na kterých bude web server naslouchat oddělené mezerou. Například 'rosti.cz www.rosti.cz ' apod. První doména je brána jako hlavní.")
 
     documentRoot = models.CharField(_(u"DocumentRoot"), max_length=200, blank=True)
     htaccess = models.BooleanField(_(u"htaccess"), default=True)
@@ -34,7 +34,7 @@ class UserSite(models.Model):
     extra = models.TextField(_(u"Extra configuration"), blank=True, null=True, default="")
 
     removed = models.BooleanField(_(u"Smazáno"), default=False) # nezmizí dokud se nezaplatí
-    owner = models.ForeignKey(user, verbose_name=_('Uživatel'))
+    owner = models.ForeignKey(user, verbose_name=_(u'Uživatel'))
 
     class Meta:
         db_table = 'apacheconf_site'

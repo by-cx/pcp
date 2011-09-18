@@ -11,3 +11,9 @@
 .ajax_refresh.running {
 	background-image: url('/m/icons/ajax-loader.gif');
 }
+
+.error {
+	background-color: #FFDFDF;
+	padding: 5px;
+	border: 1px solid #4D4D4D;
+}

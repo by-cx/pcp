@@ -13,6 +13,12 @@
 <p class="ok-text">{{ valid }}</p>
 {% endif %}
 
+{% if form.errors %}
+	<div class="error">
+		{% trans 'Please fix errors in form below' %}
+	</div>
+{% endif %}
+
 {% if siteErrors %}
 <p>{% trans "Následující doménu jsou použity již u jiné stránky nebo je nemáte zadané" %}:</p>
 <ul>
@@ -37,6 +43,7 @@
 	</form>
 </fieldset>
 {% endblock %}
+
 {% block jsblock %}
 {{ block.super }}
 

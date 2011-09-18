@@ -15,7 +15,7 @@ from django.template.context import RequestContext
 
 from wsgiadmin.clients.models import *
 from wsgiadmin.apacheconf.models import *
-from wsgiadmin.apacheconf.forms import form_static, form_wsgi
+from wsgiadmin.apacheconf.forms import form_static, FormWsgi
 from wsgiadmin.requests.request import ApacheRequest, NginxRequest, UWSGIRequest
 from wsgiadmin.apacheconf.tools import get_user_wsgis, get_user_venvs, user_directories
 
@@ -237,23 +237,14 @@ def add_wsgi(request):
     superuser = request.user
     siteErrors = []
 
-    wsgis = get_user_wsgis(u)
-    choices = [("", _(u"Nevybráno"))] + [(x, x) for x in wsgis]
-
-    virtualenvs = get_user_venvs(u)
-    virtualenvs_choices = [("", _(u"Nevybráno"))] + [(one, one) for one in virtualenvs]
-
-
     if request.method == 'POST':
-        form = form_wsgi(request.POST)
-        form.fields["script"].choices = choices
-        form.fields["virtualenv"].choices = virtualenvs_choices
+        form = FormWsgi(request.POST, user=u)
+        
         siteErrors = domain_check(request, form)
         if not siteErrors and form.is_valid():
-            site = UserSite(owner=u, type='wsgi')
-            for key, val in form.cleaned_data.items():
-                if hasattr(site, key):
-                    setattr(site, key, val)
+            site = form.save(commit=False)
+            site.owner = u
+            site.type = 'uwsgi'
             site.save()
 
             #Signal
@@ -274,10 +265,7 @@ def add_wsgi(request):
             u.parms.pay_for_sites(use_cache=False)
             return HttpResponseRedirect(reverse("wsgiadmin.apacheconf.views.apache"))
     else:
-        form = form_wsgi()
-        form.fields["script"].choices = choices
-        form.fields["virtualenv"].choices = virtualenvs_choices
-
+        form = FormWsgi(user=u)
 
     dynamic_refreshs = (
         (reverse("refresh_wsgi"), 'id_script'),
@@ -306,28 +294,15 @@ def update_wsgi(request, sid):
     superuser = request.user
     siteErrors = []
 
-    wsgis = get_user_wsgis(u)
-    choices = [("", _(u"Nevybráno"))] + [(x, x) for x in wsgis]
-
-    virtualenvs = get_user_venvs(u)
-    virtualenvs_choices = [("", _(u"Nevybráno"))] + [(one, one) for one in virtualenvs]
-
     sid = int(sid)
     site = get_object_or_404(u.usersite_set, id=sid)
 
     if request.method == 'POST':
-        form = form_wsgi(request.POST)
-        form.fields["script"].choices = choices
-        form.fields["virtualenv"].choices = virtualenvs_choices
+        form = FormWsgi(request.POST, user=u, instance=site)
+
         siteErrors = domain_check(request, form, site)
         if not siteErrors and form.is_valid():
-            site.domains = form.cleaned_data["domains"]
-            site.virtualenv = form.cleaned_data["virtualenv"]
-            site.static = form.cleaned_data["static"]
-            site.script = form.cleaned_data["script"]
-            site.python_path = form.cleaned_data["python_path"]
-            site.allow_ips = form.cleaned_data["allow_ips"]
-            site.save()
+            form.save()
 
             #Signal
             if site.type == "uwsgi":
@@ -354,11 +329,7 @@ def update_wsgi(request, sid):
 
             return HttpResponseRedirect(reverse("wsgiadmin.apacheconf.views.apache"))
     else:
-        form = form_wsgi(
-            initial={"domains": site.domains, "script": site.script, "allow_ips": site.allow_ips, "static": site.static,
-                     "virtualenv": site.virtualenv, "python_path": site.python_path})
-        form.fields["script"].choices = choices
-        form.fields["virtualenv"].choices = virtualenvs_choices
+        form = FormWsgi(user=u, instance=site)
 
     return render_to_response('universal.html',
             {

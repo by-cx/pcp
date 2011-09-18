@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
+from os.path import join
+from django.contrib.auth.models import User
 
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import render_to_response, get_object_or_404
 from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
@@ -53,12 +55,12 @@ def show(request, p=1):
 @login_required
 def switch_to_admin(request, p):
     """
-       Přepnutí uživatele
-   """
+    Přepnutí uživatele
+    """
     superuser = request.user
     u = request.session.get('switched_user', request.user)
     if not superuser.is_superuser:
-        return HttpResponse("Chyba oprávnění")
+        return HttpResponseForbidden("Chyba oprávnění")
 
     current = request.session.get('switched_user', False)
 
@@ -71,15 +73,14 @@ def switch_to_admin(request, p):
 @login_required
 def switch_to_user(request, uid, p):
     """
-       Přepnutí uživatele
-   """
+    Přepnutí uživatele
+    """
     superuser = request.user
-    u = request.session.get('switched_user', request.user)
     if not superuser.is_superuser:
-        return HttpResponse("Chyba oprávnění")
+        return HttpResponseForbidden("Chyba oprávnění")
 
-    iuser = get_object_or_404(user, id=int(uid))
-    request.session['switched_user'] = iuser
+    u = request.session.get('switched_user', request.user)
+    request.session['switched_user'] = get_object_or_404(User, id=int(uid))
 
     return show(request, p)
 
@@ -88,13 +89,12 @@ def install(request, uid):
     superuser = request.user
     u = request.session.get('switched_user', request.user)
     if not superuser.is_superuser:
-        return HttpResponse("Chyba oprávnění")
+        return HttpResponseForbidden("Chyba oprávnění")
 
     iuser = get_object_or_404(user, id=uid)
-
-    if iuser.username and not ";" in iuser.username:
+    if iuser.username and ";" not in iuser.username:
         # System user
-        HOME = "/home/%s" % iuser.username
+        HOME = join("/home" % iuser.username)
 
         sr = SystemRequest(u, iuser.parms.web_machine)
         sr.install(iuser)
@@ -127,7 +127,7 @@ def add(request):
     superuser = request.user
     u = request.session.get('switched_user', request.user)
     if not superuser.is_superuser:
-        return HttpResponse("Chyba oprávnění")
+        return HttpResponseForbidden("Chyba oprávnění")
 
     if request.method == 'POST':
         f_user = form_user(request.POST)
@@ -179,7 +179,7 @@ def update(request, uid):
     superuser = request.user
     u = request.session.get('switched_user', request.user)
     if not superuser.is_superuser:
-        return HttpResponse("Chyba oprávnění")
+        return HttpResponseForbidden("Chyba oprávnění")
 
     iuser = get_object_or_404(user, id=int(uid))
     iparms = iuser.parms
@@ -190,9 +190,9 @@ def update(request, uid):
         f_parms = form_parms(request.POST, instance=iparms)
         f_address = form_address(request.POST, instance=iaddress)
         if f_user.is_valid() and f_parms.is_valid() and f_address.is_valid():
-            instance_user = f_user.save()
-            instance_address = f_address.save()
-            instance_parms = f_parms.save()
+            f_user.save()
+            f_address.save()
+            f_parms.save()
 
             return HttpResponseRedirect(reverse("wsgiadmin.useradmin.views.ok"))
     else:
@@ -224,16 +224,18 @@ def rm(request, uid):
     superuser = request.user
     u = request.session.get('switched_user', request.user)
     if not superuser.is_superuser:
-        return HttpResponse("Chyba oprávnění")
+        return HttpResponseForbidden("Chyba oprávnění")
 
     iuser = get_object_or_404(user, id=int(uid))
     try:
         iparms = iuser.parms
-    except:
+    except Exception, e:
+        print 'users/views - handle only this exception type'
+        print type(e)
         iparms = None
 
     if iparms: iparms.delete()
-    if not ";" in iuser.username:
+    if ";" not in iuser.username:
         sr = SystemRequest(u, iuser.parms.web_machine)
         sr.run("dropuser %s" % iuser.username)
         sr.run("userdel %s" % iuser.username)

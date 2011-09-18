@@ -207,7 +207,7 @@ class Parms(models.Model):
 
     def pay_for_sites(self):
         pay = 0.0
-        for site in self.user.site_set.all():
+        for site in self.user.usersite_set.all():
             pay += site.pay()
         return pay
 

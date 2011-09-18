@@ -37,7 +37,7 @@ def apache(request, p=1):
     superuser = request.user
     p = int(p)
 
-    paginator = Paginator(list(u.site_set.filter(removed=False).order_by("pub_date")), 25)
+    paginator = Paginator(list(u.usersite_set.filter(removed=False).order_by("pub_date")), 25)
 
     if not paginator.count:
         page = None
@@ -64,7 +64,7 @@ def domain_check(request, form, this_site=None):
     my_domains = [x.name for x in u.domain_set.all()]
     error_domains = []
 
-    for site in u.site_set.filter(removed=False):
+    for site in u.usersite_set.filter(removed=False):
         if site == this_site: continue
         used_domains += site.domains.split(" ")
 
@@ -304,7 +304,7 @@ def update_wsgi(request, sid):
     virtualenvs_choices = [("", _(u"Nevybráno"))] + [(one, one) for one in virtualenvs]
 
     sid = int(sid)
-    site = get_object_or_404(u.site_set, id=sid)
+    site = get_object_or_404(u.usersite_set, id=sid)
 
     if request.method == 'POST':
         form = form_wsgi(request.POST)

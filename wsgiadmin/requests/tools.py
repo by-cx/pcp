@@ -101,13 +101,13 @@ class request(request_raw):
             content = self.data["config"]
             self.save_file(filename, content)
         elif self.action == "uwsgi_start":
-            self.run("/usr/bin/uwsgi-manager.py -s %s" % str(self.data["web_id"]))
+            self.run("/usr/bin/env uwsgi-manager.py -s %s" % str(self.data["web_id"]))
         elif self.action == "uwsgi_restart":
-            self.run("/usr/bin/uwsgi-manager.py -R %s" % str(self.data["web_id"]))
+            self.run("/usr/bin/env uwsgi-manager.py -R %s" % str(self.data["web_id"]))
         elif self.action == "uwsgi_stop":
-            self.run("/usr/bin/uwsgi-manager.py -S %s" % str(self.data["web_id"]))
+            self.run("/usr/bin/env uwsgi-manager.py -S %s" % str(self.data["web_id"]))
         elif self.action == "uwsgi_reload":
-            self.run("/usr/bin/uwsgi-manager.py -r %s" % str(self.data["web_id"]))
+            self.run("/usr/bin/env uwsgi-manager.py -r %s" % str(self.data["web_id"]))
         #self.run("/usr/bin/uwsgi-manager.py -R %s" % str(self.data["web_id"]))
 
         elif self.action == "nginx_reload":

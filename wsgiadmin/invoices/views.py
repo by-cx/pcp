@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.contrib.sites.models import Site
 from django.core.mail.message import EmailMessage
+from django.core.paginator import Paginator
 
 from django.shortcuts import render_to_response, get_object_or_404, get_list_or_404
 from django.http import HttpResponse, HttpResponseRedirect

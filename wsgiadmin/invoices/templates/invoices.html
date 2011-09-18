@@ -73,8 +73,8 @@ function send_item(what) {
 				<a href="{% url wsgiadmin.invoices.views.add_item invoice.id %}">{% trans "Přidat položku" %}</a>
 				{% if not invoice.payed %}<span id="payback_{{ invoice.id }}"><a href="#" onclick="$('#payback_{{ invoice.id }}').load('{% url wsgiadmin.invoices.views.payback invoice.id %}')">Zaplaceno</a></span>{% endif %}
 				<a href="{% url wsgiadmin.invoices.views.invoice_get invoice.payment_id %}">{% trans "Stáhnout" %}</a>
-				<a href="{% url wsgiadmin.invoices.views.update_invoice invoice.id %}" title="Upravit"><img src="/m/images/icons/pencil.png" alt="Upravit" /></a>
-				<a href="#" title="Smazat" onclick="if(confirm('Opravdu chcete smazat fakturu {{ invoice.payment_id }}?')) remove('{{ invoice.id }}')"><img src="/m/images/icons/cross.png" alt="{% trans "Smazat" %}" /></a>
+				<a href="{% url wsgiadmin.invoices.views.update_invoice invoice.id %}" title="Upravit"><img src={{ STATIC_URL }}images/icons/pencil.png" alt="Upravit" /></a>
+				<a href="#" title="Smazat" onclick="if(confirm('Opravdu chcete smazat fakturu {{ invoice.payment_id }}?')) remove('{{ invoice.id }}')"><img src={{ STATIC_URL }}images/icons/cross.png" alt="{% trans "Smazat" %}" /></a>
 				{% if not invoice.sended %}
 					<a href="#" title="Odeslat" onclick="if(confirm('Opravdu chcete odeslat fakturu {{ invoice.payment_id }}?')) send_item('{{ invoice.payment_id }}')">Odeslat</a>
 				{% else %}
@@ -93,8 +93,8 @@ function send_item(what) {
 				<td>{{ item.price_per_one }} kč</td>
 				<td>{{ item.total }} kč</td>
 				<td id="item_{{ item.id }}">
-					<a href="{% url wsgiadmin.invoices.views.update_item item.id %}" title="{% trans "Upravit" %}"><img src="/m/images/icons/pencil.png" alt="Upravit" /></a>
-					<a href="#" title="{% trans "Smazat" %}" onclick="if(confirm('Opravdu chcete smazat položku {{ item.id }}?')) remove_item('{{ item.id }}')"><img src="/m/images/icons/cross.png" alt="Smazat" /></a>
+					<a href="{% url wsgiadmin.invoices.views.update_item item.id %}" title="{% trans "Upravit" %}"><img src={{ STATIC_URL }}images/icons/pencil.png" alt="Upravit" /></a>
+					<a href="#" title="{% trans "Smazat" %}" onclick="if(confirm('Opravdu chcete smazat položku {{ item.id }}?')) remove_item('{{ item.id }}')"><img src={{ STATIC_URL }}images/icons/cross.png" alt="Smazat" /></a>
 				</td>
 			</tr>
 			{% endfor %}

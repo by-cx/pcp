@@ -68,8 +68,8 @@ SITE_ID = 1
 USE_I18N = False
 #USE_L10N = True
 
-MEDIA_ROOT = join(ROOT, "m")
-MEDIA_URL = "/m/"
+STATIC_ROOT = join(ROOT, "m")
+STATIC_URL = "/m/"
 
 LOGIN_URL = "/login/"
 LOGOUT_URL = "/logout/"
@@ -90,13 +90,13 @@ TEMPLATE_LOADERS = (
     )
 
 MIDDLEWARE_CLASSES = (
-'django.contrib.sessions.middleware.SessionMiddleware',
-'django.middleware.csrf.CsrfViewMiddleware',
-'django.contrib.auth.middleware.AuthenticationMiddleware',
-'django.middleware.locale.LocaleMiddleware',
-'django.middleware.common.CommonMiddleware',
-'django.middleware.transaction.TransactionMiddleware',
-    )
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.transaction.TransactionMiddleware',
+)
 
 ROOT_URLCONF = 'wsgiadmin.urls'
 

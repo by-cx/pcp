@@ -43,9 +43,9 @@
 			<td>{{ redirect.email }}</td>
 			<td><a href="{{ redirect.getUrl }}">{{ redirect.getUrl }}</a></td>
 			<td>
-				<a href="{% url wsgiadmin.emails.views.changeRedirect redirect.id %}"><img src="/m/icons/raster/gray_dark/pen_alt_stroke_16x16.png" alt="{% trans "Upravit" %}" /></a>
+				<a href="{% url wsgiadmin.emails.views.changeRedirect redirect.id %}"><img src={{ STATIC_URL }}icons/raster/gray_dark/pen_alt_stroke_16x16.png" alt="{% trans "Upravit" %}" /></a>
 
-				<a href="#" id="remove_{{redirect.id}}" onclick="if(confirm('{% trans "Opravdu chcete přesměrování zrušit?" %}')) {remove('{{redirect.id}}');};" class="bold"><img src="/m/icons/raster/gray_dark/trash_fill_16x16.png" alt="{% trans "Smazat" %} /></a>
+				<a href="#" id="remove_{{redirect.id}}" onclick="if(confirm('{% trans "Opravdu chcete přesměrování zrušit?" %}')) {remove('{{redirect.id}}');};" class="bold"><img src={{ STATIC_URL }}icons/raster/gray_dark/trash_fill_16x16.png" alt="{% trans "Smazat" %} /></a>
 				<span id="removed_{{redirect.id}}" class="info"></span>
 			</td>
 		</tr>

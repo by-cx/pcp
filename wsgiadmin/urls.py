@@ -1,5 +1,3 @@
-from os.path import join
-
 from django.conf.urls.defaults import *
 from django.conf import settings
 
@@ -11,7 +9,7 @@ urlpatterns = patterns('')
 
 if getattr(settings, 'ENABLE_DEBUG_URLS', False):
     urlpatterns += patterns('',
-        url(r'^m/(?P<path>.*)$', 'django.views.static.serve', {'document_root': join(settings.ROOT, 'm'), 'show_indexes': True}),
+        url(r'^m/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT, 'show_indexes': True}),
     )
 
 urlpatterns += patterns('',

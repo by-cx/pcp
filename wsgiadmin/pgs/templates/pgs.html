@@ -53,10 +53,10 @@
 								<td>{{ db }}</td>
 								<td id="db_{{ db }}">
 									<a href="#" class="db_pwdchange" title="{% trans "Změnit heslo" %}" data-id="{{ db }}">
-										<img src="/m/icons/raster/gray_dark/key_stroke_16x16.png" alt="{% trans "Změnit heslo" %}"/>
+										<img src={{ STATIC_URL }}icons/raster/gray_dark/key_stroke_16x16.png" alt="{% trans "Změnit heslo" %}"/>
 									</a>
 									<a href="#" class="db_delete" title="{% trans "Smazat" %}" data-id="{{ db }}">
-										<img src="/m/icons/raster/gray_dark/trash_fill_16x16.png" alt="{% trans "Smazat" %}"/>
+										<img src={{ STATIC_URL }}icons/raster/gray_dark/trash_fill_16x16.png" alt="{% trans "Smazat" %}"/>
 									</a>
 								</td>
 							</tr>

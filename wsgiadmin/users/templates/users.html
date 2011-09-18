@@ -54,8 +54,8 @@
 						<td id="user_{{ user.id }}">
 							<a href="{% url wsgiadmin.users.views.switch_to_user user.id num_page %}">Přepnout</a>
 							<a href="{% url wsgiadmin.users.views.install user.id %}" title="Upravit">Nainstalovat</a>
-							<a href="{% url wsgiadmin.users.views.update user.id %}" title="Upravit"><img src="/m/icons/raster/gray_dark/pen_alt_stroke_16x16.png" alt="Upravit" /></a>
-							<a href="#" title="Smazat" onclick="if(confirm('Opravdu chcete smazat uživatele {{ user.id }}?')) remove('{{ user.id }}')"><img src="/m/icons/raster/gray_dark/trash_fill_16x16.png" alt="Smazat" /></a> 
+							<a href="{% url wsgiadmin.users.views.update user.id %}" title="Upravit"><img src={{ STATIC_URL }}icons/raster/gray_dark/pen_alt_stroke_16x16.png" alt="Upravit" /></a>
+							<a href="#" title="Smazat" onclick="if(confirm('Opravdu chcete smazat uživatele {{ user.id }}?')) remove('{{ user.id }}')"><img src={{ STATIC_URL }}icons/raster/gray_dark/trash_fill_16x16.png" alt="Smazat" /></a>
 						</td>
 					</tr>
 					{% endfor %}

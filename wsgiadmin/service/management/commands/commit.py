@@ -8,7 +8,7 @@ class Command(BaseCommand):
     help = "Commits performed user actions"
 
     def handle(self, *args, **options):
-        m = Machine.objects.filter(name=settings.COMMIT_MACHINE)
-        u = User.objects.filter(username=settings.COMMIT_USER)
+        m = Machine.objects.get(name=settings.COMMIT_MACHINE)
+        u = User.objects.get(username=settings.COMMIT_USER)
         sh = SSHHandler(u, m)
         sh.commit()

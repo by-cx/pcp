@@ -35,7 +35,7 @@ $(function() {
 					}
 
 					$refresh.find(".status img").remove();
-					var $status = $('<img src="/m/icons/raster/green/check_12x10.png" />');
+					var $status = $('<img src={{ STATIC_URL }}icons/raster/green/check_12x10.png" />');
 					$status.appendTo($refresh.find(".status")).fadeOut(1500);
 				}
 			});

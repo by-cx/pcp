@@ -44,18 +44,18 @@ function remove(what) {
 			<td>
 				{% if site.type == "php" or site.type == "static" %}
 					<a href="{% url wsgiadmin.apacheconf.views.update_static site.id %}">
-						<img src="/m/icons/raster/gray_dark/pen_alt_stroke_16x16.png" alt="Upravit" />
+						<img src="{{ STATIC_URL }}icons/raster/gray_dark/pen_alt_stroke_16x16.png" alt="Upravit" />
 					</a>
 				{% endif %}
 				{% if site.type == "uwsgi" or site.type == "modwsgi" %}
 					{% if site.type == "uwsgi" %}
-						<a href="{% url wsgiadmin.apacheconf.views.restart site.id %}"><img src="/m/icons/raster/gray_dark/loop_16x16.png" alt="Upravit" /></a>
+						<a href="{% url wsgiadmin.apacheconf.views.restart site.id %}"><img src={{ STATIC_URL }}icons/raster/gray_dark/loop_16x16.png" alt="Upravit" /></a>
 					{% endif %}
-					<a href="{% url wsgiadmin.apacheconf.views.update_wsgi site.id %}"><img src="/m/icons/raster/gray_dark/pen_alt_stroke_16x16.png" alt="Upravit" /></a>
+					<a href="{% url wsgiadmin.apacheconf.views.update_wsgi site.id %}"><img src={{ STATIC_URL }}icons/raster/gray_dark/pen_alt_stroke_16x16.png" alt="Upravit" /></a>
 				{% endif %}
 
 				<a href="#" id="remove_{{site.id}}" onclick="if(confirm('{% trans "Opravdu chcete web/apliakci zrušit?" %}')) {remove('{{site.id}}');};" class="bold">
-					<img src="/m/icons/raster/gray_dark/trash_fill_16x16.png" alt="Smazat" />
+					<img src={{ STATIC_URL }}icons/raster/gray_dark/trash_fill_16x16.png" alt="Smazat" />
 				</a>
 				<span id="removed_{{site.id}}" class="info"></span>
 			</td>

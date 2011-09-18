@@ -54,7 +54,7 @@ def apache(request, p=1):
             "u": u,
             "superuser": superuser,
             "menu_active": "webapps",
-            })
+            }, context_instance=RequestContext(request))
 
 
 @login_required

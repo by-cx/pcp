@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from django.contrib.sites.models import Site
+from wsgiadmin.apacheconf.models import UserSite
 
 from wsgiadmin.bills.models import bill, service
 from wsgiadmin.invoices.models import invoice, item
@@ -89,7 +91,7 @@ def bill_hosting(now=datetime.date.today()):
                 u.id, day, month, year)) != "processed":
                 b = bill()
                 b.price = u.parms.fee
-                b.info = "Hosting na serveru Roští.cz"
+                b.info = "Hosting na serveru %s" % Site.objects.get_current()
                 b.user = u
                 b.currency = u.parms.currency
                 b.save()
@@ -97,9 +99,10 @@ def bill_hosting(now=datetime.date.today()):
                 kset("bill:hosting:fee:%d:%d:%d:%d" % (u.id, day, month, year),
                      "processed", 20160)
 
-    for s in site.objects.all():
+    sites = UserSite.objects.all()
+    for s in sites:
         #per page fee process
-        if s.pay() == 0:
+        if s.pay == 0:
             continue
 
         if kget("bill:hosting:%d:%d:%d:%d" % (
@@ -107,7 +110,7 @@ def bill_hosting(now=datetime.date.today()):
             continue
 
         b = bill()
-        b.price = s.pay()
+        b.price = s.pay
         b.info = "Hosting na doméně %s (ID:%d)" % (s.serverName, s.id)
         b.user = s.owner
         b.currency = s.owner.parms.currency
@@ -115,15 +118,15 @@ def bill_hosting(now=datetime.date.today()):
 
         logging.info(
             "Vygenerována platba za hosting doménu %s pro uživatele %s v hodnotě %.2f" % (
-            s.serverName, s.owner.username, s.pay()))
+            s.serverName, s.owner.username, s.pay))
 
         kset("bill:hosting:%d:%d:%d:%d" % (s.id, day, month, year), "processed",
              20160)
 
-    for s in site.objects.filter(removed=True):
-        s.delete()
+    # delete sites marked as removed
+    UserSite.objects.filter(removed=True).delete()
 
-    logging.info("Počítám hosting za dnešek")
+    logging.info(u"Počítám hosting za dnešek")
 
 
 def create_invoices(process=True, min=300):

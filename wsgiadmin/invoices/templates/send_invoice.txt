@@ -1,6 +1,6 @@
 Dobrý den,
 
-v příloze naleznete fakturu za využité služby serveru Roští.cz.
+v příloze naleznete fakturu za využité služby serveru {{ site }}.
 
 Informace k platbě:
 

@@ -8,10 +8,13 @@
 {% block content %}
 <div class="clear"></div>
 
-{% if not u.parms.count_domains %}
+{% if u.parms.count_domains %}
 <div class="notification">
 	<div>
-		<p>{% trans "Většina služeb na Roští.cz je závislá na doméně a jelikož jste ještě žádnou nepřidal/a, tak nejlepší místo kde začít je" %} <a href="{% url wsgiadmin.domains.views.show %}">{% trans "správa domén" %}</a>.</p>
+		<p>{% blocktrans %}
+			Většina služeb na {{ site }} je závislá na doméně a jelikož jste ještě žádnou nepřidal/a, tak nejlepší místo kde začít je{% endblocktrans %}
+			<a href="{% url wsgiadmin.domains.views.show %}">{% trans "správa domén" %}</a>.
+		</p>
 	</div>
 </div>
 {% endif %}

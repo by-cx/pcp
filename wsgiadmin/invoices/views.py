@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.contrib.sites.models import Site
 from django.core.mail.message import EmailMessage
 
 from django.shortcuts import render_to_response, get_object_or_404, get_list_or_404
@@ -391,18 +392,18 @@ def send_invoice(request, fid, warning="0"):
 
         if warning:
             tmpl = "send_invoice_warning.txt"
-            subject = 'Upozornění na nezaplacení faktury %d za služby Roští.cz' % fid
+            subject = u'Upozornění na nezaplacení faktury %d za služby %s' % (fid, Site.objects.get_current())
         else:
             tmpl = "send_invoice.txt"
-            subject = 'Faktura %d za služby Roští.cz' % fid
+            subject = u'Faktura %d za služby %s' % (fid, Site.objects.get_current())
 
-        email = EmailMessage('Faktura %d za služby Roští.cz' % fid,
+        email = EmailMessage(subject,
                              render_to_string(tmpl, {
                                  "BA": f.bank_account,
                                  "VS": f.payment_id,
                                  "cash": f.totalInt(),
-                                 "expiration": f.date_payback.strftime(
-                                     "%d.%m.%Y")
+                                 "expiration": f.date_payback.strftime("%d.%m.%Y"),
+                                 'site': Site.objects.get_current(),
                              }), settings.EMAIL_FROM,
             [f.client_address.residency_email, "cx@initd.cz"],
                              headers={'Reply-To': settings.EMAIL_FROM})

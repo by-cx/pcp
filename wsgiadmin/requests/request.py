@@ -35,7 +35,6 @@ class SSHHandler(object):
 
     def _run(self, cmd, stdin=None):
         cmd = "ssh %s %s" % (self._server_name(), cmd)
-        print cmd
         stdin_flag = subprocess.PIPE if stdin is not None else stdin
         p = subprocess.Popen(shlex.split(str(cmd)), stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=stdin_flag)
         stdout, stderr = p.communicate(stdin)

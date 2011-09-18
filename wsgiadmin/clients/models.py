@@ -219,14 +219,8 @@ class Parms(models.Model):
 
     def installed(self):
         rr = request_raw(self.web_machine.ip)
-        data = rr.run("cat /etc/passwd")["stdout"]
-        users = []
-
-        for line in [x.strip() for x in data.split("\n")]:
-            line = line.split(":")
-            users.append(line[0])
-
-        return self.user.username in users
+        data = rr.run("cat /etc/passwd |grep ^%s:" % self.user.username)["stdout"].strip()
+        return self.user.username in data
 
     def __repr__(self):
         return "<Config %s>" % self.user.username

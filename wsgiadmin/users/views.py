@@ -98,20 +98,15 @@ def install(request, uid):
         sr.install(iuser)
         sr.commit()
 
-        data = sr.instant_run("cat /etc/passwd")[0]
-
-        for line in [x.strip() for x in data.split("\n")]:
-            if iuser.username in line:
-                line = line.split(":")
-                uid = line[2]
-                gid = line[3]
-                break
+        line = sr.instant_run("cat /etc/passwd |grep ^%s:" % iuser.username)[0].strip()
+        user, foo, uid, gid = line.split(":", 3)
 
         iuser.parms.home = HOME
         iuser.parms.uid = uid
         iuser.parms.gid = gid
-        iuser.is_active = True
         iuser.parms.save()
+
+        iuser.is_active = True
         iuser.save()
 
         return HttpResponseRedirect(reverse("wsgiadmin.useradmin.views.ok"))

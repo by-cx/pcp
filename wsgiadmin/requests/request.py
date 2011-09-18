@@ -35,7 +35,7 @@ class SSHHandler(object):
 
     def _run(self, cmd, stdin=None):
         cmd = "ssh %s %s" % (self._server_name(), cmd)
-
+        print cmd
         stdin_flag = subprocess.PIPE if stdin is not None else stdin
         p = subprocess.Popen(shlex.split(str(cmd)), stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=stdin_flag)
         stdout, stderr = p.communicate(stdin)
@@ -93,9 +93,7 @@ class SSHHandler(object):
         """
         Add request into queue to write the content into filename.
         """
-        r = Request()
-
-        r.action = "write"
+        r = Request(action='write')
         r.machine = self._server_name()
         r.data = json.dumps({"action": "write", "filename": filename, "content": content})
         r.user = self.user
@@ -223,14 +221,19 @@ class Service(SSHHandler):
 
 class UWSGIRequest(SSHHandler):
 
+    def __init__(self, *args, **kwargs):
+        super(UWSGIRequest, self).__init__(*args, **kwargs)
+
+        self.config_location = settings.PCP_SETTINGS.get("uwsgi_conf", "/etc/uwsgi/config.xml")
+
     def mod_config(self):
         uwsgi = ["<rosti>"]
 
         sites = UserSite.objects.filter(type="uwsgi")
         for site in sites:
             uwsgi.append("<uwsgi id=\"%d\">" % site.id)
-            pp = site.owner.parms.home
-            for pp in [site.owner.parms.home + x.strip() for x in site.python_path.split("\n") if x.strip()]:
+            home = site.owner.parms.home
+            for pp in [join(home, x.strip()) for x in site.python_path.split("\n") if x.strip()]:
                 uwsgi.append("\t<pythonpath>%s</pythonpath>" % pp)
 
             uwsgi.append("\t<master/>")
@@ -246,12 +249,12 @@ class UWSGIRequest(SSHHandler):
             uwsgi.append("\t<socket>%s</socket>" % site.socket)
             uwsgi.append("\t<wsgi-file>%s</wsgi-file>" % site.script)
             uwsgi.append("\t<daemonize>%s</daemonize>" % site.logfile)
-            uwsgi.append("\t<chdir>%s</chdir>" % pp)
+            uwsgi.append("\t<chdir>%s</chdir>" % home)
 
             uwsgi.append("</uwsgi>")
 
         uwsgi.append("</rosti>")
-        self.write(settings.PCP_SETTINGS.get("uwsgi_conf", "/etc/uwsgi/config.xml"), "\n".join(uwsgi))
+        self.write(self.config_location, "\n".join(uwsgi))
 
     def start(self, site):
         """Start site"""
@@ -273,6 +276,7 @@ class UWSGIRequest(SSHHandler):
 class NginxRequest(Service):
     def __init__(self, user, machine):
         super(NginxRequest, self).__init__(user, machine, settings.PCP_SETTINGS.get("nginx_init_script", "/etc/init.d/nginx"))
+        self.config_location = settings.PCP_SETTINGS["nginx_conf"]
 
     def mod_vhosts(self):
         config = []
@@ -292,12 +296,15 @@ class NginxRequest(Service):
                 config.append(render_to_string("nginx_vhost_static.conf", {
                     "site": site
                 }))
-        self.write(settings.PCP_SETTINGS["nginx_conf"], "\n".join(config))
+        self.write(self.config_location, "\n".join(config))
 
 
 class ApacheRequest(Service):
     def __init__(self, user, machine):
         super(ApacheRequest, self).__init__(user, machine, settings.PCP_SETTINGS.get("apache_init_script", "/etc/init.d/apache"))
+
+        self.config_location = settings.PCP_SETTINGS['apache_conf']
+
 
     def mod_vhosts(self):
         config = []
@@ -314,7 +321,7 @@ class ApacheRequest(Service):
                 config.append(render_to_string("apache_vhost_%s.conf" % site.type, {
                     "site": site
                 }))
-        self.write(settings.PCP_SETTINGS["apache_conf"], "\n".join(config))
+        self.write(self.config_location, "\n".join(config))
 
 
 class BindRequest(Service):
@@ -323,7 +330,7 @@ class BindRequest(Service):
         self.ns = ns
 
         try:
-            machine = Machine.objects.get(ip=settings.PCP_SETTINGS["dns"][ns])
+            machine = Machine.objects.get(ip=settings.PCP_SETTINGS["dns"][self.ns])
         except Machine.DoesNotExist:
             raise RequestException("Error: NS machine not found")
 
@@ -417,7 +424,7 @@ class MySQLRequest(SSHHandler):
 
 class SystemRequest(SSHHandler):
     def install(self, user):
-        HOME = "/home/%s" % user.username
+        HOME = join("/home", user.username)
 
         self.run("useradd -m -s /bin/bash %s" % user.username)
         self.run("chmod 750 %s " % HOME)

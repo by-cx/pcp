@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import logging
-from datetime import date
 import anyjson
+
+from datetime import date
+from django.conf import settings
 
 from django.contrib.sites.models import Site
 from django.core.paginator import Paginator
@@ -68,11 +70,9 @@ def domain_check(request, form, this_site=None):
         if site == this_site: continue
         used_domains += site.domains.split(" ")
 
-    # Perm test
+    # Permission test
     for domain in domains:
-        error = True
-        for my_domain in my_domains:
-            error = my_domain not in domain
+        error = domain not in my_domains
 
         if error and "%s - %s" % (domain, (u"chybí oprávnění k použití")) not in error_domains:
             error_domains.append("%s - %s" % (domain, (u"chybí oprávnění k použití")))
@@ -90,9 +90,7 @@ def add_static(request, php="0"):
     u = request.session.get('switched_user', request.user)
     superuser = request.user
     title = _(u"Přidání statického webu") if php == "0" else _(u"Přidání webu s podporou PHP")
-
     siteErrors = []
-
     choices = [(d, d) for d in user_directories(u, True)]
 
     if request.method == 'POST':
@@ -108,7 +106,6 @@ def add_static(request, php="0"):
             web.save()
 
             # Requests
-
             ar = ApacheRequest(u, u.parms.web_machine)
             ar.mod_vhosts()
             ar.reload()
@@ -256,6 +253,7 @@ def add_wsgi(request):
                 nr = NginxRequest(u, u.parms.web_machine)
                 nr.mod_vhosts()
                 nr.reload()
+
             if site.type == "uwsgi":
                 ur = UWSGIRequest(u, u.parms.web_machine)
                 ur.mod_config()
@@ -302,13 +300,14 @@ def update_wsgi(request, sid):
 
         siteErrors = domain_check(request, form, site)
         if not siteErrors and form.is_valid():
-            form.save()
+            site = form.save()
 
             #Signal
             if site.type == "uwsgi":
                 ur = UWSGIRequest(u, u.parms.web_machine)
                 ur.mod_config()
                 ur.restart(site)
+
                 ar = ApacheRequest(u, u.parms.web_machine)
                 ar.mod_vhosts()
                 ar.reload()

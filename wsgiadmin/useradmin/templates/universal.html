@@ -7,18 +7,15 @@
 
 <h3>{{ title }}</h3>
 
-{% if not next_step %}
-<p class="error-text">{{ valid }}</p>
-{% endif %}
-{% if next_step %}
-<p class="ok-text">{{ valid }}</p>
-{% endif %}
+	{% if valid %}
+		<p class="{% if next_step %}ok-text{% else %}error-text{% endif %}">{{ valid }}</p>
+	{% endif %}
 
 {% if siteErrors %}
 <p>{% trans "Následující doménu jsou použity již u jiné stránky nebo je nemáte zadané" %}:</p>
 <ul>
 	{% for x in siteErrors %}
-	<li>{{ x }}</li>
+		<li>{{ x }}</li>
 	{% endfor %}
 </ul>
 {% endif %}
@@ -28,11 +25,9 @@
 		{% csrf_token %}
 		{{ form|as_uni_form }}
 
-		{% if note %}
 		{% for x in note%}
-		<p><em>{{ x }}</em></p>
+			<p><em>{{ x }}</em></p>
 		{% endfor %}
-		{% endif %}
 
 		<p><input type="submit" value="{{ submit }}"/></p>
 	</form>

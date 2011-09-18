@@ -18,13 +18,11 @@ def show(request, p=1):
     """
     Vylistování seznamu databází
     """
-    superuser = request.user
+    if not request.user.is_superuser:
+        return HttpResponseForbidden("Chyba oprávnění")
     u = request.session.get('switched_user', request.user)
-    if not superuser.is_superuser:
-        return HttpResponse(u"Chyba oprávnění")
 
     p = int(p)
-
     paginator = Paginator(list(user.objects.order_by("username")), 75)
 
     if not paginator.count:
@@ -46,7 +44,7 @@ def show(request, p=1):
             "paginator": paginator,
             "num_page": p,
             "u": u,
-            "superuser": superuser,
+            "superuser": request.user,
             },
                               context_instance=RequestContext(request)
     )
@@ -94,7 +92,7 @@ def install(request, uid):
     iuser = get_object_or_404(user, id=uid)
     if iuser.username and ";" not in iuser.username:
         # System user
-        HOME = join("/home" % iuser.username)
+        HOME = join("/home", iuser.username)
 
         sr = SystemRequest(u, iuser.parms.web_machine)
         sr.install(iuser)

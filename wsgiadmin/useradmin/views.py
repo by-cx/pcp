@@ -60,14 +60,12 @@ def requests(request):
     superuser = request.user
 
     requests = u.request_set.order_by("add_date").reverse()
-    if len(requests) > 20:
-        requests = requests[0:20]
 
     return render_to_response('requests.html', {
             "u": u,
             "superuser": superuser,
             "menu_active": "dashboard",
-            "requests": requests
+            "requests": requests[:20],
         }, context_instance=RequestContext(request)
     )
 

@@ -87,7 +87,7 @@
 	<td>{{ u.parms.pay_total_month|floatformat:2 }}  {{ u.parms.currency|upper }}</td>
 </tr>
 {% endif %}
-{% if u.balance_set %}
+{% if u.balance_set.all %}
 <tr>
 	<th><strong>{% trans "Stav vašeho účtu" %}</strong></th>
 	<td></td>

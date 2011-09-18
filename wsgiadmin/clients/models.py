@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from django.contrib.auth.models import User as user
+from django.core.cache import cache
 from django.db import models
 from django import forms
 from django.forms import ModelForm
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 
-from wsgiadmin.apacheconf.models import UserSite
 from wsgiadmin.keystore.tools import *
 from wsgiadmin.requests.tools import request_raw
 from wsgiadmin.tools import size_format
@@ -165,14 +165,11 @@ class Parms(models.Model):
     user = models.OneToOneField(user, verbose_name=_(u'Uživatel'))
 
     def prefix(self):
-        if len(self.user.username) > 3:
-            return self.user.username[0:3]
-        else:
-            return self.user.username
+        return self.user.username[:3]
 
     def dc(self):
         """Discount coeficient"""
-        if 100 - self.discount > 0:
+        if (100 - self.discount) > 0:
             return (100.0 - self.discount) / 100.0
         else:
             return 0.0
@@ -190,7 +187,7 @@ class Parms(models.Model):
         return self.user.mysqldb_set.count()
 
     def count_sites(self):
-        return UserSite.objects.filter(owner=self.user).count()
+        return self.user.usersite_set.count()
 
     def count_emails(self):
         count = 0
@@ -205,10 +202,13 @@ class Parms(models.Model):
         else:
             return _(u"Nezjištěno")
 
-    def pay_for_sites(self):
-        pay = 0.0
-        for site in self.user.usersite_set.all():
-            pay += site.pay()
+    def pay_for_sites(self, use_cache=True):
+        pay = cache.get('user_payment_%s' % self.user_id)
+        if pay is None or not use_cache:
+            pay = 0.0
+            for site in self.user.usersite_set.all():
+                pay += site.pay
+            cache.set('user_payment_%s' % self.user_id, pay, timeout=3600*24*7)
         return pay
 
     def pay_total_day(self):
@@ -243,4 +243,3 @@ class form_parms(ModelForm):
     class Meta:
         model = Parms
         exclude = ("address", "user", "home", "uid", "gid")
-

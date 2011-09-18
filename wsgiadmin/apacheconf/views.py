@@ -9,7 +9,7 @@ from django.core.paginator import Paginator
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
 from django.utils.translation import ugettext_lazy as _
 from django.template.context import RequestContext
 
@@ -117,6 +117,9 @@ def add_static(request, php="0"):
                 nr = NginxRequest(u, u.parms.web_machine)
                 nr.mod_vhosts()
                 nr.reload()
+
+            # calculate!
+            u.parms.pay_for_sites(use_cache=False)
             return HttpResponseRedirect(reverse("wsgiadmin.apacheconf.views.apache"))
     else:
         form = form_static()
@@ -200,27 +203,31 @@ def remove_site(request, sid):
     u = request.session.get('switched_user', request.user)
     sid = int(sid)
 
-    s = get_object_or_404(Site, id=sid)
-    if s.owner == u:
-        ur = UWSGIRequest(u, u.parms.web_machine)
-        ur.stop(s)
+    s = get_object_or_404(UserSite, id=sid)
+    if s.owner != u:
+        return HttpResponseForbidden("Pristup zakazan")
 
-        s.removed = True
-        s.end_date = date.today()
-        s.save()
+    ur = UWSGIRequest(u, u.parms.web_machine)
+    ur.stop(s)
 
-        #Signal
-        ar = ApacheRequest(u, u.parms.web_machine)
-        ar.mod_vhosts()
-        ar.reload()
+    s.removed = True
+    s.end_date = date.today()
+    s.save()
 
-        if settings.PCP_SETTINGS.get("nginx"):
-            nr = NginxRequest(u, u.parms.web_machine)
-            nr.mod_vhosts()
-            nr.reload()
+    #Signal
+    ar = ApacheRequest(u, u.parms.web_machine)
+    ar.mod_vhosts()
+    ar.reload()
 
-        ur.mod_config()
+    if settings.PCP_SETTINGS.get("nginx"):
+        nr = NginxRequest(u, u.parms.web_machine)
+        nr.mod_vhosts()
+        nr.reload()
 
+    ur.mod_config()
+    
+    # calculate!
+    u.parms.pay_for_sites(use_cache=False)
     return HttpResponse("Stránka vymazána")
 
 
@@ -263,6 +270,8 @@ def add_wsgi(request):
                 ur.mod_config()
                 ur.restart(site)
 
+            # calculate!
+            u.parms.pay_for_sites(use_cache=False)
             return HttpResponseRedirect(reverse("wsgiadmin.apacheconf.views.apache"))
     else:
         form = form_wsgi()

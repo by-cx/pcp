@@ -149,7 +149,7 @@ def update_static(request, sid):
     siteErrors = []
     sid = int(sid)
 
-    s = get_object_or_404(Site, id=sid)
+    s = get_object_or_404(UserSite, id=sid)
     choices = [(d, d) for d in user_directories(u)]
 
     if request.method == 'POST':
@@ -358,7 +358,7 @@ def reload(request, sid):
     superuser = request.user
 
     sid = int(sid)
-    s = get_object_or_404(Site, id=sid)
+    s = get_object_or_404(UserSite, id=sid)
 
     #Signal
     if s.wsgi.uwsgi:
@@ -383,7 +383,7 @@ def restart(request, sid):
     u = request.session.get('switched_user', request.user)
 
     sid = int(sid)
-    s = get_object_or_404(Site, id=sid)
+    s = get_object_or_404(UserSite, id=sid)
 
     #Signal
     if s.wsgi.uwsgi:

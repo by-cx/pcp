@@ -6,7 +6,6 @@ import anyjson
 from datetime import date
 from django.conf import settings
 
-from django.contrib.sites.models import Site
 from django.core.paginator import Paginator
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -361,7 +360,7 @@ def reload(request, sid):
     s = get_object_or_404(UserSite, id=sid)
 
     #Signal
-    if s.wsgi.uwsgi:
+    if s.type in ("uwsgi", "modwsgi"):
         ur = UWSGIRequest(u, u.parms.web_machine)
         ur.mod_config()
         ur.restart(s)
@@ -386,7 +385,7 @@ def restart(request, sid):
     s = get_object_or_404(UserSite, id=sid)
 
     #Signal
-    if s.wsgi.uwsgi:
+    if s.type in ("uwsgi", "modwsgi"):
         ur = UWSGIRequest(u, u.parms.web_machine)
         ur.mod_config()
         ur.restart(s)

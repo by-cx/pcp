@@ -32,7 +32,7 @@ class SSHHandler(object):
             return str(self.machine.name)
 
     def _run(self, cmd, stdin=None):
-        cmd = "ssh %s %s" % (self._server_name(), cmd)
+        cmd = 'ssh %s "%s"' % (self._server_name(), cmd)
         stdin_flag = subprocess.PIPE if stdin is not None else stdin
         p = subprocess.Popen(shlex.split(str(cmd)), stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=stdin_flag)
         stdout, stderr = p.communicate(stdin)
@@ -56,9 +56,7 @@ class SSHHandler(object):
         """
         Add cmd into queue.
         """
-        r = Request()
-
-        r.action = "run"
+        r = Request(action="run")
         r.machine = self._server_name()
         r.data = json.dumps({"action": "run", "cmd": cmd, "stdin": stdin})
         r.user = self.user
@@ -67,9 +65,7 @@ class SSHHandler(object):
 
     def instant_run(self, cmd, stdin=None):
         """Run cmd and return result promptly. You can give stdin string too."""
-        r = Request()
-
-        r.action = "run"
+        r = Request(action="run")
         r.machine = self._server_name()
         r.data = json.dumps({"action": "run", "cmd": cmd, "stdin": stdin})
         r.user = self.user
@@ -355,12 +351,12 @@ class EMailRequest(SSHHandler):
         homedir = join(settings.PCP_SETTINGS["maildir"], email.domain.name)
         maildir = join(homedir, email.login)
 
-        self.run("/bin/mkdir -p %s" % homedir)
-        self.run("/bin/chown email:email %s -R" % homedir)
-        self.run("/usr/bin/maildirmake %s" % maildir)
-        self.run("/bin/chown email:email %s -R" % maildir)
-        self.run("/usr/bin/maildirmake %s" % maildir + ".Spam")
-        self.run("/bin/chown email:email %s -R" % maildir + "/Spam")
+        self.run("mkdir -p %s" % homedir)
+        self.run("chown email:email %s -R" % homedir)
+        self.run("maildirmake %s" % maildir)
+        self.run("chown email:email %s -R" % maildir)
+        self.run("maildirmake %s" % maildir + ".Spam")
+        self.run("chown email:email %s -R" % maildir + "/Spam")
 
     def remove_mailbox(self, email):
         maildir = join(settings.PCP_SETTINGS["maildir"], email.domain.name, email.login)
@@ -421,11 +417,11 @@ class SystemRequest(SSHHandler):
         self.run("cp -R %s %s" % ( join(settings.ROOT, 'service/www_data/'), join('/var/www', user.username)))
         self.run("chown -R %(user)s:%(user)s /var/www/%(user)s" % dict(user=user.username))
         self.run("usermod -G %s -a %s" % (user.username, user.username))
-        self.run("usermod -G % -a %s" % (settings.PCP_SETTINGS['apache_user'], user.username))
+        self.run("usermod -G %s -a %s" % (settings.PCP_SETTINGS['apache_user'], user.username))
         self.run("usermod -G clients -a %s" % user.username)
-        self.run('su %s -c "mkdir -p %s"' % (user.username, join(HOME, settings.VIRTUALENVS_DIR)))
-        self.run('su %s -c "virtualenv %s"' % (user.username, join(HOME, settings.VIRTUALENVS_DIR, 'default')))
-        self.run('su %s -c "mkdir %s"' % (user.username, join(HOME, 'uwsgi')))
+        self.run("su %s -c\'mkdir -p %s\'" % (user.username, join(HOME, settings.VIRTUALENVS_DIR)))
+        self.run("su %s -c\'virtualenv %s\'" % (user.username, join(HOME, settings.VIRTUALENVS_DIR, 'default')))
+        self.run("su %s -c\'mkdir %s\'" % (user.username, join(HOME, 'uwsgi')))
 
     def passwd(self, password):
         self.run("/usr/sbin/chpasswd", stdin="%s:%s" % (self.user.username, password))

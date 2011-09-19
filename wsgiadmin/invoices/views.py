@@ -73,8 +73,8 @@ def show(request, p=1):
 @login_required
 def add_invoice(request):
     """
-       Vytvoření faktury
-   """
+    Vytvoření faktury
+    """
     u = request.session.get('switched_user', request.user)
     superuser = request.user
     if not superuser.is_superuser:
@@ -206,8 +206,7 @@ def update_item(request, iid):
             "form": form,
             "title": _(u"Upravení položky faktury"),
             "submit": _(u"Upravit položku fakturu"),
-            "action": reverse("wsgiadmin.invoices.views.update_item",
-                              args=[iid]),
+            "action": reverse("wsgiadmin.invoices.views.update_item", args=[iid]),
             "u": u,
             "superuser": superuser,
             "menu_active": "invoices",

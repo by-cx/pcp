@@ -90,26 +90,28 @@ def install(request, uid):
         return HttpResponseForbidden("Chyba oprávnění")
 
     iuser = get_object_or_404(u, id=uid)
-    if iuser.username and ";" not in iuser.username:
-        # System user
-        HOME = join("/home", iuser.username)
+    if not iuser.username or ";" in iuser.username:
+        return HttpResponseForbidden("Chybné uživatelské jméno")
 
-        sr = SystemRequest(u, iuser.parms.web_machine)
-        sr.install(iuser)
-        sr.commit()
+    # System user
+    HOME = join("/home", iuser.username)
 
-        line = sr.instant_run("cat /etc/passwd |grep ^%s:" % iuser.username)[0].strip()
-        user, foo, uid, gid, bar = line.split(":", 4)
+    sr = SystemRequest(u, iuser.parms.web_machine)
+    sr.install(iuser)
+    sr.commit()
 
-        iuser.parms.home = HOME
-        iuser.parms.uid = uid
-        iuser.parms.gid = gid
-        iuser.parms.save()
+    line = sr.instant_run("cat /etc/passwd |grep ^%s:" % iuser.username)[0].strip()
+    user, foo, uid, gid, bar = line.split(":", 4)
 
-        iuser.is_active = True
-        iuser.save()
+    iuser.parms.home = HOME
+    iuser.parms.uid = uid
+    iuser.parms.gid = gid
+    iuser.parms.save()
 
-        return HttpResponseRedirect(reverse("wsgiadmin.useradmin.views.ok"))
+    iuser.is_active = True
+    iuser.save()
+
+    return HttpResponseRedirect(reverse("wsgiadmin.useradmin.views.ok"))
 
 
 @login_required

@@ -181,15 +181,15 @@ PCP_SETTINGS = {
     }
 
 VIRTUALENVS_DIR = 'virtualenvs'
+LOG_DIR = '/var/log/webs/' #trailing slash required!
+
 
 ## Logování
-
 import logging
 
 try:
     logging.basicConfig(level=logging.INFO, filename='/var/log/pcp.log', format='%(asctime)s %(levelname)s %(message)s')
 except IOError:
     pass
-
 
 

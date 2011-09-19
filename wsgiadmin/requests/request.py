@@ -271,17 +271,20 @@ class NginxRequest(Service):
         for site in sites:
             if site.type in ("uwsgi", "modwsgi"):
                 config.append(render_to_string("nginx_vhost_wsgi.conf", {
-                    "site": site
+                    "site": site,
+                    'log_dir': settings.LOG_DIR,
                 }))
             elif site.type == "php":
                 # PHP always throw Apache
                 config.append(render_to_string("nginx_vhost_proxy.conf", {
                     "site": site,
                     "proxy": settings.PCP_SETTINGS.get("apache_url"),
+                    'log_dir': settings.LOG_DIR,
                 }))
             elif site.type == "static":
                 config.append(render_to_string("nginx_vhost_static.conf", {
-                    "site": site
+                    "site": site,
+                    'log_dir': settings.LOG_DIR,
                 }))
         self.write(self.config_location, "\n".join(config))
 
@@ -303,10 +306,12 @@ class ApacheRequest(Service):
 
                 config.append(render_to_string("apache_vhost_wsgi.conf", {
                     "site": site,
+                    'log_dir': settings.LOG_DIR,
                 }))
             else:
                 config.append(render_to_string("apache_vhost_%s.conf" % site.type, {
-                    "site": site
+                    "site": site,
+                    'log_dir': settings.LOG_DIR,
                 }))
         self.write(self.config_location, "\n".join(config))
 

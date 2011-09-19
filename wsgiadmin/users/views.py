@@ -89,7 +89,7 @@ def install(request, uid):
     if not superuser.is_superuser:
         return HttpResponseForbidden("Chyba oprávnění")
 
-    iuser = get_object_or_404(user, id=uid)
+    iuser = get_object_or_404(u, id=uid)
     if iuser.username and ";" not in iuser.username:
         # System user
         HOME = join("/home", iuser.username)
@@ -99,7 +99,7 @@ def install(request, uid):
         sr.commit()
 
         line = sr.instant_run("cat /etc/passwd |grep ^%s:" % iuser.username)[0].strip()
-        user, foo, uid, gid = line.split(":", 3)
+        user, foo, uid, gid, bar = line.split(":", 4)
 
         iuser.parms.home = HOME
         iuser.parms.uid = uid

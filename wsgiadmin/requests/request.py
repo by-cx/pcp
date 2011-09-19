@@ -15,8 +15,6 @@ from wsgiadmin.domains.models import Domain
 from wsgiadmin.requests.models import Request
 from wsgiadmin.clients.models import Machine
 
-
-
 class RequestException(Exception): pass
 
 
@@ -365,8 +363,7 @@ class EMailRequest(SSHHandler):
         self.run("/bin/chown email:email %s -R" % maildir + "/Spam")
 
     def remove_mailbox(self, email):
-        homedir = settings.PCP_SETTINGS["maildir"] + "/" + email.domain.name + "/"
-        maildir = homedir + email.login + "/"
+        maildir = join(settings.PCP_SETTINGS["maildir"], email.domain.name, email.login)
         self.run("rm -rf %s" % maildir, plan_to=datetime.today() + timedelta(90))
 
 
@@ -421,14 +418,14 @@ class SystemRequest(SSHHandler):
 
         self.run("useradd -m -s /bin/bash %s" % user.username)
         self.run("chmod 750 %s " % HOME)
-        self.run("cp -R /var/www/cx /var/www/%s" % user.username)
-        self.run("chown -R %s:%s /var/www/%s" % (user.username, user.username, user.username))
+        self.run("cp -R %s %s" % ( join(settings.ROOT, 'service/www_data/'), join('/var/www', user.username)))
+        self.run("chown -R %(user)s:%(user)s /var/www/%(user)s" % dict(user=user.username))
         self.run("usermod -G %s -a %s" % (user.username, user.username))
-        self.run("usermod -G www-data -a %s" % user.username)
+        self.run("usermod -G % -a %s" % (settings.PCP_SETTINGS['apache_user'], user.username))
         self.run("usermod -G clients -a %s" % user.username)
-        self.run('su %s -c "mkdir -p ~/%s"' % (user.username, settings.VIRTUALENVS_DIR))
-        self.run('su %s -c "virtualenv ~/%s/default"' % (user.username, settings.VIRTUALENVS_DIR))
-        self.run('su %s -c "mkdir -p ~/uwsgi"' % user.username)
+        self.run('su %s -c "mkdir -p %s"' % (user.username, join(HOME, settings.VIRTUALENVS_DIR)))
+        self.run('su %s -c "virtualenv %s"' % (user.username, join(HOME, settings.VIRTUALENVS_DIR, 'default')))
+        self.run('su %s -c "mkdir %s"' % (user.username, join(HOME, 'uwsgi')))
 
     def passwd(self, password):
         self.run("/usr/sbin/chpasswd", stdin="%s:%s" % (self.user.username, password))

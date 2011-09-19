@@ -154,6 +154,7 @@ PCP_SETTINGS = {
     "apache_conf": "/etc/apache2/vhosts.d/99_auto.conf",
     "apache_url": "127.0.0.1:8080", # for nginx as proxy
     "apache_init_script": "/etc/init.d/apache2",
+    "apache_user": 'www-data', # 'apache' in gentoo
 
     "uwsgi_conf": "/etc/uwsgi/config.xml",
     "uwsgi_pidfile": "/var/run/uwsgi/app_%d.pid",

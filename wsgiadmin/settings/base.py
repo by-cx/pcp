@@ -11,7 +11,7 @@ from os.path import join, abspath, pardir, dirname
 
 ROOT = abspath(join(dirname(__file__), pardir))
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 DEBUG_TOOLBAR = DEBUG
 ENABLE_DEBUG_URLS = DEBUG
@@ -122,6 +122,8 @@ INSTALLED_APPS = (
 
     'uni_form',
     'south',
+    'constance',
+    'constance.backends.database',
 
     'wsgiadmin.requests',
     'wsgiadmin.useradmin',
@@ -139,43 +141,40 @@ INSTALLED_APPS = (
     'wsgiadmin.service',
 )
 
-PCP_SETTINGS = {
-    "mode": "apache", # main web server, (apache/nginx)
-    "primary_dns": None,
-    "secondary_dns": None,
-    "ipv6": True,
-    "fastcgi_wrapper_dir": "/var/www/%s/php5-wrap",
+CONSTANCE_BACKEND = "constance.backends.database.DatabaseBackend"
 
-    "nginx_conf": "/etc/nginx/sites-enabled/99_auto.conf",
-    "nginx_init_script": "/etc/init.d/nginx",
+CONSTANCE_CONFIG = {
+    "mode": ("apache", "apache or nginx"), # main web server, (apache/nginx)
+    "ipv6": (True, "Turn on/off support for IPv6"),
+    "fastcgi_wrapper_dir": ("/var/www/%s/php5-wrap", "PATH to fastcgi wrapper (user will be filled)"),
 
-    "apache_conf": "/etc/apache2/vhosts.d/99_auto.conf",
-    "apache_url": "127.0.0.1:8080", # for nginx as proxy
-    "apache_init_script": "/etc/init.d/apache2",
-    "apache_user": 'www-data', # 'apache' in gentoo
+    "nginx_conf": ("/etc/nginx/sites-enabled/99_auto.conf", "Nginx's config file"),
+    "nginx_init_script": ("/etc/init.d/nginx", "Nginx's init script"),
 
-    "uwsgi_conf": "/etc/uwsgi/config.xml",
-    "uwsgi_pidfile": "/var/run/uwsgi/app_%d.pid",
+    "apache_conf": ("/etc/apache2/vhosts.d/99_auto.conf", "Apache's config file"),
+    "apache_url": ("127.0.0.1:8080", "Apache proxy URL (for nginx)"), # for nginx as proxy
+    "apache_init_script": ("/etc/init.d/apache2", "Apache's init script"),
+    "apache_user": ('www-data', "Apache's user"), # 'apache' in gentoo
 
-    "bind_conf": "/etc/bind/named.pandora.auto",
-    "bind_zone_conf": "/etc/bind/pri_auto/%s.zone",
-    "bind_init_script": "/etc/init.d/bind9",
-    "maildir": "/var/mail",
-    "handle_dns": True,
-    "dns": {
-        #"master": "87.236.194.121",
-        #"slave": "89.111.104.70",
-        "master": "89.111.104.66",
-        "slave": "89.111.104.66",
-        "ns1": "ns1.rosti.cz",
-        "ns2": "ns2.rosti.cz",
-        "mx": "mail.rosti.cz",
-        "email": "info.rosti.cz",
-        "Refresh": 3600,
-        "Retry": 1800,
-        "Expire": 604800,
-        "Minimum": 30,
-        },
+    "uwsgi_conf": ("/etc/uwsgi/config.xml", "uWSGI's XML config file"),
+    "uwsgi_pidfile": ("/var/run/uwsgi/app_%d.pid", "uWSGI's app pidfile"),
+
+    "bind_conf": ("/etc/bind/named.pandora.auto", "BIND's config"),
+    "bind_zone_conf": ("/etc/bind/pri_auto/%s.zone", "BIND's zone file"),
+    "bind_init_script": ("/etc/init.d/bind9", "BIND's init script"),
+    "maildir": ("/var/mail", "Directory with maildirs"),
+
+    "handle_dns": (False, "Use BIND"),
+    "dns_master": ("", "Master NS server"),
+    "dns_slave": ("", "Slave NS server"),
+    "dns_ns1": ("ns1.example.com", "NS1 domain"),
+    "dns_ns2": ("ns2.example.com", "NS2 domain"),
+    "dns_mx": ("mail.example.com", "MX server"),
+    "dns_email": ("info.example.com", "Admin of DNS"),
+    "dns_refresh": (3600, "Refresh"),
+    "dns_retry": (1800, "Retry"),
+    "dns_expire": (604800, "Expire"),
+    "dns_minimum": (30, "Minimum"),
     }
 
 VIRTUALENVS_DIR = 'virtualenvs'

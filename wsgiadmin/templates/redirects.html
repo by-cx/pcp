@@ -2,84 +2,97 @@
 {% load i18n %}
 
 {% block title %}
-	{% trans "Administrace > Přesměrování (aliasy)" %}
+    {% trans "Administrace > Redirects (aliases)" %}
 {% endblock %}
 
 {% block jsblock %}
-	function remove(what) {
-			var removed_id = "#removed_"+what;
-			$("#remove_"+what).hide();
-			$.get("{% url wsgiadmin.emails.views.removeRedirect 0 %}"+what, function (data){
-				document.location = '{% url wsgiadmin.emails.views.redirects %}';
-			});
-		}
-
+    function remove(what) {
+    var removed_id = "#removed_"+what;
+    $("#remove_"+what).hide();
+    $.get("{% url wsgiadmin.emails.views.removeRedirect 0 %}"+what, function (data){
+    document.location = '{% url wsgiadmin.emails.views.redirects %}';
+    });
+    }
 {% endblock %}
 
 {% block content %}
 
-<h2>Přesměrování</h2>
+    <h2>{% trans "Email redirects" %}</h2>
+    <p>
+    {% trans "Všechny informace týkající se e-mailů najdete na Wiki na adrese" %}
+    <a href='{{ WIKI_URL }}/e-maily' target="_blank">{{ WIKI_URL }}/e-maily</a>.</p>
 
-{% trans "<p>Všechny informace týkající se e-mailů najdete na Wiki na adrese" %} <a href='{{ WIKI_URL }}/e-maily' target="_blank">{{ WIKI_URL }}/e-maily</a>.</p>
+    <p>
+        <a href="{% url wsgiadmin.emails.views.addRedirect %}">
+            {% trans "Add new email redirect" %}
+        </a>
+    </p>
 
-<p><a href="{% url wsgiadmin.emails.views.addRedirect %}">Přidat nové přesměrování</a></p>
+    <div id="message-box"></div>
 
-<div id="message-box"></div>
+    <h3>{% trans "List of existing email redirects" %}</h3>
+    <table>
+        <thead>
+        <tr>
+            <th>{% trans "Alias" %}</th>
+            <th>{% trans "Redirected to" %}</th>
+            <th>{% trans "Actions" %}</th>
+        </tr>
+        </thead>
+        {% if redirects %}
+            <tbody>
+            {% for redirect in redirects.object_list %}
+                <tr>
+                    <td>{{ redirect.alias }}@{{ redirect.domain.name }}</td>
+                    <td>{{ redirect.email }}</td>
+                    <td>
+                        <a href="{% url wsgiadmin.emails.views.changeRedirect redirect.id %}">
+                            <img src="{{ STATIC_URL }}icons/raster/gray_dark/pen_alt_stroke_16x16.png" alt="{% trans "Upravit" %}"/>
+                        </a>
+                        <a href="#" id="remove_{{redirect.id}}" onclick="if(confirm('{% trans "Really remove chosen redirect?" %}')) {remove('{{redirect.id}}');};" class="bold">
+                            <img src="{{ STATIC_URL }}icons/raster/gray_dark/trash_fill_16x16.png" alt="{% trans "Delete" %}" />
+                        </a>
+                        <span id=" removed_{{ redirect.id }}" class="info"></span>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="3">
+                    <div class="pagination">
+                        {% if redirects.has_previous %}
+                            <a href="{% url wsgiadmin.emails.views.redirects 1 %}" title="{% trans "První stránka" %}">&laquo; {% trans "První" %}</a>{% endif %}
+                        {% if redirects.has_previous %}
+                            <a href="{% url wsgiadmin.emails.views.redirects redirects.previous_page_number %}" title="{% trans "Předchozí stránka" %}">&laquo; {% trans "Předchozí" %}</a>{% endif %}
 
-<h3>{% trans "Seznam vytvořených přesměrování" %}</h3>
-<table>
-	<thead>
-		<tr>
-			<th>{% trans "Alias" %}</th>
-			<th>{% trans "Přesměrovaný na" %}</th>
-			<th>{% trans "Akce" %}</th>
-		</tr>
-	</thead>
-	{% if redirects %}
-	<tbody>
-		{% for redirect in redirects.object_list %}
-		<tr>
-			<td>{{ redirect.alias }}@{{ redirect.domain.name }}</td>
-			<td>{{ redirect.email }}</td>
-			<td><a href="{{ redirect.getUrl }}">{{ redirect.getUrl }}</a></td>
-			<td>
-				<a href="{% url wsgiadmin.emails.views.changeRedirect redirect.id %}"><img src="{{ STATIC_URL }}icons/raster/gray_dark/pen_alt_stroke_16x16.png" alt="{% trans "Upravit" %}" /></a>
+                        {% for p in paginator.page_range %}
+                            {% if p == num_page %}
+                                <a href="{% url wsgiadmin.emails.views.redirects p %}" class="number current" title="{{ p }}">{{ p }}</a>
+                            {% else %}
+                                <a href="{% url wsgiadmin.emails.views.redirects p %}" class="number" title="{{ p }}">{{ p }}</a>
+                            {% endif %}
+                        {% endfor %}
 
-				<a href="#" id="remove_{{redirect.id}}" onclick="if(confirm('{% trans "Opravdu chcete přesměrování zrušit?" %}')) {remove('{{redirect.id}}');};" class="bold"><img src="{{ STATIC_URL }}icons/raster/gray_dark/trash_fill_16x16.png" alt="{% trans "Smazat" %} /></a>
-				<span id="removed_{{redirect.id}}" class="info"></span>
-			</td>
-		</tr>
-		{% endfor %}
-	</tbody>
-	<tfoot>
-		<tr>
-			<td colspan="3">
-					<div class="pagination">
-						{% if redirects.has_previous %}<a href="{% url wsgiadmin.emails.views.redirects 1 %}" title="{% trans "První stránka" %}">&laquo; {% trans "První" %}</a>{% endif %}
-						{% if redirects.has_previous %}<a href="{% url wsgiadmin.emails.views.redirects redirects.previous_page_number %}" title="{% trans "Předchozí stránka" %}">&laquo; {% trans "Předchozí" %}</a>{% endif %}
-
-						{% for p in paginator.page_range %}
-							{% if p == num_page %}
-								<a href="{% url wsgiadmin.emails.views.redirects p %}" class="number current" title="{{ p }}">{{ p }}</a>
-							{% else %}
-								<a href="{% url wsgiadmin.emails.views.redirects p %}" class="number" title="{{ p }}">{{ p }}</a>
-							{% endif %}
-						{% endfor %}
-
-						{% if redirects.has_next %}<a href="{% url wsgiadmin.emails.views.redirects redirects.next_page_number %}" title="{% trans "Další stránka" %}">{% trans "Další" %} &raquo;</a>{% endif %}
-						{% if redirects.has_next %}<a href="{% url wsgiadmin.emails.views.redirects paginator.num_pages %}" title="{% trans "Poslední stránka" %}">{% trans "Poslední" %} &raquo;</a>{% endif %}
-					</div>
-					<div class="clear"></div>
-			</td>
-		</tr>
-	</tfoot>
-	{% else %}
-	<tbody>
-	<tr>
-		<td colspan="3">{% trans "Žádné přesměrování nebylo ještě vytvořeno. Můžete ho vytvořit" %} <a href="{% url wsgiadmin.emails.views.addRedirect %}">{% trans "kliknutím sem" %}</a>.</td>
-	</tr>
-	</tbody>
-	{% endif%}
-</table>
-
+                        {% if redirects.has_next %}
+                            <a href="{% url wsgiadmin.emails.views.redirects redirects.next_page_number %}" title="{% trans "Další stránka" %}">{% trans "Další" %} &raquo;</a>{% endif %}
+                        {% if redirects.has_next %}
+                            <a href="{% url wsgiadmin.emails.views.redirects paginator.num_pages %}" title="{% trans "Poslední stránka" %}">{% trans "Poslední" %} &raquo;</a>{% endif %}
+                    </div>
+                    <div class="clear"></div>
+                </td>
+            </tr>
+            </tfoot>
+        {% else %}
+            <tbody>
+            <tr>
+                <td colspan="3">{% trans "Žádné přesměrování nebylo ještě vytvořeno." %}
+                    <a href="{% url wsgiadmin.emails.views.addRedirect %}">
+                        {% trans "Create new email redirect" %}
+                    </a>.
+                </td>
+            </tr>
+            </tbody>
+        {% endif %}
+    </table>
 {% endblock %}

@@ -3,14 +3,17 @@
 {% load i18n %}
 
 {% block jsblock %}
-{{ block.super }}
+    {{ block.super }}
 
-$(function() {
+    $(function() {
 
-	add_refresh_handler = function(ids_object) {
-		var $refresh = $('<div class="ajax_refresh"><span class="caption">refresh</span><span class="status"></span></div>');
-		var $runner = $("#div_" + ids_object[1]);
-		$runner.prepend($refresh);
+    add_refresh_handler = function(ids_object) {
+    var $refresh = $('
+    <div class="ajax_refresh">
+        <span class="caption">refresh</span><span class="status"></span>
+    </div>');
+    var $runner = $("#div_" + ids_object[1]);
+    $runner.prepend($refresh);
 
 		$refresh.click(function() {
 			$.ajax({
@@ -34,66 +37,67 @@ $(function() {
 						combo[0].options[i+1] = new Option(msgs[i], msgs[i], (msgs[i] == old_selected));
 					}
 
-					$refresh.find(".status img").remove();
-					var $status = $('<img src="{{ STATIC_URL }}icons/raster/green/check_12x10.png" />');
-					$status.appendTo($refresh.find(".status")).fadeOut(1500);
-				}
-			});
-		}) //eof refresh
-	} // eof add_refresh_handler
+    $refresh.find(".status img").remove();
+    var $status = $('
+    <img src="{{ STATIC_URL }}icons/raster/green/check_12x10.png"/>');
+    $status.appendTo($refresh.find(".status")).fadeOut(1500);
+    }
+    });
+    }) //eof refresh
+    } // eof add_refresh_handler
 
-	{% if dynamic_refreshs %}
-		var refreshs = [
-			{% for url, input_id in dynamic_refreshs %}
-				["{{ url }}", "{{ input_id }}"]{% if not forloop.last %},{% endif %}
-			{% endfor %}
-		];
+    {% if dynamic_refreshs %}
+        var refreshs = [
+        {% for url, input_id in dynamic_refreshs %}
+            ["{{ url }}", "{{ input_id }}"]{% if not forloop.last %},{% endif %}
+        {% endfor %}
+        ];
 
-		for (var fce in refreshs) {
-			add_refresh_handler(refreshs[fce]);
-		}
-	{% endif %}
+        for (var fce in refreshs) {
+        add_refresh_handler(refreshs[fce]);
+        }
+    {% endif %}
 
-});
+    });
 {% endblock %}
 
 
 
 {% block content %}
 
-<h3>{{ title }}</h3>
+    <h3>{{ title }}</h3>
 
-{% if valid %}
-	<p class="{% if next_stest %}ok-text{% else %}error-text{% endif %}">{{ valid }}</p>
-{% endif %}
+    {% if valid %}
+        <p class="{% if next_stest %}ok-text{% else %}error-text{% endif %}">{{ valid }}</p>
+    {% endif %}
 
-{% if form.errors %}
-	<div class="error">
-		{% trans 'Please fix errors in form below' %}
-	</div>
-{% endif %}
+    {% if form.errors %}
+        <div class="error">
+            {% trans 'Please fix errors in form below' %}
+        </div>
+    {% endif %}
 
-{% if siteErrors %}
-<p>{% trans "Následující doménu jsou použity již u jiné stránky nebo je nemáte zadané" %}:</p>
-<ul>
-	{% for x in siteErrors %}
-	<li>{{ x }}</li>
-	{% endfor %}
-</ul>
-{% endif %}
+    {% if siteErrors %}
+        <p>{% trans "Those domains are not set or already used by another app or you" %}:</p>
+        <ul>
+            {% for x in siteErrors %}
+                <li>{{ x }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 
 
-	<form action="{{ action }}" enctype="multipart/form-data" method="post" id="myform" class="uniForm">
-		{% csrf_token %}
-		{{ form|as_uni_form }}
+    <form action="{{ action }}" enctype="multipart/form-data" method="post" id="myform" class="uniForm">
+        {% csrf_token %}
+        {{ form|as_uni_form }}
 
-		{% if note %}
-		{% for x in note%}
-		<p><em>{{ x }}</em></p>
-		{% endfor %}
-		{% endif %}
+        {% if note %}
+            {% for x in note %}
+                <p><em>{{ x }}</em></p>
+            {% endfor %}
+        {% endif %}
 
-		<p><input type="submit" class="input-submit" value="{{ submit }}"/></p>
-	</form>
-	
+        <p><input type="submit" class="input-submit" value="{{ submit }}"/></p>
+    </form>
+
 {% endblock %}

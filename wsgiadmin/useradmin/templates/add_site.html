@@ -35,7 +35,7 @@ $(function() {
 					}
 
 					$refresh.find(".status img").remove();
-					var $status = $('<img src={{ STATIC_URL }}icons/raster/green/check_12x10.png" />');
+					var $status = $('<img src="{{ STATIC_URL }}icons/raster/green/check_12x10.png" />');
 					$status.appendTo($refresh.find(".status")).fadeOut(1500);
 				}
 			});
@@ -82,7 +82,7 @@ $(function() {
 </ul>
 {% endif %}
 
-<fieldset>
+
 	<form action="{{ action }}" enctype="multipart/form-data" method="post" id="myform" class="uniForm">
 		{% csrf_token %}
 		{{ form|as_uni_form }}
@@ -93,7 +93,7 @@ $(function() {
 		{% endfor %}
 		{% endif %}
 
-		<p><input type="submit" value="{{ submit }}"/></p>
+		<p><input type="submit" class="input-submit" value="{{ submit }}"/></p>
 	</form>
-</fieldset>
+	
 {% endblock %}

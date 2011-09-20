@@ -1,11 +1,56 @@
 WSGIAdmin
 =========
 
-Web interface for you server wrote in Python. You can try it
-and help me, but it is not working now. I have to rewrite some
-parts and because of that I destroy almost everything what worked.
+Web interface for your server based on Django and Python.
+It can handle a Python's applications throw uWSGI and PHP
+ applications throw Apache and mod_fcgid.
 
-If you want working version, try first commit in repo.
+It is not stable right now but i am sure it will be in short
+time.
+
+TODO for v0.3
+=============
+
+* New design
+* Stable nginx support
+* Clean, clean, clean
+* Fix, fix, fix
+
+Main features
+=============
+
+* Great Python support
+* Less great PHP support
+* Nice static sites support
+* PostgreSQL, MySQL support
+* Bind support
+* Email via courier and postfix
+* FTP via pure-ftpd
+* Simple invoice system
+* IPv6 support
+
+DEPTS
+=====
+
+	* uWSGI
+	* Python 2.6, 2.7
+	* PostgreSQL 8.x (9.x not tested)
+
+	* South
+	* psycopg2
+	* django >= 1.2
+	* django-uniform
+	* django-debug-toolbar
+	* anyjson
+
+Participants
+============
+
+* Adam Štrauch - cx@initd.cz
+* Jiří Suchan
+* Pavel Buben
+
+You are welcome to join us, just click on the fork button up there.
 
 --
 Adam 'cx' Strauch

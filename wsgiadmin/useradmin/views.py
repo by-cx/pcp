@@ -79,32 +79,6 @@ def ok(request):
                               context_instance=RequestContext(request)
     )
 
-
-@login_required
-def error(request):
-    u = request.session.get('switched_user', request.user)
-    superuser = request.user
-    return render_to_response('error.html',
-            {"u": u, "superuser": superuser, },
-                              context_instance=RequestContext(request)
-    )
-
-
-@login_required
-def message(request, t, m):
-    u = request.session.get('switched_user', request.user)
-    superuser = request.user
-    return render_to_response('message.html',
-            {
-            "type": t,
-            "message": m,
-            "u": u,
-            "superuser": superuser,
-            },
-                              context_instance=RequestContext(request)
-    )
-
-
 @login_required
 def change_passwd(request):
     u = request.session.get('switched_user', request.user)
@@ -131,15 +105,6 @@ def change_passwd(request):
             },
                               context_instance=RequestContext(request)
     )
-
-
-@login_required
-def pg(request):
-    u = request.session.get('switched_user', request.user)
-    return render_to_response('info.html',
-            {"u": u}, context_instance=RequestContext(request)
-    )
-
 
 def reg(request):
     if request.method == 'POST':

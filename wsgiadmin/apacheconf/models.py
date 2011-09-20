@@ -56,7 +56,7 @@ class UserSite(models.Model):
             except ValueError:
                 pass
             else:
-                target = "%s%s" % (self.owner.parms.home, target)
+                target = join(self.owner.parms.home, target)
                 statics.append(dict(url=url, dir=target))
         return statics
 

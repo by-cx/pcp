@@ -34,7 +34,7 @@ class FormWsgi(ModelForm):
         super(FormWsgi, self).__init__(*args, **kwargs)
 
         self.fields['domains'].help_text = _(u"<br />Domény na kterých bude web server naslouchat oddělené mezerou. Například 'rosti.cz www.rosti.cz ' apod. První doména je brána jako hlavní.")
-        self.fields['static'].help_text = _(u"<br /><strong>~/&lt;zadaná_cesta&gt;</strong> - Jeden řádek, jeden adresář. Formát <strong>/url/ /cesta/k/mediím/</strong> - Odělovačem je mezera. Chybné řádky budou při generování konfigurace ignorovány.")
+        self.fields['static'].help_text = _(u"<br />Formát <strong>/url/ /cesta/k/mediím/</strong>, odděleno mezerou.<br /><ul><li>/cesta/k/mediím/ je prefixnuta domovským adresářem</li><li>1 řádek může obsahovat právě 1 adresář</li><li>Chybné řádky budou ignorovány</li></ul>.")
         self.fields['python_path'].help_text=_(u"<br /><strong>~/&lt;zadaná_cesta&gt;</strong> - Jeden řádek, jeden adresář. Formát <strong>/tady/je/moje/aplikace</strong>. Váš domovský adresář bude automaticky doplněn.<br />uWSGI ignoruje nastavení PYTHON_PATH přes sys.path.")
         self.fields['virtualenv'].help_text= _(u"<br />Pythoní virtuální prostředí. Najdete je ve '<strong>~/virtualenvs/&lt;zadaná_hodnota&gt;</strong>'. Můžete si si vytvořit vlastní přes SSH.")
         self.fields['allow_ips'].help_text = help_text=_(u"<br />Jedna IP adresa na jeden řádek. Pokud je pole prázdné, fungují všechny.")

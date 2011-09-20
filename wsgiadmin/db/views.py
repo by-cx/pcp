@@ -132,21 +132,21 @@ def passwd(request, dbtype, dbname):
 
 
 @login_required
-@csrf_exempt
 def rm(request, dbtype):
-    #dbname = request.POST['dbname']
-    dbname = 'foobar'
-    u = request.session.get('switched_user', request.user)
-    superuser = request.user
+    try:
+        dbname = request.POST['dbname']
+        u = request.session.get('switched_user', request.user)
+        superuser = request.user
+        if dbtype == 'mysql':
+            m = u.mysqldb_set.get(dbname=dbname)
+            mr = MySQLRequest(u, u.parms.mysql_machine)
+        elif dbtype == 'pgsql':
+            m = u.pgsqldb_set.get(dbname=dbname)
+            mr = PostgreSQLRequest(u, u.parms.pgsql_machine)
 
-    if dbtype == 'mysql':
-        m = u.mysqldb_set.get(dbname=dbname)
-        mr = MySQLRequest(u, u.parms.mysql_machine)
-    elif dbtype == 'pgsql':
-        m = u.pgsqldb_set.get(dbname=dbname)
-        mr = PostgreSQLRequest(u, u.parms.pgsql_machine)
+        mr.remove_db(dbname)
+        m.delete()
 
-    mr.remove_db(dbname)
-    m.delete()
-    
-    return JsonResponse("OK", {1: ugettext("Database was sucesfuly deleted")})
+        return JsonResponse("OK", {1: ugettext("Database was sucesfuly deleted")})
+    except Exception, e:
+        return JsonResponse("KO", {1: e})

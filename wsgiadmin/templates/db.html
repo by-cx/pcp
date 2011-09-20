@@ -6,25 +6,31 @@
 {% endblock %}
 
 {% block jsblock %}
-	{{ block.super }}
+    {{ block.super }}
 
-	$(function() {
-	$("#dblist .db_delete").click(function() {
-	var orly = confirm('{% trans "Opravdu chcete smazat tuto databázi?" %}');
-	if (orly) {
-	    var db = $(this).attr('rel');
-	    $.ajax({
+    $(function() {
+    $("#dblist .db_delete").click(function() {
+    var orly = confirm('{% trans "Opravdu chcete smazat tuto databázi?" %}');
+    el = $(this);
+    if (orly) {
+        var db = $(this).attr('rel');
+        $.ajax({
             url: "{% url wsgiadmin.db.views.rm dbtype=dbtype %}",
             type: "POST",
+            data: {'dbname': db, 'csrfmiddlewaretoken': '{{ csrf_token }}' },
             dataType: "json",
             success: function(data) {
-                alert(data.messages);
+                if (data.result == 'OK') {
+                    el.parent().html("{% trans "database was sucessfuly removed" %}");
+                } else {
+                    alert(data.messages);
+                }
             }
 
-        });
-	}
-	});
-	});
+    });
+    }
+    });
+    });
 {% endblock %}
 
 
@@ -73,10 +79,12 @@
                 <td colspan="2">
                     <div class="pagination">
                         {% if dbs.has_previous %}
-                            <a href="{% url wsgiadmin.db.views.show dbtype='pgsql' 1 %}" title="{% trans "První stránka" %}">&laquo; {% trans "První" %}</a>
+                            <a href="{% url wsgiadmin.db.views.show dbtype=dbtype 1 %}" title="{% trans "První stránka" %}">&laquo; {% trans "První" %}</a>
                         {% endif %}
                         {% if dbs.has_previous %}
-                            <a href="{% url wsgiadmin.db.views.show dbtype='pgsql' gs.previous_page_number %}" title="{% trans "Předchozí stránka" %}">&laquo; {% trans "Předchozí" %}</a>
+                            <a href="{% url wsgiadmin.db.views.show dbtype=dbtype gs.previous_page_number %}" title="{% trans "Předchozí stránka" %}">
+                                &laquo; {% trans "Předchozí" %}
+                            </a>
                         {% endif %}
 
                         {% for p in paginator.page_range %}
@@ -88,10 +96,10 @@
                         {% endfor %}
 
                         {% if dbs.has_next %}
-                            <a href="{% url wsgiadmin.db.views.show dbtype='pgsql' page=dbs.next_page_number %}" title="{% trans "Další stránka" %}">{% trans "Další" %} &raquo;</a>
+                            <a href="{% url wsgiadmin.db.views.show dbtype=dbtype page=dbs.next_page_number %}" title="{% trans "Další stránka" %}">{% trans "Další" %} &raquo;</a>
                         {% endif %}
                         {% if dbs.has_next %}
-                            <a href="{% url wsgiadmin.db.views.show dbtype='pgsql' page=dbs.num_pages %}" title="{% trans "Poslední stránka" %}">{% trans "Poslední" %} &raquo;</a>
+                            <a href="{% url wsgiadmin.db.views.show dbtype=dbtype page=dbs.num_pages %}" title="{% trans "Poslední stránka" %}">{% trans "Poslední" %} &raquo;</a>
                         {% endif %}
                     </div>
                     <div class="clear"></div>

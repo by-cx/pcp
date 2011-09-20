@@ -13,6 +13,8 @@ TODO for v0.3
 
 * New design
 * Stable nginx support
+* Configuration to database (constance)
+* Translating in-code texts into english
 * Clean, clean, clean
 * Fix, fix, fix
 
@@ -42,9 +44,11 @@ DEPTS
 	* django-uniform
 	* django-debug-toolbar
 	* anyjson
+	* django-constance
+	* django-picklefield
 
 Developers
-============
+==========
 
 * Adam Štrauch - cx@initd.cz
 * Jiří Suchan

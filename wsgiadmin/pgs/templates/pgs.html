@@ -10,7 +10,7 @@
 
 	$(function() {
 		$("#dblist .db_pwdchange").click(function() {
-			var db = $(this).data('id');
+			var db = $(this).attr('rel');
 			$("#db_dialog").dialog({"width": 400, "height": 300});
 			$("#db_dialog").load("{% url wsgiadmin.pgs.views.passwd "" %}" + db + "/");
 		});
@@ -18,7 +18,7 @@
 		$("#dblist .db_delete").click(function() {
 			var orly = confirm('{% trans "Opravdu chcete smazat tuto databázi?" %}');
 			if (orly) {
-				var db = $(this).data('id');
+				var db = $(this).attr('rel');
 				$("#db_" +  db).load("{% url wsgiadmin.pgs.views.rm "" %}" + db);
 			}
 		});
@@ -52,10 +52,10 @@
 			<tr>
 								<td>{{ db }}</td>
 								<td id="db_{{ db }}">
-									<a href="#" class="db_pwdchange" title="{% trans "Změnit heslo" %}" data-id="{{ db }}">
+									<a href="#" class="db_pwdchange" title="{% trans "Změnit heslo" %}" rel="{{ db }}">
 										<img src={{ STATIC_URL }}icons/raster/gray_dark/key_stroke_16x16.png" alt="{% trans "Změnit heslo" %}"/>
 									</a>
-									<a href="#" class="db_delete" title="{% trans "Smazat" %}" data-id="{{ db }}">
+									<a href="#" class="db_delete" title="{% trans "Smazat" %}" rel="{{ db }}">
 										<img src={{ STATIC_URL }}icons/raster/gray_dark/trash_fill_16x16.png" alt="{% trans "Smazat" %}"/>
 									</a>
 								</td>

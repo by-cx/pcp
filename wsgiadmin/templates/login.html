@@ -75,7 +75,7 @@
 			</div> <!-- End #logn-top -->
 			
 			<div id="login-content">
-				<form action="." method="post">
+				<form action="../useradmin/templates" method="post">
 					{% csrf_token %}
 					<input type="hidden" name="next" value="{{ next }}">
 					{% if form.errors %}

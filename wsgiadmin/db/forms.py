@@ -1,20 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from django.db import models
 from django import forms
-from django.contrib.auth.models import User as user
-
 from django.utils.translation import ugettext_lazy as _
 
-class mysqldb(models.Model):
-    dbname = models.CharField(_(u"Název MySQL databáze"), max_length=50)
-    owner = models.ForeignKey(user, verbose_name=_(u"Uživatel"))
-
-    def __unicode__(self):
-        return "%s (%s)" % (self.dbname, self.owner)
-
-
-class form_db(forms.Form):
+class DBForm(forms.Form):
     database = forms.CharField(label=_(u"Název databáze"),
                                help_text="Název databáze (i vytvořené uživatelské jméno) bude doplněn o prefix ve tvaru <i>prefix_názevdatabáze</i>, kde prefix jsou první tři znaky vašeho uživatelského jména.")
     password = forms.CharField(label=_(u"Heslo k databázi"), widget=forms.PasswordInput)

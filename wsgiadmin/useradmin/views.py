@@ -3,7 +3,7 @@
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect, HttpResponse, HttpResponseForbidden
+from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.utils.translation import ugettext_lazy as _
 from django.template.context import RequestContext
 from django.core.mail import send_mail

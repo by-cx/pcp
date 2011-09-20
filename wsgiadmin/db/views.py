@@ -10,32 +10,37 @@ from django.template.context import RequestContext
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
-from wsgiadmin.pgs.models import *
+from wsgiadmin.db.forms import DBForm
+from wsgiadmin.db.models import MySQLDB
 from wsgiadmin.keystore.tools import *
+from wsgiadmin.requests.request import MySQLRequest
 from wsgiadmin.useradmin.forms import simple_passwd
-from wsgiadmin.requests.request import PostgreSQLRequest
+
 
 @login_required
-def show(request, p=1):
+def show(request, dbtype=None, page=1):
     """
     Vylistování seznamu databází
     """
-    p = int(p)
+    p = int(page)
     u = request.session.get('switched_user', request.user)
     superuser = request.user
 
-    dbs = u.pgsql_set.all()
+    if dbtype == 'mysql':
+        dbs = u.mysqldb_set.all()
+    else:
+        dbs = u.pgsql_set.all()
 
     paginator = Paginator([x.dbname for x in dbs], 10)
-
     if not paginator.count:
         page = None
     else:
         page = paginator.page(p)
 
-    return render_to_response('pgs.html',
+    return render_to_response('db.html',
             {
-            "pgs": page,
+            'dbtype': dbtype,
+            "dbs": page,
             "paginator": paginator,
             "num_page": p,
             "u": u,
@@ -45,7 +50,7 @@ def show(request, p=1):
 
 
 @login_required
-def add(request):
+def add(request, dbtype):
     """
     Vytvoření databáze
     """
@@ -53,53 +58,36 @@ def add(request):
     superuser = request.user
 
     if request.method == 'POST':
-        form = form_db(request.POST)
+        form = DBForm(request.POST)
         form.u = u
         if form.is_valid():
-            db = u.parms.prefix() + "_" + form.cleaned_data["database"]
+            db = "%s_%s" % (u.parms.prefix(), form.cleaned_data["database"])
 
-            p = pgsql()
-            p.dbname = db
-            p.owner = u
-            p.save()
+            m = MySQLDB()
+            m.dbname = db
+            m.owner = u
+            m.save()
 
-            pr = PostgreSQLRequest(u, u.parms.pgsql_machine)
-            pr.add_db(db, form.cleaned_data["password"])
+            mr = MySQLRequest(u, u.parms.mysql_machine)
+            mr.add_db(db, form.cleaned_data["password"])
 
-            return HttpResponseRedirect(reverse("wsgiadmin.pgs.views.show"))
+            return HttpResponseRedirect(reverse("wsgiadmin.db.views.show"))
     else:
-        form = form_db()
+        form = DBForm()
         form.u = u
 
     return render_to_response('universal.html',
             {
             "form": form,
-            "title": _(u"Vytvoření Postgresql databáze"),
+            "title": _(u"Vytvoření MySQL databáze"),
             "submit": _(u"Vytvořit databázi"),
-            "action": reverse("wsgiadmin.pgs.views.add"),
+            "action": reverse("wsgiadmin.db.views.add", kwargs=dict(dbtype=dbtype)),
             "u": u,
             "superuser": superuser,
             "menu_active": "dbs",
             },
-                              context_instance=RequestContext(request)
+        context_instance=RequestContext(request)
     )
-
-
-@login_required
-@csrf_exempt
-def rm(request, db):
-    u = request.session.get('switched_user', request.user)
-    p = u.pgsql_set.filter(dbname=db)
-
-    if p:
-        pr = PostgreSQLRequest(u, u.parms.pgsql_machine)
-        pr.remove_db(db)
-
-        p[0].delete()
-
-        return HttpResponse("Databáze vymazána")
-    else:
-        return HttpResponse("Chyba při vykonávání operace")
 
 
 @login_required
@@ -112,12 +100,9 @@ def passwd(request, db):
         form = simple_passwd(request.POST)
 
         if form.is_valid():
-            p = u.pgsql_set.filter(dbname=db)
-
-            if p:
-                pr = PostgreSQLRequest(u, u.parms.pgsql_machine)
-                pr.passwd_db(db, form.cleaned_data["password"])
-
+            if u.mysqldb_set.filter(dbname=db):
+                mr = MySQLRequest(u, u.parms.mysql_machine)
+                mr.passwd_db(db, form.cleaned_data["password"])
                 return HttpResponse("OK")
 
     else:
@@ -126,9 +111,9 @@ def passwd(request, db):
     return render_to_response('simplepasswd.html',
             {
             "form": form,
-            "title": _(u"Heslo k pgsql databázi %s") % db,
+            "title": _(u"Heslo k mysql databázi %s") % db,
             "submit": _(u"Změni heslo"),
-            "action": reverse("wsgiadmin.pgs.views.passwd", args=[db]),
+            "action": reverse("wsgiadmin.db.views.passwd", args=[db]),
             "u": u,
             "superuser": superuser,
             "menu_active": "dbs",
@@ -137,3 +122,17 @@ def passwd(request, db):
     )
 
 
+@login_required
+@csrf_exempt
+def rm(request, db):
+    u = request.session.get('switched_user', request.user)
+    superuser = request.user
+
+    m = u.mysqldb_set.filter(dbname=db)
+    if not m:
+        return HttpResponse("Chyba při vykonávání operace")
+
+    mr = MySQLRequest(u, u.parms.mysql_machine)
+    mr.remove_db(db)
+    m[0].delete()
+    return HttpResponse("Databáze vymazána")

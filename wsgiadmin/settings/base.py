@@ -55,7 +55,7 @@ TIME_ZONE = 'Europe/Prague'
 LANGUAGE_CODE = 'cs'
 
 LANGUAGES = (
-('cs', 'Česky'),
+('cs', u'Česky'),
 ('en', 'English'),
     )
 
@@ -85,9 +85,9 @@ SECRET_KEY = 'l=!i_!9q8tc9@jn@m*n*z6zri01$kvjdh94v^1_bzw!8ja5z=*'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
-'django.template.loaders.filesystem.Loader',
-'django.template.loaders.app_directories.Loader',
-    )
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader',
+)
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -101,7 +101,7 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'wsgiadmin.urls'
 
 TEMPLATE_DIRS = (
-	join(ROOT, "templates"),
+    join(ROOT, 'templates'),
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -131,8 +131,7 @@ INSTALLED_APPS = (
     'wsgiadmin.domains',
     'wsgiadmin.emails',
     'wsgiadmin.ftps',
-    'wsgiadmin.pgs',
-    'wsgiadmin.mysql',
+    'wsgiadmin.db',
     'wsgiadmin.users',
     'wsgiadmin.apacheconf',
     'wsgiadmin.keystore',

@@ -4,6 +4,7 @@ import crypt
 from django.core.paginator import Paginator
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from wsgiadmin.emails.forms import FormEmail, FormEmailPassword, FormRedirect
 from wsgiadmin.emails.models import *
 from django.core.urlresolvers import reverse
 from wsgiadmin.clients.models import *
@@ -59,7 +60,7 @@ def addBox(request):
     domains = [(x.name, x.name) for x in u.domain_set.filter(mail=True)]
 
     if request.method == 'POST':
-        form = formEmail(request.POST)
+        form = FormEmail(request.POST)
         form.fields["xdomain"].choices = domains
 
         if form.is_valid():
@@ -78,7 +79,7 @@ def addBox(request):
 
             return HttpResponseRedirect(reverse("wsgiadmin.emails.views.boxes"))
     else:
-        form = formEmail()
+        form = FormEmail()
         form.fields["xdomain"].choices = domains
 
     return render_to_response('universal.html',
@@ -129,14 +130,14 @@ def changePasswdBox(request, eid):
             break
 
     if request.method == 'POST':
-        form = formEmailPassword(request.POST, instance=e)
+        form = FormEmailPassword(request.POST, instance=e)
         if form.is_valid():
             email = form.save(commit=False)
             email.password = crypt.crypt(form.cleaned_data["password1"], email.login)
             email.save()
             return HttpResponseRedirect(reverse("wsgiadmin.emails.views.boxes"))
     else:
-        form = formEmailPassword(instance=e)
+        form = FormEmailPassword(instance=e)
 
     return render_to_response('universal.html',
             {
@@ -211,7 +212,7 @@ def changeRedirect(request, rid):
 
     domains = [(x.name, x.name) for x in u.domain_set.filter(mail=True)]
     if request.method == 'POST':
-        form = formRedirect(request.POST, instance=r)
+        form = FormRedirect(request.POST, instance=r)
         form.fields["_domain"].choices = domains
         if form.is_valid():
             fredirect = form.save(commit=False)
@@ -219,7 +220,7 @@ def changeRedirect(request, rid):
             fredirect.save()
             return HttpResponseRedirect(reverse("wsgiadmin.emails.views.redirects"))
     else:
-        form = formRedirect(instance=r)
+        form = FormRedirect(instance=r)
         form.fields["_domain"].choices = domains
 
     return render_to_response('universal.html',
@@ -243,7 +244,7 @@ def addRedirect(request):
     
     domains = [(x.name, x.name) for x in u.domain_set.filter(mail=True)]
     if request.method == 'POST':
-        form = formRedirect(request.POST)
+        form = FormRedirect(request.POST)
         form.fields["_domain"].choices = domains
         if form.is_valid():
             redirect = form.save(commit=False)
@@ -253,7 +254,7 @@ def addRedirect(request):
             redirect.save()
             return HttpResponseRedirect(reverse("wsgiadmin.emails.views.redirects"))
     else:
-        form = formRedirect()
+        form = FormRedirect()
         form.fields["_domain"].choices = domains
 
     return render_to_response('universal.html',

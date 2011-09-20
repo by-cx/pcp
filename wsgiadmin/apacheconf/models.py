@@ -48,12 +48,16 @@ class UserSite(models.Model):
         return [x.strip() for x in self.python_path.split("\n") if x.strip()]
 
     @property
-    def staticList(self):
+    def static_list(self):
         statics = []
         for line in self.static.split("\n"):
-            line = line.strip().split(" ")
-            if len(line) == 2:
-                statics.append({"url": line[0], "dir": "%s%s" (self.owner.parms.home, line[1])})
+            try:
+                url, target = line.strip().split()
+            except ValueError:
+                pass
+            else:
+                target = "%s%s" % (self.owner.parms.home, target)
+                statics.append(dict(url=url, dir=target))
         return statics
 
     @property

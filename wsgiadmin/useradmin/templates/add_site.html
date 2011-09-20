@@ -63,11 +63,8 @@ $(function() {
 
 <h3>{{ title }}</h3>
 
-{% if not next_step %}
-<p class="error-text">{{ valid }}</p>
-{% endif %}
-{% if next_step %}
-<p class="ok-text">{{ valid }}</p>
+{% if valid %}
+	<p class="{% if next_stest %}ok-text{% else %}error-text{% endif %}">{{ valid }}</p>
 {% endif %}
 
 {% if form.errors %}

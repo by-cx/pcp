@@ -19,8 +19,8 @@ msgstr ""
 "X-Translated-Using: django-rosetta 0.5.6\n"
 
 #: models.py:14 templates/apache.html:67
-msgid "ServerName"
-msgstr "ServerName"
+msgid "Server name"
+msgstr "Server name"
 
 #: models.py:15
 msgid "ServerAlias"

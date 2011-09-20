@@ -30,7 +30,7 @@ function remove(what) {
 		<tr>
 			<th>{% trans "Datum přidání" %}</th>
 			<th>{% trans "Typ" %}</th>
-			<th>{% trans "ServerName" %}</th>
+			<th>{% trans "Server name" %}</th>
 			<th>{% trans "Akce" %}</th>
 		</tr>
 	</thead>
@@ -40,7 +40,7 @@ function remove(what) {
 		<tr>
 			<td>{{ site.pub_date }}</td>
 			<td>{{ site.type }}</td>
-			<td>{{ site.serverName }}</td>
+			<td>{{ site.server_name }}</td>
 			<td>
 				{% if site.type == "php" or site.type == "static" %}
 					<a href="{% url wsgiadmin.apacheconf.views.update_static site.id %}">

@@ -53,10 +53,12 @@ class UserSite(models.Model):
         for line in self.static.split("\n"):
             try:
                 url, target = line.strip().split()
+                target = target.strip("/") + "/"
             except ValueError:
                 pass
             else:
-                target = join(self.owner.parms.home, target)
+                if not target.startswith(self.owner.parms.home):
+                    target = join(self.owner.parms.home, target)
                 statics.append(dict(url=url, dir=target))
         return statics
 

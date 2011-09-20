@@ -2,7 +2,7 @@ WSGIAdmin
 =========
 
 Web interface for your server based on Django and Python.
-It can handle a Python's applications throw uWSGI and PHP
+It can handle a Python's applications through uWSGI and PHP
  applications throw Apache and mod_fcgid.
 
 It is not stable right now but i am sure it will be in short
@@ -43,7 +43,7 @@ DEPTS
 	* django-debug-toolbar
 	* anyjson
 
-Participants
+Developers
 ============
 
 * Adam Štrauch - cx@initd.cz

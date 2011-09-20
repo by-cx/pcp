@@ -101,7 +101,7 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'wsgiadmin.urls'
 
 TEMPLATE_DIRS = (
-	ROOT+'templates',
+	join(ROOT, "templates"),
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (

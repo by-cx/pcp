@@ -8,10 +8,7 @@
     $(function() {
 
     add_refresh_handler = function(ids_object) {
-    var $refresh = $('
-    <div class="ajax_refresh">
-        <span class="caption">refresh</span><span class="status"></span>
-    </div>');
+    var $refresh = $('<div class="ajax_refresh"><span class="caption">refresh</span><span class="status"></span></div>');
     var $runner = $("#div_" + ids_object[1]);
     $runner.prepend($refresh);
 

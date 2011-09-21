@@ -31,12 +31,10 @@
 					msgs = data['messages'];
 					var l = msgs.length;
 					for (var i=0; i < l; i++){
-						combo[0].options[i+1] = new Option(msgs[i], msgs[i], (msgs[i] == old_selected));
-					}
+						combo[0].options[i+1] = new Option(msgs[i], msgs[i], (msgs[i] == old_selected));					}
 
     $refresh.find(".status img").remove();
-    var $status = $('
-    <img src="{{ STATIC_URL }}icons/raster/green/check_12x10.png"/>');
+    var $status = $('<img src="{{ STATIC_URL }}icons/raster/green/check_12x10.png"/>');
     $status.appendTo($refresh.find(".status")).fadeOut(1500);
     }
     });

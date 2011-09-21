@@ -5,7 +5,7 @@ from django.conf import settings
 
 info = logging.info
 
-class request_raw(object):
+class RawRequest(object):
     server = ""
 
     def __init__(self, server):
@@ -75,7 +75,7 @@ class request_raw(object):
         return ret
 
 
-class request(request_raw):
+class request(RawRequest):
     id = None
     datetime_insert = time.time()
     datetime_processed = 0
@@ -219,13 +219,3 @@ class request(request_raw):
             self.run("/usr/sbin/chpasswd", stdin="%s:%s" % (username, password))
 
         self.done()
-
-#if __name__ == "__main__":
-#	r = request()
-#	r.datetime_insert = time.time()
-#	r.datetime_processed = 0
-#	r.status = "initiate"
-#	r.action = "test"
-#	r.server = "89.111.104.66"
-#	r.data = {"tid":1}
-#	r.save()

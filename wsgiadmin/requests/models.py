@@ -1,9 +1,10 @@
 from django.db import models
-from django.contrib.auth.models import User as user
+from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
 ACTIONS = (
     ("run", "Run"),
+    ("run|wipe", "Run, wipe evidence"),
     ("write", "Write"),
     ("unlink", "Unlink"),
     ("read", "Read"),
@@ -20,7 +21,7 @@ class Request(models.Model):
     stdout = models.TextField(_("Stdout"), blank=True, null=True)
     stderr = models.TextField(_("Stderr"), blank=True, null=True)
     retcode = models.IntegerField(_("Return code"), default=-1)
-    user = models.ForeignKey(user)
+    user = models.ForeignKey(User)
 
     def __unicode__(self):
         return ""

@@ -7,9 +7,9 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from wsgiadmin.emails.models import email
+from wsgiadmin.keystore.tools import kget
 
-from wsgiadmin.keystore.tools import *
-from wsgiadmin.requests.tools import request_raw
+from wsgiadmin.requests.tools import RawRequest
 from wsgiadmin.tools import size_format
 
 
@@ -200,7 +200,7 @@ class Parms(models.Model):
         return self.pay_for_sites() * 30.0
 
     def installed(self):
-        rr = request_raw(self.web_machine.ip)
+        rr = RawRequest(self.web_machine.ip)
         data = rr.run("cat /etc/passwd |grep ^%s:" % self.user.username)["stdout"].strip()
         return self.user.username in data
 

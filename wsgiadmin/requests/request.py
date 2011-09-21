@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
 
 import subprocess
-from datetime import datetime, timedelta
 import json
 import shlex
-from os.path import join
-from django.db.models.query_utils import Q
 
+from os.path import join
+from constance import config
+from datetime import datetime, timedelta
+from hashlib import sha1
+
+from django.db.models.query_utils import Q
 from django.template.loader import render_to_string
 from django.conf import settings
 
@@ -14,7 +17,7 @@ from wsgiadmin.apacheconf.models import UserSite
 from wsgiadmin.domains.models import Domain
 from wsgiadmin.requests.models import Request
 from wsgiadmin.clients.models import Machine
-from constance import config
+
 
 class RequestException(Exception): pass
 
@@ -61,7 +64,18 @@ class SSHHandler(object):
         r.machine = self._server_name()
         r.data = json.dumps({"action": "run", "cmd": cmd, "stdin": stdin})
         r.user = self.user
-        if plan_to: r.plan_to_date = plan_to
+        r.plan_to_date = plan_to
+        r.save()
+
+    def run_wipe(self, cmd, stdin=None, plan_to=None):
+        """
+        Add cmd into queue.
+        """
+        r = Request(action="run|wipe")
+        r.machine = self._server_name()
+        r.data = json.dumps({"action": "run", "cmd": cmd, "stdin": stdin})
+        r.user = self.user
+        r.plan_to_date = plan_to
         r.save()
 
     def instant_run(self, cmd, stdin=None):
@@ -161,6 +175,9 @@ class SSHHandler(object):
 
             if request.action == "run":
                 ret = self._run(data["cmd"])
+            elif request.action == "run|wipe":
+                ret = self._run(data["cmd"])
+                request.data = "**wiped**"
             elif request.action == "write":
                 ret = self._write(data["filename"], data["content"])
             elif request.action == "unlink":
@@ -169,10 +186,7 @@ class SSHHandler(object):
             if ret:
                 request.done_date = datetime.today()
                 request.done = True
-                request.stdout = ret[0]
-                request.stderr = ret[1]
-                request.retcode = ret[2]
-
+                request.stdout, request.stderr, request.retcode = ret[:3]
                 request.save()
 
 #class JSONRPCHandler(object): pass
@@ -404,13 +418,13 @@ class MySQLRequest(SSHHandler):
             self.run("mysql -u root", stdin=x)
 
     def passwd_db(self, db, password):
-        sql = []
+        #MySQL's PASSWORD()
+        pwd_hash = "*%s" % sha1(sha1(password).digest()).hexdigest().upper()
 
-        sql.append("UPDATE mysql.user SET Password = PASSWORD('%s') WHERE User = '%s';" % (password, db))
-        sql.append("FLUSH PRIVILEGES;")
-
-        for x in sql:
-            self.run("mysql -u root", stdin=x)
+        #TODO - escapovani (via django?)
+        cmd = "UPDATE mysql.user SET Password='%s' WHERE User = '%s';" % (pwd_hash, db)
+        self.run_wipe("mysql -u root", stdin=cmd)
+        self.run("mysql -u root ", stdin="FLUSH PRIVILEGES;")
 
 
 class SystemRequest(SSHHandler):

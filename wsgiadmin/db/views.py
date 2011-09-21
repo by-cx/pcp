@@ -11,7 +11,6 @@ from django.utils.translation import ugettext_lazy as _, ugettext
 from wsgiadmin.apacheconf.views import JsonResponse
 
 from wsgiadmin.db.forms import PgsqlForm, MysqlForm
-from wsgiadmin.keystore.tools import *
 from wsgiadmin.requests.request import MySQLRequest, PostgreSQLRequest
 from wsgiadmin.useradmin.forms import PasswordForm
 
@@ -84,8 +83,8 @@ def add(request, dbtype):
     return render_to_response('universal.html',
             {
             "form": form,
-            "title": _(u"Vytvoření %s databáze" % dbtype),
-            "submit": _(u"Vytvořit databázi"),
+            "title": _(u"Create %s database" % dbtype),
+            "submit": _(u"Create database"),
             "action": reverse("db_add", kwargs=dict(dbtype=dbtype)),
             "u": u,
             "superuser": superuser,

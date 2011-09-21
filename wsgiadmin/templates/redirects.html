@@ -2,7 +2,7 @@
 {% load i18n %}
 
 {% block title %}
-    {% trans "Administrace > Redirects (aliases)" %}
+    {% trans "Administration" %}  &gt; {% trans "Redirects (aliases)" %}
 {% endblock %}
 
 {% block jsblock %}
@@ -17,9 +17,7 @@
 
 {% block content %}
 
-
     <h2>{% trans "Email redirects" %}</h2>
-
     <p>
         <a href="{% url wsgiadmin.emails.views.addRedirect %}">
             {% trans "Add new email redirect" %}

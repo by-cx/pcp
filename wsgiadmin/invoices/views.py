@@ -1,23 +1,23 @@
 # -*- coding: utf-8 -*-
+
 from django.contrib.sites.models import Site
 from django.core.mail.message import EmailMessage
 from django.core.paginator import Paginator
-
 from django.shortcuts import render_to_response, get_object_or_404, get_list_or_404
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User as user
 from django.template.context import RequestContext
 from django.template.loader import render_to_string
 from django.views.decorators.csrf import csrf_exempt
-from wsgiadmin.bills.models import income
+from django.utils.translation import ugettext_lazy as _
 
+from wsgiadmin.bills.models import income
+from wsgiadmin.invoices.forms import InvoiceForm, ItemForm
 from wsgiadmin.invoices.geninvoice import *
 from wsgiadmin.invoices.models import invoice, item
 from wsgiadmin.clients.models import *
-
-from django.utils.translation import ugettext_lazy as _
 
 import datetime
 
@@ -81,13 +81,13 @@ def add_invoice(request):
         return HttpResponse(_("Permission error"))
 
     if request.method == 'POST':
-        form = form_invoice(request.POST)
+        form = InvoiceForm(request.POST)
         if form.is_valid():
             form.save()
 
             return HttpResponseRedirect(reverse("wsgiadmin.invoices.views.show"))
     else:
-        form = form_invoice(initial={"payment_id": next_payment_id(request, False)})
+        form = InvoiceForm(initial={"payment_id": next_payment_id(request, False)})
 
     return render_to_response('universal.html',
             {
@@ -99,7 +99,7 @@ def add_invoice(request):
             "superuser": superuser,
             "menu_active": "invoices",
             },
-                              context_instance=RequestContext(request)
+        context_instance=RequestContext(request)
     )
 
 
@@ -115,26 +115,25 @@ def update_invoice(request, iid):
     iinvoice = get_object_or_404(invoice, id=int(iid))
 
     if request.method == 'POST':
-        form = form_invoice(request.POST, instance=iinvoice)
+        form = InvoiceForm(request.POST, instance=iinvoice)
         if form.is_valid():
             form.save()
 
             return HttpResponseRedirect(reverse("wsgiadmin.invoices.views.show"))
     else:
-        form = form_invoice(instance=iinvoice)
+        form = InvoiceForm(instance=iinvoice)
 
     return render_to_response('universal.html',
             {
             "form": form,
             "title": _(u"Upravení faktury"),
             "submit": _(u"Upravit fakturu"),
-            "action": reverse("wsgiadmin.invoices.views.update_invoice",
-                              args=[iid]),
+            "action": reverse("wsgiadmin.invoices.views.update_invoice", args=[iid]),
             "u": u,
             "superuser": superuser,
             "menu_active": "invoices",
             },
-                              context_instance=RequestContext(request)
+        context_instance=RequestContext(request)
     )
 
 
@@ -153,16 +152,15 @@ def add_item(request, iid):
     iinvoice = get_object_or_404(invoice, id=int(iid))
 
     if request.method == 'POST':
-        form = form_item(request.POST)
+        form = ItemForm(request.POST)
         if form.is_valid():
             instance = form.save(commit=False)
             instance.invoice = iinvoice
             instance.save()
 
-            return HttpResponseRedirect(
-                reverse("wsgiadmin.invoices.views.show"))
+            return HttpResponseRedirect(reverse("wsgiadmin.invoices.views.show"))
     else:
-        form = form_item()
+        form = ItemForm()
 
     return render_to_response('universal.html',
             {
@@ -174,7 +172,7 @@ def add_item(request, iid):
             "superuser": superuser,
             "menu_active": "invoices",
             },
-                              context_instance=RequestContext(request)
+        context_instance=RequestContext(request)
     )
 
 
@@ -192,14 +190,14 @@ def update_item(request, iid):
     iitem = get_object_or_404(item, id=int(iid))
 
     if request.method == 'POST':
-        form = form_item(request.POST, instance=iitem)
+        form = ItemForm(request.POST, instance=iitem)
         if form.is_valid():
             instance = form.save()
 
             return HttpResponseRedirect(
                 reverse("wsgiadmin.invoices.views.show"))
     else:
-        form = form_item(instance=iitem)
+        form = ItemForm(instance=iitem)
 
     return render_to_response('universal.html',
             {
@@ -211,7 +209,7 @@ def update_item(request, iid):
             "superuser": superuser,
             "menu_active": "invoices",
             },
-                              context_instance=RequestContext(request)
+        context_instance=RequestContext(request)
     )
 
 
@@ -255,10 +253,7 @@ def rm(request, iid):
         return HttpResponse(_("Permission error"))
 
     iinvoice = get_object_or_404(invoice, id=int(iid))
-
-    for item in iinvoice.item_set.all():
-        item.delete()
-
+    iinvoice.item_set.all().delete()
     iinvoice.delete()
 
     return HttpResponse("Vymazáno")
@@ -340,11 +335,9 @@ def stats(request):
     out = "<div class=\"flex\">"
     out += _(u"<h1>Statistika faktůr po jednotlivých letech</h1>")
     out += "<table>"
-    out += _(
-        u"<tr><th>Rok</th><th>Počet faktůr</th><th>Celková částka</th></tr>")
+    out += _(u"<tr><th>Rok</th><th>Počet faktůr</th><th>Celková částka</th></tr>")
     for x in years:
-        out += "<tr><td>%d</td><td>%d</td><td>%d,- kč</td></tr>" % (
-        x, years[x][0], years[x][1])
+        out += "<tr><td>%d</td><td>%d</td><td>%d,- kč</td></tr>" % (x, years[x][0], years[x][1])
     out += "</table>"
     out += "</div>"
     return HttpResponse(out)
@@ -359,22 +352,19 @@ def invoice_get(request, fid):
     if u.is_superuser:
         f = invoice.objects.filter(payment_id=fid)
     else:
-        f = invoice.objects.filter(client_address=u.parms.address,
-                                   payment_id=fid)
+        f = invoice.objects.filter(client_address=u.parms.address, payment_id=fid)
 
     if f:
-        pdf = genInvoice(f[0], "/tmp/" + str(f[0].id) + ".pdf")
+        pdf = genInvoice(f[0], "/tmp/%s.pdf" % f[0].id)
         pdf.gen()
-        fp = open("/tmp/" + str(f[0].id) + ".pdf")
+        fp = open("/tmp/%s.pdf" % f[0].id)
         data = fp.read()
         fp.close()
-        os.unlink("/tmp/" + str(f[0].id) + ".pdf")
+        os.unlink("/tmp/%s.pdf" % f[0].id)
         r = HttpResponse(data, mimetype="application/pdf")
-        r[
-        'Content-Disposition'] = "attachment; filename=Faktura-RostiCZ-" + str(
-            f[0].payment_id) + ".pdf"
+        r['Content-Disposition'] = "attachment; filename=Faktura-RostiCZ-%s.pdf" % f[0].payment_id
         return r
-    return HttpResponse("Chyba při získávání faktury")
+    return HttpResponseNotFound(_("Invoice not found"))
 
 
 @login_required
@@ -387,7 +377,7 @@ def send_invoice(request, fid, warning="0"):
     f = invoice.objects.filter(payment_id=fid)
     if f:
         f = f[0]
-        pdf = genInvoice(f, "/tmp/Faktura-RostiCZ-" + str(fid) + ".pdf")
+        pdf = genInvoice(f, "/tmp/Faktura-RostiCZ-%s.pdf" % fid)
         pdf.gen()
 
         if warning:
@@ -407,12 +397,12 @@ def send_invoice(request, fid, warning="0"):
                              }), settings.EMAIL_FROM,
             [f.client_address.residency_email, "cx@initd.cz"],
                              headers={'Reply-To': settings.EMAIL_FROM})
-        email.attach_file("/tmp/Faktura-RostiCZ-" + str(fid) + ".pdf")
+        email.attach_file("/tmp/Faktura-RostiCZ-%s.pdf" % fid)
         email.send()
 
         f.sended = True
         f.save()
 
-        os.unlink("/tmp/Faktura-RostiCZ-" + str(fid) + ".pdf")
+        os.unlink("/tmp/Faktura-RostiCZ-%s.pdf" % fid)
         return HttpResponse("Invoice sended")
-    return HttpResponse("Invoice not found")
+    return HttpResponseNotFound(_("Invoice not found"))

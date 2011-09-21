@@ -41,9 +41,9 @@ def aggregate(u, processed=False):
         for line in data:
             if line.info == info:
                 total += line.price
-                if min_date == None or min_date > line.pub_date:
+                if min_date is None or min_date > line.pub_date:
                     min_date = line.pub_date
-                if max_date == None or max_date < line.pub_date:
+                if max_date is None or max_date < line.pub_date:
                     max_date = line.pub_date
                 items.append(line)
         infos[info] = [total, min_date, max_date, items]

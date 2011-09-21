@@ -38,12 +38,14 @@ class invoice(models.Model):
         return "%s" % self.payment_id
 
     def total(self):
+        #FIXME
         t = 0
         for x in self.item_set.all():
             t += x.price_per_one * x.count
-        return "%d,- kč" % t
+        return u"%d,- kč" % t
 
     def totalInt(self):
+        #FIXME
         t = 0
         for x in self.item_set.all():
             t += x.price_per_one * x.count
@@ -88,14 +90,3 @@ class item(models.Model):
         verbose_name = _(u"Položka")
         verbose_name_plural = _(u"Položky")
 
-
-class form_invoice(ModelForm):
-    class Meta:
-        model = invoice
-        exclude = ("byhand")
-
-
-class form_item(ModelForm):
-    class Meta:
-        model = item
-        exclude = ("invoice")

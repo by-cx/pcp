@@ -6,6 +6,7 @@ from django.db import models
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
+from wsgiadmin.emails.models import email
 
 from wsgiadmin.keystore.tools import *
 from wsgiadmin.requests.tools import request_raw
@@ -174,10 +175,7 @@ class Parms(models.Model):
         return self.user.usersite_set.count()
 
     def count_emails(self):
-        count = 0
-        for domain in self.user.domain_set.all():
-            count += domain.email_set.filter(remove=False).count()
-        return count
+        return email.objects.filter(domain__in=self.user.domain_set.all(), remove=False).count()
 
     def home_size(self):
         size = kget("%s:homesize" % self.user.username)

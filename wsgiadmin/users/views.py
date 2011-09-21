@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from os.path import join
+from django.contrib import messages
 from django.contrib.auth.models import User
 
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
@@ -19,7 +20,7 @@ def show(request, p=1):
     Vylistování seznamu databází
     """
     if not request.user.is_superuser:
-        return HttpResponseForbidden("Chyba oprávnění")
+        return HttpResponseForbidden(_("Permission error"))
     u = request.session.get('switched_user', request.user)
 
     p = int(p)
@@ -58,7 +59,7 @@ def switch_to_admin(request, p):
     superuser = request.user
     u = request.session.get('switched_user', request.user)
     if not superuser.is_superuser:
-        return HttpResponseForbidden("Chyba oprávnění")
+        return HttpResponseForbidden(_("Permission error"))
 
     current = request.session.get('switched_user', False)
 
@@ -75,11 +76,12 @@ def switch_to_user(request, uid, p):
     """
     superuser = request.user
     if not superuser.is_superuser:
-        return HttpResponseForbidden("Chyba oprávnění")
+        return HttpResponseForbidden(_("Permission error"))
 
     u = request.session.get('switched_user', request.user)
     request.session['switched_user'] = get_object_or_404(User, id=int(uid))
 
+    messages.add_message(request, messages.INFO, _('User has been changed'))
     return show(request, p)
 
 
@@ -87,7 +89,7 @@ def install(request, uid):
     superuser = request.user
     u = request.session.get('switched_user', request.user)
     if not superuser.is_superuser:
-        return HttpResponseForbidden("Chyba oprávnění")
+        return HttpResponseForbidden(_("Permission error"))
 
     iuser = get_object_or_404(u, id=uid)
     if not iuser.username or ";" in iuser.username:
@@ -111,6 +113,7 @@ def install(request, uid):
     iuser.is_active = True
     iuser.save()
 
+    messages.add_message(request, messages.SUCCESS, _('User has been installed'))
     return HttpResponseRedirect(reverse("wsgiadmin.useradmin.views.ok"))
 
 
@@ -122,7 +125,7 @@ def add(request):
     superuser = request.user
     u = request.session.get('switched_user', request.user)
     if not superuser.is_superuser:
-        return HttpResponseForbidden("Chyba oprávnění")
+        return HttpResponseForbidden(_("Permission error"))
 
     if request.method == 'POST':
         f_user = form_user(request.POST)
@@ -142,8 +145,6 @@ def add(request):
             instance_parms.gid = 0
             instance_parms.address = instance_address
             instance_parms.save()
-
-            set_user_on_server(request, instance_user.id)
 
             return HttpResponseRedirect(reverse("wsgiadmin.useradmin.views.ok"))
     else:
@@ -174,7 +175,7 @@ def update(request, uid):
     superuser = request.user
     u = request.session.get('switched_user', request.user)
     if not superuser.is_superuser:
-        return HttpResponseForbidden("Chyba oprávnění")
+        return HttpResponseForbidden(_("Permission error"))
 
     iuser = get_object_or_404(user, id=int(uid))
     iparms = iuser.parms
@@ -219,7 +220,7 @@ def rm(request, uid):
     superuser = request.user
     u = request.session.get('switched_user', request.user)
     if not superuser.is_superuser:
-        return HttpResponseForbidden("Chyba oprávnění")
+        return HttpResponseForbidden(_("Permission error"))
 
     iuser = get_object_or_404(user, id=int(uid))
     try:
@@ -251,6 +252,7 @@ def ssh_passwd(request):
             sr = SystemRequest(u, u.parms.web_machine)
             sr.passwd(form.cleaned_data["password1"])
 
+            messages.add_message(request, messages.SUCCESS, _('Password has been changed'))
             return HttpResponseRedirect(reverse("wsgiadmin.useradmin.views.ok"))
     else:
         form = formPassword()

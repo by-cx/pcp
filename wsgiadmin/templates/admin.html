@@ -31,11 +31,13 @@
                     <h1><a href="#" id="logo"><strong>{{ site }}</strong><span></span></a></h1>
                     <p id="login">
                         <strong>
-                            {{ u.first_name }} {{ u.last_name }}
                             {% if u != superuser %}
+                                {{ u.first_name }} {{ u.last_name }}
                                 <br />
                                 (<i>{% trans "switched" %}</i> - <a href="{% url wsgiadmin.users.views.switch_to_admin 1 %}">{% trans "back" %}</a>)
                                 <span id="uzivatel">({% trans "superuser" %})</span>
+                            {% else %}
+                                {{ u.first_name }} {{ u.last_name }} {% if u.is_superuser %} <span id="uzivatel">({% trans "superuser" %})</span>{% endif %}
                             {% endif %}
                         </strong>
                         <span class="odhlasit"><a href="{% url django.contrib.auth.views.logout %}">{% trans "Logout" %}</a></span>
@@ -59,16 +61,21 @@
 
             <div id="content">
                 <div id="content-inside">
-                    {% if u.parms.count_domains %}
                     <ul id="notifications">
-                        <li id="info">
+                        {% if u.parms.count_domains %}
+                        <li class="info">
                             {% blocktrans %}
                                 Most services are depend on domain. Good place to start right now is
                             {% endblocktrans %}
                             <a href="{% url wsgiadmin.domains.views.show %}">{% trans "domain managment" %}</a>.
                         </li>
+                        {% endif %}
+                        {% if messages %}
+                            {% for message in messages %}
+                                <li{% if message.tags %} class="{{ message.tags }}"{% else %} class="info"{% endif %}>{{ message }}</li>
+                            {% endfor %}
+                        {% endif %}
                     </ul>
-                    {% endif %}
                     {% block content %}{% endblock %}
                 </div>
             </div>

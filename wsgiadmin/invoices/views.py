@@ -29,7 +29,7 @@ def show(request, p=1):
     u = request.session.get('switched_user', request.user)
     superuser = request.user
     if not superuser.is_superuser:
-        return HttpResponse("Chyba oprávnění")
+        return HttpResponse(_("Permission error"))
 
     p = int(p)
 
@@ -78,7 +78,7 @@ def add_invoice(request):
     u = request.session.get('switched_user', request.user)
     superuser = request.user
     if not superuser.is_superuser:
-        return HttpResponse("Chyba oprávnění")
+        return HttpResponse(_("Permission error"))
 
     if request.method == 'POST':
         form = form_invoice(request.POST)
@@ -111,7 +111,7 @@ def update_invoice(request, iid):
     u = request.session.get('switched_user', request.user)
     superuser = request.user
     if not superuser.is_superuser:
-        return HttpResponse("Chyba oprávnění")
+        return HttpResponse(_("Permission error"))
     iinvoice = get_object_or_404(invoice, id=int(iid))
 
     if request.method == 'POST':
@@ -148,7 +148,7 @@ def add_item(request, iid):
     u = request.session.get('switched_user', request.user)
     superuser = request.user
     if not superuser.is_superuser:
-        return HttpResponse("Chyba oprávnění")
+        return HttpResponse(_("Permission error"))
 
     iinvoice = get_object_or_404(invoice, id=int(iid))
 
@@ -188,7 +188,7 @@ def update_item(request, iid):
     u = request.session.get('switched_user', request.user)
     superuser = request.user
     if not superuser.is_superuser:
-        return HttpResponse("Chyba oprávnění")
+        return HttpResponse(_("Permission error"))
     iitem = get_object_or_404(item, id=int(iid))
 
     if request.method == 'POST':
@@ -224,7 +224,7 @@ def payback(request, iid):
     u = request.session.get('switched_user', request.user)
     superuser = request.user
     if not superuser.is_superuser:
-        return HttpResponse("Chyba oprávnění")
+        return HttpResponse(_("Permission error"))
 
     iinvoice = get_object_or_404(invoice, id=int(iid))
     iinvoice.payed = True
@@ -252,7 +252,7 @@ def rm(request, iid):
     u = request.session.get('switched_user', request.user)
     superuser = request.user
     if not superuser.is_superuser:
-        return HttpResponse("Chyba oprávnění")
+        return HttpResponse(_("Permission error"))
 
     iinvoice = get_object_or_404(invoice, id=int(iid))
 
@@ -270,7 +270,7 @@ def rm_item(request, iid):
     u = request.session.get('switched_user', request.user)
     superuser = request.user
     if not superuser.is_superuser:
-        return HttpResponse("Chyba oprávnění")
+        return HttpResponse(_("Permission error"))
 
     iitem = get_object_or_404(item, id=int(iid))
     iitem.delete()

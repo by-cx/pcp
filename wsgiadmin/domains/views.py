@@ -4,6 +4,7 @@
 import logging
 
 from constance import config
+from django.contrib import messages
 
 from django.core.paginator import Paginator
 from django.shortcuts import render_to_response, get_object_or_404
@@ -54,7 +55,7 @@ def rm(request, did):
 
     d = get_object_or_404(Domain, id=did)
     if d.owner == u:
-        logging.info(_(u"Mažu doménu %s") % d.name)
+        logging.info(_(u"Deleting domain %s") % d.name)
 
         if config.handle_dns:
             pri_br = BindRequest(u, "master")
@@ -66,9 +67,9 @@ def rm(request, did):
             sec_br.mod_config()
             sec_br.reload()
 
-        return HttpResponse(u"Doména vymazána")
+        return HttpResponse(u"Domain deleted")
     else:
-        return HttpResponse(u"Chyba oprávnění")
+        return HttpResponse(_("Permission error"))
 
 
 @login_required
@@ -99,6 +100,7 @@ def add(request):
             message = _(u"Nová doména %s přidána") % name
             send_mail(u'Byla přidána nová doména: ' + name, message, settings.EMAIL_FROM, [x[1] for x in settings.ADMINS], fail_silently=True)
 
+            messages.add_message(request, messages.SUCCESS, _('Domain has been added'))
             return HttpResponseRedirect(reverse("wsgiadmin.domains.views.show"))
     else:
         form = form_registration_request()

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import crypt
+from django.contrib import messages
 from django.core.paginator import Paginator
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -10,6 +11,7 @@ from django.template.context import RequestContext
 from django.views.decorators.csrf import csrf_exempt
 from wsgiadmin.apacheconf.tools import user_directories
 
+from django.utils.translation import ugettext_lazy as _
 
 from wsgiadmin.ftps.models import *
 
@@ -61,6 +63,7 @@ def add(request):
             iftp.owner = u
             iftp.save()
 
+            messages.add_message(request, messages.SUCCESS, _('FTP account has been created'))
             return HttpResponseRedirect(reverse("wsgiadmin.ftps.views.show"))
     else:
         form = form_ftp()
@@ -103,13 +106,10 @@ def update(request, fid):
             if iftp.owner == u:
                 iftp.username = u.username + "_" + form.cleaned_data["name"]
                 iftp.dir = form.cleaned_data["dir"]
-                #iftp.password	= form.cleaned_data["password1"]
                 iftp.save()
-                return HttpResponseRedirect(
-                    reverse("wsgiadmin.ftps.views.show"))
-            else:
-                return HttpResponseRedirect(
-                    reverse("wsgiadmin.useradmin.views.error"))
+
+                messages.add_message(request, messages.SUCCESS, _('FTP account has been updated'))
+                return HttpResponseRedirect(reverse("wsgiadmin.ftps.views.show"))
     else:
         form = form_ftp_update()
         form.u = u
@@ -151,11 +151,9 @@ def passwd(request, fid):
                 iftp.password = crypt.crypt(form.cleaned_data["password1"],
                                             iftp.owner.username)
                 iftp.save()
-                return HttpResponseRedirect(
-                    reverse("wsgiadmin.ftps.views.show"))
-            else:
-                return HttpResponseRedirect(
-                    reverse("wsgiadmin.useradmin.views.error"))
+
+                messages.add_message(request, messages.SUCCESS, _('Password has been changed'))
+                return HttpResponseRedirect(reverse("wsgiadmin.ftps.views.show"))
     else:
         form = form_ftp_passwd()
 
@@ -183,6 +181,6 @@ def rm(request, fid):
 
     if iftp.owner == u:
         iftp.delete()
-        return HttpResponse("FTP účet vymazán")
+        return HttpResponse(_("FTP has been deleted"))
 
-    return HttpResponse("Chyba oprávnění")
+    return HttpResponse(_("Permission error"))

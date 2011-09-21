@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.contrib import messages
 
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -22,7 +23,7 @@ def master(request):
     u = request.session.get('switched_user', request.user)
     superuser = request.user
     if not superuser.is_superuser:
-        return HttpResponseForbidden("Chyba oprávnění")
+        return HttpResponseForbidden(_("Permission error"))
 
     balance_day = 0
     sites = UserSite.objects.filter(removed=False)
@@ -90,7 +91,9 @@ def change_passwd(request):
         if form.is_valid():
             u.set_password(form.cleaned_data["password1"])
             u.save()
-            return HttpResponseRedirect(reverse("wsgiadmin.useradmin.views.ok"))
+
+            messages.add_message(request, messages.SUCCESS, _('Password has been changed'))
+            return HttpResponseRedirect(reverse("wsgiadmin.useradmin.views.change_passwd"))
     else:
         form = formPassword()
 

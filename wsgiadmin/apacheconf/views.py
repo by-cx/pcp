@@ -6,6 +6,7 @@ import anyjson
 from constance import config
 from datetime import date
 from django.conf import settings
+from django.contrib import messages
 
 from django.core.paginator import Paginator
 from django.shortcuts import render_to_response, get_object_or_404
@@ -117,6 +118,9 @@ def add_static(request, php="0"):
 
             # calculate!
             u.parms.pay_for_sites(use_cache=False)
+
+            messages.add_message(request, messages.SUCCESS, _('Site has been added'))
+            messages.add_message(request, messages.INFO, _('Changes will be performed in few minutes'))
             return HttpResponseRedirect(reverse("wsgiadmin.apacheconf.views.apache"))
     else:
         form = form_static()
@@ -170,6 +174,9 @@ def update_static(request, sid):
                 nr = NginxRequest(u, u.parms.web_machine)
                 nr.mod_vhosts()
                 nr.reload()
+
+            messages.add_message(request, messages.SUCCESS, _('Site has been updated'))
+            messages.add_message(request, messages.INFO, _('Changes will be performed in few minutes'))
             return HttpResponseRedirect(reverse("wsgiadmin.apacheconf.views.apache"))
     else:
         form = form_static(initial={"domains": s.domains, "documentRoot": s.documentRoot})
@@ -225,7 +232,7 @@ def remove_site(request, sid):
     
     # calculate!
     u.parms.pay_for_sites(use_cache=False)
-    return HttpResponse("Stránka vymazána")
+    return HttpResponse(_("Site removed"))
 
 
 @login_required
@@ -261,6 +268,9 @@ def add_wsgi(request):
 
             # calculate!
             u.parms.pay_for_sites(use_cache=False)
+
+            messages.add_message(request, messages.SUCCESS, _('App has been added'))
+            messages.add_message(request, messages.INFO, _('Changes will be performed in few minutes'))
             return HttpResponseRedirect(reverse("wsgiadmin.apacheconf.views.apache"))
     else:
         form = FormWsgi(user=u)
@@ -326,6 +336,8 @@ def update_wsgi(request, sid):
                     nr.mod_vhosts()
                     nr.reload()
 
+            messages.add_message(request, messages.SUCCESS, _('App has been updated'))
+            messages.add_message(request, messages.INFO, _('Changes will be performed in few minutes'))
             return HttpResponseRedirect(reverse("wsgiadmin.apacheconf.views.apache"))
     else:
         form = FormWsgi(user=u, instance=site)
@@ -375,6 +387,8 @@ def reload(request, sid):
             nr.mod_vhosts()
             nr.reload()
 
+    messages.add_message(request, messages.SUCCESS, _('Request for reloading has been sent'))
+    messages.add_message(request, messages.INFO, _('It will be performed in few minutes'))
     return HttpResponseRedirect(reverse("wsgiadmin.apacheconf.views.apache"))
 
 
@@ -400,6 +414,8 @@ def restart(request, sid):
             nr.mod_vhosts()
             nr.restart()
 
+    messages.add_message(request, messages.SUCCESS, _('Request for restarting has been sent'))
+    messages.add_message(request, messages.INFO, _('It will be performed in few minutes'))
     return HttpResponseRedirect(reverse("wsgiadmin.apacheconf.views.apache"))
 
 

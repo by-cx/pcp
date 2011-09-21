@@ -39,15 +39,6 @@
 
     <h2>{{ dbtype }}</h2>
 
-    {% blocktrans %}
-        <p>Informace týkající se {{ dbtype }} databází najdete na Wiki na adrese
-            <a href='{{ WIKI_URL }}/sprava_{{ dbtype }}_databazi' target="_blank">
-                {{ WIKI_URL }}/sprava_{{ dbtype }}_databazi
-            </a>.
-        </p>
-
-    {% endblocktrans %}
-
     <div id="db_dialog"></div>
 
     <h3>{% blocktrans %}List of {{ dbtype }} databases{% endblocktrans %}</h3>

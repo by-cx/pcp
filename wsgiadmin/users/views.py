@@ -128,9 +128,9 @@ def add(request):
         return HttpResponseForbidden(_("Permission error"))
 
     if request.method == 'POST':
-        f_user = form_user(request.POST)
-        f_parms = form_parms(request.POST)
-        f_address = form_address(request.POST)
+        f_user = UserForm(request.POST)
+        f_parms = ParmsForm(request.POST)
+        f_address = AddressForm(request.POST)
         if f_user.is_valid() and f_parms.is_valid() and f_address.is_valid():
             instance_user = f_user.save(commit=False)
             instance_user.is_superuser = False
@@ -148,9 +148,9 @@ def add(request):
 
             return HttpResponseRedirect(reverse("wsgiadmin.useradmin.views.ok"))
     else:
-        f_user = form_user()
-        f_parms = form_parms()
-        f_address = form_address()
+        f_user = UserForm()
+        f_parms = ParmsForm()
+        f_address = AddressForm()
 
     return render_to_response('userform.html',
             {
@@ -182,9 +182,9 @@ def update(request, uid):
     iaddress = iparms.address
 
     if request.method == 'POST':
-        f_user = form_user(request.POST, instance=iuser)
-        f_parms = form_parms(request.POST, instance=iparms)
-        f_address = form_address(request.POST, instance=iaddress)
+        f_user = UserForm(request.POST, instance=iuser)
+        f_parms = ParmsForm(request.POST, instance=iparms)
+        f_address = AddressForm(request.POST, instance=iaddress)
         if f_user.is_valid() and f_parms.is_valid() and f_address.is_valid():
             f_user.save()
             f_address.save()
@@ -192,9 +192,9 @@ def update(request, uid):
 
             return HttpResponseRedirect(reverse("wsgiadmin.useradmin.views.ok"))
     else:
-        f_user = form_user(instance=iuser)
-        f_parms = form_parms(instance=iparms)
-        f_address = form_address(instance=iaddress)
+        f_user = UserForm(instance=iuser)
+        f_parms = ParmsForm(instance=iparms)
+        f_address = AddressForm(instance=iaddress)
 
     return render_to_response('userform.html',
             {

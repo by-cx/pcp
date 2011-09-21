@@ -1,7 +1,7 @@
 from django.conf.urls.defaults import *
 
 urlpatterns = patterns('wsgiadmin.emails.views',
-    (r'^email_info/$', 'emailInfo'),
+    (r'^email_info/$', 'email_info'),
     (r'^boxes/([0-9]{1,10})/$', 'boxes'),
     (r'^boxes/$', 'boxes'),
     (r'^add_box/$', 'addBox'),

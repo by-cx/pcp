@@ -22,7 +22,7 @@ def boxes(request, p=1):
     superuser = request.user
     p = int(p)
 
-    emails = email.objects.filter(domain__in=u.domain_set.all(), remove=False)
+    emails = list(email.objects.filter(domain__in=u.domain_set.all(), remove=False))
     paginator = Paginator(emails, 25)
 
     if not paginator.count:
@@ -41,9 +41,9 @@ def boxes(request, p=1):
             }, context_instance=RequestContext(request))
 
 @login_required
-def emailInfo(request):
+def email_info(request):
     u = request.session.get('switched_user', request.user)
-    superuser = request.user
+
     return render_to_response("email_info.html",
             {"u": u, }, context_instance=RequestContext(request)
     )

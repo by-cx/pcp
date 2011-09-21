@@ -4,19 +4,12 @@ from django.contrib.auth.models import User as user
 from django.core.cache import cache
 from django.db import models
 from django import forms
-from django.forms import ModelForm
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 
 from wsgiadmin.keystore.tools import *
 from wsgiadmin.requests.tools import request_raw
 from wsgiadmin.tools import size_format
-
-
-class form_user(ModelForm):
-    class Meta:
-        model = user
-        exclude = ("password", "is_staff", "is_superuser", "last_login", "date_joined", "groups", "user_permissions")
 
 
 class Machine(models.Model):
@@ -35,11 +28,6 @@ class Machine(models.Model):
 
     def __unicode__(self):
         return "%s" % (self.name)
-
-
-class form_machine(ModelForm):
-    class Meta:
-        model = Machine
 
 
 class Address(models.Model):
@@ -118,10 +106,6 @@ class Address(models.Model):
         verbose_name = _(u"Adresa")
         verbose_name_plural = _(u"Adresy")
 
-
-class form_address(ModelForm):
-    class Meta:
-        model = Address
 
 
 class formPassword(forms.Form):
@@ -231,9 +215,3 @@ class Parms(models.Model):
     class Meta:
         verbose_name = _(u"Uživatel")
         verbose_name_plural = _(u"Uživatelé")
-
-
-class form_parms(ModelForm):
-    class Meta:
-        model = Parms
-        exclude = ("address", "user", "home", "uid", "gid")

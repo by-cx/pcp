@@ -5,15 +5,16 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from wsgiadmin.emails.forms import FormEmail, FormEmailPassword, FormRedirect
-from wsgiadmin.emails.models import *
 from django.core.urlresolvers import reverse
-from wsgiadmin.clients.models import *
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden, HttpResponseNotFound
-from wsgiadmin.requests.request import EMailRequest
+from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponseNotFound
 from django.template.context import RequestContext
-
 from django.utils.translation import ugettext_lazy as _, ugettext
+
+from wsgiadmin.emails.forms import FormEmail, FormEmailPassword, FormRedirect
+from wsgiadmin.emails.models import redirect, email
+from wsgiadmin.clients.models import *
+from wsgiadmin.requests.request import EMailRequest
+
 
 @login_required
 def boxes(request, p=1):
@@ -21,12 +22,7 @@ def boxes(request, p=1):
     superuser = request.user
     p = int(p)
 
-    emails = []
-    domains = list(u.domain_set.all())
-    for idomain in domains:
-        for iemail in list(idomain.email_set.filter(remove=False)):
-            emails.append(iemail)
-
+    emails = email.objects.filter(domain__in=u.domain_set.all(), remove=False)
     paginator = Paginator(emails, 25)
 
     if not paginator.count:
@@ -101,19 +97,19 @@ def addBox(request):
 def removeBox(request, eid):
     eid = int(eid)
     u = request.session.get('switched_user', request.user)
-    superuser = request.user
-    for domain in [x.email_set.all() for x in u.domain_set.all()]:
-        for email in domain:
-            if email.id == eid:
-                email.remove = True
-                email.save()
 
-                er = EMailRequest(u, u.parms.mail_machine)
-                er.remove_mailbox(email)
+    mail = email.objects.filter(domain__in=u.domain_set.all(), id=eid)[0]
+    if mail:
+        mail.remove = True
+        mail.save()
 
-                messages.add_message(request, messages.SUCCESS, _('Box has been deleted'))
-                return HttpResponse("Schránka vymazána")
-    return HttpResponseNotFound("Not found .(")
+        er = EMailRequest(u, u.parms.mail_machine)
+        er.remove_mailbox(email)
+
+        messages.add_message(request, messages.SUCCESS, _('Box has been deleted'))
+        return HttpResponseRedirect(reverse("wsgiadmin.emails.views.boxes"))
+
+    return HttpResponseNotFound("Mailbox not found .(")
 
 
 @login_required
@@ -121,15 +117,8 @@ def changePasswdBox(request, eid):
     eid = int(eid)
     u = request.session.get('switched_user', request.user)
     superuser = request.user
-    e = None
 
-    for domain in [x.email_set.all() for x in u.domain_set.all()]:
-        for email in domain:
-            if email.id == eid:
-                e = email
-                break
-        if e:
-            break
+    e = email.objects.filter(domain__in=u.domain_set.all(), id=eid)[0]
 
     if request.method == 'POST':
         form = FormEmailPassword(request.POST, instance=e)
@@ -163,12 +152,7 @@ def redirects(request, p=1):
     superuser = request.user
     p = int(p)
 
-    redirects = []
-    domains = list(u.domain_set.all())
-    for idomain in domains:
-        for iredirect in list(idomain.redirect_set.all()):
-            redirects.append(iredirect)
-
+    redirects = redirect.objects.filter(domain__in=u.domain_set.all())
     paginator = Paginator(redirects, 25)
 
     if not paginator.count:
@@ -185,7 +169,7 @@ def redirects(request, p=1):
             "superuser": superuser,
             "menu_active": "emails",
             },
-                              context_instance=RequestContext(request))
+        context_instance=RequestContext(request))
 
 
 @login_required
@@ -195,12 +179,13 @@ def removeRedirect(request, rid):
     rid = int(rid)
 
     r = get_object_or_404(redirect, id=rid)
-    if not r.domain.owner == u:
+    if r.domain.owner != u:
         return HttpResponseForbidden(ugettext("Forbidden operation"))
 
     r.delete()
 
-    return HttpResponse("Přesměrování vymazáno")
+    messages.add_message(request, messages.SUCCESS, _('Redirect has been removed'))
+    return HttpResponseRedirect(reverse("wsgiadmin.emails.views.redirects"))
 
 
 @login_required
@@ -210,7 +195,7 @@ def changeRedirect(request, rid):
     rid = int(rid)
 
     r = get_object_or_404(redirect, id=rid)
-    if not r.domain.owner == u:
+    if r.domain.owner != u:
         return HttpResponseForbidden(ugettext("Forbidden operation"))
 
     domains = [(x.name, x.name) for x in u.domain_set.filter(mail=True)]
@@ -230,8 +215,8 @@ def changeRedirect(request, rid):
     return render_to_response('universal.html',
             {
             "form": form,
-            "title": _(u"Upravení přesměrování"),
-            "submit": _(u"Upravit přesměrování"),
+            "title": _(u"Modify email alias"),
+            "submit": _(u"Modify alias"),
             "action": reverse("wsgiadmin.emails.views.changeRedirect", args=[rid]),
             "u": u,
             "superuser": superuser,
@@ -255,6 +240,7 @@ def addRedirect(request):
             redirect.domain = get_object_or_404(u.domain_set, name=form.cleaned_data["_domain"])
             redirect.pub_date = datetime.date.today()
             redirect.save()
+
             messages.add_message(request, messages.SUCCESS, _('Redirect has been added'))
             return HttpResponseRedirect(reverse("wsgiadmin.emails.views.redirects"))
     else:

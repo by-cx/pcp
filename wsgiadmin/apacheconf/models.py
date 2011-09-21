@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from constance import config
 
 from django.contrib.auth.models import User as user
 from django.db import models
@@ -96,7 +97,7 @@ class UserSite(models.Model):
 
     @property
     def fastcgiWrapper(self):
-        return settings.PCP_SETTINGS["fastcgi_wrapper_dir"] % self.owner
+        return config.fastcgi_wrapper_dir % self.owner
 
     @property
     def pay(self):

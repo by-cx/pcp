@@ -2,170 +2,180 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="cs">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<meta http-equiv="content-language" content="cs" />
-	<meta name="author" content="" />
-	<meta name="robots" content="index, follow" />
-	<meta name="keywords" content="Rosti.cz" />
-	<meta name="description" content="Rosti.cz" />
-	<link type="text/css" media="all" href="{{ STATIC_URL }}style/style.css" rel="stylesheet" />
-	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}uni-form/css/uni-form.css">
-	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}uni-form/css/default.uni-form.css">
-	<link rel="stylesheet" href="{{ STATIC_URL }}css/jquery-ui-1.8.16.custom.css" type="text/css" media="screen" />
-	<script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.6.4.min.js"></script>
-	<script type="text/javascript" src="{{ STATIC_URL }}js/jquery-ui-1.8.9.custom.min.js"></script>
-	<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.cookie.js"></script>
-	<script type="text/javascript">
-		{% block jsblock %}{% endblock %}
-	</script>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="content-language" content="cs" />
+    <meta name="author" content="" />
+    <meta name="robots" content="index, follow" />
+    <meta name="keywords" content="Rosti.cz" />
+    <meta name="description" content="Rosti.cz" />
+    <link type="text/css" media="all" href="{{ STATIC_URL }}style/style.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}uni-form/css/uni-form.css">
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}uni-form/css/default.uni-form.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/jquery-ui-1.8.16.custom.css" type="text/css" media="screen" />
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.6.4.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-ui-1.8.9.custom.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.cookie.js"></script>
+    <script type="text/javascript">
+        {% block jsblock %}{% endblock %}
+    </script>
 
-	<title>Administrace {{ site }}</title>
+    <title>Administrace {{ site }}</title>
 </head>
 <body>
-	<div id="dialog"></div>
+    <div id="dialog"></div>
 
-	<div id="main">
-		<div id="main-inside">
-			<div id="header">
-				<div id="header-inside">
-					<h1><a href="#" id="logo"><strong>{{ site }}</strong><span></span></a></h1>
-					<p id="login">
-						<strong>
-							{{ u.first_name }} {{ u.last_name }}
-							{% if u != superuser %}
-								<br />
-								(<i>{% trans "switched" %}</i> - <a href="{% url wsgiadmin.users.views.switch_to_admin 1 %}">{% trans "back" %}</a>)
-								<span id="uzivatel">({% trans "superuser" %})</span>
-							{% endif %}
-						</strong>
-						<span class="odhlasit"><a href="{% url django.contrib.auth.views.logout %}">{% trans "Logout" %}</a></span>
-					</p>
-				
-					<ul id="main-menu">
-						<li{% if menu_active == "dashboard" %} class="active"{% endif %}><a href="{% url wsgiadmin.useradmin.views.info %}">{% trans "Dashboard" %}<span></span></a></li>
-						{% if superuser.is_superuser %}
-						<li{% if menu_active == "users" %} class="active"{% endif %}><a href="{% url wsgiadmin.users.views.show %}" class="red">{% trans "Users" %}<span></span></a></li>
-						<li{% if menu_active == "invoices" %} class="active"{% endif %}><a href="{% url wsgiadmin.invoices.views.show %}" class="red">{% trans "Invoices" %}<span></span></a></li>
-						{% endif %}
-						<li{% if menu_active == "domains" %} class="active"{% endif %}><a href="{% url wsgiadmin.domains.views.show %}">{% trans "Domains" %}<span></span></a></li>
-						<li{% if menu_active == "webapps" %} class="active"{% endif %}><a href="{% url wsgiadmin.apacheconf.views.apache %}">{% trans "Web apps" %}<span></span></a></li>
-						<li{% if menu_active == "dbs" %} class="active"{% endif %}><a href="{% url wsgiadmin.pgs.views.show %}">{% trans "Databases" %}<span></span></a></li>
-						<li{% if menu_active == "ftps" %} class="active"{% endif %}><a href="{% url wsgiadmin.ftps.views.show %}">{% trans "FTP" %}<span></span></a></li>
-						<li{% if menu_active == "emails" %} class="active"{% endif %}><a href="{% url wsgiadmin.emails.views.boxes %}">{% trans "E-mails" %}<span></span></a></li>
-						<li{% if menu_active == "settings" %} class="active"{% endif %}><a href="{% url wsgiadmin.users.views.ssh_passwd %}">{% trans "Settings" %}<span></span></a></li>
-					</ul>
-				</div>
-			</div>
-			
-			<div id="content">
-				<div id="content-inside">
-					{% block content %}{% endblock %}
-				</div>
-			</div>
-			<div id="sidebar">
-				<div id="sidebar-inside">
-					{% if menu_active == "dashboard" %}
-					<ul id="sidebar-menu">
-						<li>
-							<ul>
-								<li><a href="{% url wsgiadmin.useradmin.views.info %}">{% trans "Home" %}</a></li>
-								{% if superuser.is_superuser %}<li><a href="{% url wsgiadmin.useradmin.views.master %}" class="red">{% trans "Master panel" %}</a></li>{% endif %}
-								<li><a href="{% url wsgiadmin.useradmin.views.requests %}">{% trans "Last 20 server's request" %}</a></li>
-								<li><a href="{% url wsgiadmin.bills.views.show "income" 1 %}">{% trans "Incomed payments" %}</a></li>
-								<li><a href="{% url wsgiadmin.bills.views.show "bills" 1 %}">{% trans "Payments for services" %}</a></li>
-							</ul>
-						</li>
-					</ul>
-					{% endif %}
-					{% if menu_active == "users" %}
-					<ul id="sidebar-menu">
-						<li>
-							<ul>
-								<li><a href="{% url wsgiadmin.users.views.show %}">{% trans "User's list" %}</a></li>
-							</ul>
-						</li>
-					</ul>
-					{% endif %}
-					{% if menu_active == "invoices" %}
-					<ul id="sidebar-menu">
-						<li>
-							<ul>
-								<li><a href="{% url wsgiadmin.invoices.views.add_invoice %}">{% trans "Add invoice" %}</a></li>
-								<li><a href="{% url wsgiadmin.invoices.views.show %}">{% trans "Invoice's list" %}</a></li>
-							</ul>
-						</li>
-					</ul>
-					{% endif %}
-					{% if menu_active == "domains" %}
-					<ul id="sidebar-menu">
-						<li>
-							<ul>
-								<li><a href="{% url wsgiadmin.domains.views.add %}">{% trans "Add registered domain" %}</a></li>
-								<li><a href="{% url wsgiadmin.domains.views.show %}">{% trans "Domain's list" %}</a></li>
-							</ul>
-						</li>
-					</ul>
-					{% endif %}
-					{% if menu_active == "webapps" %}
-					<ul id="sidebar-menu">
-						<li>
-							<ul>
-								<li><a href="{% url wsgiadmin.apacheconf.views.add_static "0" %}">{% trans "Add static page" %}</a></li>
-								<li><a href="{% url wsgiadmin.apacheconf.views.add_static "1" %}">{% trans "Add PHP app" %}</a></li>
-								<li><a href="{% url wsgiadmin.apacheconf.views.add_wsgi %}">{% trans "Add WSGI app" %}</a></li>
-								<li><a href="{% url wsgiadmin.apacheconf.views.apache %}">{% trans "Your apps" %}</a></li>
-							</ul>
-						</li>
-					</ul>
-					{% endif %}
-					{% if menu_active == "dbs" %}
-					<ul id="sidebar-menu">
-						<li>
-							<ul>
-								<li><a href="{% url wsgiadmin.mysql.views.add %}">{% trans "Add MySQL database" %}</a></li>
-								<li><a href="{% url wsgiadmin.mysql.views.show %}">{% trans "MySQL databases" %}</a></li>
-								<li><a href="{% url wsgiadmin.pgs.views.add %}">{% trans "Add postgresql database" %}</a></li>
-								<li><a href="{% url wsgiadmin.pgs.views.show %}">{% trans "PostgreSQL databases" %}</a></li>
-							</ul>
-						</li>
-					</ul>
-					{% endif %}
-					{% if menu_active == "emails" %}
-					<ul id="sidebar-menu">
-						<li>
-							<ul>
-								<li><a href="{% url wsgiadmin.emails.views.addBox %}">{% trans "Add e-mail account" %}</a></li>
-								<li><a href="{% url wsgiadmin.emails.views.boxes %}">{% trans "E-mail's accounts" %}</a></li>
-								<li><a href="{% url wsgiadmin.emails.views.addRedirect %}">{% trans "Add redirection" %}</a></li>
-								<li><a href="{% url wsgiadmin.emails.views.redirects %}">{% trans "Redirections" %}</a></li>
-							</ul>
-						</li>
-					</ul>
-					{% endif %}
-					{% if menu_active == "ftps" %}
-					<ul id="sidebar-menu">
-						<li>
-							<ul>
-								<li><a href="{% url wsgiadmin.ftps.views.add %}">{% trans "Add FTP account" %}</a></li>
-								<li><a href="{% url wsgiadmin.ftps.views.show %}">{% trans "List of FTP accounts" %}</a></li>
-							</ul>
-						</li>
-					</ul>
-					{% endif %}
-					{% if menu_active == "settings" %}
-					<ul id="sidebar-menu">
-						<li>
-							<ul>
-								<li><a href="{% url wsgiadmin.useradmin.views.change_passwd %}">{% trans "Change password" %}</a></li>
-								<li><a href="{% url wsgiadmin.users.views.ssh_passwd %}">{% trans "Change SSH/SFTP/FTP passwod" %}</a></li>
-								<li><a href="{% url django.contrib.auth.views.logout %}">{% trans "Logout" %}</a></li>
-							</ul>
-						</li>
-					</ul>
-					{% endif %}
-				</div>
-			</div>
-		</div>
-	</div>
+    <div id="main">
+        <div id="main-inside">
+            <div id="header">
+                <div id="header-inside">
+                    <h1><a href="#" id="logo"><strong>{{ site }}</strong><span></span></a></h1>
+                    <p id="login">
+                        <strong>
+                            {{ u.first_name }} {{ u.last_name }}
+                            {% if u != superuser %}
+                                <br />
+                                (<i>{% trans "switched" %}</i> - <a href="{% url wsgiadmin.users.views.switch_to_admin 1 %}">{% trans "back" %}</a>)
+                                <span id="uzivatel">({% trans "superuser" %})</span>
+                            {% endif %}
+                        </strong>
+                        <span class="odhlasit"><a href="{% url django.contrib.auth.views.logout %}">{% trans "Logout" %}</a></span>
+                    </p>
+
+                    <ul id="main-menu">
+                        <li{% if menu_active == "dashboard" %} class="active"{% endif %}><a href="{% url wsgiadmin.useradmin.views.info %}">{% trans "Dashboard" %}<span></span></a></li>
+                        {% if superuser.is_superuser %}
+                        <li{% if menu_active == "users" %} class="active"{% endif %}><a href="{% url wsgiadmin.users.views.show %}" class="red">{% trans "Users" %}<span></span></a></li>
+                        <li{% if menu_active == "invoices" %} class="active"{% endif %}><a href="{% url wsgiadmin.invoices.views.show %}" class="red">{% trans "Invoices" %}<span></span></a></li>
+                        {% endif %}
+                        <li{% if menu_active == "domains" %} class="active"{% endif %}><a href="{% url wsgiadmin.domains.views.show %}">{% trans "Domains" %}<span></span></a></li>
+                        <li{% if menu_active == "webapps" %} class="active"{% endif %}><a href="{% url wsgiadmin.apacheconf.views.apache %}">{% trans "Web apps" %}<span></span></a></li>
+                        <li{% if menu_active == "dbs" %} class="active"{% endif %}><a href="{% url wsgiadmin.pgs.views.show %}">{% trans "Databases" %}<span></span></a></li>
+                        <li{% if menu_active == "ftps" %} class="active"{% endif %}><a href="{% url wsgiadmin.ftps.views.show %}">{% trans "FTP" %}<span></span></a></li>
+                        <li{% if menu_active == "emails" %} class="active"{% endif %}><a href="{% url wsgiadmin.emails.views.boxes %}">{% trans "E-mails" %}<span></span></a></li>
+                        <li{% if menu_active == "settings" %} class="active"{% endif %}><a href="{% url wsgiadmin.users.views.ssh_passwd %}">{% trans "Settings" %}<span></span></a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="content">
+                <div id="content-inside">
+                    {% if u.parms.count_domains %}
+                    <ul id="notifications">
+                        <li id="info">
+                            {% blocktrans %}
+                                Most services are depend on domain. Good place to start right now is
+                            {% endblocktrans %}
+                            <a href="{% url wsgiadmin.domains.views.show %}">{% trans "domain managment" %}</a>.
+                        </li>
+                    </ul>
+                    {% endif %}
+                    {% block content %}{% endblock %}
+                </div>
+            </div>
+            <div id="sidebar">
+                <div id="sidebar-inside">
+                    {% if menu_active == "dashboard" %}
+                    <ul id="sidebar-menu">
+                        <li>
+                            <ul>
+                                <li><a href="{% url wsgiadmin.useradmin.views.info %}">{% trans "Home" %}</a></li>
+                                {% if superuser.is_superuser %}<li><a href="{% url wsgiadmin.useradmin.views.master %}" class="red">{% trans "Master panel" %}</a></li>{% endif %}
+                                <li><a href="{% url wsgiadmin.useradmin.views.requests %}">{% trans "Last 20 server's request" %}</a></li>
+                                <li><a href="{% url wsgiadmin.bills.views.show "income" 1 %}">{% trans "Incomed payments" %}</a></li>
+                                <li><a href="{% url wsgiadmin.bills.views.show "bills" 1 %}">{% trans "Payments for services" %}</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    {% endif %}
+                    {% if menu_active == "users" %}
+                    <ul id="sidebar-menu">
+                        <li>
+                            <ul>
+                                <li><a href="{% url wsgiadmin.users.views.show %}">{% trans "User's list" %}</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    {% endif %}
+                    {% if menu_active == "invoices" %}
+                    <ul id="sidebar-menu">
+                        <li>
+                            <ul>
+                                <li><a href="{% url wsgiadmin.invoices.views.add_invoice %}">{% trans "Add invoice" %}</a></li>
+                                <li><a href="{% url wsgiadmin.invoices.views.show %}">{% trans "Invoice's list" %}</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    {% endif %}
+                    {% if menu_active == "domains" %}
+                    <ul id="sidebar-menu">
+                        <li>
+                            <ul>
+                                <li><a href="{% url wsgiadmin.domains.views.add %}">{% trans "Add registered domain" %}</a></li>
+                                <li><a href="{% url wsgiadmin.domains.views.show %}">{% trans "Domain's list" %}</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    {% endif %}
+                    {% if menu_active == "webapps" %}
+                    <ul id="sidebar-menu">
+                        <li>
+                            <ul>
+                                <li><a href="{% url wsgiadmin.apacheconf.views.add_static "0" %}">{% trans "Add static page" %}</a></li>
+                                <li><a href="{% url wsgiadmin.apacheconf.views.add_static "1" %}">{% trans "Add PHP app" %}</a></li>
+                                <li><a href="{% url wsgiadmin.apacheconf.views.add_wsgi %}">{% trans "Add WSGI app" %}</a></li>
+                                <li><a href="{% url wsgiadmin.apacheconf.views.apache %}">{% trans "Your apps" %}</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    {% endif %}
+                    {% if menu_active == "dbs" %}
+                    <ul id="sidebar-menu">
+                        <li>
+                            <ul>
+                                <li><a href="{% url wsgiadmin.mysql.views.add %}">{% trans "Add MySQL database" %}</a></li>
+                                <li><a href="{% url wsgiadmin.mysql.views.show %}">{% trans "MySQL databases" %}</a></li>
+                                <li><a href="{% url wsgiadmin.pgs.views.add %}">{% trans "Add postgresql database" %}</a></li>
+                                <li><a href="{% url wsgiadmin.pgs.views.show %}">{% trans "PostgreSQL databases" %}</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    {% endif %}
+                    {% if menu_active == "emails" %}
+                    <ul id="sidebar-menu">
+                        <li>
+                            <ul>
+                                <li><a href="{% url wsgiadmin.emails.views.addBox %}">{% trans "Add e-mail account" %}</a></li>
+                                <li><a href="{% url wsgiadmin.emails.views.boxes %}">{% trans "E-mail's accounts" %}</a></li>
+                                <li><a href="{% url wsgiadmin.emails.views.addRedirect %}">{% trans "Add redirection" %}</a></li>
+                                <li><a href="{% url wsgiadmin.emails.views.redirects %}">{% trans "Redirections" %}</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    {% endif %}
+                    {% if menu_active == "ftps" %}
+                    <ul id="sidebar-menu">
+                        <li>
+                            <ul>
+                                <li><a href="{% url wsgiadmin.ftps.views.add %}">{% trans "Add FTP account" %}</a></li>
+                                <li><a href="{% url wsgiadmin.ftps.views.show %}">{% trans "List of FTP accounts" %}</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    {% endif %}
+                    {% if menu_active == "settings" %}
+                    <ul id="sidebar-menu">
+                        <li>
+                            <ul>
+                                <li><a href="{% url wsgiadmin.useradmin.views.change_passwd %}">{% trans "Change password" %}</a></li>
+                                <li><a href="{% url wsgiadmin.users.views.ssh_passwd %}">{% trans "Change SSH/SFTP/FTP passwod" %}</a></li>
+                                <li><a href="{% url django.contrib.auth.views.logout %}">{% trans "Logout" %}</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

@@ -14,6 +14,7 @@ from wsgiadmin.apacheconf.models import UserSite
 from wsgiadmin.domains.models import Domain
 from wsgiadmin.requests.models import Request
 from wsgiadmin.clients.models import Machine
+from constance import config
 
 class RequestException(Exception): pass
 
@@ -211,7 +212,7 @@ class UWSGIRequest(SSHHandler):
     def __init__(self, *args, **kwargs):
         super(UWSGIRequest, self).__init__(*args, **kwargs)
 
-        self.config_location = settings.PCP_SETTINGS.get("uwsgi_conf", "/etc/uwsgi/config.xml")
+        self.config_path = config.uwsgi_conf
 
     def mod_config(self):
         uwsgi = ["<rosti>"]
@@ -241,7 +242,7 @@ class UWSGIRequest(SSHHandler):
             uwsgi.append("</uwsgi>")
 
         uwsgi.append("</rosti>")
-        self.write(self.config_location, "\n".join(uwsgi))
+        self.write(self.config_path, "\n".join(uwsgi))
 
     def start(self, site):
         """Start site"""
@@ -262,58 +263,58 @@ class UWSGIRequest(SSHHandler):
 
 class NginxRequest(Service):
     def __init__(self, user, machine):
-        super(NginxRequest, self).__init__(user, machine, settings.PCP_SETTINGS.get("nginx_init_script", "/etc/init.d/nginx"))
-        self.config_location = settings.PCP_SETTINGS["nginx_conf"]
+        super(NginxRequest, self).__init__(user, machine, config.nginx_init_script)
+        self.config_path = config.nginx_conf
 
     def mod_vhosts(self):
-        config = []
+        configfile = []
         sites = UserSite.objects.filter(removed=False, owner__parms__enable=True)
         for site in sites:
             if site.type in ("uwsgi", "modwsgi"):
-                config.append(render_to_string("nginx_vhost_wsgi.conf", {
+                configfile.append(render_to_string("nginx_vhost_wsgi.conf", {
                     "site": site,
                     'log_dir': settings.LOG_DIR,
                 }))
             elif site.type == "php":
                 # PHP always throw Apache
-                config.append(render_to_string("nginx_vhost_proxy.conf", {
+                configfile.append(render_to_string("nginx_vhost_proxy.conf", {
                     "site": site,
-                    "proxy": settings.PCP_SETTINGS.get("apache_url"),
+                    "proxy": config.apache_url,
                     'log_dir': settings.LOG_DIR,
                 }))
             elif site.type == "static":
-                config.append(render_to_string("nginx_vhost_static.conf", {
+                configfile.append(render_to_string("nginx_vhost_static.conf", {
                     "site": site,
                     'log_dir': settings.LOG_DIR,
                 }))
-        self.write(self.config_location, "\n".join(config))
+        self.write(self.config_path, "\n".join(configfile))
 
 
 class ApacheRequest(Service):
     def __init__(self, user, machine):
-        super(ApacheRequest, self).__init__(user, machine, settings.PCP_SETTINGS.get("apache_init_script", "/etc/init.d/apache"))
+        super(ApacheRequest, self).__init__(user, machine, config.apache_init_script)
 
-        self.config_location = settings.PCP_SETTINGS['apache_conf']
+        self.config_path = config.apache_conf
 
 
     def mod_vhosts(self):
-        config = []
+        configfile = []
         sites = UserSite.objects.filter(removed=False, owner__parms__enable=True)
         for site in sites:
             if site.type in ("uwsgi", "modwsgi"):
                 # Nginx mode cancel handling wsgi by Apache
-                if settings.PCP_SETTINGS["mode"] != "apache": continue
+                if config.mode != "apache": continue
 
-                config.append(render_to_string("apache_vhost_wsgi.conf", {
+                configfile.append(render_to_string("apache_vhost_wsgi.conf", {
                     "site": site,
                     'log_dir': settings.LOG_DIR,
                 }))
             else:
-                config.append(render_to_string("apache_vhost_%s.conf" % site.type, {
+                configfile.append(render_to_string("apache_vhost_%s.conf" % site.type, {
                     "site": site,
                     'log_dir': settings.LOG_DIR,
                 }))
-        self.write(self.config_location, "\n".join(config))
+        self.write(self.config_path, "\n".join(configfile))
 
 
 class BindRequest(Service):
@@ -322,21 +323,20 @@ class BindRequest(Service):
         self.ns = ns
 
         try:
-            machine = Machine.objects.get(ip=settings.PCP_SETTINGS["dns"][self.ns])
+            machine = Machine.objects.get(ip=getattr(config, "dns_%s" % self.ns))
         except Machine.DoesNotExist:
             raise RequestException("Error: NS machine not found")
 
-        super(Service, self).__init__(user, machine, settings.PCP_SETTINGS.get("bind_init_script", "/etc/init.d/bind9"))
+        super(Service, self).__init__(user, machine, config.bind_init_script)
 
     def mod_zone(self, domain):
-        config = render_to_string("bind_zone.conf", {
+        configfile = render_to_string("bind_zone.conf", {
             "domain": domain,
-            "dns": settings.PCP_SETTINGS.get("dns"),
             })
-        self.write(settings.PCP_SETTINGS["bind_zone_conf"] % domain.name, config)
+        self.write(config.bind_zone_conf % domain.name, configfile)
 
     def remove_zone(self, domain):
-        self.unlink(settings.PCP_SETTINGS["bind_zone_conf"] % domain.name)
+        self.unlink(config.bind_zone_conf % domain.name)
         self.mod_config()
 
     def mod_config(self):
@@ -344,16 +344,16 @@ class BindRequest(Service):
             tmpl = "bind_primary.conf"
         else:
             tmpl = "bind_secondary.conf"
-        config = render_to_string(tmpl, {
+            
+        configfile = render_to_string(tmpl, {
             "domains": Domain.objects.all(),
-            "dns": settings.PCP_SETTINGS["dns"],
             })
-        self.write(settings.PCP_SETTINGS["bind_conf"], config)
+        self.write(config.bind_conf, configfile)
 
 
 class EMailRequest(SSHHandler):
     def create_mailbox(self, email):
-        homedir = join(settings.PCP_SETTINGS["maildir"], email.domain.name)
+        homedir = join(config.maildir, email.domain.name)
         maildir = join(homedir, email.login)
 
         self.run("mkdir -p %s" % homedir)
@@ -364,7 +364,7 @@ class EMailRequest(SSHHandler):
         self.run("chown email:email %s -R" % maildir + "/Spam")
 
     def remove_mailbox(self, email):
-        maildir = join(settings.PCP_SETTINGS["maildir"], email.domain.name, email.login)
+        maildir = join(config.maildir, email.domain.name, email.login)
         self.run("rm -rf %s" % maildir, plan_to=datetime.today() + timedelta(90))
 
 
@@ -422,7 +422,7 @@ class SystemRequest(SSHHandler):
         self.run("cp -R %s %s" % ( join(settings.ROOT, 'service/www_data/'), join('/var/www', user.username)))
         self.run("chown -R %(user)s:%(user)s /var/www/%(user)s" % dict(user=user.username))
         self.run("usermod -G %s -a %s" % (user.username, user.username))
-        self.run("usermod -G %s -a %s" % (settings.PCP_SETTINGS['apache_user'], user.username))
+        self.run("usermod -G %s -a %s" % (config.apache_user, user.username))
         self.run("usermod -G clients -a %s" % user.username)
         self.run("su %s -c\'mkdir -p %s\'" % (user.username, join(HOME, settings.VIRTUALENVS_DIR)))
         self.run("su %s -c\'virtualenv %s\'" % (user.username, join(HOME, settings.VIRTUALENVS_DIR, 'default')))

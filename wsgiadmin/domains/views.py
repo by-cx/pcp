@@ -3,6 +3,8 @@
 #TODO:Remove, put it in settings
 import logging
 
+from constance import config
+
 from django.core.paginator import Paginator
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -54,7 +56,7 @@ def rm(request, did):
     if d.owner == u:
         logging.info(_(u"Mažu doménu %s") % d.name)
 
-        if settings.PCP_SETTINGS.get("handle_dns"):
+        if config.handle_dns:
             pri_br = BindRequest(u, "master")
             pri_br.remove_zone(d)
             pri_br.mod_config()
@@ -84,7 +86,7 @@ def add(request):
 
             instance, created = Domain.objects.get_or_create(name=name, owner=u)
 
-            if settings.PCP_SETTINGS.get("handle_dns"):
+            if config.handle_dns:
                 pri_br = BindRequest(u, "master")
                 pri_br.mod_zone(instance)
                 pri_br.mod_config()

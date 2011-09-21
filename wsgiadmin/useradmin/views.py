@@ -14,6 +14,7 @@ from wsgiadmin.invoices.models import invoice
 from wsgiadmin.useradmin.forms import formReg, formReg2, form_reg_payment
 from wsgiadmin.clients.models import Parms
 
+from constance import config
 from os.path import join
 
 @login_required
@@ -131,10 +132,10 @@ def reg(request):
             a.residency_phone = form1.cleaned_data["phone"]
             a.save()
             # machine
-            m_web = get_object_or_404(Machine, name=settings.DEFAULT_WEB_MACHINE)
-            m_mail = get_object_or_404(Machine, name=settings.DEFAULT_MAIL_MACHINE)
-            m_mysql = get_object_or_404(Machine, name=settings.DEFAULT_MYSQL_MACHINE)
-            m_pgsql = get_object_or_404(Machine, name=settings.DEFAULT_PGSQL_MACHINE)
+            m_web = get_object_or_404(Machine, name=config.default_web_machine)
+            m_mail = get_object_or_404(Machine, name=config.default_mail_machine)
+            m_mysql = get_object_or_404(Machine, name=config.default_mysql_machine)
+            m_pgsql = get_object_or_404(Machine, name=config.default_pgsql_machine)
             # parms
             p = Parms()
             p.home = join("/home", form2.cleaned_data["username"])

@@ -3,6 +3,7 @@
 import logging
 import anyjson
 
+from constance import config
 from datetime import date
 from django.conf import settings
 
@@ -109,7 +110,7 @@ def add_static(request, php="0"):
             ar.mod_vhosts()
             ar.reload()
 
-            if settings.PCP_SETTINGS['mode'] == 'nginx':
+            if config.mode == "nginx":
                 nr = NginxRequest(u, u.parms.web_machine)
                 nr.mod_vhosts()
                 nr.reload()
@@ -165,7 +166,7 @@ def update_static(request, sid):
             ar.mod_vhosts()
             ar.reload()
 
-            if settings.PCP_SETTINGS['mode'] == "nginx":
+            if config.mode == "nginx":
                 nr = NginxRequest(u, u.parms.web_machine)
                 nr.mod_vhosts()
                 nr.reload()
@@ -215,7 +216,7 @@ def remove_site(request, sid):
     ar.mod_vhosts()
     ar.reload()
 
-    if settings.PCP_SETTINGS['mode'] == 'nginx':
+    if config.mode == 'nginx':
         nr = NginxRequest(u, u.parms.web_machine)
         nr.mod_vhosts()
         nr.reload()
@@ -248,7 +249,7 @@ def add_wsgi(request):
             ar.mod_vhosts()
             ar.reload()
 
-            if settings.PCP_SETTINGS['mode'] == 'nginx':
+            if config.mode == 'nginx':
                 nr = NginxRequest(u, u.parms.web_machine)
                 nr.mod_vhosts()
                 nr.reload()
@@ -311,7 +312,7 @@ def update_wsgi(request, sid):
                 ar.mod_vhosts()
                 ar.reload()
 
-                if settings.PCP_SETTINGS['mode'] == 'nginx':
+                if config.mode == 'nginx':
                     nr = NginxRequest(u, u.parms.web_machine)
                     nr.mod_vhosts()
                     nr.reload()
@@ -320,7 +321,7 @@ def update_wsgi(request, sid):
                 ar.mod_vhosts()
                 ar.reload()
 
-                if settings.PCP_SETTINGS['mode'] == 'nginx':
+                if config.mode == 'nginx':
                     nr = NginxRequest(u, u.parms.web_machine)
                     nr.mod_vhosts()
                     nr.reload()
@@ -369,7 +370,7 @@ def reload(request, sid):
         ar.mod_vhosts()
         ar.reload()
 
-        if settings.PCP_SETTINGS['mode'] == 'nginx':
+        if config.mode == 'nginx':
             nr = NginxRequest(u, u.parms.web_machine)
             nr.mod_vhosts()
             nr.reload()
@@ -394,7 +395,7 @@ def restart(request, sid):
         ar.mod_vhosts()
         ar.restart()
 
-        if settings.PCP_SETTINGS['mode'] == 'nginx':
+        if config.mode == 'nginx':
             nr = NginxRequest(u, u.parms.web_machine)
             nr.mod_vhosts()
             nr.restart()

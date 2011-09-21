@@ -17,10 +17,6 @@ function remove(what) {
 
 <h3>Domény</h3>
 
-{% blocktrans %}
-<p>Informace týkající se domén najdete na Wiki na adrese <a href='{{ WIKI_URL }}/registrace_domen' target="_blank">{{ WIKI_URL }}/registrace_domen</a>.</p>
-{% endblocktrans %}
-
 <p><a href="{% url wsgiadmin.domains.views.add %}">{% trans "Přidat již registrovanou doménu" %}</a>.</p>
 
 <h3>{% trans "Seznam vedených domén" %}</h3>

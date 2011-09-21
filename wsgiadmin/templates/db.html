@@ -2,42 +2,44 @@
 {% load i18n %}
 
 {% block title %}
-    {% trans "Administrace > {{ dbtype }} databáze" %}
+    {% trans "Administration" %} &gt; {{ dbtype }} {% trans "databases" %}
 {% endblock %}
 
 {% block jsblock %}
     {{ block.super }}
 
     $(function() {
-    $("#dblist .db_delete").click(function() {
-    var orly = confirm('{% trans "Opravdu chcete smazat tuto databázi?" %}');
-    el = $(this);
-    if (orly) {
-        var db = $(this).attr('rel');
-        $.ajax({
-            url: "{% url wsgiadmin.db.views.rm dbtype=dbtype %}",
-            type: "POST",
-            data: {'dbname': db, 'csrfmiddlewaretoken': '{{ csrf_token }}' },
-            dataType: "json",
-            success: function(data) {
-                if (data.result == 'OK') {
-                    el.parent().html("{% trans "database was sucessfuly removed" %}");
-                } else {
-                    alert(data.messages);
-                }
+        $("#dblist .db_delete").click(function() {
+            var orly = confirm('{% trans "Are you sure you want to remove this database?" %}');
+            el = $(this);
+            if (orly) {
+                var db = $(this).attr('rel');
+                $.ajax({
+                    url:"{% url wsgiadmin.db.views.rm dbtype=dbtype %}",
+                    type:"POST",
+                    data:{'dbname':db, 'csrfmiddlewaretoken':'{{ csrf_token }}' },
+                    dataType:"json",
+                    success:function(data) {
+                        if (data.result == 'OK') {
+                            el.parent().html("{% trans "database sucessfuly removed" %}");
+                        } else {
+                            alert(data.messages);
+                        }
+                    }
+                });
             }
+        });
+    });
 
-    });
-    }
-    });
-    });
 {% endblock %}
 
 
 {% block content %}
     <div id="message-box"></div>
 
-    <h2>{{ dbtype }}</h2>
+    {% if dbtype != 'all' %}
+        <h2>{{ dbtype }}</h2>
+    {% endif %}
 
     <div id="db_dialog"></div>
 
@@ -55,11 +57,11 @@
                 <tr>
                     <td>{{ db }}</td>
                     <td id="db_{{ db }}">
-                        <a href="{% url db_passwd dbtype=dbtype dbname=db %}" class="db_pwdchange" title="{% trans "Změnit heslo" %}" rel="{{ db }}">
-                            <img src="{{ STATIC_URL }}icons/raster/gray_dark/key_stroke_16x16.png" alt="{% trans "Změnit heslo" %}"/>
+                        <a href="{% url db_passwd dbtype=dbtype dbname=db %}" class="db_pwdchange" title="{% trans "Change password" %}" rel="{{ db }}">
+                            <img src="{{ STATIC_URL }}icons/raster/gray_dark/key_stroke_16x16.png" alt="{% trans "Change password" %}"/>
                         </a>
                         <a href="#" class="db_delete" title="{% trans "Smazat" %}" rel="{{ db }}">
-                            <img src="{{ STATIC_URL }}icons/raster/gray_dark/trash_fill_16x16.png" alt="{% trans "Smazat" %}"/>
+                            <img src="{{ STATIC_URL }}icons/raster/gray_dark/trash_fill_16x16.png" alt="{% trans "Delete" %}"/>
                         </a>
                     </td>
                 </tr>
@@ -70,11 +72,11 @@
                 <td colspan="2">
                     <div class="pagination">
                         {% if dbs.has_previous %}
-                            <a href="{% url wsgiadmin.db.views.show dbtype=dbtype 1 %}" title="{% trans "První stránka" %}">&laquo; {% trans "První" %}</a>
+                            <a href="{% url wsgiadmin.db.views.show dbtype=dbtype 1 %}" title="{% trans "First page" %}">&laquo; {% trans "First" %}</a>
                         {% endif %}
                         {% if dbs.has_previous %}
-                            <a href="{% url wsgiadmin.db.views.show dbtype=dbtype gs.previous_page_number %}" title="{% trans "Předchozí stránka" %}">
-                                &laquo; {% trans "Předchozí" %}
+                            <a href="{% url wsgiadmin.db.views.show dbtype=dbtype gs.previous_page_number %}" title="{% trans "Previous page" %}">
+                                &laquo; {% trans "Previous" %}
                             </a>
                         {% endif %}
 
@@ -87,10 +89,10 @@
                         {% endfor %}
 
                         {% if dbs.has_next %}
-                            <a href="{% url wsgiadmin.db.views.show dbtype=dbtype page=dbs.next_page_number %}" title="{% trans "Další stránka" %}">{% trans "Další" %} &raquo;</a>
+                            <a href="{% url wsgiadmin.db.views.show dbtype=dbtype page=dbs.next_page_number %}" title="{% trans "Next page" %}">{% trans "Next" %} &raquo;</a>
                         {% endif %}
                         {% if dbs.has_next %}
-                            <a href="{% url wsgiadmin.db.views.show dbtype=dbtype page=dbs.num_pages %}" title="{% trans "Poslední stránka" %}">{% trans "Poslední" %} &raquo;</a>
+                            <a href="{% url wsgiadmin.db.views.show dbtype=dbtype page=dbs.num_pages %}" title="{% trans "Last page" %}">{% trans "Last" %} &raquo;</a>
                         {% endif %}
                     </div>
                     <div class="clear"></div>
@@ -100,7 +102,7 @@
         {% else %}
             <tbody>
             <tr>
-                <td colspan="2">{% trans "Žádná databáze nebyla ještě přidána. Databáze můžete přidávat pomocí nabídky vlevo." %}</td>
+                <td colspan="2">{% trans "You don't have any database, but don't worry! You can add some by the panel on left side." %}</td>
             </tr>
             </tbody>
         {% endif %}

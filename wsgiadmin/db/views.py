@@ -17,7 +17,7 @@ from wsgiadmin.useradmin.forms import PasswordForm
 
 
 @login_required
-def show(request, dbtype=None, page=1):
+def show(request, dbtype='all', page=1):
     """
     Vylistování seznamu databází
     """
@@ -27,8 +27,10 @@ def show(request, dbtype=None, page=1):
 
     if dbtype == 'mysql':
         dbs = u.mysqldb_set.all()
-    else:
+    elif dbtype == 'pgsql':
         dbs = u.pgsql_set.all()
+    else:
+        dbs = []
 
     paginator = Paginator([x.dbname for x in dbs], 10)
     if not paginator.count:

@@ -3,7 +3,7 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
-import datetime
+from datetime import datetime, date, timedelta
 
 from django.conf import settings
 
@@ -19,11 +19,11 @@ def getMe():
 class invoice(models.Model):
     bank = models.CharField(_(u"Banka"), max_length=70, default=settings.BANK)
     bank_account = models.CharField(_(u"Účet"), max_length=70, default=settings.BANK_ACCOUNT)
-    date_exposure = models.DateField(default=datetime.date.today())
-    date_payback = models.DateField(default=datetime.date.today() + datetime.timedelta(18))
+    date_exposure = models.DateField(default=date.today())
+    date_payback = models.DateField(default=date.today() + timedelta(18))
     payment_id = models.IntegerField(default=0, unique=True)
     paytype = models.CharField(_(u"Typ platby"), max_length=20, choices=PAYTYPE, default=PAYTYPE[0][0])
-    currency = models.CharField(_("Měna"), max_length=20, choices=settings.CURRENCY)
+    currency = models.CharField(_(u"Currency"), max_length=20, choices=settings.CURRENCY)
     client_address = models.ForeignKey(Address, related_name="Client")
     sended = models.BooleanField(_(u"Odesláno?"), default=False)
     payed = models.BooleanField(_(u"Zaplaceno?"), default=False)

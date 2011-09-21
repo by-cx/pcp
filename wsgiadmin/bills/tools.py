@@ -86,9 +86,8 @@ def bill_hosting(now=datetime.date.today()):
     for u in user.objects.all():
         #Fee process
         if u.parms.fee:
-            if day == u.date_joined.day and kget(
-                "bill:hosting:fee:%d:%d:%d:%d" % (
-                u.id, day, month, year)) != "processed":
+            if day == u.date_joined.day and \
+               kget("bill:hosting:fee:%d:%d:%d:%d" % (u.id, day, month, year)) != "processed":
                 b = bill()
                 b.price = u.parms.fee
                 b.info = "Hosting na serveru %s" % Site.objects.get_current()
@@ -105,8 +104,7 @@ def bill_hosting(now=datetime.date.today()):
         if s.pay == 0:
             continue
 
-        if kget("bill:hosting:%d:%d:%d:%d" % (
-        s.id, day, month, year)) == "processed":
+        if kget("bill:hosting:%d:%d:%d:%d" % (s.id, day, month, year)) == "processed":
             continue
 
         b = bill()
@@ -116,12 +114,10 @@ def bill_hosting(now=datetime.date.today()):
         b.currency = s.owner.parms.currency
         b.save()
 
-        logging.info(
-            "Vygenerována platba za hosting doménu %s pro uživatele %s v hodnotě %.2f" % (
-            s.server_name, s.owner.username, s.pay))
+        msg = u"Vygenerována platba za hosting doménu %s pro uživatele %s v hodnotě %.2f" % (s.server_name, s.owner.username, s.pay)
+        logging.info(msg)
 
-        kset("bill:hosting:%d:%d:%d:%d" % (s.id, day, month, year), "processed",
-             20160)
+        kset("bill:hosting:%d:%d:%d:%d" % (s.id, day, month, year), "processed", 20160)
 
     # delete sites marked as removed
     UserSite.objects.filter(removed=True).delete()

@@ -1,63 +1,52 @@
 # -*- coding: utf-8 -*-
-from wsgiadmin.keystore.models import *
-import datetime,json
 
-def ksez(input):
-	"""Serializace - JSON
-	"""
-	
-	return json.dumps(input)
+from datetime import datetime
+from wsgiadmin.keystore.models import store
 
-def kdez(input):
-	"""Deserializace - JSON
-	"""
+def kget(key, default=None):
+    """
+    Vrací hodnotu uloženou pod klíčem a nebo default
+    """
 
-	return json.loads(input)
+    try:
+        ik = store.objects.get(key=key)
+        ik.date_read = datetime.datetime.today()
+        ik.save()
+        return ik.value
+    except store.DoesNotExist:
+        return default
 
-def kget(key,default=None):
-	"""
-		Vrací hodnotu uloženou pod klíčem a nebo default
-	"""
-	
-	ik = store.objects.filter(key=key)
-	if ik:
-		ik[0].date_read = datetime.datetime.today()
-		ik[0].save()
-		return ik[0].value
-	else:
-		return default
 
-def kset(key,value,expire=0):
-	"""
-		Nastavuje hodnotu pod klíč
-	"""
-	ik = store.objects.filter(key=key)
-	if ik:
-		ik[0].value = value
-		ik.date_write = datetime.datetime.today()
-		ik.expire = expire
-		ik[0].save()
-	else:
-		ik = store()
-		ik.key = key
-		ik.value = value
-		ik.expire = expire
-		ik.save()
-	return True
-		
+def kset(key, value, expire=0):
+    """
+    Nastavuje hodnotu pod klíč
+    """
+    try:
+        ik = store.objects.get(key=key)
+        ik.date_write = datetime.today()
+    except store.DoesNotExist:
+        ik = store(key=key)
+
+    ik.value = value
+    ik.expire = expire
+    ik.save()
+
+    return True
+
+
 def krm(key):
-	"""
-		Smaže klíč
-	"""
-	ik = store.objects.filter(key=key)
-	if ik:
-		ik.delete()
-		return True
-	return False
+    """
+    Smaže klíč
+     """
+    try:
+        store.objects.get(key=key).delete()
+    except store.DoesNotExist:
+        return False
+    else:
+        return True
 
 def klist():
-	"""
-		List uložených klíčů
-	"""
-
-	return [x.key for x in store.objects.all()]
+    """
+     List uložených klíčů
+    """
+    return [x.key for x in store.objects.all()]

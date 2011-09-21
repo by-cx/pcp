@@ -41,11 +41,7 @@ class UserSite(models.Model):
         db_table = 'apacheconf_site'
 
     @property
-    def serverNameSlugged(self):
-        return slugify(self.serverName)
-
-    @property
-    def pythonPathList(self):
+    def python_paths(self):
         return [x.strip() for x in self.python_path.split("\n") if x.strip()]
 
     @property
@@ -58,14 +54,14 @@ class UserSite(models.Model):
             except ValueError:
                 pass
             else:
-                if not target.startswith(self.owner.parms.home):
+                if not target.startswith(self.owner.parms.home.rstrip('/')):
                     target = join(self.owner.parms.home, target)
                 statics.append(dict(url=url, dir=target))
         return statics
 
     @property
-    def serverName(self):
-        domains = self.domains.split(" ")
+    def server_name(self):
+        domains = self.domains.split()
         if len(domains):
             return domains[0]
         else:
@@ -73,23 +69,23 @@ class UserSite(models.Model):
 
     @property
     def serverAlias(self):
-        domains = self.domains.split(" ")
-        if len(domains):
+        domains = self.domains.split()
+        if domains:
             return " ".join(domains[1:])
         else:
             return ""
 
     @property
     def pidfile(self):
-        return join(self.owner.parms.home, "uwsgi", "%s.pid" % self.serverName)
+        return join(self.owner.parms.home, "uwsgi", "%s.pid" % self.server_name)
 
     @property
     def logfile(self):
-        return join(self.owner.parms.home, "uwsgi" , "%s.log" % self.serverName)
+        return join(self.owner.parms.home, "uwsgi" , "%s.log" % self.server_name)
 
     @property
     def socket(self):
-        return join(self.owner.parms.home, "uwsgi", "%s.sock" % self.serverName)
+        return join(self.owner.parms.home, "uwsgi", "%s.sock" % self.server_name)
 
     @property
     def virtualenv_path(self):
@@ -115,7 +111,7 @@ class UserSite(models.Model):
             return (settings.PAYMENT_STATIC[self.owner.parms.currency] / 30.0) * self.owner.parms.dc()
 
     def __repr__(self):
-        return "<Web %s>" % self.serverName
+        return "<Web %s>" % self.server_name
 
     def __unicode__(self):
-        return "%s" % (self.serverName)
+        return "%s" % self.server_name

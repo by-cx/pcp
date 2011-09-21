@@ -1,0 +1,117 @@
+{% extends "admin.html" %}
+{% load i18n %}
+
+{% block title %}
+    {% trans "Administrace > {{ dbtype }} databáze" %}
+{% endblock %}
+
+{% block jsblock %}
+    {{ block.super }}
+
+    $(function() {
+    $("#dblist .db_delete").click(function() {
+    var orly = confirm('{% trans "Opravdu chcete smazat tuto databázi?" %}');
+    el = $(this);
+    if (orly) {
+        var db = $(this).attr('rel');
+        $.ajax({
+            url: "{% url wsgiadmin.db.views.rm dbtype=dbtype %}",
+            type: "POST",
+            data: {'dbname': db, 'csrfmiddlewaretoken': '{{ csrf_token }}' },
+            dataType: "json",
+            success: function(data) {
+                if (data.result == 'OK') {
+                    el.parent().html("{% trans "database was sucessfuly removed" %}");
+                } else {
+                    alert(data.messages);
+                }
+            }
+
+    });
+    }
+    });
+    });
+{% endblock %}
+
+
+{% block content %}
+    <div id="message-box"></div>
+
+    <h2>{{ dbtype }}</h2>
+
+    {% blocktrans %}
+        <p>Informace týkající se {{ dbtype }} databází najdete na Wiki na adrese
+            <a href='{{ WIKI_URL }}/sprava_{{ dbtype }}_databazi' target="_blank">
+                {{ WIKI_URL }}/sprava_{{ dbtype }}_databazi
+            </a>.
+        </p>
+
+    {% endblocktrans %}
+
+    <div id="db_dialog"></div>
+
+    <h3>{% blocktrans %}List of {{ dbtype }} databases{% endblocktrans %}</h3>
+    <table id="dblist">
+        <thead>
+        <tr>
+            <th>{% trans "Database name" %}</th>
+            <th>{% trans "Database actions" %}</th>
+        </tr>
+        </thead>
+        {% if dbs %}
+            <tbody>
+            {% for db in dbs.object_list %}
+                <tr>
+                    <td>{{ db }}</td>
+                    <td id="db_{{ db }}">
+                        <a href="{% url db_passwd dbtype=dbtype dbname=db %}" class="db_pwdchange" title="{% trans "Změnit heslo" %}" rel="{{ db }}">
+                            <img src="{{ STATIC_URL }}icons/raster/gray_dark/key_stroke_16x16.png" alt="{% trans "Změnit heslo" %}"/>
+                        </a>
+                        <a href="#" class="db_delete" title="{% trans "Smazat" %}" rel="{{ db }}">
+                            <img src="{{ STATIC_URL }}icons/raster/gray_dark/trash_fill_16x16.png" alt="{% trans "Smazat" %}"/>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="2">
+                    <div class="pagination">
+                        {% if dbs.has_previous %}
+                            <a href="{% url wsgiadmin.db.views.show dbtype=dbtype 1 %}" title="{% trans "První stránka" %}">&laquo; {% trans "První" %}</a>
+                        {% endif %}
+                        {% if dbs.has_previous %}
+                            <a href="{% url wsgiadmin.db.views.show dbtype=dbtype gs.previous_page_number %}" title="{% trans "Předchozí stránka" %}">
+                                &laquo; {% trans "Předchozí" %}
+                            </a>
+                        {% endif %}
+
+                        {% for p in paginator.page_range %}
+                            {% if p == num_page %}
+                                <a href="{% url wsgiadmin.db.views.show dbtype=dbtype page=p %}" class="number current" title="{{ p }}">{{ p }}</a>
+                            {% else %}
+                                <a href="{% url wsgiadmin.db.views.show dbtype=dbtype page=p %}" class="number" title="{{ p }}">{{ p }}</a>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if dbs.has_next %}
+                            <a href="{% url wsgiadmin.db.views.show dbtype=dbtype page=dbs.next_page_number %}" title="{% trans "Další stránka" %}">{% trans "Další" %} &raquo;</a>
+                        {% endif %}
+                        {% if dbs.has_next %}
+                            <a href="{% url wsgiadmin.db.views.show dbtype=dbtype page=dbs.num_pages %}" title="{% trans "Poslední stránka" %}">{% trans "Poslední" %} &raquo;</a>
+                        {% endif %}
+                    </div>
+                    <div class="clear"></div>
+                </td>
+            </tr>
+            </tfoot>
+        {% else %}
+            <tbody>
+            <tr>
+                <td colspan="2">{% trans "Žádná databáze nebyla ještě přidána. Databáze můžete přidávat pomocí nabídky vlevo." %}</td>
+            </tr>
+            </tbody>
+        {% endif %}
+    </table>
+{% endblock %}

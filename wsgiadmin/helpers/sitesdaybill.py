@@ -13,7 +13,7 @@ ttotal = 0
 sites =  UserSite.objects.all()
 for s in sites:
     payment = s.pay
-    print "%f kč - %s" % (payment, s.serverName)
+    print u"%f kč - %s" % (payment, s.server_name)
 
     ttotal += payment
 

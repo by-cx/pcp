@@ -3,19 +3,20 @@
 import crypt
 from django.contrib import messages
 from django.core.paginator import Paginator
-from django.shortcuts import render_to_response,get_object_or_404
+from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from wsgiadmin.emails.forms import FormEmail, FormEmailPassword, FormRedirect
 from wsgiadmin.emails.models import *
 from django.core.urlresolvers import reverse
 from wsgiadmin.clients.models import *
-from django.http import HttpResponse,HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden, HttpResponseNotFound
 from wsgiadmin.requests.request import EMailRequest
 from django.template.context import RequestContext
 
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, ugettext
 
 @login_required
-def boxes(request,p=1):
+def boxes(request, p=1):
     u = request.session.get('switched_user', request.user)
     superuser = request.user
     p = int(p)
@@ -28,47 +29,49 @@ def boxes(request,p=1):
 
     paginator = Paginator(emails, 25)
 
-    if paginator.count == 0:
+    if not paginator.count:
         page = None
     else:
         page = paginator.page(p)
 
     return render_to_response("boxes.html",
-                            {
-                                "emails":page,
-                                "paginator":paginator,
-                                "num_page":p,
-                                "u":u,
-                                "superuser":superuser,
-                                "menu_active": "emails",
-                            }, context_instance=RequestContext(request))
+            {
+            "emails": page,
+            "paginator": paginator,
+            "num_page": p,
+            "u": u,
+            "superuser": superuser,
+            "menu_active": "emails",
+            }, context_instance=RequestContext(request))
 
 @login_required
 def emailInfo(request):
     u = request.session.get('switched_user', request.user)
     superuser = request.user
     return render_to_response("email_info.html",
-                    {"u":u,}, context_instance=RequestContext(request)
-                    )
+            {"u": u, }, context_instance=RequestContext(request)
+    )
 
 @login_required
 def addBox(request):
     u = request.session.get('switched_user', request.user)
     superuser = request.user
-    domains = []
-    for x in u.domain_set.filter(mail=True):
-        domains.append((x.name,x.name))
+
+    domains = [(x.name, x.name) for x in u.domain_set.filter(mail=True)]
+
     if request.method == 'POST':
-        form = formEmail(request.POST)
+        form = FormEmail(request.POST)
         form.fields["xdomain"].choices = domains
 
         if form.is_valid():
-            form.cleaned_data["xdomain"] = get_object_or_404(u.domain_set,name=form.cleaned_data["xdomain"])
+            form.cleaned_data["xdomain"] = get_object_or_404(u.domain_set, name=
+            form.cleaned_data["xdomain"])
             email = form.save(commit=False)
             email.login = form.cleaned_data["login"]
             email.domain = form.cleaned_data["xdomain"]
             email.pub_date = datetime.date.today()
-            email.password = crypt.crypt(form.cleaned_data["password1"],form.cleaned_data["login"])
+            email.password = crypt.crypt(form.cleaned_data["password1"],
+                                         form.cleaned_data["login"])
             email.save()
 
             er = EMailRequest(u, u.parms.mail_machine)
@@ -77,24 +80,25 @@ def addBox(request):
             messages.add_message(request, messages.INFO, _('Box will be created in few minutes'))
             return HttpResponseRedirect(reverse("wsgiadmin.emails.views.boxes"))
     else:
-        form = formEmail()
+        form = FormEmail()
         form.fields["xdomain"].choices = domains
 
     return render_to_response('universal.html',
-                                {
-                                    "form":form,
-                                    "title":_(u"Přidání e-mailové schránky"),
-                                    "submit":_(u"Přidat schránku"),
-                                    "action":reverse("wsgiadmin.emails.views.addBox"),
-                                    "u":u,
-                                    "superuser":superuser,
-                                    "menu_active": "emails",
-                                },
-                                context_instance=RequestContext(request)
-                            )
+            {
+            "form": form,
+            "title": _(u"Přidání e-mailové schránky"),
+            "submit": _(u"Přidat schránku"),
+            "action": reverse("wsgiadmin.emails.views.addBox"),
+            "u": u,
+            "superuser": superuser,
+            "menu_active": "emails",
+            },
+        context_instance=RequestContext(request)
+    )
+
 
 @login_required
-def removeBox(request,eid):
+def removeBox(request, eid):
     eid = int(eid)
     u = request.session.get('switched_user', request.user)
     superuser = request.user
@@ -109,10 +113,11 @@ def removeBox(request,eid):
 
                 messages.add_message(request, messages.SUCCESS, _('Box has been deleted'))
                 return HttpResponse("Schránka vymazána")
-    return HttpResponse(status=404)
+    return HttpResponseNotFound("Not found .(")
+
 
 @login_required
-def changePasswdBox(request,eid):
+def changePasswdBox(request, eid):
     eid = int(eid)
     u = request.session.get('switched_user', request.user)
     superuser = request.user
@@ -127,32 +132,33 @@ def changePasswdBox(request,eid):
             break
 
     if request.method == 'POST':
-        form = formEmailPassword(request.POST,instance=e)
+        form = FormEmailPassword(request.POST, instance=e)
         if form.is_valid():
             email = form.save(commit=False)
-            email.password = crypt.crypt(form.cleaned_data["password1"],email.login)
+            email.password = crypt.crypt(form.cleaned_data["password1"], email.login)
             email.save()
-
             messages.add_message(request, messages.SUCCESS, _('Password has been changed'))
             return HttpResponseRedirect(reverse("wsgiadmin.emails.views.boxes"))
     else:
-        form = formEmailPassword(instance=e)
+        form = FormEmailPassword(instance=e)
 
     return render_to_response('universal.html',
-                            {
-                                "form":form,
-                                "title":_(u"Změna hesla e-mailové schránky"),
-                                "submit":_(u"Změnit heslo"),
-                                "action":reverse("wsgiadmin.emails.views.changePasswdBox",args=[e.id]),
-                                "u":u,
-                                "superuser":superuser,
-                                "menu_active": "emails",
-                            },
-                            context_instance=RequestContext(request)
-                        )
+            {
+            "form": form,
+            "title": _(u"Změna hesla e-mailové schránky"),
+            "submit": _(u"Změnit heslo"),
+            "action": reverse("wsgiadmin.emails.views.changePasswdBox",
+                              args=[e.id]),
+            "u": u,
+            "superuser": superuser,
+            "menu_active": "emails",
+            },
+                              context_instance=RequestContext(request)
+    )
+
 
 @login_required
-def redirects(request,p=1):
+def redirects(request, p=1):
     u = request.session.get('switched_user', request.user)
     superuser = request.user
     p = int(p)
@@ -165,108 +171,105 @@ def redirects(request,p=1):
 
     paginator = Paginator(redirects, 25)
 
-    if paginator.count == 0:
+    if not paginator.count:
         page = None
     else:
         page = paginator.page(p)
 
     return render_to_response("redirects.html",
-                            {
-                                "redirects":page,
-                                "paginator":paginator,
-                                "num_page":p,
-                                "u":u,
-                                "superuser":superuser,
-                                "menu_active": "emails",
-                            },
-                            context_instance=RequestContext(request))
+            {
+            "redirects": page,
+            "paginator": paginator,
+            "num_page": p,
+            "u": u,
+            "superuser": superuser,
+            "menu_active": "emails",
+            },
+                              context_instance=RequestContext(request))
+
 
 @login_required
-def removeRedirect(request,rid):
+def removeRedirect(request, rid):
     u = request.session.get('switched_user', request.user)
     superuser = request.user
     rid = int(rid)
 
-    r = get_object_or_404(redirect,id=rid)
+    r = get_object_or_404(redirect, id=rid)
     if not r.domain.owner == u:
-        return HttpResponse(status="500")
+        return HttpResponseForbidden(ugettext("Forbidden operation"))
 
     r.delete()
 
     return HttpResponse("Přesměrování vymazáno")
 
+
 @login_required
-def changeRedirect(request,rid):
+def changeRedirect(request, rid):
     u = request.session.get('switched_user', request.user)
     superuser = request.user
     rid = int(rid)
 
-    r = get_object_or_404(redirect,id=rid)
+    r = get_object_or_404(redirect, id=rid)
     if not r.domain.owner == u:
-        return HttpResponse(status="500")
+        return HttpResponseForbidden(ugettext("Forbidden operation"))
 
-    domains = []
-    for x in u.domain_set.filter(mail=True):
-        domains.append((x.name,x.name))
+    domains = [(x.name, x.name) for x in u.domain_set.filter(mail=True)]
     if request.method == 'POST':
-        form = formRedirect(request.POST,instance=r)
+        form = FormRedirect(request.POST, instance=r)
         form.fields["_domain"].choices = domains
         if form.is_valid():
             fredirect = form.save(commit=False)
-            fredirect.domain = get_object_or_404(u.domain_set,name=form.cleaned_data["_domain"])
+            fredirect.domain = get_object_or_404(u.domain_set, name=form.cleaned_data["_domain"])
             fredirect.save()
-
             messages.add_message(request, messages.SUCCESS, _('Redirect has been changed'))
             return HttpResponseRedirect(reverse("wsgiadmin.emails.views.redirects"))
     else:
-        form = formRedirect(instance=r)
+        form = FormRedirect(instance=r)
         form.fields["_domain"].choices = domains
 
     return render_to_response('universal.html',
-                                {
-                                    "form":form,
-                                    "title":_(u"Upravení přesměrování"),
-                                    "submit":_(u"Upravit přesměrování"),
-                                    "action":reverse("wsgiadmin.emails.views.changeRedirect",args=[rid]),
-                                    "u":u,
-                                    "superuser":superuser,
-                                    "menu_active": "emails",
-                                },
-                                context_instance=RequestContext(request)
-                            )
+            {
+            "form": form,
+            "title": _(u"Upravení přesměrování"),
+            "submit": _(u"Upravit přesměrování"),
+            "action": reverse("wsgiadmin.emails.views.changeRedirect", args=[rid]),
+            "u": u,
+            "superuser": superuser,
+            "menu_active": "emails",
+            },
+        context_instance=RequestContext(request)
+    )
 
 @login_required
 def addRedirect(request):
     u = request.session.get('switched_user', request.user)
     superuser = request.user
-    domains = []
-    for x in u.domain_set.filter(mail=True):
-        domains.append((x.name,x.name))
+
+    domains = [(x.name, x.name) for x in u.domain_set.filter(mail=True)]
     if request.method == 'POST':
-        form = formRedirect(request.POST)
+        form = FormRedirect(request.POST)
         form.fields["_domain"].choices = domains
         if form.is_valid():
             redirect = form.save(commit=False)
             redirect.alias = form.cleaned_data["alias"]
-            redirect.domain = get_object_or_404(u.domain_set,name=form.cleaned_data["_domain"])
+            redirect.domain = get_object_or_404(u.domain_set, name=form.cleaned_data["_domain"])
             redirect.pub_date = datetime.date.today()
             redirect.save()
-
             messages.add_message(request, messages.SUCCESS, _('Redirect has been added'))
             return HttpResponseRedirect(reverse("wsgiadmin.emails.views.redirects"))
     else:
-        form = formRedirect()
+        form = FormRedirect()
         form.fields["_domain"].choices = domains
 
     return render_to_response('universal.html',
-                                {
-                                    "form":form,
-                                    "title":_(u"Přidání redirectu"),
-                                    "submit":_(u"Přidat redirect"),
-                                    "action":reverse("wsgiadmin.emails.views.addRedirect"),
-                                    "u":u,
-                                    "superuser":superuser,
-                                    "menu_active": "emails",
-                                },
-                                context_instance=RequestContext(request)
-                            )
+            {
+            "form": form,
+            "title": _(u"Přidání redirectu"),
+            "submit": _(u"Přidat redirect"),
+            "action": reverse("wsgiadmin.emails.views.addRedirect"),
+            "u": u,
+            "superuser": superuser,
+            "menu_active": "emails",
+            },
+        context_instance=RequestContext(request)
+    )

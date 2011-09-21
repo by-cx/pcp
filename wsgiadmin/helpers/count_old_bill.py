@@ -24,7 +24,7 @@ for s in UserSite.objects.all():
         t += datetime.timedelta(1)
         days += 1
 
-    if total: print "%.2f" % total, "\t", s.owner.username, "\t", s.serverName
+    if total: print "%.2f" % total, "\t", s.owner.username, "\t", s.server_name
     ttotal += total
 
 print ttotal

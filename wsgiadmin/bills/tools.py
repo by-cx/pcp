@@ -111,14 +111,14 @@ def bill_hosting(now=datetime.date.today()):
 
         b = bill()
         b.price = s.pay
-        b.info = "Hosting na doméně %s (ID:%d)" % (s.serverName, s.id)
+        b.info = "Hosting na doméně %s (ID:%d)" % (s.server_name, s.id)
         b.user = s.owner
         b.currency = s.owner.parms.currency
         b.save()
 
         logging.info(
             "Vygenerována platba za hosting doménu %s pro uživatele %s v hodnotě %.2f" % (
-            s.serverName, s.owner.username, s.pay))
+            s.server_name, s.owner.username, s.pay))
 
         kset("bill:hosting:%d:%d:%d:%d" % (s.id, day, month, year), "processed",
              20160)

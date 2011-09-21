@@ -97,10 +97,10 @@ class Address(models.Model):
 
         addr.append(" ")
         if self.residency_ic:
-            tail = "Neplátce DPH" if self.id == 1 else ""
-            addr.append("IČ: %s %s" % (self.residency_ic, tail))
+            tail = u"Neplátce DPH" if self.id == 1 else ""
+            addr.append(u"IČ: %s %s" % (self.residency_ic, tail))
         if self.residency_dic:
-            addr.append("DIČ: %s" % self.residency_dic)
+            addr.append(u"DIČ: %s" % self.residency_dic)
 
         return "\n".join(addr)
 

@@ -4,7 +4,7 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User as user
 
-class simple_passwd(forms.Form):
+class PasswordForm(forms.Form):
     password = forms.CharField(_(u"Heslo"), widget=forms.PasswordInput)
 
     def clean_password(self):

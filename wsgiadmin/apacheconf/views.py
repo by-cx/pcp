@@ -287,7 +287,7 @@ def add_wsgi(request):
             "form": form,
             "title": _(u"Přidání WSGI aplikace"),
             "submit": _(u"Přidat WSGI aplikaci"),
-            "action": reverse("wsgiadmin.apacheconf.views.add_wsgi"),
+            "action": reverse("add_wsgi"),
             "u": u,
             "superuser": superuser,
             "menu_active": "webapps",

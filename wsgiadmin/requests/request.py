@@ -23,6 +23,10 @@ class RequestException(Exception): pass
 
 
 class SSHHandler(object):
+
+    # raise exception if not overriden, maybe
+    _default_cmd = ""
+
     def __init__(self, user, machine):
         self.machine = machine
         self.user = user
@@ -56,10 +60,11 @@ class SSHHandler(object):
 
         return stdout, stderr, retcode
 
-    def run(self, cmd, stdin=None, plan_to=None):
+    def run(self, cmd=None, stdin=None, plan_to=None):
         """
         Add cmd into queue.
         """
+        cmd = cmd or self._default_cmd
         r = Request(action="run")
         r.machine = self._server_name()
         r.data = json.dumps({"action": "run", "cmd": cmd, "stdin": stdin})
@@ -67,10 +72,11 @@ class SSHHandler(object):
         r.plan_to_date = plan_to
         r.save()
 
-    def run_wipe(self, cmd, stdin=None, plan_to=None):
+    def run_wipe(self, cmd=None, stdin=None, plan_to=None):
         """
         Add cmd into queue.
         """
+        cmd = cmd or self._default_cmd
         r = Request(action="run|wipe")
         r.machine = self._server_name()
         r.data = json.dumps({"action": "run", "cmd": cmd, "stdin": stdin})
@@ -394,37 +400,29 @@ class PostgreSQLRequest(SSHHandler):
 
     def passwd_db(self, db, password):
         sql = "ALTER USER %s WITH PASSWORD '%s';" % (db, password)
-        self.run("psql template1", stdin=sql)
+        self.run_wipe("psql template1", stdin=sql)
 
 
 class MySQLRequest(SSHHandler):
+
+    _default_cmd = "mysql -u root"
+
     def add_db(self, db, password):
-        sql = []
-
-        sql.append("CREATE DATABASE %s;" % db)
-        sql.append("CREATE USER '%s'@'localhost' IDENTIFIED BY '%s';" % (db, password))
-        sql.append("GRANT ALL PRIVILEGES ON %s.* TO '%s'@'localhost' WITH GRANT OPTION;" % (db, db))
-
-        for x in sql:
-            self.run("mysql -u root", stdin=x)
+        self.run(stdin="CREATE DATABASE %s;" % db)
+        self.run_wipe(stdin="CREATE USER '%s'@'localhost' IDENTIFIED BY '%s';" % (db, password))
+        self.run(stdin="GRANT ALL PRIVILEGES ON %s.* TO '%s'@'localhost' WITH GRANT OPTION;" % (db, db))
 
     def remove_db(self, db):
-        sql = []
-
-        sql.append("DROP DATABASE %s;" % db)
-        sql.append("DROP USER '%s'@'localhost';" % db)
-
-        for x in sql:
-            self.run("mysql -u root", stdin=x)
+        self.run(stdin="DROP DATABASE %s;" % db)
+        self.run(stdin="DROP USER '%s'@'localhost';" % db)
 
     def passwd_db(self, db, password):
         #MySQL's PASSWORD()
         pwd_hash = "*%s" % sha1(sha1(password).digest()).hexdigest().upper()
 
         #TODO - escapovani (via django?)
-        cmd = "UPDATE mysql.user SET Password='%s' WHERE User = '%s';" % (pwd_hash, db)
-        self.run_wipe("mysql -u root", stdin=cmd)
-        self.run("mysql -u root ", stdin="FLUSH PRIVILEGES;")
+        self.run_wipe(stdin="UPDATE mysql.user SET Password='%s' WHERE User = '%s';" % (pwd_hash, db))
+        self.run(stdin="FLUSH PRIVILEGES;")
 
 
 class SystemRequest(SSHHandler):
@@ -443,7 +441,8 @@ class SystemRequest(SSHHandler):
         self.run("su %s -c\'mkdir %s\'" % (user.username, join(HOME, 'uwsgi')))
 
     def passwd(self, password):
-        self.run("/usr/sbin/chpasswd", stdin="%s:%s" % (self.user.username, password))
+        #TODO - use encrypted pwd (chpasswd -e)
+        self.run_wipe("/usr/sbin/chpasswd", stdin="%s:%s" % (self.user.username, password))
 
 #TODO:E-mail request
 

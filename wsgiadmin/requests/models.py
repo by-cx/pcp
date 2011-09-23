@@ -25,3 +25,9 @@ class Request(models.Model):
 
     def __unicode__(self):
         return ""
+
+    def save(self, *args, **kwargs):
+        if self.done and self.action == 'run|wipe':
+            #TODO - wipe only 'command' subpart
+            self.data = '**wiped**'
+        return super(Request, self).save(*args, **kwargs)

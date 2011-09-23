@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.forms.models import ModelForm
-from wsgiadmin.clients.models import Parms, Address, Machine
+from wsgiadmin.clients.models import Parms, Address
+
 
 class ParmsForm(ModelForm):
     class Meta:
@@ -12,6 +13,7 @@ class UserForm(ModelForm):
     class Meta:
         model = User
         exclude = ("password", "is_staff", "is_superuser", "last_login", "date_joined", "groups", "user_permissions")
+
 
 class AddressForm(ModelForm):
     class Meta:

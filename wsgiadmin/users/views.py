@@ -10,6 +10,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.template.context import RequestContext
 from django.utils.translation import ugettext_lazy as _
+from wsgiadmin.clients.forms import UserForm, ParmsForm, AddressForm
 
 from wsgiadmin.clients.models import *
 from wsgiadmin.requests.request import SystemRequest
@@ -31,13 +32,11 @@ def show(request, p=1):
     else:
         page = paginator.page(p)
 
-    ssh_users = []
     sr = SystemRequest(u, u.parms.web_machine)
-    data = sr.instant_run("cat /etc/passwd")[0]
+    #TODO - sed required columns only
+    data = sr.run("cat /etc/passwd", instant=True)[0]
 
-    for line in [x.strip().split(":") for x in data.split("\n") if x]:
-        ssh_users.append(line[0])
-
+    ssh_users = [x.strip().split(":")[0] for x in data.split("\n") if x]
     return render_to_response('users.html',
             {
             "users": page,
@@ -47,7 +46,7 @@ def show(request, p=1):
             "u": u,
             "superuser": request.user,
             },
-                              context_instance=RequestContext(request)
+        context_instance=RequestContext(request)
     )
 
 
@@ -102,7 +101,7 @@ def install(request, uid):
     sr.install(iuser)
     sr.commit()
 
-    line = sr.instant_run("cat /etc/passwd |grep ^%s:" % iuser.username)[0].strip()
+    line = sr.run("cat /etc/passwd |grep ^%s:" % iuser.username, instant=True)[0].strip()
     user, foo, uid, gid, bar = line.split(":", 4)
 
     iuser.parms.home = HOME

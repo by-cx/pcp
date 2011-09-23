@@ -59,37 +59,32 @@ class SSHHandler(object):
 
         return stdout, stderr, retcode
 
-    def run(self, cmd=None, stdin=None, plan_to=None, wipe=False):
+    def run(self, cmd=None, stdin=None, plan_to=None, wipe=False, instant=False):
         """
-        Add cmd into queue.
+        Add cmd into queue if instant is False, otherwise run instantly
         """
         cmd = cmd or self._default_cmd
         r = Request(action='run' if not wipe else 'run|wipe')
         r.machine = self._server_name()
         r.data = json.dumps({"action": "run", "cmd": cmd, "stdin": stdin})
         r.user = self.user
-        r.plan_to_date = plan_to
-        r.save()
+
+        if not instant:
+            r.plan_to_date = plan_to
+            r.save()
+
+        else:
+            stdout, stderr, retcode = self._run(cmd, stdin)
+
+            r.done_date = datetime.now()
+            r.done = True
+            r.stdout = stdout
+            r.stderr = stderr
+            r.save()
+
+            return stdout, stderr, retcode
 
 
-    def instant_run(self, cmd, stdin=None, wipe=False):
-        """Run cmd and return result promptly. You can give stdin string too."""
-        r = Request(action='run' if not wipe else 'run|wipe')
-        r.machine = self._server_name()
-        r.data = json.dumps({"action": "run", "cmd": cmd, "stdin": stdin})
-        r.user = self.user
-        r.save()
-
-        stdout, stderr, retcode = self._run(cmd, stdin)
-
-        r.done_date = datetime.today()
-        r.done = True
-        r.stdout = stdout
-        r.stderr = stderr
-
-        r.save()
-
-        return stdout, stderr, retcode
 
     def write(self, filename, content, plan_to=None):
         """
@@ -167,11 +162,8 @@ class SSHHandler(object):
             data = json.loads(request.data)
             ret = None
 
-            if request.action == "run":
+            if request.action in ("run", "run|wipe"):
                 ret = self._run(data["cmd"])
-            elif request.action == "run|wipe":
-                ret = self._run(data["cmd"])
-                request.data = "**wiped**"
             elif request.action == "write":
                 ret = self._write(data["filename"], data["content"])
             elif request.action == "unlink":
@@ -388,7 +380,7 @@ class PostgreSQLRequest(SSHHandler):
 
     def passwd_db(self, db, password):
         sql = "ALTER USER %s WITH PASSWORD '%s';" % (db, password)
-        self.instant_run("psql template1", stdin=sql, wipe=True)
+        self.run("psql template1", stdin=sql, wipe=True, instant=True)
 
 
 class MySQLRequest(SSHHandler):
@@ -396,9 +388,9 @@ class MySQLRequest(SSHHandler):
     _default_cmd = "mysql -u root"
 
     def add_db(self, db, password):
-        self.instant_run(stdin="CREATE DATABASE %s;" % db)
-        self.instant_run(stdin="CREATE USER '%s'@'localhost' IDENTIFIED BY '%s';" % (db, password), wipe=True)
-        self.instant_run(stdin="GRANT ALL PRIVILEGES ON %s.* TO '%s'@'localhost' WITH GRANT OPTION;" % (db, db))
+        self.run(stdin="CREATE DATABASE %s;" % db, instant=True)
+        self.run(stdin="CREATE USER '%s'@'localhost' IDENTIFIED BY '%s';" % (db, password), wipe=True, instant=True)
+        self.run(stdin="GRANT ALL PRIVILEGES ON %s.* TO '%s'@'localhost' WITH GRANT OPTION;" % (db, db), instant=True)
 
     def remove_db(self, db):
         self.run(stdin="DROP DATABASE %s;" % db)
@@ -406,8 +398,8 @@ class MySQLRequest(SSHHandler):
 
     def passwd_db(self, db, password):
         #TODO - escapovani (via django?)
-        self.instant_run(stdin="UPDATE mysql.user SET Password=PASSWORD('%s') WHERE User = '%s';" % (password, db), wipe=True)
-        self.instant_run(stdin="FLUSH PRIVILEGES;")
+        self.run(stdin="UPDATE mysql.user SET Password=PASSWORD('%s') WHERE User = '%s';" % (password, db), wipe=True, instant=True)
+        self.run(stdin="FLUSH PRIVILEGES;", instant=True)
 
 
 class SystemRequest(SSHHandler):
@@ -426,7 +418,7 @@ class SystemRequest(SSHHandler):
         self.run("su %s -c\'mkdir %s\'" % (user.username, join(HOME, 'uwsgi')))
 
     def passwd(self, password):
-        self.instant_run("/usr/sbin/chpasswd", stdin="%s:%s" % (self.user.username, password), wipe=True)
+        self.run("/usr/sbin/chpasswd", stdin="%s:%s" % (self.user.username, password), wipe=True, instant=True)
 
 #TODO:E-mail request
 
@@ -435,16 +427,5 @@ def main():
     from wsgiadmin.requests.request import main
     main()
     """
-
-    from wsgiadmin.clients.models import Machine, Parms
-
-    m = Machine.objects.all()[0]
-    u = Parms.objects.all()[0].user
-
-    #nr = NginxRequest(u, m)
-    #nr.restart()
-
-    sh = SSHHandler(u, m)
-    #print sh.instant_run("uptime")
-    #sh._write("/tmp/writetest", "můj obsah")
+    sh = SSHHandler(None, None)
     sh.commit()

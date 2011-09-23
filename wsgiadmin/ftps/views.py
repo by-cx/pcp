@@ -1,18 +1,16 @@
-# -*- coding: utf-8 -*-
 import crypt
+
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
 from django.template.context import RequestContext
-
 from django.views.decorators.csrf import csrf_exempt
-from wsgiadmin.apacheconf.tools import user_directories
-
 from django.utils.translation import ugettext_lazy as _
 
+from wsgiadmin.apacheconf.tools import user_directories
 from wsgiadmin.ftps.models import *
 
 
@@ -73,17 +71,15 @@ def add(request):
     return render_to_response('universal.html',
             {
             "form": form,
-            "title": "Přidání FTP účtu",
-            "submit": "Přidat FTP účet",
-            "note": [
-                "* Před uživatelské jméno bude automaticky přidáno %s_" % u.username]
-            ,
+            "title": _("Add FTP account"),
+            "submit": _("Save FTP account"),
+            "note": [_("* Username will be prefixed with `%s_`" % u.username)],
             "action": reverse("wsgiadmin.ftps.views.add"),
             "u": u,
             "superuser": superuser,
             "menu_active": "ftps",
             },
-                              context_instance=RequestContext(request)
+        context_instance=RequestContext(request)
     )
 
 
@@ -120,17 +116,15 @@ def update(request, fid):
     return render_to_response('universal.html',
             {
             "form": form,
-            "title": "Úprava FTP účtu",
-            "submit": "Upravit FTP účet",
-            "note": [
-                "* Před uživatelské jméno bude automaticky přidáno %s_" % u.username]
-            ,
+            "title": _("Edit FTP account"),
+            "submit": _("Save changes"),
+            "note": [_("* Username will be prefixed with `%s_`" % u.username)],
             "action": reverse("wsgiadmin.ftps.views.update", args=[fid]),
             "u": u,
             "superuser": superuser,
             "menu_active": "ftps",
             },
-                              context_instance=RequestContext(request)
+        context_instance=RequestContext(request)
     )
 
 
@@ -141,15 +135,12 @@ def passwd(request, fid):
     u = request.session.get('switched_user', request.user)
     superuser = request.user
 
-    choices = [(d, d) for d in user_directories(u)]
-
     if request.method == 'POST':
         form = form_ftp_passwd(request.POST)
 
         if form.is_valid():
             if iftp.owner == u:
-                iftp.password = crypt.crypt(form.cleaned_data["password1"],
-                                            iftp.owner.username)
+                iftp.password = crypt.crypt(form.cleaned_data["password1"], iftp.owner.username)
                 iftp.save()
 
                 messages.add_message(request, messages.SUCCESS, _('Password has been changed'))
@@ -160,14 +151,14 @@ def passwd(request, fid):
     return render_to_response('universal.html',
             {
             "form": form,
-            "title": "Úprava FTP účtu",
-            "submit": "Upravit FTP účet",
+            "title": _("Edit FTP account"),
+            "submit": _("Save changes"),
             "action": reverse("wsgiadmin.ftps.views.passwd", args=[fid]),
             "u": u,
             "superuser": superuser,
             "menu_active": "ftps",
             },
-                              context_instance=RequestContext(request)
+        context_instance=RequestContext(request)
     )
 
 
@@ -181,6 +172,7 @@ def rm(request, fid):
 
     if iftp.owner == u:
         iftp.delete()
+        #TODO message redirect
         return HttpResponse(_("FTP has been deleted"))
 
-    return HttpResponse(_("Permission error"))
+    return HttpResponseForbidden(_("Permission error"))

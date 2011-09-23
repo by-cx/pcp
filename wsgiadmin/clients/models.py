@@ -6,7 +6,7 @@ from django.db import models
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
-from wsgiadmin.emails.models import email
+from wsgiadmin.emails.models import Email
 from wsgiadmin.keystore.tools import kget
 
 from wsgiadmin.requests.tools import RawRequest
@@ -18,11 +18,6 @@ class Machine(models.Model):
     domain = models.CharField(_(u"Doménová adresa serveru"), max_length=50)
     ip = models.CharField(_(u"IP adresa serveru"), max_length=50)
     ipv6 = models.CharField(_(u"IPv6 adresa serveru"), max_length=50, blank=True)
-
-    #web		= models.BooleanField(_(u"Provoz webu (společně s SSH)"),default=True)
-    #postgres	= models.BooleanField(_(u"Provoz Postgresql"),default=True)
-    #mysql		= models.BooleanField(_(u"Provoz mysql"),default=True)
-    #email		= models.BooleanField(_(u"Provoz e-mailů"),default=True)
 
     def __repr__(self):
         return "<Machine %s>" % self.name
@@ -175,7 +170,7 @@ class Parms(models.Model):
         return self.user.usersite_set.count()
 
     def count_emails(self):
-        return email.objects.filter(domain__in=self.user.domain_set.all(), remove=False).count()
+        return Email.objects.filter(domain__in=self.user.domain_set.all(), remove=False).count()
 
     def home_size(self):
         size = kget("%s:homesize" % self.user.username)

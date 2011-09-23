@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponseServerError
 from django.shortcuts import render_to_response
 from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
@@ -18,7 +16,7 @@ from wsgiadmin.useradmin.forms import PasswordForm
 @login_required
 def show(request, dbtype='all', page=1):
     """
-    Vylistování seznamu databází
+    List databases
     """
     p = int(page)
     u = request.session.get('switched_user', request.user)
@@ -52,7 +50,7 @@ def show(request, dbtype='all', page=1):
 @login_required
 def add(request, dbtype):
     """
-    Vytvoření databáze
+    DB create
     """
     u = request.session.get('switched_user', request.user)
     superuser = request.user
@@ -61,18 +59,18 @@ def add(request, dbtype):
 
     if request.method == 'POST':
         form = form_class(request.POST)
+        form.data['dbname'] = "%s_%s" % (u.parms.prefix(), form.data['dbname'])
         if form.is_valid():
             db_obj = form.save(commit=False)
             db_obj.owner = u
-            db_obj.dbname = "%s_%s" % (u.parms.prefix(), db_obj.dbname)
             db_obj.save()
-
 
             if dbtype == 'mysql':
                 mr = MySQLRequest(u, u.parms.mysql_machine)
             elif dbtype == 'pgsql':
                 mr = PostgreSQLRequest(u, u.parms.pgsql_machine)
-
+            else:
+                raise HttpResponseServerError('Unknown database type')
             mr.add_db(db_obj.dbname, form.cleaned_data["password"])
 
             return HttpResponseRedirect(reverse("wsgiadmin.db.views.show", kwargs=dict(dbtype=dbtype)))
@@ -83,8 +81,8 @@ def add(request, dbtype):
     return render_to_response('universal.html',
             {
             "form": form,
-            "title": _(u"Create %s database" % dbtype),
-            "submit": _(u"Create database"),
+            "title": _("Create %s database" % dbtype),
+            "submit": _("Create database"),
             "action": reverse("db_add", kwargs=dict(dbtype=dbtype)),
             "u": u,
             "superuser": superuser,
@@ -103,17 +101,19 @@ def passwd(request, dbtype, dbname):
         form = PasswordForm(request.POST)
         if form.is_valid():
             if dbtype == 'mysql':
+                #TODO - raise better exception
                 m = u.mysqldb_set.get(dbname=dbname)
                 mr = MySQLRequest(u, u.parms.mysql_machine)
             elif dbtype == 'pgsql':
                 m = u.pgsqldb_set.get(dbname=dbname)
                 mr = PostgreSQLRequest(u, u.parms.pgsql_machine)
+            else:
+                raise HttpResponseServerError('Unknown database type')
 
             mr.passwd_db(dbname, dbname)
             return HttpResponseRedirect(reverse('db_list', kwargs=dict(dbtype=dbtype)))
     else:
         form = PasswordForm()
-
 
     return render_to_response('simplepasswd.html',
             {
@@ -136,13 +136,15 @@ def rm(request, dbtype):
     try:
         dbname = request.POST['dbname']
         u = request.session.get('switched_user', request.user)
-        superuser = request.user
+
         if dbtype == 'mysql':
             m = u.mysqldb_set.get(dbname=dbname)
             mr = MySQLRequest(u, u.parms.mysql_machine)
         elif dbtype == 'pgsql':
             m = u.pgsqldb_set.get(dbname=dbname)
             mr = PostgreSQLRequest(u, u.parms.pgsql_machine)
+        else:
+            raise Exception('Unknown database type')
 
         mr.remove_db(dbname)
         m.delete()

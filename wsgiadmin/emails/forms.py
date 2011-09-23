@@ -1,86 +1,66 @@
-# -*- coding: utf-8 -*-
-
 from django import forms
 from django.forms.models import ModelForm
-from wsgiadmin.emails.models import email, redirect
 from django.utils.translation import ugettext_lazy as _
 
-class FormEmail(ModelForm):
-    login = forms.CharField(label=_(u"Název"), help_text=_(u"Schánka bude ve formátu název@doména"))
-    xdomain = forms.ChoiceField(label=_(u"Doména"), choices=[(11, 22)])
-    password1 = forms.CharField(label=_(u"Heslo poprvé"), widget=forms.PasswordInput(render_value=False))
-    password2 = forms.CharField(label=_(u"Heslo pro kontrolu"), widget=forms.PasswordInput(render_value=False))
-
-    class Meta:
-        model = email
-        fields = ("login", "xdomain", "password1", "password2")
-
-    def clean_login(self):
-        if email.objects.filter(remove=False, domain__name=self.data['xdomain'], login=self.cleaned_data["login"]).count():
-            raise forms.ValidationError(_(u"Login už je jednou použit"))
-
-        return self.cleaned_data["login"]
-
-    def clean_password1(self):
-        if not "password1" in self.cleaned_data:
-            raise forms.ValidationError(_(u"Je potřeba vyplnit heslo do obou políček"))
-        if len(self.cleaned_data["password1"]) < 6:
-            raise forms.ValidationError(_(u"Heslo musí mít alespoň 6 znaků"))
-        return self.cleaned_data["password1"]
-
-    def clean_password2(self):
-        if not ("password1" in self.cleaned_data and "password2" in self.cleaned_data):
-            raise forms.ValidationError(_(u"Je potřeba vyplnit heslo do obou políček"))
-
-        if self.cleaned_data["password1"] != self.cleaned_data["password2"]:
-            raise forms.ValidationError(_(u"První heslo nesouhlasí s druhým"))
-
-        return self.cleaned_data["password2"]
-
-
+from wsgiadmin.emails.models import Email, EmailRedirect
 
 class FormEmailPassword(ModelForm):
-    password1 = forms.CharField(label=_(u"Heslo poprvé"), widget=forms.PasswordInput(render_value=False))
-    password2 = forms.CharField(label=_(u"Heslo pro kontrolu"), widget=forms.PasswordInput(render_value=False))
+    password1 = forms.CharField(label=_("Password"), widget=forms.PasswordInput(render_value=False))
+    password2 = forms.CharField(label=_("Password (check)"), widget=forms.PasswordInput(render_value=False))
 
     class Meta:
-        model = email
+        model = Email
         fields = ("password1", "password2")
 
 
     def clean_password1(self):
         if not "password1" in self.cleaned_data:
-            raise forms.ValidationError(_(u"Je potřeba vyplnit heslo do obou políček"))
+            raise forms.ValidationError(_("Fill password in both fields"))
         if len(self.cleaned_data["password1"]) < 6:
-            raise forms.ValidationError(_(u"Heslo musí mít alespoň 6 znaků"))
+            raise forms.ValidationError(_("Password length is at least 6 chars"))
+
         return self.cleaned_data["password1"]
 
     def clean_password2(self):
-        if not ("password1" in self.cleaned_data and "password2" in self.cleaned_data):
-            raise forms.ValidationError(_(u"Je potřeba vyplnit heslo do obou políček"))
-
+        if not "password2" in self.cleaned_data:
+            raise forms.ValidationError(_("Fill password in both fields"))
         if self.cleaned_data["password1"] != self.cleaned_data["password2"]:
-            raise forms.ValidationError(_(u"První heslo nesouhlasí s druhým"))
+            raise forms.ValidationError(_("Password in fields doesn't match"))
 
         return self.cleaned_data["password2"]
 
 
+class FormEmail(FormEmailPassword):
+    login = forms.CharField(label=_("Name"), help_text=_("Mailbox in name@domain format"))
+    xdomain = forms.ChoiceField(label=_("Domain"), choices=[(11, 22)])
+
+    class Meta:
+        model = Email
+        fields = ("login", "xdomain", "password1", "password2")
+
+    def clean_login(self):
+        if Email.objects.filter(remove=False, domain__name=self.data['xdomain'], login=self.cleaned_data["login"]).count():
+            raise forms.ValidationError(_("Given username already exists"))
+
+        return self.cleaned_data["login"]
+
+
 class FormLogin(forms.Form):
-    username = forms.CharField(label=_(u"Přihlašovací jméno"))
-    password = forms.CharField(label=_(u"Heslo"), widget=forms.PasswordInput(render_value=False))
+    username = forms.CharField(label=_("Username"))
+    password = forms.CharField(label=_("Password"), widget=forms.PasswordInput(render_value=False))
 
 
 class FormRedirect(ModelForm):
-    _domain = forms.ChoiceField(label=_(u"Doména"), choices=[(11, 22)])
-
-    def clean_login(self):
-        if email.objects.filter(domain__name=self.data['domain'], login=self.cleaned_data["alias"]).count():
-            raise forms.ValidationError(_(u"Alias už je jednou použit"))
-
-        return self.cleaned_data["alias"]
+    _domain = forms.ChoiceField(label=_("Domain"), choices=[(11, 22)])
 
     class Meta:
-        model = redirect
+        model = EmailRedirect
         exclude = ("pub_date", "owner", "domain")
         fields = ('alias', '_domain', 'email')
 
+
+    def clean_login(self):
+        if Email.objects.filter(domain__name=self.data['domain'], login=self.cleaned_data["alias"]).count():
+            raise forms.ValidationError(_("Given alias already exists"))
+
+        return self.cleaned_data["alias"]

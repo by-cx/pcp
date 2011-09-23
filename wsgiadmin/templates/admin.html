@@ -1,13 +1,12 @@
 {% load i18n %}
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="cs">
+<!DOCTYPE html>
+<html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta http-equiv="content-language" content="cs" />
-    <meta name="author" content="" />
     <meta name="robots" content="index, follow" />
-    <meta name="keywords" content="Rosti.cz" />
-    <meta name="description" content="Rosti.cz" />
+    <meta name="keywords" content="{{ site }}" />
+    <meta name="description" content="{{ site }}" />
     <link type="text/css" media="all" href="{{ STATIC_URL }}style/style.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}uni-form/css/uni-form.css">
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}uni-form/css/default.uni-form.css">
@@ -20,7 +19,7 @@
         {% block jsblock %}{% endblock %}
     </script>
 
-    <title>Administrace {{ site }}</title>
+    <title>{% trans "Administration" %} {{ site }}</title>
 </head>
 <body>
     <div id="dialog"></div>
@@ -29,9 +28,13 @@
         <div id="main-inside">
             <div id="header">
                 <div id="header-inside">
-                    <h1><a href="#" id="logo"><strong>{{ site }}</strong><span></span></a></h1>
+                    <h1><a href="#" id="logo">
+                        <strong>{{ site }}</strong><span></span>
+                    </a></h1>
                     <p id="login">
                         <strong>
+                            {# #TODO nemelo by tu byt request.user.is_superuser? #}
+
                             {% if u != superuser %}
                                 {{ u.first_name }} {{ u.last_name }}
                                 <br />
@@ -66,7 +69,7 @@
                         {% if u.parms.count_domains %}
                         <li class="info">
                             {% blocktrans %}
-                                Most services are depend on domain. Good place to start right now is
+                                Most of services depends on domain. Good place to start right now is
                             {% endblocktrans %}
                             <a href="{% url wsgiadmin.domains.views.show %}">{% trans "domain managment" %}</a>.
                         </li>

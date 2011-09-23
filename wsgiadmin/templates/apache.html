@@ -8,8 +8,8 @@
 {% block jsblock %}
     {{ block.super }}
     function remove(what) {
-    $("#remove_"+what).hide()
-    $("#removed_"+what).load("{% url wsgiadmin.apacheconf.views.remove_site 0 %}"+what)
+        $("#remove_"+what).hide()
+        $("#removed_"+what).load("{% url wsgiadmin.apacheconf.views.remove_site 0 %}"+what)
     }
 {% endblock %}
 
@@ -103,7 +103,7 @@
         {% else %}
             <tbody>
             <tr>
-                <td colspan="4">{% trans "Crap! No web here. However, you can add one with the menu on left side" %}</td>
+                <td colspan="4">{% trans "Crap! No web found. However, you can add one with the menu on left side." %}</td>
             </tr>
             </tbody>
         {% endif %}

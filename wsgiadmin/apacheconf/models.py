@@ -16,26 +16,26 @@ class UserSite(models.Model):
     type = models.CharField(_(u"Type"), max_length=20,
         choices=[("uwsgi", "uWSGI"), ("modwsgi", "mod_wsgi"), ("php", "PHP"), ("static", "Static")])
 
-    domains = models.CharField(_(u"Domains"), max_length=1024,
+    domains = models.CharField(_("Domains"), max_length=1024,
         help_text=u"Domény na kterých bude web server naslouchat oddělené mezerou. Například 'rosti.cz www.rosti.cz ' apod. První doména je brána jako hlavní.")
 
-    documentRoot = models.CharField(_(u"DocumentRoot"), max_length=200, blank=True)
-    htaccess = models.BooleanField(_(u"htaccess"), default=True)
+    documentRoot = models.CharField(_("DocumentRoot"), max_length=200, blank=True)
+    htaccess = models.BooleanField(_(".htaccess"), default=True)
     indexes = models.BooleanField(_(u"Index adresáře"), default=True)
-    allow_ips = models.TextField(_(u"Whitelist"), default="", blank=True)
-    deny_ips = models.TextField(_(u"Blacklist"), default="", blank=True, help_text=_("One IP per one line"))
+    allow_ips = models.TextField(_("Whitelist"), default="", blank=True)
+    deny_ips = models.TextField(_("Blacklist"), default="", blank=True, help_text=_("One IP per one line"))
 
     script = models.CharField(_(u"Script"), max_length=100)
     processes = models.IntegerField(_(u"Počet procesů"), default=1)
     threads = models.IntegerField(_(u"Počet threadů"), default=5)
-    virtualenv = models.CharField(_(u"Virtualenv"), default="default", max_length=100)
-    static = models.TextField(_(u"Statická data"), default="", blank=True)
-    python_path = models.TextField(_(u"Python path"), default="", blank=True)
+    virtualenv = models.CharField(_("Virtualenv"), default="default", max_length=100)
+    static = models.TextField(_("Static data path"), default="", blank=True)
+    python_path = models.TextField(_("Python path"), default="", blank=True)
 
-    extra = models.TextField(_(u"Extra configuration"), blank=True, null=True, default="")
+    extra = models.TextField(_("Extra configuration"), blank=True, null=True, default="")
 
-    removed = models.BooleanField(_(u"Smazáno"), default=False) # nezmizí dokud se nezaplatí
-    owner = models.ForeignKey(user, verbose_name=_(u'Uživatel'))
+    removed = models.BooleanField(_("Removed"), default=False) # nezmizí dokud se nezaplatí
+    owner = models.ForeignKey(user, verbose_name=_('Owner'))
 
     class Meta:
         db_table = 'apacheconf_site'

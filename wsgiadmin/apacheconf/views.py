@@ -13,12 +13,12 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, ugettext
 from django.template.context import RequestContext
 
-from wsgiadmin.clients.models import *
 from wsgiadmin.apacheconf.models import *
 from wsgiadmin.apacheconf.forms import form_static, FormWsgi
+from wsgiadmin.domains.models import Domain
 from wsgiadmin.requests.request import ApacheRequest, NginxRequest, UWSGIRequest
 from wsgiadmin.apacheconf.tools import get_user_wsgis, get_user_venvs, user_directories
 
@@ -62,26 +62,25 @@ def apache(request, p=1):
 def domain_check(request, form, this_site=None):
     u = request.session.get('switched_user', request.user)
 
-    domains = form.data["domains"].split(" ") # domény u aktuální stránky
-    used_domains = [] # Všechny domény použité u aplikací
+    domains = form.data["domains"].split() # domény u aktuální stránky
     my_domains = [x.name for x in u.domain_set.all()]
-    error_domains = []
 
-    for site in u.usersite_set.filter(removed=False):
-        if site == this_site: continue
-        used_domains += site.domains.split(" ")
+    # Všechny domény použité u aplikací
+    used_domains = []
+    for tmp_domains in [one.domains.split() for one in UserSite.objects.filter(owner=u, removed=False)]:
+        used_domains += tmp_domains
 
     # Permission test
+    error_domains = []
     for domain in domains:
         error = domain not in my_domains
-
-        if error and "%s - %s" % (domain, (u"chybí oprávnění k použití")) not in error_domains:
-            error_domains.append("%s - %s" % (domain, (u"chybí oprávnění k použití")))
+        if error and "%s - %s" % (domain, ugettext("Missing permission")) not in error_domains:
+            error_domains.append("%s - %s" % (domain, ugettext("Missing permission")))
 
     # Used test
     for domain in domains:
-        if domain in used_domains and "%s - %s" % (domain, _(u"už je použitá")) not in error_domains:
-            error_domains.append("%s - %s" % (domain, _(u"už je použitá")))
+        if domain in used_domains and "%s - %s" % (domain, ugettext("Already used")) not in error_domains:
+            error_domains.append("%s - %s" % (domain, ugettext("Already used")))
 
     return error_domains
 
@@ -90,7 +89,7 @@ def domain_check(request, form, this_site=None):
 def add_static(request, php="0"):
     u = request.session.get('switched_user', request.user)
     superuser = request.user
-    title = _(u"Přidání statického webu") if php == "0" else _(u"Přidání webu s podporou PHP")
+    title = _("Static website") if php == "0" else _("PHP website")
     siteErrors = []
     choices = [(d, d) for d in user_directories(u, True)]
 
@@ -124,7 +123,7 @@ def add_static(request, php="0"):
             return HttpResponseRedirect(reverse("wsgiadmin.apacheconf.views.apache"))
     else:
         form = form_static()
-        form.fields["documentRoot"].choices = [("", _(u"Nevybráno"))] + choices
+        form.fields["documentRoot"].choices = [("", _("Not selected"))] + choices
 
     dynamic_refreshs = (
         (reverse("refresh_userdirs"), 'id_documentRoot'),
@@ -136,7 +135,7 @@ def add_static(request, php="0"):
             "siteErrors": siteErrors,
             "form": form,
             "title": title,
-            "submit": _(u"Přidat web"),
+            "submit": _("Add website"),
             "action": reverse("add_static", args=[php]),
             "u": u,
             "superuser": superuser,
@@ -180,7 +179,7 @@ def update_static(request, sid):
             return HttpResponseRedirect(reverse("wsgiadmin.apacheconf.views.apache"))
     else:
         form = form_static(initial={"domains": s.domains, "documentRoot": s.documentRoot})
-        form.fields["documentRoot"].choices = [("", _(u"Nevybráno"))] + choices
+        form.fields["documentRoot"].choices = [("", _("Not selected"))] + choices
 
 
     dynamic_refreshs = (
@@ -192,8 +191,8 @@ def update_static(request, sid):
             "dynamic_refreshs": dynamic_refreshs,
             "siteErrors": siteErrors,
             "form": form,
-            "title": _(u"Úprava statického webu"),
-            "submit": _(u"Upravit web"),
+            "title": _(u"Static web modification"),
+            "submit": _(u"Save changes"),
             "action": reverse("update_static", args=[s.id]),
             "u": u,
             "superuser": superuser,
@@ -209,7 +208,7 @@ def remove_site(request, sid):
 
     s = get_object_or_404(UserSite, id=sid)
     if s.owner != u:
-        return HttpResponseForbidden("Pristup zakazan")
+        return HttpResponseForbidden("Access forbidden")
 
     ur = UWSGIRequest(u, u.parms.web_machine)
     ur.stop(s)

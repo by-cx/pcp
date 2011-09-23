@@ -1,7 +1,7 @@
 from django.conf.urls.defaults import *
 
 urlpatterns = patterns('wsgiadmin.useradmin.views',
-    (r'^/?$', 'info'),
+    (r'^$', 'info'),
     (r'^reg/$', 'reg'),
     (r'^reg-ok/$', 'regok'),
     (r'^change_passwd/$', 'change_passwd'),
@@ -21,5 +21,5 @@ urlpatterns += patterns('',
     (r'^db/', include('wsgiadmin.db.urls')),
     (r'^users/', include('wsgiadmin.users.urls')),
     (r'^login/$', 'django.contrib.auth.views.login', {'template_name': 'login_reg.html'}),
-    (r'^logout/?$', 'django.contrib.auth.views.logout', {'template_name': 'logout.html'}),
+    (r'^logout/$', 'django.contrib.auth.views.logout', {'template_name': 'logout.html'}),
 )

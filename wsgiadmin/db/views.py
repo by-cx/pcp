@@ -59,10 +59,10 @@ def add(request, dbtype):
 
     if request.method == 'POST':
         form = form_class(request.POST)
-        form.data['dbname'] = "%s_%s" % (u.parms.prefix(), form.data['dbname'])
         if form.is_valid():
             db_obj = form.save(commit=False)
             db_obj.owner = u
+            db_obj.dbname = "%s_%s" % (u.parms.prefix(), db_obj.dbname)
             db_obj.save()
 
             if dbtype == 'mysql':
@@ -70,7 +70,7 @@ def add(request, dbtype):
             elif dbtype == 'pgsql':
                 mr = PostgreSQLRequest(u, u.parms.pgsql_machine)
             else:
-                raise HttpResponseServerError('Unknown database type')
+                raise HttpResponseServerError(_('Unknown database type'))
             mr.add_db(db_obj.dbname, form.cleaned_data["password"])
 
             return HttpResponseRedirect(reverse("wsgiadmin.db.views.show", kwargs=dict(dbtype=dbtype)))
@@ -108,7 +108,7 @@ def passwd(request, dbtype, dbname):
                 m = u.pgsqldb_set.get(dbname=dbname)
                 mr = PostgreSQLRequest(u, u.parms.pgsql_machine)
             else:
-                raise HttpResponseServerError('Unknown database type')
+                raise HttpResponseServerError(_('Unknown database type'))
 
             mr.passwd_db(dbname, dbname)
             return HttpResponseRedirect(reverse('db_list', kwargs=dict(dbtype=dbtype)))
@@ -144,7 +144,7 @@ def rm(request, dbtype):
             m = u.pgsqldb_set.get(dbname=dbname)
             mr = PostgreSQLRequest(u, u.parms.pgsql_machine)
         else:
-            raise Exception('Unknown database type')
+            raise Exception(ugettext('Unknown database type'))
 
         mr.remove_db(dbname)
         m.delete()

@@ -10,7 +10,7 @@ from wsgiadmin.apacheconf.models import UserSite
 from wsgiadmin.apacheconf.tools import get_user_wsgis, get_user_venvs
 
 
-class form_static(forms.Form):
+class FormStatic(forms.Form):
     domains = forms.CharField(label=_(u"Domény *"), help_text=_(u"<br />Domény na kterých bude web server naslouchat oddělené mezerou. Například 'rosti.cz www.rosti.cz ' apod. První doména je brána jako hlavní."))
     documentRoot = forms.ChoiceField(label=_(u"Adresář"))
 

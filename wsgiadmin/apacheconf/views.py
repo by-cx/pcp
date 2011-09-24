@@ -5,7 +5,6 @@ import anyjson
 
 from constance import config
 from datetime import date
-from django.conf import settings
 from django.contrib import messages
 
 from django.core.paginator import Paginator
@@ -17,14 +16,13 @@ from django.utils.translation import ugettext_lazy as _, ugettext
 from django.template.context import RequestContext
 
 from wsgiadmin.apacheconf.models import *
-from wsgiadmin.apacheconf.forms import form_static, FormWsgi
-from wsgiadmin.domains.models import Domain
+from wsgiadmin.apacheconf.forms import FormStatic, FormWsgi
 from wsgiadmin.requests.request import ApacheRequest, NginxRequest, UWSGIRequest
 from wsgiadmin.apacheconf.tools import get_user_wsgis, get_user_venvs, user_directories
 
 info = logging.info
 
-__all__ = ['refresh_venv', 'refresh_wsgi', 'add_static', 'refresh_userdirs', 'update_static']
+__all__ = ['refresh_venv', 'refresh_wsgi', 'add_static', 'refresh_userdirs', 'update_static', 'add_wsgi']
 
 
 class JsonResponse(HttpResponse):
@@ -94,7 +92,7 @@ def add_static(request, php="0"):
     choices = [(d, d) for d in user_directories(u, True)]
 
     if request.method == 'POST':
-        form = form_static(request.POST)
+        form = FormStatic(request.POST)
         form.fields["documentRoot"].choices = choices
         siteErrors = domain_check(request, form)
         if not siteErrors and form.is_valid():
@@ -122,7 +120,7 @@ def add_static(request, php="0"):
             messages.add_message(request, messages.INFO, _('Changes will be performed in few minutes'))
             return HttpResponseRedirect(reverse("wsgiadmin.apacheconf.views.apache"))
     else:
-        form = form_static()
+        form = FormStatic()
         form.fields["documentRoot"].choices = [("", _("Not selected"))] + choices
 
     dynamic_refreshs = (
@@ -156,7 +154,7 @@ def update_static(request, sid):
     choices = [(d, d) for d in user_directories(u)]
 
     if request.method == 'POST':
-        form = form_static(request.POST)
+        form = FormStatic(request.POST)
         form.fields["documentRoot"].choices = choices
         siteErrors = domain_check(request, form, s)
         if not siteErrors and form.is_valid():
@@ -178,7 +176,7 @@ def update_static(request, sid):
             messages.add_message(request, messages.INFO, _('Changes will be performed in few minutes'))
             return HttpResponseRedirect(reverse("wsgiadmin.apacheconf.views.apache"))
     else:
-        form = form_static(initial={"domains": s.domains, "documentRoot": s.documentRoot})
+        form = FormStatic(initial={"domains": s.domains, "documentRoot": s.documentRoot})
         form.fields["documentRoot"].choices = [("", _("Not selected"))] + choices
 
 

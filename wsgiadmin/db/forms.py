@@ -11,11 +11,11 @@ class MysqlForm(models.ModelForm):
         model = MySQLDB
         fields = ( 'dbname', 'password',)
 
-    def clean_database(self):
-        if len(self.cleaned_data["database"]) > 8:
+    def clean_dbname(self):
+        if len(self.cleaned_data["dbname"]) > 8:
             raise forms.ValidationError(_("Database name can contains max. 8 characters"))
 
-        return self.cleaned_data["database"]
+        return self.cleaned_data["dbname"]
 
     def clean_password(self):
         if len(self.cleaned_data["password"]) < 6:

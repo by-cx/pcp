@@ -12,7 +12,8 @@ class MysqlForm(models.ModelForm):
         fields = ( 'dbname', 'password',)
 
     def clean_dbname(self):
-        if len(self.cleaned_data["dbname"]) > 8:
+        prefix = self.cleaned_data['dbname'].find('_')
+        if len(self.cleaned_data["dbname"][prefix+1:]) > 8:
             raise forms.ValidationError(_("Database name can contains max. 8 characters"))
 
         return self.cleaned_data["dbname"]

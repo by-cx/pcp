@@ -59,10 +59,12 @@ def add(request, dbtype):
 
     if request.method == 'POST':
         form = form_class(request.POST)
+        orig_dbname = form.data['dbname']
+        form.data['dbname'] = "%s_%s" % (u.parms.prefix(), form.data['dbname'])
+
         if form.is_valid():
             db_obj = form.save(commit=False)
             db_obj.owner = u
-            db_obj.dbname = "%s_%s" % (u.parms.prefix(), db_obj.dbname)
             db_obj.save()
 
             if dbtype == 'mysql':
@@ -74,6 +76,8 @@ def add(request, dbtype):
             mr.add_db(db_obj.dbname, form.cleaned_data["password"])
 
             return HttpResponseRedirect(reverse("wsgiadmin.db.views.show", kwargs=dict(dbtype=dbtype)))
+        else:
+            form.data['dbname'] = orig_dbname
     else:
         form = form_class()
         form.owner = u

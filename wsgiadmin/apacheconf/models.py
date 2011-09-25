@@ -13,7 +13,7 @@ from os.path import join
 class UserSite(models.Model):
     pub_date = models.DateField(auto_now_add=True)
     end_date = models.DateField(blank=True, null=True)
-    type = models.CharField(_(u"Type"), max_length=20,
+    type = models.CharField(_("Type"), max_length=20,
         choices=[("uwsgi", "uWSGI"), ("modwsgi", "mod_wsgi"), ("php", "PHP"), ("static", "Static")])
 
     domains = models.CharField(_("Domains"), max_length=1024,
@@ -21,13 +21,13 @@ class UserSite(models.Model):
 
     documentRoot = models.CharField(_("DocumentRoot"), max_length=200, blank=True)
     htaccess = models.BooleanField(_(".htaccess"), default=True)
-    indexes = models.BooleanField(_(u"Index adresáře"), default=True)
+    indexes = models.BooleanField(_("Allow directory index"), default=True)
     allow_ips = models.TextField(_("Whitelist"), default="", blank=True)
     deny_ips = models.TextField(_("Blacklist"), default="", blank=True, help_text=_("One IP per one line"))
 
-    script = models.CharField(_(u"Script"), max_length=100)
-    processes = models.IntegerField(_(u"Počet procesů"), default=1)
-    threads = models.IntegerField(_(u"Počet threadů"), default=5)
+    script = models.CharField(_("Script"), max_length=100)
+    processes = models.IntegerField(_("No. of proccesses"), default=1)
+    threads = models.IntegerField(_("No. of threads"), default=5)
     virtualenv = models.CharField(_("Virtualenv"), default="default", max_length=100)
     static = models.TextField(_("Static data path"), default="", blank=True)
     python_path = models.TextField(_("Python path"), default="", blank=True)

@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse
 #from django.utils import unittest
 import unittest
 from django.test.client import RequestFactory
-from wsgiadmin.apacheconf.views import apache, restart, reload, update_wsgi, add_wsgi, remove_site, update_static, add_static
+from wsgiadmin.apacheconf.views import *
 from wsgiadmin.clients.models import Machine, Address, Parms
 
 class basicCase(unittest.TestCase):
@@ -116,12 +116,8 @@ class apacheCase(basicCase):
 	#	response = remove_site(self.basic_request,self.site_static.id)
 	#	self.assertEqual(response.status_code, 200)
 
-	#def test_add_wsgi(self):
-	#	response = add_wsgi(self.basic_request)
-	#	self.assertEqual(response.status_code, 200)
-
-	#def test_update_wsgi(self):
-	#	response = update_wsgi(self.basic_request, self.site_uwsgi.id)
+	#def test_app_wsgi(self):
+	#	response = app_wsgi(self.basic_request)
 	#	self.assertEqual(response.status_code, 200)
 
 	#def test_reload(self):

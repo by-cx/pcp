@@ -7,10 +7,30 @@
 
 {% block jsblock %}
     {{ block.super }}
-    function remove(what) {
-        $("#remove_"+what).hide()
-        $("#removed_"+what).load("{% url wsgiadmin.apacheconf.views.remove_site 0 %}"+what)
-    }
+
+    $(function() {
+        $("#sites_list .site_delete").click(function() {
+            var orly = confirm('{% trans "Are you sure?" %}');
+            el = $(this);
+            if (orly) {
+                var site_id = $(this).attr('rel');
+                $.ajax({
+                    url:"{% url remove_site %}",
+                    type:"POST",
+                    data:{'site_id': site_id, 'csrfmiddlewaretoken':'{{ csrf_token }}' },
+                    dataType:"json",
+                    success:function(data) {
+                        if (data.result == 'OK') {
+                            el.parent().html(data.messages[1]);
+                        } else {
+                            alert(data.messages);
+                        }
+                    }
+                });
+            }
+        });
+    });
+
 {% endblock %}
 
 {% block content %}
@@ -27,7 +47,7 @@
             </a>
         </li>
         <li>
-            <a href="{% url add_wsgi %}">
+            <a href="{% url app_wsgi %}">
                 {% trans "Add WSGI app" %}
             </a>
         </li>
@@ -47,13 +67,13 @@
         </tr>
         </thead>
         {% if sites %}
-            <tbody>
+            <tbody id="sites_list">
             {% for site in sites.object_list %}
                 <tr>
                     <td>{{ site.pub_date }}</td>
                     <td>{{ site.type }}</td>
                     <td>{{ site.server_name }}</td>
-                    <td>
+                    <td class="list_actions">
                         {% if site.type == "php" or site.type == "static" %}
                             <a href="{% url wsgiadmin.apacheconf.views.update_static site.id %}">
                                 <img src="{{ STATIC_URL }}icons/raster/gray_dark/pen_alt_stroke_16x16.png" alt="Edit"/>
@@ -63,13 +83,13 @@
                             {% if site.type == "uwsgi" %}
                                 <a href="{% url wsgiadmin.apacheconf.views.restart site.id %}"><img src="{{ STATIC_URL }}icons/raster/gray_dark/loop_16x16.png" alt="Restart"/></a>
                             {% endif %}
-                            <a href="{% url wsgiadmin.apacheconf.views.update_wsgi site.id %}"><img src="{{ STATIC_URL }}icons/raster/gray_dark/pen_alt_stroke_16x16.png" alt="Edit"/></a>
+                            <a href="{% url wsgiadmin.apacheconf.views.app_wsgi site.id %}"><img src="{{ STATIC_URL }}icons/raster/gray_dark/pen_alt_stroke_16x16.png" alt="Edit"/></a>
                         {% endif %}
 
-                        <a href="#" id="remove_{{site.id}}" onclick="if(confirm('{% trans "Are you sure?" %}')) {remove('{{site.id}}');};" class="bold">
+                        <a href="#" id="remove_{{ site.id }}" rel="{{ site.id }}" class="bold site_delete">
                             <img src="{{ STATIC_URL }}icons/raster/gray_dark/trash_fill_16x16.png" alt="Delete"/>
                         </a>
-                        <span id="removed_{{site.id}}" class="info"></span>
+                        <span id="removed_{{ site.id }}" class="info"></span>
                     </td>
                 </tr>
             {% endfor %}

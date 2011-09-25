@@ -21,3 +21,7 @@
     padding: 5px;
     border: 1px solid #4D4D4D;
 }
+
+.list_actions a{
+    margin-right: 10px;
+}

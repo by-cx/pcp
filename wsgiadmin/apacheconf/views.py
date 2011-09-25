@@ -22,7 +22,7 @@ from wsgiadmin.apacheconf.tools import get_user_wsgis, get_user_venvs, user_dire
 
 info = logging.info
 
-__all__ = ['refresh_venv', 'refresh_wsgi', 'add_static', 'refresh_userdirs', 'update_static', 'add_wsgi']
+__all__ = ['refresh_venv', 'refresh_wsgi', 'add_static', 'refresh_userdirs', 'update_static', 'app_wsgi', 'apache', 'remove_site']
 
 
 class JsonResponse(HttpResponse):
@@ -65,7 +65,7 @@ def domain_check(request, form, this_site=None):
 
     # Všechny domény použité u aplikací
     used_domains = []
-    for tmp_domains in [one.domains.split() for one in UserSite.objects.filter(owner=u, removed=False)]:
+    for tmp_domains in [one.domains.split() for one in UserSite.objects.filter(owner=u, removed=False) if one != this_site]:
         used_domains += tmp_domains
 
     # Permission test
@@ -189,8 +189,8 @@ def update_static(request, sid):
             "dynamic_refreshs": dynamic_refreshs,
             "siteErrors": siteErrors,
             "form": form,
-            "title": _(u"Static web modification"),
-            "submit": _(u"Save changes"),
+            "title": _("Static web modification"),
+            "submit": _("Save changes"),
             "action": reverse("update_static", args=[s.id]),
             "u": u,
             "superuser": superuser,
@@ -200,63 +200,70 @@ def update_static(request, sid):
     )
 
 @login_required
-def remove_site(request, sid):
+def remove_site(request):
     u = request.session.get('switched_user', request.user)
-    sid = int(sid)
 
-    s = get_object_or_404(UserSite, id=sid)
-    if s.owner != u:
-        return HttpResponseForbidden("Access forbidden")
+    try:
+        site_id = request.POST['site_id']
+        s = get_object_or_404(UserSite, id=site_id)
+        if s.owner != u:
+            raise Exception("Forbidden operation")
 
-    ur = UWSGIRequest(u, u.parms.web_machine)
-    ur.stop(s)
+        s.removed = True
+        s.end_date = date.today()
+        s.save()
 
-    s.removed = True
-    s.end_date = date.today()
-    s.save()
+        #Signal
+        if config.mode == 'nginx':
+            nr = NginxRequest(u, u.parms.web_machine)
+            nr.mod_vhosts()
+            nr.reload()
+        else:
+            ar = ApacheRequest(u, u.parms.web_machine)
+            ar.mod_vhosts()
+            ar.reload()
 
-    #Signal
-    ar = ApacheRequest(u, u.parms.web_machine)
-    ar.mod_vhosts()
-    ar.reload()
+        ur = UWSGIRequest(u, u.parms.web_machine)
+        ur.stop(s)
+        ur.mod_config()
 
-    if config.mode == 'nginx':
-        nr = NginxRequest(u, u.parms.web_machine)
-        nr.mod_vhosts()
-        nr.reload()
-
-    ur.mod_config()
-    
-    # calculate!
-    u.parms.pay_for_sites(use_cache=False)
-    return HttpResponse(_("Site removed"))
+        # calculate!
+        u.parms.pay_for_sites(use_cache=False)
+        return JsonResponse("OK", {1: ugettext("Site was successfuly removed")})
+    except Exception, e:
+        return JsonResponse("KO", {1: e})
 
 
 @login_required
-def add_wsgi(request):
+def app_wsgi(request, sid=None):
     u = request.session.get('switched_user', request.user)
     superuser = request.user
-    siteErrors = []
+    site_errors = []
+
+    try:
+        site = UserSite.objects.get(id=sid, owner=u)
+    except UserSite.DoesNotExist:
+        site = None
 
     if request.method == 'POST':
-        form = FormWsgi(request.POST, user=u)
-        
-        siteErrors = domain_check(request, form)
-        if not siteErrors and form.is_valid():
+        form = FormWsgi(request.POST, user=u, instance=site)
+
+        site_errors = domain_check(request, form, site)
+        if not site_errors and form.is_valid():
             site = form.save(commit=False)
             site.owner = u
             site.type = 'uwsgi'
             site.save()
 
             #Signal
-            ar = ApacheRequest(u, u.parms.web_machine)
-            ar.mod_vhosts()
-            ar.reload()
-
             if config.mode == 'nginx':
                 nr = NginxRequest(u, u.parms.web_machine)
                 nr.mod_vhosts()
                 nr.reload()
+            else:
+                ar = ApacheRequest(u, u.parms.web_machine)
+                ar.mod_vhosts()
+                ar.reload()
 
             if site.type == "uwsgi":
                 ur = UWSGIRequest(u, u.parms.web_machine)
@@ -266,74 +273,7 @@ def add_wsgi(request):
             # calculate!
             u.parms.pay_for_sites(use_cache=False)
 
-            messages.add_message(request, messages.SUCCESS, _('App has been added'))
-            messages.add_message(request, messages.INFO, _('Changes will be performed in few minutes'))
-            return HttpResponseRedirect(reverse("wsgiadmin.apacheconf.views.apache"))
-    else:
-        form = FormWsgi(user=u)
-
-    dynamic_refreshs = (
-        (reverse("refresh_wsgi"), 'id_script'),
-        (reverse("refresh_venv"), 'id_virtualenv'),
-    )
-
-    return render_to_response('add_site.html',
-            {
-            "dynamic_refreshs": dynamic_refreshs,
-            "siteErrors": siteErrors,
-            "form": form,
-            "title": _(u"Přidání WSGI aplikace"),
-            "submit": _(u"Přidat WSGI aplikaci"),
-            "action": reverse("add_wsgi"),
-            "u": u,
-            "superuser": superuser,
-            "menu_active": "webapps",
-            },
-        context_instance=RequestContext(request)
-    )
-
-
-@login_required
-def update_wsgi(request, sid):
-    u = request.session.get('switched_user', request.user)
-    superuser = request.user
-    siteErrors = []
-
-    sid = int(sid)
-    site = get_object_or_404(u.usersite_set, id=sid)
-
-    if request.method == 'POST':
-        form = FormWsgi(request.POST, user=u, instance=site)
-
-        siteErrors = domain_check(request, form, site)
-        if not siteErrors and form.is_valid():
-            site = form.save()
-
-            #Signal
-            if site.type == "uwsgi":
-                ur = UWSGIRequest(u, u.parms.web_machine)
-                ur.mod_config()
-                ur.restart(site)
-
-                ar = ApacheRequest(u, u.parms.web_machine)
-                ar.mod_vhosts()
-                ar.reload()
-
-                if config.mode == 'nginx':
-                    nr = NginxRequest(u, u.parms.web_machine)
-                    nr.mod_vhosts()
-                    nr.reload()
-            else:
-                ar = ApacheRequest(u, u.parms.web_machine)
-                ar.mod_vhosts()
-                ar.reload()
-
-                if config.mode == 'nginx':
-                    nr = NginxRequest(u, u.parms.web_machine)
-                    nr.mod_vhosts()
-                    nr.reload()
-
-            messages.add_message(request, messages.SUCCESS, _('App has been updated'))
+            messages.add_message(request, messages.SUCCESS, _('App has been %s' % 'changed' if site else 'added'))
             messages.add_message(request, messages.INFO, _('Changes will be performed in few minutes'))
             return HttpResponseRedirect(reverse("wsgiadmin.apacheconf.views.apache"))
     else:
@@ -348,11 +288,11 @@ def update_wsgi(request, sid):
     return render_to_response('add_site.html',
             {
             "dynamic_refreshs": dynamic_refreshs,
-            "siteErrors": siteErrors,
+            "siteErrors": site_errors,
             "form": form,
-            "title": _(u"Upravení WSGI aplikace"),
-            "submit": _(u"Upravit WSGI aplikaci"),
-            "action": reverse("wsgiadmin.apacheconf.views.update_wsgi", args=[site.id]),
+            "title": _("%s WSGI application" % 'Modify' if site else 'Add'),
+            "submit": _("Save changes"),
+            "action": reverse("app_wsgi", args=[site.id] if site else None),
             "u": u,
             "superuser": superuser,
             "menu_active": "webapps",

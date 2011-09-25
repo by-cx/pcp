@@ -11,8 +11,8 @@ from wsgiadmin.apacheconf.tools import get_user_wsgis, get_user_venvs
 
 
 class FormStatic(forms.Form):
-    domains = forms.CharField(label=_(u"Domény *"), help_text=_(u"<br />Domény na kterých bude web server naslouchat oddělené mezerou. Například 'rosti.cz www.rosti.cz ' apod. První doména je brána jako hlavní."))
-    documentRoot = forms.ChoiceField(label=_(u"Adresář"))
+    domains = forms.CharField(label=_("Domains *"), help_text=_(u"<br />Domény na kterých bude web server naslouchat oddělené mezerou. Například 'rosti.cz www.rosti.cz ' apod. První doména je brána jako hlavní."))
+    documentRoot = forms.ChoiceField(label=_("Directory"))
 
 
 class FormWsgi(ModelForm):
@@ -40,10 +40,10 @@ class FormWsgi(ModelForm):
         self.fields['allow_ips'].help_text = help_text=_(u"<br />Jedna IP adresa na jeden řádek. Pokud je pole prázdné, fungují všechny.")
 
         wsgis = get_user_wsgis(self.user)
-        wsgis_choices = [("", _(u"Nevybráno"))] + [(x, x) for x in wsgis]
+        wsgis_choices = [("", _("Not selected"))] + [(x, x) for x in wsgis]
 
         virtualenvs = get_user_venvs(self.user)
-        virtualenvs_choices = [("", _(u"Nevybráno"))] + [(one, one) for one in virtualenvs]
+        virtualenvs_choices = [("", _("Not selected"))] + [(one, one) for one in virtualenvs]
 
         self.fields["virtualenv"].widget.choices = virtualenvs_choices
         self.fields['script'].widget.choices = wsgis_choices

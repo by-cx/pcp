@@ -2,7 +2,7 @@
 {% load i18n %}
 
 {% block title %}
-	{% trans "Administrace > E-mailové schránky" %}
+	{% trans "Administrace > E-mail boxes" %}
 {% endblock %}
 {% block jsblock %}
 function remove(what) {
@@ -12,17 +12,17 @@ function remove(what) {
 {% endblock %}
 {% block content %}
 
-<h2>E-mailové schránky</h2>
+<h2>E-mail boxes</h2>
 
 <div id="message-box"></div>
 
-<h3>{% trans "Seznam vytvořených e-mailových schránek" %}</h3>
+<h3>{% trans "List of e-mail boxes" %}</h3>
 <table>
 	<thead>
 		<tr>
 			<th>{% trans "E-mail" %}</th>
-			<th>{% trans "Vytvořeno" %}</th>
-			<th>{% trans "Akce" %}</th>
+			<th>{% trans "Created" %}</th>
+			<th>{% trans "Action" %}</th>
 		</tr>
 	</thead>
 	{% if emails %}
@@ -32,8 +32,8 @@ function remove(what) {
 			<td>{{ email.login }}@{{ email.domain.name }}</td>
 			<td>{{ email.pub_date|date:"d.m.Y" }}</td>
 			<td>
-				<a href="{% url wsgiadmin.emails.views.changePasswdBox email.id %}" title="{% trans "Upravit" %}"><img src="{{ STATIC_URL }}icons/raster/gray_dark/key_stroke_16x16.png" alt="{% trans "Změnit heslo" %}" /></a>
-				<a href="#" id="remove_{{email.id}}" onclick="if(confirm('{% trans "Opravdu chcete schránku zrušit?" %}')) {remove('{{email.id}}');};" class="bold"><img src="{{ STATIC_URL }}icons/raster/gray_dark/trash_fill_16x16.png" alt="Smazat" /></a>
+				<a href="{% url wsgiadmin.emails.views.changePasswdBox email.id %}" title="{% trans "Edit" %}"><img src="{{ STATIC_URL }}icons/raster/gray_dark/key_stroke_16x16.png" alt="{% trans "Change password" %}" /></a>
+				<a href="#" id="remove_{{email.id}}" onclick="if(confirm('{% trans "Are you sure?" %}')) {remove('{{email.id}}');};" class="bold"><img src="{{ STATIC_URL }}icons/raster/gray_dark/trash_fill_16x16.png" alt="Delete" /></a>
 				<span id="removed_{{email.id}}" class="info"></span>
 			</td>
 		</tr>
@@ -43,8 +43,8 @@ function remove(what) {
 		<tr>
 			<td colspan="3">
 					<div class="pagination">
-						{% if emails.has_previous %}<a href="{% url wsgiadmin.emails.views.boxes 1 %}" title="{% trans "První stránka" %}">&laquo; {% trans "První" %}</a>{% endif %}
-						{% if emails.has_previous %}<a href="{% url wsgiadmin.emails.views.boxes emails.previous_page_number %}" title="{% trans "Předchozí stránka" %}">&laquo; {% trans "Předchozí" %}</a>{% endif %}
+						{% if emails.has_previous %}<a href="{% url wsgiadmin.emails.views.boxes 1 %}" title="{% trans "First page" %}">&laquo; {% trans "First" %}</a>{% endif %}
+						{% if emails.has_previous %}<a href="{% url wsgiadmin.emails.views.boxes emails.previous_page_number %}" title="{% trans "Previous page" %}">&laquo; {% trans "Previous" %}</a>{% endif %}
 
 						{% for p in paginator.page_range %}
 							{% if p == num_page %}
@@ -54,8 +54,8 @@ function remove(what) {
 							{% endif %}
 						{% endfor %}
 
-						{% if emails.has_next %}<a href="{% url wsgiadmin.emails.views.boxes emails.next_page_number %}" title="{% trans "Další stránka" %}">{% trans "Další" %} &raquo;</a>{% endif %}
-						{% if emails.has_next %}<a href="{% url wsgiadmin.emails.views.boxes paginator.num_pages %}" title="{% trans "Poslední stránka" %}">{% trans "Poslední" %} &raquo;</a>{% endif %}
+						{% if emails.has_next %}<a href="{% url wsgiadmin.emails.views.boxes emails.next_page_number %}" title="{% trans "Next page" %}">{% trans "Next" %} &raquo;</a>{% endif %}
+						{% if emails.has_next %}<a href="{% url wsgiadmin.emails.views.boxes paginator.num_pages %}" title="{% trans "Last page" %}">{% trans "Last" %} &raquo;</a>{% endif %}
 					</div>
 					<div class="clear"></div>
 			</td>
@@ -64,7 +64,7 @@ function remove(what) {
 	{% else %}
 	<tbody>
 	<tr>
-		<td colspan="3">{% trans "Žádná schránka nebyla ještě vytvořena. Můžete ji přidat" %} <a href="{% url wsgiadmin.emails.views.addBox %}">{% trans "kliknutím sem" %}</a>.</td>
+		<td colspan="3">{% trans "Oh no, you still havn't created any e-mail box, but don't worry, you can use the menu on left side to fix that." %}</a>.</td>
 	</tr>
 	</tbody>
 	{% endif%}

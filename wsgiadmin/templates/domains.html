@@ -2,7 +2,7 @@
 {% load i18n %}
 
 {% block title %}
-	Administrace > Domény
+	Administration - Domains
 {% endblock %}
 
 {% block jsblock %}
@@ -15,18 +15,18 @@ function remove(what) {
 {% block content %}
 <div id="message-box"></div>
 
-<h3>Domény</h3>
+<h3>Domains</h3>
 
-<p><a href="{% url wsgiadmin.domains.views.add %}">{% trans "Přidat již registrovanou doménu" %}</a>.</p>
+<p><a href="{% url wsgiadmin.domains.views.add %}">{% trans "Add registered domain" %}</a>.</p>
 
-<h3>{% trans "Seznam vedených domén" %}</h3>
+<h3>{% trans "List of your domains" %}</h3>
 
 <table>
 	<thead>
 		<tr>
-		   <th>{% trans "Datum vložení" %}</th>
-		   <th>{% trans "Název domény" %}</th>
-		   <th>{% trans "Akce" %}</th>
+		   <th>{% trans "Insert date" %}</th>
+		   <th>{% trans "Domain" %}</th>
+		   <th>{% trans "Action" %}</th>
 		</tr>
 	</thead>
 	{% if domains %}
@@ -36,8 +36,8 @@ function remove(what) {
 			<td>{{ domain.pub_date|date:"d.m.Y" }}</td>
 			<td>{{ domain.name }}</td>
 			<td id="domain_{{ domain.id }}">
-				 <a href="#" title="Smazat" onclick="if(confirm('{% trans "Opravdu chcete smazat tuto doménu?" %}')) remove({{ domain.id }})">
-					 <img src="{{ STATIC_URL }}icons/raster/gray_dark/trash_fill_16x16.png" alt="Smazat" />
+				 <a href="#" title="Delete" onclick="if(confirm('{% trans "Are you sure?" %}')) remove({{ domain.id }})">
+					 <img src="{{ STATIC_URL }}icons/raster/gray_dark/trash_fill_16x16.png" alt="Delete" />
 				 </a>
 			</td>
 		</tr>
@@ -47,8 +47,8 @@ function remove(what) {
 		<tr>
 			<td colspan="3">
 					<div class="pagination">
-						{% if domains.has_previous %}<a href="{% url wsgiadmin.domains.views.show 1 %}" title="{% trans "První stránka" %}">&laquo; {% trans "První" %}</a>{% endif %}
-						{% if domains.has_previous %}<a href="{% url wsgiadmin.domains.views.show domains.previous_page_number %}" title="{% trans "Předchozí stránka" %}">&laquo; {% trans "Předchozí" %}</a>{% endif %}
+						{% if domains.has_previous %}<a href="{% url wsgiadmin.domains.views.show 1 %}" title="{% trans "First page" %}">&laquo; {% trans "First" %}</a>{% endif %}
+						{% if domains.has_previous %}<a href="{% url wsgiadmin.domains.views.show domains.previous_page_number %}" title="{% trans "Previous page" %}">&laquo; {% trans "Previous" %}</a>{% endif %}
 
 						{% for p in paginator.page_range %}
 							{% if p == num_page %}
@@ -58,8 +58,8 @@ function remove(what) {
 							{% endif %}
 						{% endfor %}
 
-						{% if domains.has_next %}<a href="{% url wsgiadmin.domains.views.show domains.next_page_number %}" title="{% trans "Další stránka" %}">{% trans "Další" %} &raquo;</a>{% endif %}
-						{% if domains.has_next %}<a href="{% url wsgiadmin.domains.views.show paginator.num_pages %}" title="{% trans "Poslední stránka" %}">{% trans "Poslední" %} &raquo;</a>{% endif %}
+						{% if domains.has_next %}<a href="{% url wsgiadmin.domains.views.show domains.next_page_number %}" title="{% trans "Next page" %}">{% trans "Next" %} &raquo;</a>{% endif %}
+						{% if domains.has_next %}<a href="{% url wsgiadmin.domains.views.show paginator.num_pages %}" title="{% trans "Last page" %}">{% trans "Last" %} &raquo;</a>{% endif %}
 					</div>
 					<div class="clear"></div>
 			</td>
@@ -68,7 +68,7 @@ function remove(what) {
 	{% else %}
 	<tbody>
 	<tr>
-		<td colspan="3">{% trans "Žádná doména nebyla ještě přidána. Domény můžete přidávat pomocí nabídky vlevo." %}</td>
+		<td colspan="3">{% trans "No domain have inserted ant it means you can't use all services. Just use the left menu and fix it." %}</td>
 	</tr>
 	</tbody>
 	{% endif%}

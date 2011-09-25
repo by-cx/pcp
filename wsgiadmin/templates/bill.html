@@ -2,24 +2,24 @@
 {% load i18n %}
 
 {% block title %}
-	{% trans "Administrace > Pohyby na účtu" %}
+	{% trans "Administrace > Money movements" %}
 {% endblock %}
 
 {% block content %}
 
 {% if type == "income" %}
-	<h2>Příchozí platby</h2>
+	<h2>Income</h2>
 {% endif %}
 {% if type == "bills" %}
-	<h2>Platby za služby</h2>
+	<h2>Payments</h2>
 {% endif %}
 
 <table>
 	<thead>
 		<tr>
-			<th>{% trans "Datum" %}</th>
-			<th>{% trans "Čátka" %}</th>
-			<th>{% trans "Poznámka" %}</th>
+			<th>{% trans "Date" %}</th>
+			<th>{% trans "Cost" %}</th>
+			<th>{% trans "Note" %}</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -42,8 +42,8 @@
 		<tr>
 			<td colspan="3">
 					<div class="pagination">
-						{% if items.has_previous %}<a href="{% url wsgiadmin.bills.views.show type 1 %}" title="{% trans "První stránka" %}">&laquo; {% trans "První" %}</a>{% endif %}
-						{% if items.has_previous %}<a href="{% url wsgiadmin.bills.views.show type emails.previous_page_number %}" title="{% trans "Předchozí stránka" %}">&laquo; {% trans "Předchozí" %}</a>{% endif %}
+						{% if items.has_previous %}<a href="{% url wsgiadmin.bills.views.show type 1 %}" title="{% trans "First page" %}">&laquo; {% trans "First" %}</a>{% endif %}
+						{% if items.has_previous %}<a href="{% url wsgiadmin.bills.views.show type emails.previous_page_number %}" title="{% trans "Previous page" %}">&laquo; {% trans "Previous" %}</a>{% endif %}
 
 						{% for p in paginator.page_range %}
 							{% if p == num_page %}
@@ -53,8 +53,8 @@
 							{% endif %}
 						{% endfor %}
 
-						{% if items.has_next %}<a href="{% url wsgiadmin.bills.views.show type items.next_page_number %}" title="{% trans "Další stránka" %}">{% trans "Další" %} &raquo;</a>{% endif %}
-						{% if items.has_next %}<a href="{% url wsgiadmin.bills.views.show type paginator.num_pages %}" title="{% trans "Poslední stránka" %}">{% trans "Poslední" %} &raquo;</a>{% endif %}
+						{% if items.has_next %}<a href="{% url wsgiadmin.bills.views.show type items.next_page_number %}" title="{% trans "Next page" %}">{% trans "Next" %} &raquo;</a>{% endif %}
+						{% if items.has_next %}<a href="{% url wsgiadmin.bills.views.show type paginator.num_pages %}" title="{% trans "Last page" %}">{% trans "Last" %} &raquo;</a>{% endif %}
 					</div>
 					<div class="clear"></div>
 			</td>

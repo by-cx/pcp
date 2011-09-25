@@ -1,8 +1,9 @@
 from django.conf.urls.defaults import *
+from wsgiadmin.domains.views import *
 
 urlpatterns = patterns('wsgiadmin.domains.views',
     (r'^add/$', 'add'),
-    (r'^show/$', 'show'),
+    url(r'^show/$', show, name='domains_list'),
     (r'^show/([0-9]{1,11})/$', 'show'),
-    (r'^rm/([0-9]{1,11})/$', 'rm'),
+    url(r'^rm/$', rm, name='domain_remove'),
 )

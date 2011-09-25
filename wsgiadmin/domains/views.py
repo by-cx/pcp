@@ -1,22 +1,20 @@
-# -*- coding: utf-8 -*-
-
 #TODO:Remove, put it in settings
 import logging
 
 from constance import config
-from django.contrib import messages
 
+from django.contrib import messages
 from django.core.paginator import Paginator
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.core.mail import send_mail
 from django.template.context import RequestContext
-from django.views.decorators.csrf import csrf_exempt
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, ugettext
 from django.conf import settings
 
+from wsgiadmin.apacheconf.views import JsonResponse
 from wsgiadmin.domains.models import Domain, form_registration_request
 from wsgiadmin.requests.request import BindRequest
 from wsgiadmin.keystore.tools import *
@@ -43,39 +41,41 @@ def show(request, p=1):
             "u": u,
             "superuser": superuser,
             "menu_active": "domains",
+            "base_url": reverse('domains_list'),
             }, context_instance=RequestContext(request))
 
 
 @login_required
-@csrf_exempt
-def rm(request, did):
-    u = request.session.get('switched_user', request.user)
-    superuser = request.user
-    did = int(did)
+def rm(request):
 
-    d = get_object_or_404(Domain, id=did)
-    if d.owner == u:
-        logging.info(_(u"Deleting domain %s") % d.name)
+    try:
+        u = request.session.get('switched_user', request.user)
 
-        if config.handle_dns:
-            pri_br = BindRequest(u, "master")
-            pri_br.remove_zone(d)
-            pri_br.mod_config()
-            pri_br.reload()
+        d = get_object_or_404(Domain, id=request.POST['object_id'])
+        if d.owner == u:
+            logging.info(_("Deleting domain %s") % d.name)
+
+            if config.handle_dns:
+                pri_br = BindRequest(u, "master")
+                pri_br.remove_zone(d)
+                pri_br.mod_config()
+                pri_br.reload()
+
+                sec_br = BindRequest(u, "slave")
+                sec_br.mod_config()
+                sec_br.reload()
+
             d.delete()
-            sec_br = BindRequest(u, "slave")
-            sec_br.mod_config()
-            sec_br.reload()
 
-        return HttpResponse(u"Domain deleted")
-    else:
-        return HttpResponse(_("Permission error"))
+        return JsonResponse("OK", {1: ugettext("Domain was successfuly deleted")})
+    except Exception, e:
+        return JsonResponse("KO", {1: ugettext("Error deleting domain")})
 
 
 @login_required
 def add(request):
     """
-    Zapsání domény, kterou chtějí zákazníci pod svoji správou.
+    Add domain of customer
     """
     u = request.session.get('switched_user', request.user)
     superuser = request.user
@@ -96,20 +96,20 @@ def add(request):
                 sec_br.mod_config()
                 sec_br.reload()
 
-            logging.info(_(u"Přidána doména %s") % name)
-            message = _(u"Nová doména %s přidána") % name
-            send_mail(u'Byla přidána nová doména: ' + name, message, settings.EMAIL_FROM, [x[1] for x in settings.ADMINS], fail_silently=True)
+            logging.info(_("Added domain %s ") % name)
+            message = _("Domain %s has been successfuly added") % name
+            send_mail(_('Added new domain: %s') % name, message, settings.EMAIL_FROM, [mail for (name, mail) in settings.ADMINS if mail], fail_silently=True)
 
             messages.add_message(request, messages.SUCCESS, _('Domain has been added'))
-            return HttpResponseRedirect(reverse("wsgiadmin.domains.views.show"))
+            return HttpResponseRedirect(reverse("domains_list"))
     else:
         form = form_registration_request()
 
     return render_to_response('universal.html',
             {
             "form": form,
-            "title": _(u"Přidání domény"),
-            "submit": _(u"Přidat doménu do databáze"),
+            "title": _("Add domain"),
+            "submit": _("Save domain"),
             "action": reverse("wsgiadmin.domains.views.add"),
             "u": u,
             "superuser": superuser,

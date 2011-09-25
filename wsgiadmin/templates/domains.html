@@ -2,76 +2,88 @@
 {% load i18n %}
 
 {% block title %}
-	Administration - Domains
+    {% trans "Administration" %} &gt; {% trans "Domains" %}
 {% endblock %}
 
 {% block jsblock %}
-{{ block.super }}
-function remove(what) {
-		$("#domain_"+what).load("{% url wsgiadmin.domains.views.rm 0 %}"+what);
-	}
+    {{ block.super }}
+
+    $(function() {
+        $("#objects_list .object_delete").click(function() {
+            var orly = confirm('{% trans "Are you sure you want to remove this database?" %}');
+            el = $(this);
+            if (orly) {
+                var domain = $(this).attr('rel');
+                $.ajax({
+                    url:"{% url domain_remove %}",
+                    type:"POST",
+                    data:{'object_id': domain, 'csrfmiddlewaretoken':'{{ csrf_token }}' },
+                    dataType:"json",
+                    success:function(data) {
+                        if (data.result == 'OK') {
+                            el.parent().html(data.messages[1]);
+                        } else {
+                            alert(data.messages[1]);
+                        }
+                    }
+                });
+            }
+        });
+    });
 {% endblock %}
 
 {% block content %}
-<div id="message-box"></div>
+    <div id="message-box"></div>
 
-<h3>Domains</h3>
+    <h2>{% trans "Domains" %}</h2>
 
-<p><a href="{% url wsgiadmin.domains.views.add %}">{% trans "Add registered domain" %}</a>.</p>
+    <p>
+        <a href="{% url wsgiadmin.domains.views.add %}">{% trans "Add registered domain" %}</a>.
+    </p>
 
-<h3>{% trans "List of your domains" %}</h3>
+    <h3>{% trans "List of your domains" %}</h3>
 
-<table>
-	<thead>
-		<tr>
-		   <th>{% trans "Insert date" %}</th>
-		   <th>{% trans "Domain" %}</th>
-		   <th>{% trans "Action" %}</th>
-		</tr>
-	</thead>
-	{% if domains %}
-	<tbody>
-		{% for domain in domains.object_list %}
-		<tr>
-			<td>{{ domain.pub_date|date:"d.m.Y" }}</td>
-			<td>{{ domain.name }}</td>
-			<td id="domain_{{ domain.id }}">
-				 <a href="#" title="Delete" onclick="if(confirm('{% trans "Are you sure?" %}')) remove({{ domain.id }})">
-					 <img src="{{ STATIC_URL }}icons/raster/gray_dark/trash_fill_16x16.png" alt="Delete" />
-				 </a>
-			</td>
-		</tr>
-		{% endfor %}
-	</tbody>
-	<tfoot>
-		<tr>
-			<td colspan="3">
-					<div class="pagination">
-						{% if domains.has_previous %}<a href="{% url wsgiadmin.domains.views.show 1 %}" title="{% trans "First page" %}">&laquo; {% trans "First" %}</a>{% endif %}
-						{% if domains.has_previous %}<a href="{% url wsgiadmin.domains.views.show domains.previous_page_number %}" title="{% trans "Previous page" %}">&laquo; {% trans "Previous" %}</a>{% endif %}
-
-						{% for p in paginator.page_range %}
-							{% if p == num_page %}
-								<a href="{% url wsgiadmin.domains.views.show p %}" class="number current" title="{{ p }}">{{ p }}</a>
-							{% else %}
-								<a href="{% url wsgiadmin.domains.views.show p %}" class="number" title="{{ p }}">{{ p }}</a>
-							{% endif %}
-						{% endfor %}
-
-						{% if domains.has_next %}<a href="{% url wsgiadmin.domains.views.show domains.next_page_number %}" title="{% trans "Next page" %}">{% trans "Next" %} &raquo;</a>{% endif %}
-						{% if domains.has_next %}<a href="{% url wsgiadmin.domains.views.show paginator.num_pages %}" title="{% trans "Last page" %}">{% trans "Last" %} &raquo;</a>{% endif %}
-					</div>
-					<div class="clear"></div>
-			</td>
-		</tr>
-	</tfoot>
-	{% else %}
-	<tbody>
-	<tr>
-		<td colspan="3">{% trans "No domain have inserted ant it means you can't use all services. Just use the left menu and fix it." %}</td>
-	</tr>
-	</tbody>
-	{% endif%}
-</table>
+    <table>
+        <thead>
+        <tr>
+            <th>{% trans "Insert date" %}</th>
+            <th>{% trans "Domain" %}</th>
+            <th>{% trans "Action" %}</th>
+        </tr>
+        </thead>
+        {% if domains %}
+            <tbody id="objects_list">
+            {% for domain in domains.object_list %}
+                <tr>
+                    <td>{{ domain.pub_date|date:"d.m.Y" }}</td>
+                    <td>{{ domain.name }}</td>
+                    <td id="domain_{{ domain.id }}">
+                        <a href="#" title="{% trans "Delete" %}" rel="{{ domain.id }}" class="object_delete">
+                            <img src="{{ STATIC_URL }}icons/raster/gray_dark/trash_fill_16x16.png" alt="{% trans "Delete" %}"/>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="3">
+                    <div class="pagination">
+                        {% with domains as objects %}
+                            {% include "paginator.html" %}
+                        {% endwith %}
+                    </div>
+                    <div class="clear"></div>
+                </td>
+            </tr>
+            </tfoot>
+        {% else %}
+            <tbody>
+            <tr>
+                <td colspan="3">{% trans "No domain have inserted ant it means you can't use all services. Just use the left menu and fix it." %}</td>
+            </tr>
+            </tbody>
+        {% endif %}
+    </table>
 
 {% endblock %}

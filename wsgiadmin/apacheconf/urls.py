@@ -14,5 +14,4 @@ urlpatterns = patterns('wsgiadmin.apacheconf.views',
     url(r'^refresh_userdirs/$', refresh_userdirs, name="refresh_userdirs"),
     url(r'^app_wsgi/(\d+)/$', app_wsgi, name="app_wsgi"),
     url(r'^app_wsgi/$', app_wsgi, name="app_wsgi"),
-    #url(r'^updateWsgi/([0-9]+)/$', update_wsgi, name="update_wsgi"),
 )

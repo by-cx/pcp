@@ -44,6 +44,7 @@ def show(request, dbtype='all', page=1):
             "u": u,
             "superuser": superuser,
             "menu_active": "dbs",
+            "base_url": reverse('db_list', kwargs={'dbtype': dbtype})
             }, context_instance=RequestContext(request))
 
 
@@ -124,8 +125,8 @@ def passwd(request, dbtype, dbname):
             'dbtype': dbtype,
             "form": form,
             "dbname": dbname,
-            "title": _(u"Password for database %s") % dbname,
-            "submit": _(u"Change password"),
+            "title": _("Password for database %s") % dbname,
+            "submit": _("Change password"),
             "action": reverse("db_passwd", kwargs=dict(dbtype=dbtype, dbname=dbname)),
             "u": u,
             "superuser": superuser,
@@ -153,6 +154,6 @@ def rm(request, dbtype):
         mr.remove_db(dbname)
         m.delete()
 
-        return JsonResponse("OK", {1: ugettext("Database was sucesfuly deleted")})
+        return JsonResponse("OK", {1: ugettext("Database was successfuly deleted")})
     except Exception, e:
         return JsonResponse("KO", {1: e})

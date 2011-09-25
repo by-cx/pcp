@@ -41,14 +41,6 @@ def boxes(request, p=1):
             }, context_instance=RequestContext(request))
 
 @login_required
-def email_info(request):
-    u = request.session.get('switched_user', request.user)
-
-    return render_to_response("email_info.html",
-            {"u": u, }, context_instance=RequestContext(request)
-    )
-
-@login_required
 def addBox(request):
     u = request.session.get('switched_user', request.user)
     superuser = request.user

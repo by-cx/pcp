@@ -73,7 +73,7 @@ def add(request, dbtype):
             elif dbtype == 'pgsql':
                 mr = PostgreSQLRequest(u, u.parms.pgsql_machine)
             else:
-                raise HttpResponseServerError(_('Unknown database type'))
+                return HttpResponseServerError(_('Unknown database type'))
             mr.add_db(db_obj.dbname, form.cleaned_data["password"])
 
             return HttpResponseRedirect(reverse("wsgiadmin.db.views.show", kwargs=dict(dbtype=dbtype)))
@@ -113,7 +113,7 @@ def passwd(request, dbtype, dbname):
                 m = u.pgsqldb_set.get(dbname=dbname)
                 mr = PostgreSQLRequest(u, u.parms.pgsql_machine)
             else:
-                raise HttpResponseServerError(_('Unknown database type'))
+                return HttpResponseServerError(_('Unknown database type'))
 
             mr.passwd_db(dbname, dbname)
             return HttpResponseRedirect(reverse('db_list', kwargs=dict(dbtype=dbtype)))

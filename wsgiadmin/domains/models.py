@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import re
 
 from django.db import models
@@ -17,11 +15,11 @@ YEARS =   [ ("1", "1 rok"), ("2", "2 roky"), ("3", "3 roky") ]
 class Domain(models.Model):
     name = models.CharField(_("Domain name"), max_length=100, unique=True)
     pub_date = models.DateField(auto_now=True)
-    serial = models.IntegerField(_(u"Sériové číslo domény"), default=0)
-    dns = models.BooleanField(_(u"Vést DNS záznamy?"), default=True)
-    mail = models.BooleanField(_(u"Vést poštu"), default=True)
-    ipv4 = models.BooleanField(_(u"IPv4 záznamy"), default=True)
-    ipv6 = models.BooleanField(_(u"IPv6 záznamy"), default=True)
+    serial = models.IntegerField(_("Domain's serial no."), default=0)
+    dns = models.BooleanField(_("Manage DNS records"), default=True)
+    mail = models.BooleanField(_("Manage email"), default=True)
+    ipv4 = models.BooleanField(_("IPv4 records"), default=True)
+    ipv6 = models.BooleanField(_("IPv6 records"), default=True)
     owner = models.ForeignKey(User)
 
     def __unicode__(self):
@@ -60,5 +58,5 @@ class form_registration_request_years(forms.Form):
     tld = forms.ChoiceField(label=_("TLD"), choices=CHOICES, help_text=_("Select top level domain"))
     years = forms.ChoiceField(label=_("No. of years"), choices=YEARS, required=False)
     passwd = forms.CharField(label=_("Password for transfer"), required=False,
-        help_text=_(u"Nepovinné. Bude dočasně uloženo v databázi v textové podobě."))
+        help_text=_("Optional. Will be temporarily stored in database"))
 

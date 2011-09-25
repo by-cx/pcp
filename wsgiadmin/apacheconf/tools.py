@@ -2,7 +2,7 @@ from os.path import join
 
 from wsgiadmin.settings import *
 from wsgiadmin.apacheconf.models import *
-from wsgiadmin.requests.request import SSHHandler
+from wsgiadmin.requests.request import SSHHandler, NginxRequest, ApacheRequest
 
 from django.conf import settings
 from django.core.cache import cache
@@ -57,3 +57,13 @@ def get_user_venvs(user, use_cache=True):
             cache.set("user_venvs_%s" % user.pk, venvs, timeout=3600*24*7)
 
     return venvs
+
+def restart_master(config_mode, user):
+    if config_mode == 'nginx':
+        nr = NginxRequest(user, user.parms.web_machine)
+        nr.mod_vhosts()
+        nr.reload()
+    else:
+        ar = ApacheRequest(user, user.parms.web_machine)
+        ar.mod_vhosts()
+        ar.reload()

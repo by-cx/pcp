@@ -17,8 +17,8 @@ from django.template.context import RequestContext
 
 from wsgiadmin.apacheconf.models import *
 from wsgiadmin.apacheconf.forms import FormStatic, FormWsgi
-from wsgiadmin.requests.request import ApacheRequest, NginxRequest, UWSGIRequest
-from wsgiadmin.apacheconf.tools import get_user_wsgis, get_user_venvs, user_directories
+from wsgiadmin.requests.request import UWSGIRequest
+from wsgiadmin.apacheconf.tools import get_user_wsgis, get_user_venvs, user_directories, restart_master
 
 info = logging.info
 
@@ -104,14 +104,7 @@ def add_static(request, php="0"):
             web.save()
 
             # Requests
-            ar = ApacheRequest(u, u.parms.web_machine)
-            ar.mod_vhosts()
-            ar.reload()
-
-            if config.mode == "nginx":
-                nr = NginxRequest(u, u.parms.web_machine)
-                nr.mod_vhosts()
-                nr.reload()
+            restart_master(config.mode, u)
 
             # calculate!
             u.parms.pay_for_sites(use_cache=False)
@@ -163,14 +156,7 @@ def update_static(request, sid):
             s.save()
 
             #Signal
-            ar = ApacheRequest(u, u.parms.web_machine)
-            ar.mod_vhosts()
-            ar.reload()
-
-            if config.mode == "nginx":
-                nr = NginxRequest(u, u.parms.web_machine)
-                nr.mod_vhosts()
-                nr.reload()
+            restart_master(config.mode, u)
 
             messages.add_message(request, messages.SUCCESS, _('Site has been updated'))
             messages.add_message(request, messages.INFO, _('Changes will be performed in few minutes'))
@@ -214,14 +200,7 @@ def remove_site(request):
         s.save()
 
         #Signal
-        if config.mode == 'nginx':
-            nr = NginxRequest(u, u.parms.web_machine)
-            nr.mod_vhosts()
-            nr.reload()
-        else:
-            ar = ApacheRequest(u, u.parms.web_machine)
-            ar.mod_vhosts()
-            ar.reload()
+        restart_master(config.mode, u)
 
         ur = UWSGIRequest(u, u.parms.web_machine)
         ur.stop(s)
@@ -255,20 +234,13 @@ def app_wsgi(request, sid=None):
             site.type = 'uwsgi'
             site.save()
 
-            #Signal
-            if config.mode == 'nginx':
-                nr = NginxRequest(u, u.parms.web_machine)
-                nr.mod_vhosts()
-                nr.reload()
-            else:
-                ar = ApacheRequest(u, u.parms.web_machine)
-                ar.mod_vhosts()
-                ar.reload()
-
             if site.type == "uwsgi":
                 ur = UWSGIRequest(u, u.parms.web_machine)
                 ur.mod_config()
                 ur.restart(site)
+
+            #Signal
+            restart_master(config.mode, u)
 
             # calculate!
             u.parms.pay_for_sites(use_cache=False)
@@ -315,14 +287,7 @@ def reload(request, sid):
         ur.mod_config()
         ur.restart(s)
     else:
-        ar = ApacheRequest(u, u.parms.web_machine)
-        ar.mod_vhosts()
-        ar.reload()
-
-        if config.mode == 'nginx':
-            nr = NginxRequest(u, u.parms.web_machine)
-            nr.mod_vhosts()
-            nr.reload()
+        restart_master(config.mode, u)
 
     messages.add_message(request, messages.SUCCESS, _('Request for reloading has been sent'))
     messages.add_message(request, messages.INFO, _('It will be performed in few minutes'))
@@ -342,14 +307,7 @@ def restart(request, sid):
         ur.mod_config()
         ur.restart(s)
     else:
-        ar = ApacheRequest(u, u.parms.web_machine)
-        ar.mod_vhosts()
-        ar.restart()
-
-        if config.mode == 'nginx':
-            nr = NginxRequest(u, u.parms.web_machine)
-            nr.mod_vhosts()
-            nr.restart()
+        restart_master(config.mode, u)
 
     messages.add_message(request, messages.SUCCESS, _('Request for restarting has been sent'))
     messages.add_message(request, messages.INFO, _('It will be performed in few minutes'))

@@ -14,10 +14,11 @@ from wsgiadmin.useradmin.forms import PasswordForm
 
 
 @login_required
-def show(request, dbtype='all', page=1):
+def show(request, dbtype='mysql', page=1):
     """
     List databases
     """
+
     p = int(page)
     u = request.session.get('switched_user', request.user)
     superuser = request.user
@@ -26,8 +27,6 @@ def show(request, dbtype='all', page=1):
         dbs = u.mysqldb_set.all()
     elif dbtype == 'pgsql':
         dbs = u.pgsql_set.all()
-    else:
-        dbs = []
 
     paginator = Paginator([x.dbname for x in dbs], 10)
     if not paginator.count:

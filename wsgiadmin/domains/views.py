@@ -1,4 +1,5 @@
 #TODO:Remove, put it in settings
+#^WUT?
 import logging
 
 from constance import config
@@ -8,11 +9,12 @@ from django.core.paginator import Paginator
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from django.core.mail import send_mail
 from django.template.context import RequestContext
 from django.utils.translation import ugettext_lazy as _, ugettext
 from django.conf import settings
+from django.views.generic import ListView
 
 from wsgiadmin.apacheconf.views import JsonResponse
 from wsgiadmin.domains.models import Domain, form_registration_request
@@ -20,29 +22,41 @@ from wsgiadmin.requests.request import BindRequest
 from wsgiadmin.keystore.tools import *
 
 
-@login_required
-def show(request, p=1):
-    u = request.session.get('switched_user', request.user)
-    superuser = request.user
-    p = int(p)
+class RostiListView(ListView):
 
-    paginator = Paginator(list(u.domain_set.all()), 10)
+    paginate_by = 1
 
-    if not paginator.count:
-        page = None
-    else:
-        page = paginator.page(p)
+    def get(self, request, *args, **kwargs):
+        self.object_list = self.get_queryset(user=request.session.get('switched_user', request.user))
+        allow_empty = self.get_allow_empty()
+        if not allow_empty and not len(self.object_list):
+            raise Http404(_(u"Empty list and '%(class_name)s.allow_empty' is False.")
+                          % {'class_name': self.__class__.__name__})
+        context = self.get_context_data(object_list=self.object_list, request=request)
+        return self.render_to_response(context)
 
-    return render_to_response('domains.html',
-            {
-            "domains": page,
-            "paginator": paginator,
-            "num_page": p,
-            "u": u,
-            "superuser": superuser,
-            "menu_active": "domains",
-            "base_url": reverse('domains_list'),
-            }, context_instance=RequestContext(request))
+    def get_context_data(self, **kwargs):
+        context = super(RostiListView, self).get_context_data(**kwargs)
+        context['menu_active'] = self.menu_active
+
+        return context
+
+
+class DomainsListView(RostiListView):
+
+    menu_active = 'domains'
+    template_name = 'domains.html'
+
+    def get_queryset(self, user):
+        x = user.domain_set.all()
+        return x
+
+
+    def get_context_data(self, **kwargs):
+        context = super(DomainsListView, self).get_context_data(**kwargs)
+        context['menu_active'] = self.menu_active
+        return context
+
 
 
 @login_required

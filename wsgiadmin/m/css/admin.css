@@ -25,3 +25,8 @@
 .list_actions a{
     margin-right: 10px;
 }
+
+.pagination a.current {
+    font-weight: bold;
+    text-decoration: none;
+}

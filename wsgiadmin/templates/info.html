@@ -2,113 +2,118 @@
 {% load i18n %}
 
 {% block title %}
-    {% trans "Administrace > Souhrné informace" %}
+    {% trans "Administration" %} &gt; {% trans "Summary informations" %}
 {% endblock %}
 
 {% block content %}
-<div class="clear"></div>
+    <div class="clear"></div>
 
-<h3>{% trans "Informace o Vašem účtu" %}</h3>
-<table>
-<tr>
-    <td><strong>{% trans "Jméno" %}</strong></td>
-    <td>{{ u.parms.address.getName }}</td>
-</tr>
-<tr>
-    <td><strong>{% trans "Uživatelské jméno" %}</strong></td>
-    <td>{{ u.parms.user.username }}</td>
-</tr>
-<tr>
-    <td><strong>{% trans "Domovský adresář" %}</strong></td>
-    <td>{{ u.parms.home }}</td>
-</tr>
-{% if u.parms.fee %}
-<tr>
-    <td><strong>{% trans "Paušální poplatek" %}</strong></td>
-    <td>{{ u.parms.fee }} {{ u.parms.currency|upper }}</td>
-</tr>
-{% else %}
-<tr>
-    <td><strong>{% trans "Sleva" %} (%)</strong></td>
-    <td>{{ u.parms.discount }}</td>
-</tr>
-{% endif %}
-<tr>
-    <td><strong>{% trans "Server" %}</strong></td>
-    <td>{{ u.parms.web_machine.name }} (IPv4: {{ u.parms.web_machine.ip }}{% if u.parms.web_machine.ipv6 %} / IPv6: {{ u.parms.web_machine.ipv6 }}{% endif %})</td>
-</tr>
-</table>
-
-<h3>{% trans "Platby za služby" %}</h3>
-<table>
-<tr>
-    <th><strong>{% trans "Služba" %}</strong></th>
-    <th><strong>{% trans "Počet" %}</strong></th>
-    <th><strong>{% trans "Platba za den" %}</strong></th>
-</tr>
-<tr>
-    <td>{% trans "Domény" %}</td>
-    <td>{{ u.parms.count_domains }}×</td>
-    <td>{% trans "Více informací v" %} <a href="{% url wsgiadmin.domains.views.show %}">{% trans "seznamu domén" %}</a></td>
-</tr>
-{% if u.parms.fee %}
-<tr>
-    <td>{% trans "Weby/Aplikace" %}</td>
-    <td>{{ u.parms.count_sites }}×</td>
-    <td>{{ u.parms.fee|floatformat:2 }} {{ u.parms.currency|upper }}</td>
-</tr>
-{% else %}
-<tr>
-    <td>{% trans "Weby/Aplikace" %}</td>
-    <td>{{ u.parms.count_sites }}×</td>
-    <td>{{ u.parms.pay_for_sites|floatformat:2 }} {{ u.parms.currency|upper }}</td>
-</tr>
-{% endif %}
-
-{% if not u.parms.fee %}
-<tr>
-    <td><strong>{% trans "Platba za den" %}</strong></td>
-    <td></td>
-    <td>{{ u.parms.pay_total_day|floatformat:2 }}  {{ u.parms.currency|upper }}</td>
-</tr>
-<tr>
-    <td><strong>{% trans "Platba za měsíc" %}</strong></td>
-    <td></td>
-    <td>{{ u.parms.pay_total_month|floatformat:2 }}  {{ u.parms.currency|upper }}</td>
-</tr>
-{% endif %}
-{% if u.balance_set.all %}
-<tr>
-    <td><strong>{% trans "Stav vašeho účtu" %}</strong></td>
-    <td></td>
-    <td>{{ u.balance_set.all.0.sum|floatformat:2 }}  {{ u.parms.currency|upper }}</td>
-</tr>
-{% endif %}
-</table>
-
-{% if invoices %}
-
-    <h3>{% trans "Vystavené faktury" %}</h3>
-
+    <h3>{% trans "Account's informations" %}</h3>
     <table>
         <tr>
-            <th>{% trans "Faktura s č." %}</th>
-            <th>{% trans "Celková částka" %}</th>
-            <th>{% trans "Stav" %}</th>
-            <th>{% trans "Odkaz ke stažení" %}</th>
+            <td><strong>{% trans "Name" %}</strong></td>
+            <td>{{ u.parms.address.getName }}</td>
         </tr>
-        {% for invoice in invoices %}
         <tr>
-            <td>{{ invoice.payment_id }}</td>
-            <td>{{ invoice.total }}</td>
-            <td>
-                {{ invoice.payed|yesno:"zaplacená,nezaplacená,nevím" }}
-            </td>
-            <td><a href="{% url wsgiadmin.invoices.views.invoice_get invoice.payment_id %}">{% trans "Stáhnout" %}</a></td>
+            <td><strong>{% trans "Username" %}</strong></td>
+            <td>{{ u.parms.user.username }}</td>
         </tr>
-        {% endfor %}
+        <tr>
+            <td><strong>{% trans "Home directory" %}</strong></td>
+            <td>{{ u.parms.home }}</td>
+        </tr>
+        {% if u.parms.fee %}
+            <tr>
+                <td><strong>{% trans "Flat rate" %}</strong></td>
+                <td>{{ u.parms.fee }} {{ u.parms.currency|upper }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td><strong>{% trans "Discount" %} (%)</strong></td>
+                <td>{{ u.parms.discount }}</td>
+            </tr>
+        {% endif %}
+        <tr>
+            <td><strong>{% trans "Server" %}</strong></td>
+            <td>{{ u.parms.web_machine.name }} (IPv4:
+                {{ u.parms.web_machine.ip }}
+                        {% if u.parms.web_machine.ipv6 %} / IPv6: {{ u.parms.web_machine.ipv6 }}{% endif %})
+            </td>
+        </tr>
     </table>
 
-{% endif %}
+    <h3>{% trans "Service fees" %}</h3>
+    <table>
+        <tr>
+            <th><strong>{% trans "Service" %}</strong></th>
+            <th><strong>{% trans "Count" %}</strong></th>
+            <th><strong>{% trans "Payment per day" %}</strong></th>
+        </tr>
+        <tr>
+            <td>{% trans "Domains" %}</td>
+            <td>{{ u.parms.count_domains }}×</td>
+            <td>{% trans "More informations in" %}
+                <a href="{% url domains_list %}">{% trans "domains list" %}</a>
+            </td>
+        </tr>
+        {% if u.parms.fee %}
+            <tr>
+                <td>{% trans "Webs/Applications" %}</td>
+                <td>{{ u.parms.count_sites }}×</td>
+                <td>{{ u.parms.fee|floatformat:2 }} {{ u.parms.currency|upper }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td>{% trans "Webs/Applications" %}</td>
+                <td>{{ u.parms.count_sites }}×</td>
+                <td>{{ u.parms.pay_for_sites|floatformat:2 }} {{ u.parms.currency|upper }}</td>
+            </tr>
+        {% endif %}
+
+        {% if not u.parms.fee %}
+            <tr>
+                <td><strong>{% trans "Payment per day" %}</strong></td>
+                <td></td>
+                <td>{{ u.parms.pay_total_day|floatformat:2 }} {{ u.parms.currency|upper }}</td>
+            </tr>
+            <tr>
+                <td><strong>{% trans "Payment per month" %}</strong></td>
+                <td></td>
+                <td>{{ u.parms.pay_total_month|floatformat:2 }} {{ u.parms.currency|upper }}</td>
+            </tr>
+        {% endif %}
+        {% if u.balance_set.all %}
+            <tr>
+                <td><strong>{% trans "Account status" %}</strong></td>
+                <td></td>
+                <td>{{ u.balance_set.all.0.sum|floatformat:2 }} {{ u.parms.currency|upper }}</td>
+            </tr>
+        {% endif %}
+    </table>
+
+    {% if invoices %}
+        <h3>{% trans "Invoices" %}</h3>
+        <table>
+            <tr>
+                <th>{% trans "Invoice no." %}</th>
+                <th>{% trans "Total payment" %}</th>
+                <th>{% trans "Status" %}</th>
+                <th>{% trans "Download link" %}</th>
+            </tr>
+            {% for invoice in invoices %}
+                <tr>
+                    <td>{{ invoice.payment_id }}</td>
+                    <td>{{ invoice.total }}</td>
+                    <td>
+                        {{ invoice.payed|yesno:"paid,not paid,unknown" }}
+                    </td>
+                    <td>
+                        <a href="{% url wsgiadmin.invoices.views.invoice_get invoice.payment_id %}">{% trans "Download" %}</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+
+    {% endif %}
 
 {% endblock %}

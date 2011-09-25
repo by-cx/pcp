@@ -53,7 +53,7 @@
                         <li{% if menu_active == "users" %} class="active"{% endif %}><a href="{% url wsgiadmin.users.views.show %}" class="red">{% trans "Users" %}<span></span></a></li>
                         <li{% if menu_active == "invoices" %} class="active"{% endif %}><a href="{% url wsgiadmin.invoices.views.show %}" class="red">{% trans "Invoices" %}<span></span></a></li>
                         {% endif %}
-                        <li{% if menu_active == "domains" %} class="active"{% endif %}><a href="{% url wsgiadmin.domains.views.show %}">{% trans "Domains" %}<span></span></a></li>
+                        <li{% if menu_active == "domains" %} class="active"{% endif %}><a href="{% url domains_list %}">{% trans "Domains" %}<span></span></a></li>
                         <li{% if menu_active == "webapps" %} class="active"{% endif %}><a href="{% url wsgiadmin.apacheconf.views.apache %}">{% trans "Web apps" %}<span></span></a></li>
                         <li{% if menu_active == "dbs" %} class="active"{% endif %}><a href="{% url wsgiadmin.db.views.show %}">{% trans "Databases" %}<span></span></a></li>
                         <li{% if menu_active == "ftps" %} class="active"{% endif %}><a href="{% url wsgiadmin.ftps.views.show %}">{% trans "FTP" %}<span></span></a></li>
@@ -71,7 +71,7 @@
                             {% blocktrans %}
                                 Most of services depends on domain. Good place to start right now is
                             {% endblocktrans %}
-                            <a href="{% url wsgiadmin.domains.views.show %}">{% trans "domain managment" %}</a>.
+                            <a href="{% url domains_list %}">{% trans "domain managment" %}</a>.
                         </li>
                         {% endif %}
                         {% if messages %}
@@ -122,7 +122,7 @@
                         <li>
                             <ul>
                                 <li><a href="{% url wsgiadmin.domains.views.add %}">{% trans "Add registered domain" %}</a></li>
-                                <li><a href="{% url wsgiadmin.domains.views.show %}">{% trans "Domain's list" %}</a></li>
+                                <li><a href="{% url domains_list %}">{% trans "Domain's list" %}</a></li>
                             </ul>
                         </li>
                     </ul>

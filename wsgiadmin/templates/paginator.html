@@ -1,24 +1,22 @@
 {% load i18n %}
-{% if objects.has_previous %}
-    <a href="{{ base_url }}1/" title="{% trans "First page" %}">&laquo; {% trans "First" %}</a>
-{% endif %}
-{% if objects.has_previous %}
-    <a href="{{ base_url }}{{ objects.previous_page_number }}/" title="{% trans "Previous page" %}">
-        &laquo; {% trans "Previous" %}
-    </a>
+{% if page_obj.has_previous %}
+    <a href="?page=1" title="{% trans "First page" %}">&laquo; {% trans "First" %}</a> &nbsp;
+    <a href="?page={{ page_obj.previous_page_number }}" title="{% trans "Previous page" %}">&laquo; {% trans "Previous" %}</a> &nbsp;
+{% else %}
+    <span class="inactive"> &laquo; {% trans "First" %} &laquo; {% trans "Previous" %}  &nbsp; </span>
 {% endif %}
 
-{% for p in paginator.page_range %}
-    {% if p == num_page %}
-        <a href="{{ base_url }}{{ p }}/" class="number current" title="{{ p }}">{{ p }}</a>
+{% for p in page_obj.paginator.page_range %}
+    {% if p == page_obj.number %}
+        <a href="?page={{ p }}" class="number current" title="{{ p }}">{{ p }}</a> &nbsp;
     {% else %}
-        <a href="{{ base_url }}{{ p }}/" class="number" title="{{ p }}">{{ p }}</a>
+        <a href="?page={{ p }}" class="number" title="{{ p }}">{{ p }}</a> &nbsp;
     {% endif %}
 {% endfor %}
 
-{% if objects.has_next %}
-    <a href="{{ base_url }}{{ objects.next_page_number }}" title="{% trans "Next page" %}">{% trans "Next" %} &raquo;</a>
-{% endif %}
-{% if objects.has_next %}
-    <a href="{{ base_url }}{{ objects.num_pages }}" title="{% trans "Last page" %}">{% trans "Last" %} &raquo;</a>
+{% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}" title="{% trans "Next page" %}">{% trans "Next" %} &raquo;</a> &nbsp; 
+    <a href="?page=last" title="{% trans "Last page" %}">{% trans "Last" %} &raquo;</a>
+{% else %}
+    <span class="inactive">{% trans "Next" %} &raquo; &nbsp; {% trans "Last" %} &raquo;</span>
 {% endif %}

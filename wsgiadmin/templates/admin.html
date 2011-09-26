@@ -55,7 +55,7 @@
                         {% endif %}
                         <li{% if menu_active == "domains" %} class="active"{% endif %}><a href="{% url domains_list %}">{% trans "Domains" %}<span></span></a></li>
                         <li{% if menu_active == "webapps" %} class="active"{% endif %}><a href="{% url wsgiadmin.apacheconf.views.apache %}">{% trans "Web apps" %}<span></span></a></li>
-                        <li{% if menu_active == "dbs" %} class="active"{% endif %}><a href="{% url wsgiadmin.db.views.show %}">{% trans "Databases" %}<span></span></a></li>
+                        <li{% if menu_active == "dbs" %} class="active"{% endif %}><a href="{% url db_list %}">{% trans "Databases" %}<span></span></a></li>
                         <li{% if menu_active == "ftps" %} class="active"{% endif %}><a href="{% url wsgiadmin.ftps.views.show %}">{% trans "FTP" %}<span></span></a></li>
                         <li{% if menu_active == "emails" %} class="active"{% endif %}><a href="{% url wsgiadmin.emails.views.boxes %}">{% trans "E-mails" %}<span></span></a></li>
                         <li{% if menu_active == "settings" %} class="active"{% endif %}><a href="{% url wsgiadmin.users.views.ssh_passwd %}">{% trans "Settings" %}<span></span></a></li>
@@ -144,9 +144,9 @@
                         <li>
                             <ul>
                                 <li><a href="{% url wsgiadmin.db.views.add dbtype='mysql' %}">{% trans "Add MySQL database" %}</a></li>
-                                <li><a href="{% url wsgiadmin.db.views.show dbtype='mysql' %}">{% trans "MySQL databases" %}</a></li>
+                                <li><a href="{% url db_list dbtype='mysql' %}">{% trans "MySQL databases" %}</a></li>
                                 <li><a href="{% url wsgiadmin.db.views.add dbtype='pgsql' %}">{% trans "Add postgresql database" %}</a></li>
-                                <li><a href="{% url wsgiadmin.db.views.show dbtype='pgsql' %}">{% trans "PostgreSQL databases" %}</a></li>
+                                <li><a href="{% url db_list dbtype='pgsql' %}">{% trans "PostgreSQL databases" %}</a></li>
                             </ul>
                         </li>
                     </ul>

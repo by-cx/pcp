@@ -31,12 +31,12 @@ class RostiListView(ListView):
         return super(RostiListView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        self.object_list = self.get_queryset(user=request.session.get('switched_user', request.user))
+        self.object_list = self.get_queryset(user=request.session.get('switched_user', request.user), **kwargs)
         allow_empty = self.get_allow_empty()
         if not allow_empty and not len(self.object_list):
             raise Http404(_(u"Empty list and '%(class_name)s.allow_empty' is False.")
                           % {'class_name': self.__class__.__name__})
-        context = self.get_context_data(object_list=self.object_list, request=request)
+        context = self.get_context_data(object_list=self.object_list, request=request, **kwargs)
         return self.render_to_response(context)
 
     def get_context_data(self, **kwargs):

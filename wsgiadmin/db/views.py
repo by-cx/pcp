@@ -9,42 +9,29 @@ from django.utils.translation import ugettext_lazy as _, ugettext
 from wsgiadmin.apacheconf.views import JsonResponse
 
 from wsgiadmin.db.forms import PgsqlForm, MysqlForm
+from wsgiadmin.domains.views import RostiListView
 from wsgiadmin.requests.request import MySQLRequest, PostgreSQLRequest
 from wsgiadmin.useradmin.forms import PasswordForm
 
 
-@login_required
-def show(request, dbtype='mysql', page=1):
-    """
-    List databases
-    """
 
-    p = int(page)
-    u = request.session.get('switched_user', request.user)
-    superuser = request.user
+class DatabasesListView(RostiListView):
 
-    if dbtype == 'mysql':
-        dbs = u.mysqldb_set.all()
-    elif dbtype == 'pgsql':
-        dbs = u.pgsql_set.all()
+    menu_active = 'dbs'
+    template_name = 'db.html'
 
-    paginator = Paginator([x.dbname for x in dbs], 10)
-    if not paginator.count:
-        page = None
-    else:
-        page = paginator.page(p)
+    def get_queryset(self, user, **kwargs):
+        if kwargs.get('dbtype') == 'mysql':
+            return user.mysqldb_set.all()
+        else:
+            return user.pgsql_set.all()
 
-    return render_to_response('db.html',
-            {
-            'dbtype': dbtype,
-            "dbs": page,
-            "paginator": paginator,
-            "num_page": p,
-            "u": u,
-            "superuser": superuser,
-            "menu_active": "dbs",
-            "base_url": reverse('db_list', kwargs={'dbtype': dbtype})
-            }, context_instance=RequestContext(request))
+
+    def get_context_data(self, **kwargs):
+        context = super(DatabasesListView, self).get_context_data(**kwargs)
+        context['menu_active'] = self.menu_active
+        context['dbtype'] = kwargs.get('dbtype')
+        return context
 
 
 @login_required

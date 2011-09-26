@@ -68,27 +68,27 @@
                 <td colspan="2">
                     <div class="pagination">
                         {% if dbs.has_previous %}
-                            <a href="{% url wsgiadmin.db.views.show dbtype=dbtype 1 %}" title="{% trans "First page" %}">&laquo; {% trans "First" %}</a>
+                            <a href="{% url db_list dbtype=dbtype 1 %}" title="{% trans "First page" %}">&laquo; {% trans "First" %}</a>
                         {% endif %}
                         {% if dbs.has_previous %}
-                            <a href="{% url wsgiadmin.db.views.show dbtype=dbtype gs.previous_page_number %}" title="{% trans "Previous page" %}">
+                            <a href="{% url db_list dbtype=dbtype gs.previous_page_number %}" title="{% trans "Previous page" %}">
                                 &laquo; {% trans "Previous" %}
                             </a>
                         {% endif %}
 
                         {% for p in paginator.page_range %}
                             {% if p == num_page %}
-                                <a href="{% url wsgiadmin.db.views.show dbtype=dbtype page=p %}" class="number current" title="{{ p }}">{{ p }}</a>
+                                <a href="{% url db_list dbtype=dbtype page=p %}" class="number current" title="{{ p }}">{{ p }}</a>
                             {% else %}
-                                <a href="{% url wsgiadmin.db.views.show dbtype=dbtype page=p %}" class="number" title="{{ p }}">{{ p }}</a>
+                                <a href="{% url db_list dbtype=dbtype page=p %}" class="number" title="{{ p }}">{{ p }}</a>
                             {% endif %}
                         {% endfor %}
 
                         {% if dbs.has_next %}
-                            <a href="{% url wsgiadmin.db.views.show dbtype=dbtype page=dbs.next_page_number %}" title="{% trans "Next page" %}">{% trans "Next" %} &raquo;</a>
+                            <a href="{% url db_list dbtype=dbtype page=dbs.next_page_number %}" title="{% trans "Next page" %}">{% trans "Next" %} &raquo;</a>
                         {% endif %}
                         {% if dbs.has_next %}
-                            <a href="{% url wsgiadmin.db.views.show dbtype=dbtype page=dbs.num_pages %}" title="{% trans "Last page" %}">{% trans "Last" %} &raquo;</a>
+                            <a href="{% url db_list dbtype=dbtype page=dbs.num_pages %}" title="{% trans "Last page" %}">{% trans "Last" %} &raquo;</a>
                         {% endif %}
                     </div>
                     <div class="clear"></div>

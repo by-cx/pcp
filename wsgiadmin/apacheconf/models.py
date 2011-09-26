@@ -3,7 +3,6 @@ from constance import config
 
 from django.contrib.auth.models import User as user
 from django.db import models
-from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 
@@ -17,7 +16,7 @@ class UserSite(models.Model):
         choices=[("uwsgi", "uWSGI"), ("modwsgi", "mod_wsgi"), ("php", "PHP"), ("static", "Static")])
 
     domains = models.CharField(_("Domains"), max_length=1024,
-        help_text=u"Domény na kterých bude web server naslouchat oddělené mezerou. Například 'rosti.cz www.rosti.cz ' apod. První doména je brána jako hlavní.")
+        help_text=_("VirtualHost domains, space separated; ie. 'rosti.cz www.rosti.cz '; First domain is taken as primary"))
 
     documentRoot = models.CharField(_("DocumentRoot"), max_length=200, blank=True)
     htaccess = models.BooleanField(_(".htaccess"), default=True)

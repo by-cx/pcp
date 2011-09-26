@@ -5,13 +5,13 @@ import logging
 from constance import config
 
 from django.contrib import messages
-from django.core.paginator import Paginator
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, Http404
 from django.core.mail import send_mail
 from django.template.context import RequestContext
+from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _, ugettext
 from django.conf import settings
 from django.views.generic import ListView
@@ -24,7 +24,11 @@ from wsgiadmin.keystore.tools import *
 
 class RostiListView(ListView):
 
-    paginate_by = 1
+    paginate_by = 10
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(RostiListView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         self.object_list = self.get_queryset(user=request.session.get('switched_user', request.user))
@@ -48,9 +52,7 @@ class DomainsListView(RostiListView):
     template_name = 'domains.html'
 
     def get_queryset(self, user):
-        x = user.domain_set.all()
-        return x
-
+        return user.domain_set.all()
 
     def get_context_data(self, **kwargs):
         context = super(DomainsListView, self).get_context_data(**kwargs)

@@ -1,4 +1,6 @@
 from os.path import dirname, join, normpath, pardir
+from tempfile import gettempdir
+import wsgiadmin
 
 USE_I18N = True
 
@@ -9,6 +11,14 @@ STATIC_ROOT = join(FILE_ROOT, 'm')
 STATIC_URL = '/m/'
 
 ADMIN_MEDIA_PREFIX = '/admin_media/'
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': join(gettempdir(), 'pcp_integrate_project.db'),
+        'TEST_NAME': join(gettempdir(), 'pcp_integrate_project.db'),
+    },
+}
 
 
 # List of callables that know how to import templates from various sources.
@@ -26,8 +36,8 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'integrate_project.urls'
 
 TEMPLATE_DIRS = (
+    join(dirname(wsgiadmin.__file__), 'templates'),
     join(FILE_ROOT, 'templates'),
-
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -42,6 +52,9 @@ INSTALLED_APPS = (
     'wsgiadmin.domains',
     'wsgiadmin.useradmin',
     'wsgiadmin.users',
+    'wsgiadmin.clients',
+    'wsgiadmin.db',
+
     # django contrib apps
     'django.contrib.auth',
     'django.contrib.contenttypes',

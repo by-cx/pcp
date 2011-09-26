@@ -1,0 +1,93 @@
+[
+    {
+        "pk": 1,
+        "model": "auth.user",
+        "fields": {
+            "username": "yed",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": true,
+            "is_staff": true,
+            "last_login": "2011-07-01 22:52:44",
+            "groups": [],
+            "user_permissions": [],
+            "password": "sha1$b1679$b363b62895c3e574b0e2db4ed6f9e0c3341dae0b",
+            "email": "foo@vanyli.net",
+            "date_joined": "2011-07-01 22:52:44"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "auth.user",
+        "fields": {
+            "username": "customer",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": false,
+            "is_staff": true,
+            "last_login": "2011-07-01 22:52:44",
+            "groups": [],
+            "user_permissions": [],
+            "password": "sha1$10ab3$c05f0a62650258b9c43c193db47e6a0ae9315978",
+            "email": "foo@vanyli.net",
+            "date_joined": "2011-07-01 22:52:44"
+        }
+    },
+
+    {
+        "pk": 1,
+        "model": "clients.machine",
+        "fields": {
+            "ip": "127.0.0.1",
+            "domain": "localhost",
+            "name": "localhost",
+            "ipv6": ""
+        }
+    },
+    {
+        "pk": 1,
+        "model": "clients.address",
+        "fields": {
+            "residency_city_num": "12345",
+            "different": false,
+            "note": "",
+            "invoice_city": "",
+            "residency_dic": "",
+            "company": "",
+            "invoice_phone": "",
+            "residency_street": "lomska",
+            "residency_name": "",
+            "invoice_email": "",
+            "invoice_city_num": "",
+            "residency_email": "foo@vanyli.net",
+            "residency_phone": "1345678987",
+            "residency_ic": "",
+            "invoice_name": "",
+            "residency_city": "malsice",
+            "invoice_street": ""
+        }
+    },
+    {
+        "pk": 1,
+        "model": "clients.parms",
+        "fields": {
+            "fee": 0,
+            "uid": 1001,
+            "mail_machine": 1,
+            "currency": "czk",
+            "web_machine": 1,
+            "enable": true,
+            "note": "",
+            "discount": 0,
+            "gid": 1001,
+            "user": 2,
+            "address": 1,
+            "home": "/home/customer",
+            "pgsql_machine": 1,
+            "mysql_machine": 1
+        }
+    }
+]
+

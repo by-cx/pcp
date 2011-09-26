@@ -7,3 +7,15 @@ logging.basicConfig(
 )
 
 logging.disable(logging.DEBUG)
+
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'rosti',
+        'TEST_NAME': 'test_rosti',
+        'USERNAME': 'yed',
+        'PASSWORD': 'heslo',
+        'HOST': 'localhost',
+    },
+}

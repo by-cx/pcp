@@ -33,18 +33,21 @@ Main features
 DEPTS
 =====
 
-	* uWSGI
-	* Python 2.6, 2.7
-	* PostgreSQL 8.x (9.x not tested)
 
-	* South
-	* psycopg2
-	* django >= 1.2
-	* django-uniform
-	* django-debug-toolbar
-	* anyjson
-	* django-constance
-	* django-picklefield
+* uWSGI
+* Python 2.6, 2.7
+* PostgreSQL 8.x (9.x not tested)
+
+
+* South
+* psycopg2
+* django >= 1.2
+* django-uniform
+* django-debug-toolbar
+* anyjson
+* django-constance
+* django-picklefield
+
 
 Developers
 ==========

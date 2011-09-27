@@ -9,31 +9,32 @@
     {{ block.super }}
 
     $(function() {
-        $("#sites_list .site_delete").click(function() {
+        $("#objects_list .object_delete").click(function() {
             var orly = confirm('{% trans "Are you sure?" %}');
             el = $(this);
             if (orly) {
-                var site_id = $(this).attr('rel');
+                var object_id = $(this).attr('rel');
                 $.ajax({
                     url:"{% url remove_site %}",
                     type:"POST",
-                    data:{'site_id': site_id, 'csrfmiddlewaretoken':'{{ csrf_token }}' },
+                    data:{'object_id': object_id, 'csrfmiddlewaretoken':'{{ csrf_token }}' },
                     dataType:"json",
                     success:function(data) {
                         if (data.result == 'OK') {
                             el.parent().html(data.messages[1]);
                         } else {
-                            alert(data.messages);
+                            alert(data.messages[1]);
                         }
                     }
                 });
             }
         });
     });
-
 {% endblock %}
 
 {% block content %}
+    <div id="message-box"></div>
+
     <h2>{% trans "Web pages and apps" %}</h2>
     <ul>
         <li>
@@ -53,10 +54,7 @@
         </li>
     </ul>
 
-    <div id="message-box"></div>
-
     <h3>{% trans "List of existing apps and webs" %}</h3>
-
     <table>
         <thead>
         <tr>
@@ -66,28 +64,31 @@
             <th>{% trans "Actions" %}</th>
         </tr>
         </thead>
-        {% if sites %}
-            <tbody id="sites_list">
-            {% for site in sites.object_list %}
+        {% if object_list %}
+            <tbody id="objects_list">
+            {% for site in object_list %}
                 <tr>
                     <td>{{ site.pub_date }}</td>
-                    <td>{{ site.type }}</td>
+                    <td>{% trans site.type %}</td>
                     <td>{{ site.server_name }}</td>
                     <td class="list_actions">
                         {% if site.type == "php" or site.type == "static" %}
                             <a href="{% url wsgiadmin.apacheconf.views.update_static site.id %}">
-                                <img src="{{ STATIC_URL }}icons/raster/gray_dark/pen_alt_stroke_16x16.png" alt="Edit"/>
+                                <img src="{{ STATIC_URL }}icons/raster/gray_dark/pen_alt_stroke_16x16.png" alt="{% trans "Edit" %}"/>
                             </a>
                         {% endif %}
                         {% if site.type == "uwsgi" or site.type == "modwsgi" %}
                             {% if site.type == "uwsgi" %}
-                                <a href="{% url wsgiadmin.apacheconf.views.restart site.id %}"><img src="{{ STATIC_URL }}icons/raster/gray_dark/loop_16x16.png" alt="Restart"/></a>
+                                <a href="{% url wsgiadmin.apacheconf.views.restart site.id %}">
+                                    <img src="{{ STATIC_URL }}icons/raster/gray_dark/loop_16x16.png" alt="{% trans "Restart" %}"/>
+                                </a>
                             {% endif %}
-                            <a href="{% url wsgiadmin.apacheconf.views.app_wsgi site.id %}"><img src="{{ STATIC_URL }}icons/raster/gray_dark/pen_alt_stroke_16x16.png" alt="Edit"/></a>
+                            <a href="{% url wsgiadmin.apacheconf.views.app_wsgi site.id %}">
+                                <img src="{{ STATIC_URL }}icons/raster/gray_dark/pen_alt_stroke_16x16.png" alt="{% trans "Edit" %}"/>
+                            </a>
                         {% endif %}
-
-                        <a href="#" id="remove_{{ site.id }}" rel="{{ site.id }}" class="bold site_delete">
-                            <img src="{{ STATIC_URL }}icons/raster/gray_dark/trash_fill_16x16.png" alt="Delete"/>
+                        <a href="#" id="remove_{{ site.id }}" rel="{{ site.id }}" class="bold object_delete">
+                            <img src="{{ STATIC_URL }}icons/raster/gray_dark/trash_fill_16x16.png" alt="{% trans "Delete" %}"/>
                         </a>
                         <span id="removed_{{ site.id }}" class="info"></span>
                     </td>
@@ -98,23 +99,7 @@
             <tr>
                 <td colspan="4">
                     <div class="pagination">
-                        {% if sites.has_previous %}
-                            <a href="{% url wsgiadmin.apacheconf.views.apache 1 %}" title="{% trans "First page" %}">&laquo; {% trans "First" %}</a>{% endif %}
-                        {% if sites.has_previous %}
-                            <a href="{% url wsgiadmin.apacheconf.views.apache sites.previous_page_number %}" title="{% trans "Previous page" %}">&laquo; {% trans "Previous" %}</a>{% endif %}
-
-                        {% for p in paginator.page_range %}
-                            {% if p == num_page %}
-                                <a href="{% url wsgiadmin.apacheconf.views.apache p %}" class="number current" title="{{ p }}">{{ p }}</a>
-                            {% else %}
-                                <a href="{% url wsgiadmin.apacheconf.views.apache p %}" class="number" title="{{ p }}">{{ p }}</a>
-                            {% endif %}
-                        {% endfor %}
-
-                        {% if sites.has_next %}
-                            <a href="{% url wsgiadmin.apacheconf.views.apache sites.next_page_number %}" title="{% trans "Next page" %}">{% trans "Next" %} &raquo;</a>{% endif %}
-                        {% if sites.has_next %}
-                            <a href="{% url wsgiadmin.apacheconf.views.apache paginator.num_pages %}" title="{% trans "Last page" %}">{% trans "Last" %} &raquo;</a>{% endif %}
+                        {% include "paginator.html" %}
                     </div>
                     <div class="clear"></div>
                 </td>
@@ -128,5 +113,4 @@
             </tbody>
         {% endif %}
     </table>
-
 {% endblock %}

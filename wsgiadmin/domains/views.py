@@ -8,36 +8,16 @@ from django.contrib import messages
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect, Http404
+from django.http import HttpResponseRedirect
 from django.core.mail import send_mail
 from django.template.context import RequestContext
-from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _, ugettext
 from django.conf import settings
-from django.views.generic import ListView
 
-from wsgiadmin.apacheconf.views import JsonResponse
 from wsgiadmin.domains.models import Domain, form_registration_request
 from wsgiadmin.requests.request import BindRequest
 from wsgiadmin.keystore.tools import *
-
-
-class RostiListView(ListView):
-
-    paginate_by = 10
-
-    @method_decorator(login_required)
-    def dispatch(self, request, *args, **kwargs):
-        self.user = request.session.get('switched_user', request.user)
-        return super(RostiListView, self).dispatch(request, *args, **kwargs)
-
-
-    def get_context_data(self, **kwargs):
-        context = super(RostiListView, self).get_context_data(**kwargs)
-        context['menu_active'] = self.menu_active
-        context['u'] = self.user
-        context['superuser'] = self.request.user
-        return context
+from wsgiadmin.service.views import JsonResponse, RostiListView
 
 
 class DomainsListView(RostiListView):

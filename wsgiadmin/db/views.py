@@ -6,10 +6,9 @@ from django.contrib.auth.decorators import login_required
 from django.template.context import RequestContext
 from django.utils.translation import ugettext_lazy as _, ugettext
 
-from wsgiadmin.apacheconf.views import JsonResponse
 from wsgiadmin.db.forms import PgsqlForm, MysqlForm
-from wsgiadmin.domains.views import RostiListView
 from wsgiadmin.requests.request import MySQLRequest, PostgreSQLRequest
+from wsgiadmin.service.views import JsonResponse, RostiListView
 from wsgiadmin.useradmin.forms import PasswordForm
 
 

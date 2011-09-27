@@ -1,6 +1,7 @@
-# -*- coding: utf-8 -*-
-from django.contrib import messages
+from constance import config
+from os.path import join
 
+from django.contrib import messages
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
@@ -8,15 +9,12 @@ from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.utils.translation import ugettext_lazy as _
 from django.template.context import RequestContext
 from django.core.mail import send_mail
-from wsgiadmin.apacheconf.models import UserSite
 
+from wsgiadmin.apacheconf.models import UserSite
 from wsgiadmin.clients.models import *
 from wsgiadmin.invoices.models import invoice
 from wsgiadmin.useradmin.forms import formReg, formReg2, form_reg_payment
 from wsgiadmin.clients.models import Parms
-
-from constance import config
-from os.path import join
 
 @login_required
 def master(request):
@@ -52,7 +50,7 @@ def info(request):
              "superuser": superuser,
              "menu_active": "dashboard",
              "invoices": invoices},
-                              context_instance=RequestContext(request)
+        context_instance=RequestContext(request)
     )
 
 
@@ -158,8 +156,8 @@ def reg(request):
                 p.fee = settings.PAYMENT_FEE[p.currency]
                 p.save()
 
-            message = _(u"New user has been registered.")
-            send_mail(_(u'New registration %s %s' % (
+            message = _("New user has been registered.")
+            send_mail(_('New registration %s %s' % (
                 form1.cleaned_data["name"], form1.cleaned_data["company"])),
                       message,
                       settings.EMAIL_FROM,
@@ -179,14 +177,13 @@ def reg(request):
             "form1": form1,
             "form2": form2,
             "form3": form3,
-            "title": _(u"Registration"),
-            "submit": _(u"Register"),
+            "title": _("Registration"),
+            "submit": _("Register"),
             "action": reverse("wsgiadmin.useradmin.views.reg")
         },
-                              context_instance=RequestContext(request)
+        context_instance=RequestContext(request)
     )
 
 
 def regok(request):
-    return render_to_response('regok.html',
-                              context_instance=RequestContext(request))
+    return render_to_response('regok.html', context_instance=RequestContext(request))

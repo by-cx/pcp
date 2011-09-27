@@ -7,7 +7,6 @@ from constance import config
 from datetime import date
 from django.contrib import messages
 
-from django.core.paginator import Paginator
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
@@ -19,64 +18,41 @@ from wsgiadmin.apacheconf.models import *
 from wsgiadmin.apacheconf.forms import FormStatic, FormWsgi
 from wsgiadmin.requests.request import UWSGIRequest
 from wsgiadmin.apacheconf.tools import get_user_wsgis, get_user_venvs, user_directories, restart_master
+from wsgiadmin.service.views import JsonResponse, RostiListView
 
 info = logging.info
 
-__all__ = ['refresh_venv', 'refresh_wsgi', 'add_static', 'refresh_userdirs', 'update_static', 'app_wsgi', 'apache', 'remove_site']
+class AppsListView(RostiListView):
 
+    menu_active = 'webapps'
+    template_name = 'apache.html'
 
-class JsonResponse(HttpResponse):
-
-    def __init__(self, result, messages):
-        content = anyjson.serialize(dict(result=result, messages=messages))
-        super(JsonResponse, self).__init__(content, content_type='application/jsonrequest')
-
-
-@login_required
-def apache(request, p=1):
-    u = request.session.get('switched_user', request.user)
-    superuser = request.user
-    p = int(p)
-
-    paginator = Paginator(list(u.usersite_set.filter(removed=False).order_by("pub_date")), 25)
-
-    if not paginator.count:
-        page = None
-    else:
-        page = paginator.page(p)
-
-    return render_to_response("apache.html",
-            {
-            "sites": page,
-            "paginator": paginator,
-            "num_page": p,
-            "u": u,
-            "superuser": superuser,
-            "menu_active": "webapps",
-            }, context_instance=RequestContext(request))
+    def get_queryset(self):
+        x = self.user.usersite_set.filter(removed=False).order_by("pub_date")
+        print x
+        return x
 
 
 @login_required
 def domain_check(request, form, this_site=None):
     u = request.session.get('switched_user', request.user)
 
-    domains = form.data["domains"].split() # domény u aktuální stránky
-    my_domains = [x.name for x in u.domain_set.all()]
+    form_domains = form.data["domains"].split() # domains typed in form
+    my_domains = [str(x.name) for x in u.domain_set.all()]
 
-    # Všechny domény použité u aplikací
     used_domains = []
     for tmp_domains in [one.domains.split() for one in UserSite.objects.filter(owner=u, removed=False) if one != this_site]:
         used_domains += tmp_domains
 
-    # Permission test
     error_domains = []
-    for domain in domains:
+    for domain in form_domains:
+        # Permission test
         error = domain not in my_domains
         if error and "%s - %s" % (domain, ugettext("Missing permission")) not in error_domains:
             error_domains.append("%s - %s" % (domain, ugettext("Missing permission")))
+            continue
 
-    # Used test
-    for domain in domains:
+        # Used test
         if domain in used_domains and "%s - %s" % (domain, ugettext("Already used")) not in error_domains:
             error_domains.append("%s - %s" % (domain, ugettext("Already used")))
 
@@ -111,7 +87,7 @@ def add_static(request, php="0"):
 
             messages.add_message(request, messages.SUCCESS, _('Site has been added'))
             messages.add_message(request, messages.INFO, _('Changes will be performed in few minutes'))
-            return HttpResponseRedirect(reverse("wsgiadmin.apacheconf.views.apache"))
+            return HttpResponseRedirect(reverse("app_list"))
     else:
         form = FormStatic()
         form.fields["documentRoot"].choices = [("", _("Not selected"))] + choices
@@ -160,7 +136,7 @@ def update_static(request, sid):
 
             messages.add_message(request, messages.SUCCESS, _('Site has been updated'))
             messages.add_message(request, messages.INFO, _('Changes will be performed in few minutes'))
-            return HttpResponseRedirect(reverse("wsgiadmin.apacheconf.views.apache"))
+            return HttpResponseRedirect(reverse("app_list"))
     else:
         form = FormStatic(initial={"domains": s.domains, "documentRoot": s.documentRoot})
         form.fields["documentRoot"].choices = [("", _("Not selected"))] + choices
@@ -247,7 +223,7 @@ def app_wsgi(request, sid=None):
 
             messages.add_message(request, messages.SUCCESS, _('App has been %s' % 'changed' if site else 'added'))
             messages.add_message(request, messages.INFO, _('Changes will be performed in few minutes'))
-            return HttpResponseRedirect(reverse("wsgiadmin.apacheconf.views.apache"))
+            return HttpResponseRedirect(reverse("app_list"))
     else:
         form = FormWsgi(user=u, instance=site)
 
@@ -291,7 +267,7 @@ def reload(request, sid):
 
     messages.add_message(request, messages.SUCCESS, _('Request for reloading has been sent'))
     messages.add_message(request, messages.INFO, _('It will be performed in few minutes'))
-    return HttpResponseRedirect(reverse("wsgiadmin.apacheconf.views.apache"))
+    return HttpResponseRedirect(reverse("app_list"))
 
 
 @login_required
@@ -311,7 +287,7 @@ def restart(request, sid):
 
     messages.add_message(request, messages.SUCCESS, _('Request for restarting has been sent'))
     messages.add_message(request, messages.INFO, _('It will be performed in few minutes'))
-    return HttpResponseRedirect(reverse("wsgiadmin.apacheconf.views.apache"))
+    return HttpResponseRedirect(reverse("app_list"))
 
 
 @login_required

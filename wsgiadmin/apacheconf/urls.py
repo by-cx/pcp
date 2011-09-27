@@ -2,8 +2,8 @@ from django.conf.urls.defaults import *
 from wsgiadmin.apacheconf.views import *
 
 urlpatterns = patterns('wsgiadmin.apacheconf.views',
-    (r'^sites/$', 'apache'),
-    (r'^sites/([0-9]{1,10})/$', 'apache'),
+    url(r'^sites/$', AppsListView.as_view(), name='app_list'),
+    url(r'^sites/(\d+)/$', AppsListView.as_view(), name='app_list'),
     url(r'^addStatic/([0-9]+)/$', add_static, name="add_static"),
     url(r'^updateStatic/([0-9]+)/$', update_static, name="update_static"),
     url(r'^remove_site/$', remove_site, name="remove_site"),

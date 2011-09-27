@@ -126,8 +126,8 @@ def changePasswdBox(request, eid):
     return render_to_response('universal.html',
             {
             "form": form,
-            "title": _(u"Změna hesla e-mailové schránky"),
-            "submit": _(u"Změnit heslo"),
+            "title": _(u"Change password for e-mail box"),
+            "submit": _(u"Change password"),
             "action": reverse("wsgiadmin.emails.views.changePasswdBox", args=[e.id]),
             "u": u,
             "superuser": superuser,

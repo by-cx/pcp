@@ -92,7 +92,7 @@ def install(request, uid):
 
     iuser = get_object_or_404(u, id=uid)
     if not iuser.username or ";" in iuser.username:
-        return HttpResponseForbidden("Chybné uživatelské jméno")
+        return HttpResponseForbidden("Wrong username")
 
     # System user
     HOME = join("/home", iuser.username)
@@ -156,8 +156,8 @@ def add(request):
             "form_user": f_user,
             "form_parms": f_parms,
             "form_address": f_address,
-            "title": _(u"Přidání uživatele"),
-            "submit": _(u"Přidat uživatele"),
+            "title": _(u"Add user"),
+            "submit": _(u"Add user"),
             "action": reverse("wsgiadmin.users.views.add"),
             "u": u,
             "superuser": superuser,
@@ -200,8 +200,8 @@ def update(request, uid):
             "form_user": f_user,
             "form_parms": f_parms,
             "form_address": f_address,
-            "title": _(u"Upravení uživatele"),
-            "submit": _(u"Upravit uživatele"),
+            "title": _(u"User update"),
+            "submit": _(u"Update information"),
             "action": reverse("wsgiadmin.users.views.update", args=[uid]),
             "u": u,
             "superuser": superuser,

@@ -11,7 +11,7 @@ from wsgiadmin.apacheconf.tools import get_user_wsgis, get_user_venvs
 
 
 class FormStatic(forms.Form):
-    domains = forms.CharField(label=_("Domains *"), help_text=_(u"<br />Domény na kterých bude web server naslouchat oddělené mezerou. Například 'rosti.cz www.rosti.cz ' apod. První doména je brána jako hlavní."))
+    domains = forms.CharField(label=_("Domains *"), help_text=_(u"<br />Domains separed by space, for example 'rosti.cz www.rosti.cz ' etc. First domain is main."))
     documentRoot = forms.ChoiceField(label=_("Directory"))
 
 
@@ -33,11 +33,11 @@ class FormWsgi(ModelForm):
 
         super(FormWsgi, self).__init__(*args, **kwargs)
 
-        self.fields['domains'].help_text = _(u"<br />Domény na kterých bude web server naslouchat oddělené mezerou. Například 'rosti.cz www.rosti.cz ' apod. První doména je brána jako hlavní.")
-        self.fields['static'].help_text = _(u"<br />Formát <strong>/url/ /cesta/k/mediím/</strong>, odděleno mezerou.<br /><ul><li>/cesta/k/mediím/ je prefixnuta domovským adresářem</li><li>1 řádek může obsahovat právě 1 adresář</li><li>Chybné řádky budou ignorovány</li></ul>.")
-        self.fields['python_path'].help_text=_(u"<br /><strong>~/&lt;zadaná_cesta&gt;</strong> - Jeden řádek, jeden adresář. Formát <strong>/tady/je/moje/aplikace</strong>. Váš domovský adresář bude automaticky doplněn.<br />uWSGI ignoruje nastavení PYTHON_PATH přes sys.path.")
-        self.fields['virtualenv'].help_text= _(u"<br />Pythoní virtuální prostředí. Najdete je ve '<strong>~/virtualenvs/&lt;zadaná_hodnota&gt;</strong>'. Můžete si si vytvořit vlastní přes SSH.")
-        self.fields['allow_ips'].help_text = help_text=_(u"<br />Jedna IP adresa na jeden řádek. Pokud je pole prázdné, fungují všechny.")
+        self.fields['domains'].help_text = _(u"<br />Domains separed by space, for example 'rosti.cz www.rosti.cz ' etc. First domain is main.")
+        self.fields['static'].help_text = _(u"<br />Format <strong>/url/ /path/to/media/</strong>, separated by space.<br /><ul><li>/path/to/media/ is path without your home directory</li><li>one directory per one line</li><li>wrong lines will be ignored</li></ul>.")
+        self.fields['python_path'].help_text=_(u"<br /><strong>~/&lt;your_path&gt;</strong> - One directory per line. Format <strong>/there/is/my/app</strong>. Path is without your home directory")
+        self.fields['virtualenv'].help_text= _(u"<br />Python virtual environment. You can find yours in '<strong>~/virtualenvs/&lt;selected_virtualenv&gt;</strong>'. Be free create new one.")
+        self.fields['allow_ips'].help_text = help_text=_(u"<br />One IP per line. If it is blank, no limitation will be applied.")
 
         wsgis = get_user_wsgis(self.user)
         wsgis_choices = [("", _("Not selected"))] + [(x, x) for x in wsgis]
@@ -55,7 +55,7 @@ class FormWsgi(ModelForm):
 
         for ip in ips:
             if not re.match("[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}", ip):
-                raise forms.ValidationError(_(u"Jedna nebo více zadaných IP adres má špatný tvar"))
+                raise forms.ValidationError(_(u"One or more IP addresses are in wrong format"))
 
         return self.cleaned_data["allow_ips"]
 
@@ -63,11 +63,11 @@ class FormWsgi(ModelForm):
         if "." in self.cleaned_data["virtualenv"] or \
            "~" in self.cleaned_data["virtualenv"] or \
            "/" in self.cleaned_data["virtualenv"]:
-            raise forms.ValidationError(_(u"Virtualenv nesmí obsahovat znaky ./~"))
+            raise forms.ValidationError(_(u"Virtualenv hasn't to contain chars ./~"))
         return self.cleaned_data["virtualenv"]
 
     def clean_static(self):
         if ".." in self.cleaned_data["static"] or \
            "~" in self.cleaned_data["static"]:
-            raise forms.ValidationError(_(u"Toto pole nesmí obsahovat nesmí obsahovat .. a ~"))
+            raise forms.ValidationError(_(u"This field hasn't to contain .. and ~"))
         return self.cleaned_data["static"]

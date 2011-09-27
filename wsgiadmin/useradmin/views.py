@@ -100,8 +100,8 @@ def change_passwd(request):
     return render_to_response('universal.html',
             {
             "form": form,
-            "title": _(u"Změna hesla do administrace"),
-            "submit": _(u"Změnit heslo"),
+            "title": _(u"Change password for this administration"),
+            "submit": _(u"Change password"),
             "action": reverse("wsgiadmin.useradmin.views.change_passwd"),
             "u": u,
             "superuser": superuser,
@@ -158,8 +158,8 @@ def reg(request):
                 p.fee = settings.PAYMENT_FEE[p.currency]
                 p.save()
 
-            message = _(u"Byl registrován nový uživatel.")
-            send_mail(_(u'Nová registrace %s %s' % (
+            message = _(u"New user has been registered.")
+            send_mail(_(u'New registration %s %s' % (
                 form1.cleaned_data["name"], form1.cleaned_data["company"])),
                       message,
                       settings.EMAIL_FROM,
@@ -179,8 +179,8 @@ def reg(request):
             "form1": form1,
             "form2": form2,
             "form3": form3,
-            "title": _(u"Registrace"),
-            "submit": _(u"Registrovat"),
+            "title": _(u"Registration"),
+            "submit": _(u"Register"),
             "action": reverse("wsgiadmin.useradmin.views.reg")
         },
                               context_instance=RequestContext(request)

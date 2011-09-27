@@ -1,7 +1,4 @@
-# -*- coding: utf-8 -*-
-
 import logging
-import anyjson
 
 from constance import config
 from datetime import date
@@ -28,9 +25,7 @@ class AppsListView(RostiListView):
     template_name = 'apache.html'
 
     def get_queryset(self):
-        x = self.user.usersite_set.filter(removed=False).order_by("pub_date")
-        print x
-        return x
+        return self.user.usersite_set.filter(removed=False).order_by("pub_date")
 
 
 @login_required
@@ -166,8 +161,8 @@ def remove_site(request):
     u = request.session.get('switched_user', request.user)
 
     try:
-        site_id = request.POST['site_id']
-        s = get_object_or_404(UserSite, id=site_id)
+        object_id = request.POST['object_id']
+        s = get_object_or_404(UserSite, id=object_id)
         if s.owner != u:
             raise Exception("Forbidden operation")
 
@@ -186,7 +181,7 @@ def remove_site(request):
         u.parms.pay_for_sites(use_cache=False)
         return JsonResponse("OK", {1: ugettext("Site was successfuly removed")})
     except Exception, e:
-        return JsonResponse("KO", {1: e})
+        return JsonResponse("KO", {1: ugettext("Error deleting site")})
 
 
 @login_required

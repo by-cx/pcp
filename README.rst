@@ -3,10 +3,9 @@ WSGIAdmin
 
 Web interface for your server based on Django and Python.
 It can handle a Python's applications through uWSGI and PHP
- applications throw Apache and mod_fcgid.
-
-It is not stable right now but i am sure it will be in short
-time.
+applications throw Apache and mod_fcgid. It's not complete
+yet, but we use it in production. We are working hard to make
+wsgiadmin to be the best solution for servers.
 
 TODO for v0.3
 =============
@@ -21,8 +20,8 @@ TODO for v0.3
 Main features
 =============
 
-* Great Python support
-* Less great PHP support
+* Great Python support with virtualenv (Django, CherryPy and much more)
+* Less great PHP support - forced evil
 * Nice static sites support
 * PostgreSQL, MySQL support
 * Bind support
@@ -50,7 +49,7 @@ DEPTS
 Developers
 ==========
 
-* Adam Štrauch - cx@initd.cz
+* Adam Štrauch - cx@initd.cz (e-mail/jabber)
 * Jiří Suchan
 * Pavel Buben
 

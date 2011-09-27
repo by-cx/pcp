@@ -1,6 +1,5 @@
 from django.http import HttpResponseRedirect, HttpResponseServerError
 from django.shortcuts import render_to_response
-from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.template.context import RequestContext
@@ -19,6 +18,13 @@ class DatabasesListView(RostiListView):
 
     menu_active = 'dbs'
     template_name = 'db.html'
+
+    def get(self, request, *args, **kwargs):
+        if kwargs.get('dbtype', None) not in ('mysql', 'pgsql'):
+            #TODO - move default list into settings
+            return HttpResponseRedirect(reverse('db_list', kwargs={'dbtype': 'mysql'}))
+
+        return super(DatabasesListView, self).get(request, *args, **kwargs)
 
     def get_queryset(self, user, **kwargs):
         if kwargs.get('dbtype') == 'mysql':

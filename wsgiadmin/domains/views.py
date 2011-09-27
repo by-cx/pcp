@@ -42,7 +42,8 @@ class RostiListView(ListView):
     def get_context_data(self, **kwargs):
         context = super(RostiListView, self).get_context_data(**kwargs)
         context['menu_active'] = self.menu_active
-
+        context['u'] = self.request.session.get('switched_user', self.request.user)
+        context['superuser'] = self.request.user
         return context
 
 

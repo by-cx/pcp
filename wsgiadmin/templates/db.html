@@ -9,30 +9,28 @@
     {{ block.super }}
 
     $(function() {
-        $("#dblist .db_delete").click(function() {
-            var orly = confirm('{% trans "Are you sure you want to remove this database?" %}');
+        $("#objects_list .object_delete").click(function() {
+            var orly = confirm('{% trans "Are you sure?" %}');
             el = $(this);
             if (orly) {
-                var db = $(this).attr('rel');
+                var object_id = $(this).attr('rel');
                 $.ajax({
                     url:"{% url db_remove dbtype=dbtype %}",
                     type:"POST",
-                    data:{'dbname':db, 'csrfmiddlewaretoken':'{{ csrf_token }}' },
+                    data:{'object_id': object_id, 'csrfmiddlewaretoken':'{{ csrf_token }}' },
                     dataType:"json",
                     success:function(data) {
                         if (data.result == 'OK') {
                             el.parent().html(data.messages[1]);
                         } else {
-                            alert(data.messages);
+                            alert(data.messages[1]);
                         }
                     }
                 });
             }
         });
     });
-
 {% endblock %}
-
 
 {% block content %}
     <div id="message-box"></div>
@@ -40,23 +38,24 @@
     <div id="db_dialog"></div>
 
     <h3>{% blocktrans %}List of {{ dbtype }} databases{% endblocktrans %}</h3>
-    <table id="dblist">
+    <table>
         <thead>
         <tr>
             <th>{% trans "Database name" %}</th>
             <th>{% trans "Database actions" %}</th>
         </tr>
         </thead>
-        {% if dbs %}
-            <tbody>
-            {% for db in dbs.object_list %}
+        {% if object_list %}
+            <tbody id="objects_list">
+            {% for db in object_list %}
                 <tr>
                     <td>{{ db }}</td>
                     <td id="db_{{ db }}">
-                        <a href="{% url db_passwd dbtype=dbtype dbname=db %}" class="db_pwdchange" title="{% trans "Change password" %}" rel="{{ db }}">
+                        <a href="{% url db_passwd dbtype=dbtype dbname=db.dbname %}" class="db_pwdchange" title="{% trans "Change password" %}">
                             <img src="{{ STATIC_URL }}icons/raster/gray_dark/key_stroke_16x16.png" alt="{% trans "Change password" %}"/>
                         </a>
-                        <a href="#" class="db_delete" title="{% trans "Delete" %}" rel="{{ db }}">
+
+                        <a href="#" class="object_delete" title="{% trans "Delete" %}" rel="{{ db.id }}">
                             <img src="{{ STATIC_URL }}icons/raster/gray_dark/trash_fill_16x16.png" alt="{% trans "Delete" %}"/>
                         </a>
                     </td>
@@ -67,29 +66,7 @@
             <tr>
                 <td colspan="2">
                     <div class="pagination">
-                        {% if dbs.has_previous %}
-                            <a href="{% url db_list dbtype=dbtype 1 %}" title="{% trans "First page" %}">&laquo; {% trans "First" %}</a>
-                        {% endif %}
-                        {% if dbs.has_previous %}
-                            <a href="{% url db_list dbtype=dbtype gs.previous_page_number %}" title="{% trans "Previous page" %}">
-                                &laquo; {% trans "Previous" %}
-                            </a>
-                        {% endif %}
-
-                        {% for p in paginator.page_range %}
-                            {% if p == num_page %}
-                                <a href="{% url db_list dbtype=dbtype page=p %}" class="number current" title="{{ p }}">{{ p }}</a>
-                            {% else %}
-                                <a href="{% url db_list dbtype=dbtype page=p %}" class="number" title="{{ p }}">{{ p }}</a>
-                            {% endif %}
-                        {% endfor %}
-
-                        {% if dbs.has_next %}
-                            <a href="{% url db_list dbtype=dbtype page=dbs.next_page_number %}" title="{% trans "Next page" %}">{% trans "Next" %} &raquo;</a>
-                        {% endif %}
-                        {% if dbs.has_next %}
-                            <a href="{% url db_list dbtype=dbtype page=dbs.num_pages %}" title="{% trans "Last page" %}">{% trans "Last" %} &raquo;</a>
-                        {% endif %}
+                        {% include "paginator.html" %}
                     </div>
                     <div class="clear"></div>
                 </td>

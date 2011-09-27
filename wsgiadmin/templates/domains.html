@@ -13,7 +13,7 @@
             var orly = confirm('{% trans "Are you sure?" %}');
             el = $(this);
             if (orly) {
-                var domain = $(this).attr('rel');
+                var object_id = $(this).attr('rel');
                 $.ajax({
                     url:"{% url domain_remove %}",
                     type:"POST",

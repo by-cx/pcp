@@ -157,8 +157,7 @@ def reg(request):
                 p.save()
 
             message = _("New user has been registered.")
-            send_mail(_('New registration %s %s' % (
-                form1.cleaned_data["name"], form1.cleaned_data["company"])),
+            send_mail(_('New registration'),
                       message,
                       settings.EMAIL_FROM,
                 [address for (name, address) in settings.ADMINS],

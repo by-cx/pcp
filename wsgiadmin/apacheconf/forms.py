@@ -11,7 +11,7 @@ from wsgiadmin.apacheconf.tools import get_user_wsgis, get_user_venvs
 
 
 class FormStatic(forms.Form):
-    domains = forms.CharField(label=_("Domains *"), help_text=_(u"<br />Domains separed by space, for example 'rosti.cz www.rosti.cz ' etc. First domain is main."))
+    domains = forms.CharField(label=_("Domains"), help_text=_(u"<br />Domains separed by space, for example 'rosti.cz www.rosti.cz ' etc. First domain is main."))
     documentRoot = forms.ChoiceField(label=_("Directory"))
 
 

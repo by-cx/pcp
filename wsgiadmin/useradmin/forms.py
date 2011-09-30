@@ -17,21 +17,21 @@ class PasswordForm(forms.Form):
 class formReg(forms.Form):
     company = forms.CharField(label=_(u"Company"), max_length=250,
                               required=False)
-    name = forms.CharField(label=_(u"Name *"), max_length=250)
-    street = forms.CharField(label=_(u"Street *"), max_length=250)
-    city = forms.CharField(label=_(u"City *"), max_length=250)
-    city_num = forms.CharField(label=_(u"ZIP *"), max_length=6)
+    name = forms.CharField(label=_(u"Name"), max_length=250)
+    street = forms.CharField(label=_(u"Street"), max_length=250)
+    city = forms.CharField(label=_(u"City"), max_length=250)
+    city_num = forms.CharField(label=_(u"ZIP"), max_length=6)
     ic = forms.CharField(label=_(u"IC"), max_length=50, required=False)
     dic = forms.CharField(label=_(u"DIC"), max_length=50, required=False)
-    email = forms.CharField(label=_(u"E-mail *"), max_length=250)
-    phone = forms.CharField(label=_(u"Phone *"), max_length=30)
+    email = forms.CharField(label=_(u"E-mail"), max_length=250)
+    phone = forms.CharField(label=_(u"Phone"), max_length=30)
 
 
 class formReg2(forms.Form):
-    username = forms.CharField(label=_(u"Username *"), max_length=30)
-    password1 = forms.CharField(label=_(u"Password *"),
+    username = forms.CharField(label=_(u"Username"), max_length=30)
+    password1 = forms.CharField(label=_(u"Password"),
                                 widget=forms.PasswordInput(render_value=False))
-    password2 = forms.CharField(label=_(u"Password again *"),
+    password2 = forms.CharField(label=_(u"Password again"),
                                 widget=forms.PasswordInput(render_value=False))
 
     def clean_username(self):

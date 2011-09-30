@@ -23,8 +23,8 @@ class ftp(models.Model):
 class form_ftp(forms.Form):
 	u = None
 
-	name		= forms.CharField(label=_(u"Přihlašovací jméno")+" *")
-	dir			= forms.ChoiceField(label=_(u"Adresář"))
+	name		= forms.CharField(label=_(u"Username"))
+	dir			= forms.ChoiceField(label=_(u"Directory"))
 	password1	= forms.CharField(label=_(u"Password"),widget=forms.PasswordInput(render_value=False))
 	password2	= forms.CharField(label=_(u"Password again"),widget=forms.PasswordInput(render_value=False))
 
@@ -47,7 +47,7 @@ class form_ftp(forms.Form):
 class form_ftp_update(forms.Form):
 	edit_name = None
 
-	name		= forms.CharField(label=_(u"Username")+" *")
+	name		= forms.CharField(label=_(u"Username"))
 	dir			= forms.ChoiceField(label=_(u"Directory"))
 	
 	def clean_name(self):

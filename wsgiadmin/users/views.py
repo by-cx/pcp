@@ -259,8 +259,8 @@ def ssh_passwd(request):
     return render_to_response('universal.html',
             {
             "form": form,
-            "title": _(u"Změna hesla k SSH/SFTP/FTP"),
-            "submit": _(u"Změnit heslo"),
+            "title": _(u"Change password for SSH/FTP"),
+            "submit": _(u"Change password"),
             "action": reverse("wsgiadmin.users.views.ssh_passwd"),
             "u": u,
             "superuser": superuser,

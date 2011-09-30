@@ -216,7 +216,7 @@ def app_wsgi(request, sid=None):
             # calculate!
             u.parms.pay_for_sites(use_cache=False)
 
-            messages.add_message(request, messages.SUCCESS, _('App has been %s' % 'changed' if site else 'added'))
+            messages.add_message(request, messages.SUCCESS, _('App has been %s') % _('changed') if site else _('added'))
             messages.add_message(request, messages.INFO, _('Changes will be performed in few minutes'))
             return HttpResponseRedirect(reverse("app_list"))
     else:
@@ -233,7 +233,7 @@ def app_wsgi(request, sid=None):
             "dynamic_refreshs": dynamic_refreshs,
             "siteErrors": site_errors,
             "form": form,
-            "title": _("%s WSGI application" % 'Modify' if site else 'Add'),
+            "title": _("%s WSGI application") % _('Modify') if site else _('Add'),
             "submit": _("Save changes"),
             "action": reverse("app_wsgi", args=[site.id] if site else None),
             "u": u,

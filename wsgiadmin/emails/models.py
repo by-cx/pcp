@@ -10,7 +10,7 @@ class Email(models.Model):
     uid = models.IntegerField(_("UID"), default="117")
     gid = models.IntegerField(_("GID"), default="118")
     homedir = models.CharField(_("Homedir"), max_length=100, default="/var/mail")
-    remove = models.BooleanField(_("Smazat?"), default=False)
+    remove = models.BooleanField(_("Remove"), default=False)
 
     def address(self):
         return "%s@%s" % (self.login, self.domain.name)

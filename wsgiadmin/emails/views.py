@@ -74,8 +74,8 @@ def addBox(request):
     return render_to_response('universal.html',
             {
             "form": form,
-            "title": _(u"Přidání e-mailové schránky"),
-            "submit": _(u"Přidat schránku"),
+            "title": _(u"New e-mail"),
+            "submit": _(u"Create box"),
             "action": reverse("wsgiadmin.emails.views.addBox"),
             "u": u,
             "superuser": superuser,

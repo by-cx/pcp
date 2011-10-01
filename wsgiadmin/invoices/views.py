@@ -292,26 +292,25 @@ def items(request, fid):
     fid = int(fid)
     invoice = get_object_or_404(u.invoice_set, id=fid)
 
-    out = "<table style=\"margin: 20px auto; 20px\">"
+    out = '<table style="margin: 20px auto; 20px">'
     out += "<tr>"
-    out += _(u"<th>Co</th>")
-    out += _(u"<th>Množství</th>")
-    out += _(u"<th>Cena za j.</th>")
-    out += _(u"<th>Cena za všechno</th>")
-    out += _(u"<th>Akce</th>")
+    out += "<th>%s</th>" % _("Co")
+    out += u"<th>%s</th>" % _(u"Množství")
+    out += "<th></th>" % _("Cena za j.")
+    out += u"<th>%s</th>" % _(u"Cena za všechno")
+    out += u"<th>%s</th>" % _("Akce")
     out += "</tr>"
 
     for x in invoice.item_set.all():
         out += "<tr>"
         out += "<td>%s</td>" % x.name
         out += "<td>%d</td>" % x.count
-        out += "<td>%d,- kč</td>" % x.price_per_one
-        out += "<td>%d,- kč</td>" % x.price_per_one * x.count
-        out += _(
-            u"<td><a href=\"/admin/invoices/item/%d/delete/\" class=\"deletelink\">Smazat</a></td>") % x.id
+        out += u"<td>%d,- kč</td>" % x.price_per_one
+        out += u"<td>%d,- kč</td>" % x.price_per_one * x.count
+        out += '<td><a href="%{url}s" class="deletelink">%{title}%</a></td>' % \
+               {'title': _("Smazat"), 'url': reverse('wsgiadmin.invoices.views.rm', args=[x.id]) }
         out += "</tr>"
-
-    out += "<table>"
+    out += "</table>"
     return HttpResponse(out)
 
 

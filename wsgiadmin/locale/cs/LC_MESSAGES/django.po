@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-30 20:45+0200\n"
+"POT-Creation-Date: 2011-10-01 19:50+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -32,7 +32,8 @@ msgstr ""
 "<br /> Domény oddělujte mezerami, například 'rosti.cz www.rosti.cz' apod."
 "První doména je hlavní."
 
-#: apacheconf/forms.py:15 ftps/models.py:51 templates/ftps.html:22 ftps/models.py:27
+#: apacheconf/forms.py:15 ftps/models.py:27 ftps/models.py:51
+#: templates/ftps.html:22
 msgid "Directory"
 msgstr "Adresář"
 
@@ -42,9 +43,10 @@ msgid ""
 "><ul><li>/path/to/media/ is path without your home directory</li><li>one "
 "directory per one line</li><li>wrong lines will be ignored</li></ul>."
 msgstr ""
-"<br />Formát <strong>/url/ /cesta/k/médiím/</strong>, hodnoty oddělené mezerami.<br /"
-"><ul><li>/cesta/k/médiím/ je cesta bez domácího adresáře (bude doplněn)</li><li>jeden "
-"adresář na řádek</li><li>řádky ve špatném formátu budou ignorovány</li></ul>."
+"<br />Formát <strong>/url/ /cesta/k/médiím/</strong>, hodnoty oddělené "
+"mezerami.<br /><ul><li>/cesta/k/médiím/ je cesta bez domácího adresáře (bude "
+"doplněn)</li><li>jeden adresář na řádek</li><li>řádky ve špatném formátu "
+"budou ignorovány</li></ul>."
 
 #: apacheconf/forms.py:38
 msgid ""
@@ -52,19 +54,22 @@ msgid ""
 "<strong>/there/is/my/app</strong>. Path is without your home directory"
 msgstr ""
 "<br /><strong>~/&lt;vaše cesta&gt;</strong> - Jeden adresář na řádek. Formát "
-"<strong>/tady/je/moje/app</strong>. Cesta bez vašeho domácího adresáře (bude doplněn)"
+"<strong>/tady/je/moje/app</strong>. Cesta bez vašeho domácího adresáře (bude "
+"doplněn)"
 
 #: apacheconf/forms.py:39
 msgid ""
 "<br />Python virtual environment. You can find yours in '<strong>~/"
 "virtualenvs/&lt;selected_virtualenv&gt;</strong>'. Be free create new one."
 msgstr ""
-"<br />Pythoní virtuální prostředí. Najdete je v '<strong>~/"
-"virtualenvs/&lt;selected_virtualenv&gt;</strong>'. Můžete si vytvořit vlastní."
+"<br />Pythoní virtuální prostředí. Najdete je v '<strong>~/virtualenvs/&lt;"
+"selected_virtualenv&gt;</strong>'. Můžete si vytvořit vlastní."
 
 #: apacheconf/forms.py:40
 msgid "<br />One IP per line. If it is blank, no limitation will be applied."
-msgstr "<br />Jedna IP adresa na řádek. Pokud je pole prázdné, nebudou se aplikovat žádné limity."
+msgstr ""
+"<br />Jedna IP adresa na řádek. Pokud je pole prázdné, nebudou se aplikovat "
+"žádné limity."
 
 #: apacheconf/forms.py:43 apacheconf/forms.py:46 apacheconf/views.py:88
 #: apacheconf/views.py:137
@@ -92,8 +97,8 @@ msgid ""
 "VirtualHost domains, space separated; ie. 'rosti.cz www.rosti.cz '; First "
 "domain is taken as primary"
 msgstr ""
-"Domény oddělené mezerami; např. 'rosti.cz www.rosti.cz '; První "
-"doména je brána jako hlavní"
+"Domény oddělené mezerami; např. 'rosti.cz www.rosti.cz '; První doména je "
+"brána jako hlavní"
 
 #: apacheconf/models.py:21
 msgid "DocumentRoot"
@@ -209,10 +214,27 @@ msgstr "Chyba při mazání stránky"
 msgid "App has been %s"
 msgstr "Stránka byla %s"
 
+#: apacheconf/views.py:219
+#, fuzzy
+msgid "changed"
+msgstr "Uložit změny"
+
+#: apacheconf/views.py:219
+msgid "added"
+msgstr ""
+
 #: apacheconf/views.py:236
 #, python-format
 msgid "%s WSGI application"
 msgstr "%s WSGI aplikace"
+
+#: apacheconf/views.py:236
+msgid "Modify"
+msgstr ""
+
+#: apacheconf/views.py:236
+msgid "Add"
+msgstr ""
 
 #: apacheconf/views.py:263
 msgid "Request for reloading has been sent"
@@ -636,8 +658,8 @@ msgstr "Schránka ve formátu jméno@doména"
 msgid "Given username already exists"
 msgstr "Jméno už existuje"
 
-#: emails/forms.py:49 ftps/models.py:50 templates/info.html:18 ftps/models.py:26
-#: templates/master.html:29 useradmin/forms.py:31
+#: emails/forms.py:49 ftps/models.py:26 ftps/models.py:50
+#: templates/info.html:18 templates/master.html:29 useradmin/forms.py:31
 msgid "Username"
 msgstr "Uživatelské jméno"
 
@@ -658,8 +680,9 @@ msgid "Homedir"
 msgstr "Domácí adresář"
 
 #: emails/models.py:13
-msgid "Smazat?"
-msgstr ""
+#, fuzzy
+msgid "Remove"
+msgstr "Vymazáno"
 
 #: emails/models.py:24
 msgid "Alias (origin)"
@@ -823,7 +846,7 @@ msgstr ""
 msgid "Faktury"
 msgstr ""
 
-#: invoices/models.py:74
+#: invoices/models.py:74 invoices/views.py:297
 msgid "Co"
 msgstr ""
 
@@ -875,46 +898,39 @@ msgstr ""
 msgid "Upravit položku fakturu"
 msgstr ""
 
-#: invoices/views.py:297
-msgid "<th>Co</th>"
-msgstr ""
-
 #: invoices/views.py:298
-msgid "<th>Množství</th>"
+msgid "Množství"
 msgstr ""
 
 #: invoices/views.py:299
-msgid "<th>Cena za j.</th>"
+msgid "Cena za j."
 msgstr ""
 
 #: invoices/views.py:300
-msgid "<th>Cena za všechno</th>"
+msgid "Cena za všechno"
 msgstr ""
 
-#: invoices/views.py:301
-msgid "<th>Akce</th>"
+#: invoices/views.py:301 templates/invoices.html:60 templates/requests.html:16
+msgid "Akce"
 msgstr ""
 
 #: invoices/views.py:311
-#, python-format
-msgid ""
-"<td><a href=\"/admin/invoices/item/%d/delete/\" class=\"deletelink\">Smazat</"
-"a></td>"
+msgid "Smazat"
 msgstr ""
 
-#: invoices/views.py:333
+#: invoices/views.py:332
 msgid "<h1>Statistika faktůr</h1>"
 msgstr ""
 
-#: invoices/views.py:336
+#: invoices/views.py:335
 msgid "<h1>Statistika faktůr po jednotlivých letech</h1>"
 msgstr ""
 
-#: invoices/views.py:338
+#: invoices/views.py:337
 msgid "<tr><th>Rok</th><th>Počet faktůr</th><th>Celková částka</th></tr>"
 msgstr ""
 
-#: invoices/views.py:367 invoices/views.py:408
+#: invoices/views.py:366 invoices/views.py:407
 msgid "Invoice not found"
 msgstr ""
 
@@ -981,7 +997,9 @@ msgstr "Opravte si prosím chyby ve formuláři"
 
 #: templates/add_site.html:76
 msgid "Those domains are not set or already used by another app or you"
-msgstr "Tyto domény nelze použít, protože nejsou zadány v sekci domény nebo je používá jiná aplikace"
+msgstr ""
+"Tyto domény nelze použít, protože nejsou zadány v sekci domény nebo je "
+"používá jiná aplikace"
 
 #: templates/admin.html:22 templates/apache.html:5 templates/boxes.html:5
 #: templates/db.html:5 templates/domains.html:5 templates/info.html:5
@@ -1041,13 +1059,14 @@ msgid ""
 "                            "
 msgstr ""
 "\n"
-"                                Většina služeb závisí na doméně, dobrý"
-"místem kde začít je tedy\n"
+"                                Většina služeb závisí na doméně, dobrýmístem "
+"kde začít je tedy\n"
 "                            "
 
 #: templates/admin.html:74
-msgid "správa domén"
-msgstr ""
+#, fuzzy
+msgid "domain managment"
+msgstr "Název domény"
 
 #: templates/admin.html:93 templates/master.html:9
 msgid "Master panel"
@@ -1195,7 +1214,8 @@ msgstr "Smazat"
 msgid ""
 "Crap! No web found. However, you can add one with the menu on left side."
 msgstr ""
-"Žádný web nebo aplikace ještě nebyly přidány, můžete to napravit v levém menu."
+"Žádný web nebo aplikace ještě nebyly přidány, můžete to napravit v levém "
+"menu."
 
 #: templates/bill.html:5
 msgid "Administrace > Money movements"
@@ -1285,8 +1305,7 @@ msgstr "Vytvořeno"
 msgid ""
 "Oh no, you still haven't created any e-mail box, but don't worry: you can "
 "use the menu on left side to fix that."
-msgstr ""
-"Ještě nebyl přidaný žádný e-mail, ale můžete to napravit v levém menu."
+msgstr "Ještě nebyl přidaný žádný e-mail, ale můžete to napravit v levém menu."
 
 #: templates/db.html:5
 msgid "databases"
@@ -1309,7 +1328,8 @@ msgstr "Akce"
 msgid ""
 "You don't have any database, but don't worry! You can add some by the panel "
 "on left side."
-msgstr "Ještě nebla přidána žádná databáze, ale můžete to napravit v levém menu."
+msgstr ""
+"Ještě nebla přidána žádná databáze, ale můžete to napravit v levém menu."
 
 #: templates/domains.html:44
 msgid "List of your domains"
@@ -1463,10 +1483,6 @@ msgstr ""
 
 #: templates/invoices.html:59
 msgid "Celková částka"
-msgstr ""
-
-#: templates/invoices.html:60 templates/requests.html:16
-msgid "Akce"
 msgstr ""
 
 #: templates/invoices.html:73

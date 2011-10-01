@@ -32,7 +32,7 @@ msgstr ""
 "<br /> Domény oddělujte mezerami, například 'rosti.cz www.rosti.cz' apod."
 "První doména je hlavní."
 
-#: apacheconf/forms.py:15 ftps/models.py:51 templates/ftps.html:22
+#: apacheconf/forms.py:15 ftps/models.py:51 templates/ftps.html:22 ftps/models.py:27
 msgid "Directory"
 msgstr "Adresář"
 
@@ -636,7 +636,7 @@ msgstr "Schránka ve formátu jméno@doména"
 msgid "Given username already exists"
 msgstr "Jméno už existuje"
 
-#: emails/forms.py:49 ftps/models.py:50 templates/info.html:18
+#: emails/forms.py:49 ftps/models.py:50 templates/info.html:18 ftps/models.py:26
 #: templates/master.html:29 useradmin/forms.py:31
 msgid "Username"
 msgstr "Uživatelské jméno"
@@ -724,14 +724,6 @@ msgstr "Přidat přesměrování"
 #: emails/views.py:245
 msgid "Add redirect"
 msgstr "Přidat přesměrování"
-
-#: ftps/models.py:26
-msgid "Username"
-msgstr "Přihlašovací jméno"
-
-#: ftps/models.py:27
-msgid "Directory"
-msgstr "Adresář"
 
 #: ftps/models.py:38 ftps/models.py:70 useradmin/forms.py:53
 msgid "You have to fill second password for check"
@@ -1063,7 +1055,7 @@ msgstr ""
 
 #: templates/admin.html:94
 msgid "Last 20 server's request"
-msgstr "Poslední 20 požadavků na server"
+msgstr "Poslední 20 požadavků"
 
 #: templates/admin.html:95
 msgid "Incomed payments"
@@ -1303,7 +1295,7 @@ msgstr "databáze"
 #: templates/db.html:38
 #, python-format
 msgid "List of %(dbtype)s databases"
-msgstr "Seznam %(dbtype) databází"
+msgstr "Seznam %(dbtype)s databází"
 
 #: templates/db.html:42
 msgid "Database name"

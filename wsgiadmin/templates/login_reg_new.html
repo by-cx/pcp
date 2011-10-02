@@ -1,0 +1,361 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% trans "Registration/Login" %}</title>
+    <link rel="stylesheet/less" type="text/css" href="{{ STATIC_URL }}cssng/style.less">
+    <script src="{{ STATIC_URL }}js/less-1.1.3.min.js" type="text/javascript"></script>
+</head>
+<body>
+
+<div id="container">
+    <div id="top">
+        <h1>{% trans "Administration" %} - {{ SERVER_NAME }}</h1>
+    </div>
+
+    <div id="col1">
+        <div id="col1-wrapper">
+            <h2>{% trans "Registration" %}</h2>
+
+            <form action="{% url wsgiadmin.useradmin.views.reg %}" method="post" id="regform">
+                {% csrf_token %}
+                <h3>{% trans "Contant inforations" %}</h3>
+
+                <table>
+                    {% if form1 %}
+                        {{ form1.as_table }}
+                    {% else %}
+                        <tr>
+                            <th><label for="id_company">Název firmy:</label>
+                            </th>
+                            <td>
+                                <input id="id_company" type="text" name="company" maxlength="250"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><label for="id_name">Jméno a příjmení *:</label>
+                            </th>
+                            <td>
+                                <input id="id_name" type="text" name="name" maxlength="250"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><label for="id_street">Uliče a č.p. *:</label>
+                            </th>
+                            <td>
+                                <input id="id_street" type="text" name="street" maxlength="250"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><label for="id_city">Město *:</label></th>
+                            <td>
+                                <input id="id_city" type="text" name="city" maxlength="250"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><label for="id_city_num">PSČ *:</label></th>
+                            <td>
+                                <input id="id_city_num" type="text" name="city_num" maxlength="6"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><label for="id_ic">IČ:</label></th>
+                            <td>
+                                <input id="id_ic" type="text" name="ic" maxlength="50"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><label for="id_dic">DIČ:</label></th>
+                            <td>
+                                <input id="id_dic" type="text" name="dic" maxlength="50"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><label for="id_email">Email *:</label></th>
+                            <td>
+                                <input id="id_email" type="text" name="email" maxlength="250"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><label for="id_phone">Telefon/Mobil *:</label>
+                            </th>
+                            <td>
+                                <input id="id_phone" type="text" name="phone" maxlength="30"/>
+                            </td>
+                        </tr>
+                    {% endif %}
+                </table>
+
+                <br/>
+
+                <h3>{% trans "Přihlašovací informace" %}</h3>
+
+                <table>
+                    {% if form2 %}
+                        {{ form2.as_table }}
+                    {% else %}
+                        <tr>
+                            <th>
+                                <label for="id_username">Uživatelské jméno *:</label>
+                            </th>
+                            <td>
+                                <input id="id_username" type="text" name="username" maxlength="30"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <label for="id_password1">Password *:</label>
+                            </th>
+                            <td>
+                                <input type="password" name="password1" id="id_password1"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <label for="id_password2">Password again *:</label>
+                            </th>
+                            <td>
+                                <input type="password" name="password2" id="id_password2"/>
+                            </td>
+                        </tr>
+                    {% endif %}
+                </table>
+
+                <h3>{% trans "Platby" %}</h3>
+
+                <table>
+                    {% if form3 %}
+                        {{ form3.as_table }}
+                    {% else %}
+                        <tr>
+                            <th><label for="id_pay_method"></label></th>
+                            <td><select name="pay_method" id="id_pay_method">
+                                <option value="per_web">Za každou aplikaci (60Kč/app/měsíc)</option>
+                                <option value="fee">Paušální poplatek (200 Kč/196 MB RAM)</option>
+                            </select></td>
+                        </tr>
+                    {% endif %}
+                </table>
+
+                <table style="border: 0;">
+                    <tr>
+                        <th></th>
+                        <td>
+                            <input type="submit" value="{% trans "Registrovat" %}" class="submit" class="submit"/><br/><em>{% trans 'Registrací souhlasíte se' %}
+                            <a href="{{ CONTRACT_URL }}">{% trans 'smluvními podmínkami' %}</a></em>
+                        </td>
+                    </tr>
+                </table>
+
+            </form>
+        </div>
+    </div>
+    <div id="col2">
+        <div id="col2-wrapper">
+            <h2>Přihlášení</h2>
+
+            <form action="{% url django.contrib.auth.views.login %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ next }}">
+                {% if form.errors %}
+                    <div class="notification error png_bg">
+                        <div>
+                            {% trans "Špatně zadané uživatelské jméno nebo heslo. Zkuste to prosím znovu." %}
+                        </div>
+                    </div>
+                {% endif %}
+                <table>
+                    <tr>
+                        <th>
+                            <label for="id_username">{% trans "Uživatelské jméno" %}</label>
+                        </th>
+                        <td>
+                            <input id="id_username" type="text" name="username" maxlength="30" class="text-input"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><label for="id_password">{% trans "Heslo" %}</label>
+                        </th>
+                        <td>
+                            <input type="password" name="password" id="id_password" class="text-input"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th></th>
+                        <td>
+                            <input class="button" type="submit" value="{% trans "Přihlásit" %}"/>
+                        </td>
+                    </tr>
+                </table>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+{% if form2 %}
+                                {{ form2.as_table }}
+                            {% else %}
+                                <tr>
+                                    <th>
+                                        <label for="id_username">Uživatelské jméno *:</label>
+                                    </th>
+                                    <td>
+                                        <input id="id_username" type="text" name="username" maxlength="30"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        <label for="id_password1">Password *:</label>
+                                    </th>
+                                    <td>
+                                        <input type="password" name="password1" id="id_password1"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        <label for="id_password2">Password again *:</label>
+                                    </th>
+                                    <td>
+                                        <input type="password" name="password2" id="id_password2"/>
+                                    </td>
+                                </tr>
+                            {% endif %}
+
+
+</body>
+</html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="cs">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta http-equiv="content-language" content="cs" />
+	<meta name="author" content="" />
+	<meta name="robots" content="index, follow" />
+	<meta name="keywords" content="Hosti.cz" />
+	<meta name="description" content="Hosti.cz" />
+	<link type="text/css" media="all" href="/m/style/style.css" rel="stylesheet" />
+
+	<title>{% trans "Administration" %} / {{ SERVER_NAME }}</title>
+
+
+</head>
+<body class="registrace">
+	<div id="main">
+		<div id="main-inside">
+			<h1><strong>{% trans "Administration" %}</strong> / {{ SERVER_NAME }}</h1>
+			<div class="container">
+				<div class="container-top">
+					<div class="container-bottom">
+						<h2>Přihlášení</h2>
+						<form action="#" class="registrace-prihlaseni">
+							<p>
+								<label>Uživatelské jméno</label>
+								<input type="text" name="" class="input-text-registrace" />
+							</p>
+							<p>
+								<label>Heslo</label>
+								<input type="text" name="" class="input-text-registrace" />
+							</p>
+							<p>
+								<input type="submit" name="" class="input-submit-prihlasit" value="Přihlásit" />
+							</p>
+						</form>
+
+						<ul class="notifications">
+							<li class="error"><img src="images/ico-02.png" class="zavrit" alt="Zavřít" title="Kliknutím zavřete zprávu" />Lorem Ipsum is simply dummy text of the printing and typesetting industry</li>
+							<li class="info"><img src="images/ico-02.png" class="zavrit" alt="Zavřít" title="Kliknutím zavřete zprávu" />Lorem Ipsum is simply dummy text of the printing and typesetting industry</li>
+							<li class="warning"><img src="images/ico-02.png" class="zavrit" alt="Zavřít" title="Kliknutím zavřete zprávu" />Lorem Ipsum is simply dummy text of the printing and typesetting industry</li>
+							<li class="success"><img src="images/ico-02.png" class="zavrit" alt="Zavřít" title="Kliknutím zavřete zprávu" />Lorem Ipsum is simply dummy text of the printing and typesetting industry</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+			<div class="container">
+				<div class="container-top">
+					<div class="container-bottom">
+						<h2>Registrace</h2>
+						<form action="{% url wsgiadmin.useradmin.views.reg %}" method="post" class="registrace-prihlaseni">
+                             {% if form2 %}
+                                {{ form2.as_table }}
+                            {% else %}
+                                <p>
+                                        <label for="id_username">Uživatelské jméno *:</label>
+                                        <input id="id_username" type="text" name="username" maxlength="30"/>
+
+                                        <label for="id_password1">Password *:</label>
+                                    </th>
+                                    <td>
+                                        <input type="password" name="password1" id="id_password1"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        <label for="id_password2">Password again *:</label>
+                                    </th>
+                                    <td>
+                                        <input type="password" name="password2" id="id_password2"/>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                            {% if form1 %}
+                                {{ form1.as_p }}
+                            {% else %}
+                                <p>
+                                    <label for="id_company">Název firmy:</label>
+                                    <input id="id_company" type="text" name="company" maxlength="250"/>
+                                </p>
+                                <p>
+                                    <label for="id_name">Jméno a příjmení *:</label>
+                                    <input id="id_name" type="text" name="name" maxlength="250"/>
+                                </p>
+                                <p>
+                                    <label for="id_street">Ulice a č.p. *:</label>
+                                    <input id="id_street" type="text" name="street" maxlength="250"/>
+                                </p>
+                                <p>
+                                    <label for="id_city">Město *:</label>
+                                    <input id="id_city" type="text" name="city" maxlength="250"/>
+                                </p>
+                                <p>
+                                    <label for="id_city_num">PSČ *:</label>
+                                    <input id="id_city_num" type="text" name="city_num" maxlength="6"/>
+                                </p>
+                                <p>
+                                    <label for="id_ic">IČ:</label>
+                                    <input id="id_ic" type="text" name="ic" maxlength="50"/>
+                                </p>
+                                <p>
+                                    <label for="id_dic">DIČ:</label>
+                                    <input id="id_dic" type="text" name="dic" maxlength="50"/>
+                                </p>
+                                <p>
+                                    <label for="id_email">Email *:</label>
+                                    <input id="id_email" type="text" name="email" maxlength="250"/>
+                                </p>
+                                <p>
+                                    <label for="id_phone">Telefon/Mobil *:</label>
+                                    <input id="id_phone" type="text" name="phone" maxlength="30" />
+                                </p>
+                            {% endif %}
+							<p>
+								<input type="submit" name="" class="input-submit-registrovat" value="Registrovat" />
+							</p>
+							<p class="help"><a href="#">Zapoměl jsem heslo</a> | <a href="#">Přihlášení</a></p>
+						</form>
+
+						<ul class="notifications">
+							<li class="error"><img src="images/ico-02.png" class="zavrit" alt="Zavřít" title="Kliknutím zavřete zprávu" />Lorem Ipsum is simply dummy text of the printing and typesetting industry</li>
+							<li class="info"><img src="images/ico-02.png" class="zavrit" alt="Zavřít" title="Kliknutím zavřete zprávu" />Lorem Ipsum is simply dummy text of the printing and typesetting industry</li>
+							<li class="warning"><img src="images/ico-02.png" class="zavrit" alt="Zavřít" title="Kliknutím zavřete zprávu" />Lorem Ipsum is simply dummy text of the printing and typesetting industry</li>
+							<li class="success"><img src="images/ico-02.png" class="zavrit" alt="Zavřít" title="Kliknutím zavřete zprávu" />Lorem Ipsum is simply dummy text of the printing and typesetting industry</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="clear"></div>
+		</div>
+	</div>
+</body>
+</html>

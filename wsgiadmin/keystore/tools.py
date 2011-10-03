@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from datetime import datetime
+import datetime
 from wsgiadmin.keystore.models import store
 
 def kget(key, default=None):
@@ -23,7 +23,7 @@ def kset(key, value, expire=0):
     """
     try:
         ik = store.objects.get(key=key)
-        ik.date_write = datetime.today()
+        ik.date_write = datetime.datetime.today()
     except store.DoesNotExist:
         ik = store(key=key)
 

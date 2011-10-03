@@ -3,13 +3,19 @@
 	margin: 0;
 	padding: 0;
 	list-style-type: none;
+	outline: none;
 }
 body {
+	background: #fff;
 	font-family: Helvetica, Arial, sans-serif;
 	font-size: 12px;
 }
+.clear {
+	clear: both;
+}
 a {
 	color: #666;
+	border: 0;
 }
 a:hover {
 	text-decoration: none;
@@ -59,6 +65,9 @@ a:hover {
 #main {
 	position: relative;
 }
+.registrace {
+	background: url(/m/images/bg-body-registrace.jpg) repeat-x top;
+}
 /*--------------------------------------------------------------------------------------------------------
 	Header
 --------------------------------------------------------------------------------------------------------*/
@@ -67,6 +76,7 @@ a:hover {
 	height: 145px;
 	position: relative;
 	overflow: hidden;
+	border-bottom: solid 5px #2d3238;
 }
 #header #logo {
 	position: absolute;
@@ -122,65 +132,60 @@ a:hover {
 	margin: 0 30px 0 0;
 	padding: 0 0 0 30px;
 	width: 100%;
-	height: 40px;
-	border-bottom: solid 5px #83af1b;
+	height: 31px;
 	position: absolute;
 	left: 0;
-	bottom: 0;
+	bottom: 15px;
 }
 #header #main-menu li {
-	margin: 0 3px 0 0;
-	height: 40px;
+	margin: 0 5px 0 0;
+	height: 30px;
 	float: left;
-	line-height: 42px;
+	line-height: 31px;
 	text-transform: uppercase;
 	font-size: 11px;
-	font-weight: bold;
 }
 #header #main-menu li a {
 	background: url(/m/images/bg-main-menu-li-left-a.jpg) no-repeat left top;
 	padding: 0 0 0 20px;
-	height: 40px;
+	height: 31px;
 	float: left;
 	text-decoration: none;
-	color: #444;
-	text-shadow: 0 0 30px #000;
+	color: #f2f2f2;
 }
 #header #main-menu li a span {
 	background: url(/m/images/bg-main-menu-li-right-a.jpg) no-repeat right top;
 	width: 20px;
-	height: 40px;
+	height: 31px;
 	float: right;
 }
 #header #main-menu li a:hover {
 	background: url(/m/images/bg-main-menu-li-left.jpg) no-repeat left top;
 	padding: 0 0 0 20px;
-	height: 40px;
+	height: 31px;
 	float: left;
 	text-decoration: none;
 	color: #f2f2f2;
-	text-shadow: 0 0 30px #000;
 }
 #header #main-menu li a:hover span {
 	background: url(/m/images/bg-main-menu-li-right.jpg) no-repeat right top;
 	width: 20px;
-	height: 40px;
+	height: 31px;
 	float: right;
 	color: #444;
 }
 #header #main-menu li.active a {
 	background: url(/m/images/bg-main-menu-li-left.jpg) no-repeat left top;
 	padding: 0 0 0 20px;
-	height: 40px;
+	height: 31px;
 	float: left;
 	text-decoration: none;
 	color: #f2f2f2;
-	text-shadow: 0 0 30px #000;
 }
 #header #main-menu li.active a span {
 	background: url(/m/images/bg-main-menu-li-right.jpg) no-repeat right top;
 	width: 20px;
-	height: 40px;
+	height: 31px;
 	float: right;
 	color: #444;
 }
@@ -199,83 +204,26 @@ a:hover {
 	margin: 0 0 0 30px;
 }
 #sidebar ul {
-	margin: 30px 0;
+	margin: 30px 0 30px 0;
 }
 #sidebar ul li a {
-	background: #fff;
-	/* fallback */
-  	background-color: #e1e1e1;
-  
-  	/* Safari 4-5, Chrome 1-9 */
-  	background: -webkit-gradient(linear, left top, right top, from(#e1e1e1), to(#F2F2F2));
-  
-  	/* Safari 5.1, Chrome 10+ */
-  	background: -webkit-linear-gradient(left, #e1e1e1, #F2F2F2);
-  
-  	/* Firefox 3.6+ */
-  	background: -moz-linear-gradient(left, #e1e1e1, #F2F2F2);
-  
-  	/* IE 10 */
-  	background: -ms-linear-gradient(left, #e1e1e1, #F2F2F2);
-  
-  	/* Opera 11.10+ */
-  	background: -o-linear-gradient(left, #e1e1e1, #F2F2F2);
-	margin: 0 0 3px 0;
+	background: url(/m/images/bg-sidebar-menu-a.png) no-repeat 0 0;
+	margin: 0 0 5px 0;
 	padding: 0 0 0 20px;
-	height: 40px;
-	line-height: 40px;
-	font-weight: bold;
+	height: 30px;
+	line-height: 30px;
 	font-size: 11px;
 	text-transform: uppercase;
 	display: block;
 	text-decoration: none;
-	-webkit-border-top-left-radius: 5px;
-	-webkit-border-bottom-left-radius: 5px;
-	-moz-border-radius-topleft: 5px;
-	-moz-border-radius-bottomleft: 5px;
-	border-top-left-radius: 5px;
-	border-bottom-left-radius: 5px;
+	color: #f2f2f2;
 }
 #sidebar ul li a:hover {
-	background: #fff;
-	/* fallback */
-  	background-color: #6F950E;
-  
-  	/* Safari 4-5, Chrome 1-9 */
-  	background: -webkit-gradient(linear, left top, right top, from(#6F950E), to(#A4D931));
-  
-  	/* Safari 5.1, Chrome 10+ */
-  	background: -webkit-linear-gradient(left, #6F950E, #A4D931);
-  
-  	/* Firefox 3.6+ */
-  	background: -moz-linear-gradient(left, #6F950E, #A4D931);
-  
-  	/* IE 10 */
-  	background: -ms-linear-gradient(left, #6F950E, #A4D931);
-  
-  	/* Opera 11.10+ */
-  	background: -o-linear-gradient(left, #6F950E, #A4D931);
+	background: url(/m/images/bg-sidebar-menu-hover.png) no-repeat 0 0;
   	color: #f2f2f2;
 }
 #sidebar ul li.active a {
-	background: #fff;
-	/* fallback */
-  	background-color: #6F950E;
-  
-  	/* Safari 4-5, Chrome 1-9 */
-  	background: -webkit-gradient(linear, left top, right top, from(#6F950E), to(#A4D931));
-  
-  	/* Safari 5.1, Chrome 10+ */
-  	background: -webkit-linear-gradient(left, #6F950E, #A4D931);
-  
-  	/* Firefox 3.6+ */
-  	background: -moz-linear-gradient(left, #6F950E, #A4D931);
-  
-  	/* IE 10 */
-  	background: -ms-linear-gradient(left, #6F950E, #A4D931);
-  
-  	/* Opera 11.10+ */
-  	background: -o-linear-gradient(left, #6F950E, #A4D931);
+	background: url(/m/images/bg-sidebar-menu-hover.png) no-repeat 0 0;
   	color: #f2f2f2;
 }
 /*--------------------------------------------------------------------------------------------------------
@@ -354,8 +302,8 @@ a:hover {
 }
 #content form .input-text {
 	padding: 7px 2px;
-	width: 400px;
-	border: solid 1px #999;
+	width: 300px;
+	border: solid 1px #c2c2c2;
 	/* fallback */
   	background-color: #f2f2f2;
  	/* Safari 4-5, Chrome 1-9 */
@@ -372,11 +320,17 @@ a:hover {
 	-moz-border-radius: 4px;
 	border-radius: 4px;
 }
+#content form .input-text:hover {
+	border: solid 1px #959595;
+}
+#content form .input-text:focus {
+	border: solid 1px #959595;
+}
 #content form .textarea {
 	padding: 7px 2px;
-	width: 600px;
+	width: 500px;
 	height: 150px;
-	border: solid 1px #999;
+	border: solid 1px #c2c2c2;
 	font-family: Helvetica, Arial, sans-serif;
 	font-size: 12px;
 	/* fallback */
@@ -394,6 +348,12 @@ a:hover {
   	-webkit-border-radius: 4px;
 	-moz-border-radius: 4px;
 	border-radius: 4px;
+}
+#content form .textarea:hover {
+	border: solid 1px #959595;
+}
+#content form .textarea:focus {
+	border: solid 1px #959595;
 }
 #content form label {
 	margin: 0 0 5px 0;
@@ -452,13 +412,14 @@ a:hover {
 	margin: 0 0 30px 0;
 	width: 100%;
 	border-collapse: collapse;
-	-webkit-border-top-left-radius: 8px;
-	-webkit-border-top-right-radius: 8px;
-	-moz-border-radius-topleft: 8px;
-	-moz-border-radius-topright: 8px;
-	border-top-left-radius: 8px;
-	border-top-right-radius: 8px;
+	-webkit-border-top-left-radius: 5px;
+	-webkit-border-top-right-radius: 5px;
+	-moz-border-radius-topleft: 5px;
+	-moz-border-radius-topright: 5px;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
 	overflow: hidden;
+	border-bottom: solid 10px #d7d7d7;
 }
 #content table tr th {
 	/* fallback */
@@ -473,12 +434,12 @@ a:hover {
   	background: -ms-linear-gradient(top, #a4d931, #6f950e);
   	/* Opera 11.10+ */
   	background: -o-linear-gradient(top, #a4d931, #6f950e);
-  	padding: 20px 20px;
+  	padding: 10px 20px;
   	text-align: left;
   	color: #f2f2f2;
 }
 #content table tr {
-	border-bottom: solid 1px #b7b6be;
+	border-bottom: solid 1px #d7d7d7;
 }
 #content table tr td {
 	/* fallback */
@@ -493,12 +454,12 @@ a:hover {
   	background: -ms-linear-gradient(top, #f2f2f2, #e8e7ef);
   	/* Opera 11.10+ */
   	background: -o-linear-gradient(top, #f2f2f2, #e8e7ef);
-	padding: 10px 20px 5px 20px;
-	border-right: solid 1px #dedde5;
+	padding: 10px 20px 10px 20px;
+	border-right: solid 1px #d7d7d7;
 }
 #content table .akce {
 	margin: 0;
-	height: 30px;
+	height: 23px;
 	min-width: 80px;
 }
 #content table .akce li a {
@@ -514,8 +475,8 @@ a:hover {
   	background: -ms-linear-gradient(top, #f4f5fa, #dfdde2);
   	/* Opera 11.10+ */
   	background: -o-linear-gradient(top, #f4f5fa, #dfdde2);
-  	margin: 0 5px 5px 0;
-	padding: 5px 5px 3px 5px;
+  	margin: 0 5px 0 0;
+	padding: 2px 2px 0 2px;
 	-webkit-border-radius: 5px;
 	-moz-border-radius: 5px;
 	border-radius: 5px;
@@ -561,10 +522,10 @@ a:hover {
 	border: solid 1px #fb9ca4;
 	color: #430006;
 }
-#notifications {
+.notifications {
 	margin: 0 0 30px 0;
 }
-#notifications li {
+.notifications li {
 	background: #f2f2f2 !important;
 	margin: 0 0 10px 0;
 	padding: 10px 30px 10px 50px !important;
@@ -574,24 +535,149 @@ a:hover {
 	-moz-border-radius: 6px;
 	border-radius: 6px;
 }
-#notifications li.error {
+.notifications li.error {
 	background: #fdd1d1 url(/m/images/ico-error.png) no-repeat 20px 10px !important;
 	border: solid 1px #dc8787;
 }
-#notifications li.info {
+.notifications li.info {
 	background: #dde4fe url(/m/images/ico-info.png) no-repeat 20px 10px  !important;
 	border: solid 1px #94a8e8;
 }
-#notifications li.warning {
+.notifications li.warning {
 	background: #fefbd4 url(/m/images/ico-upozorneni.png) no-repeat 20px 10px  !important;
 	border: solid 1px #e6db54;
 }
-#notifications li.success {
+.notifications li.success {
 	background: url(/m/images/ico-ok.png) no-repeat 20px 10px  #d8fed1 !important;
 	border: solid 1px #8ad17f;
 }
-#notifications li .zavrit {
+.notifications li .zavrit {
 	position: absolute;
 	right: -5px;
 	top: -5px;
+	cursor: pointer;
+}
+/*--------------------------------------------------------------------------------------------------------
+	Registrace a prihlaseni
+--------------------------------------------------------------------------------------------------------*/
+.registrace {
+	background: url(/m/images/bg-body-registrace.jpg) repeat;
+}
+.registrace h1 {
+	margin: 0 0 40px 50px;
+	font-size: 40px;
+	color: #71808a;
+	font-weight: normal;
+	text-shadow: 0 1px 1px #fff;
+}
+.registrace h1 strong {
+	color: #3b4248;
+} 
+.registrace #main {
+	padding: 40px 0 150px 0;
+}
+.registrace #main-inside {
+	margin: 0 auto;
+	width: 800px;
+}
+.container {
+	background: url(/m/images/bg-container.jpg) repeat-y center;
+	margin: 0 50px 10px 50px;
+	width: 300px;
+	float: left;
+}
+.container-top {
+	background: url(/m/images/bg-container-top.jpg) no-repeat center 50px;
+}
+.container-bottom {
+	background: url(/m/images/bg-container-bottom.jpg) no-repeat center bottom;
+	padding: 0 0 30px 0;
+}
+.container h2 {
+	background: url(/m/images/bg-h2-registrace.jpg) no-repeat 0 0;
+	padding: 0 0 20px 0;
+	width: 300px;
+	height: 50px;
+	line-height: 55px;
+	text-align: center;
+	color: #f2f2f2;
+	font-size: 20px;
+	font-weight: normal;
+}
+.container label {
+	margin: 0 0 10px 20px;
+	color: #cfd8de;
+	font-size: 12px;
+	font-weight: bold;
+	display: block;
+}
+.container .input-text-registrace {
+	background: url(/m/images/bg-input-text-registrace.jpg) no-repeat 0 0;
+	margin: 0 0 10px 20px;
+	padding: 0 2px;
+	width: 256px;
+	height: 31px;
+	border: 0;
+	color: #cfd8de;
+}
+.container .input-submit-prihlasit {
+	background: url(/m/images/input-submit-prihlasit.jpg) no-repeat 0 0;
+	margin: 15px 0 15px 95px;
+	width: 110px;
+	height: 31px;
+	border: 0;
+	cursor: pointer;
+	font-size: 12px;
+	font-weight: bold;
+	color: #fff;
+}
+.container .input-submit-prihlasit:hover {
+	background: url(/m/images/input-submit-prihlasit.jpg) no-repeat 0 -31px;
+}
+.container .input-submit-registrovat {
+	background: url(/m/images/input-submit-registrovat.jpg) no-repeat 0 0;
+	margin: 15px 0 15px 85px;
+	width: 130px;
+	height: 31px;
+	border: 0;
+	cursor: pointer;
+	font-size: 12px;
+	font-weight: bold;
+	color: #fff;
+}
+.container .input-submit-registrovat:hover {
+	background: url(/m/images/input-submit-registrovat.jpg) no-repeat 0 -31px;
+}
+.container .help {
+	margin: 0 0 20px 0;
+	text-align: center;
+	color: #cfd8de;
+}
+.container .help a {
+	color: #cfd8de;
+}
+.container .help a:hover {
+	text-decoration: none;
+}
+.container .notifications {
+	margin: 0 20px !important;
+}
+.container .border-01 {
+	background: url(/m/images/border-01.jpg) no-repeat 0 0;
+	width: 300px;
+	height: 45px;
+}
+
+/*--------------------------------------------------------------------------------------------------------
+	Co jsem doplnil, přetížil
+--------------------------------------------------------------------------------------------------------*/
+
+#registrace-prihlaseni input {
+    background: url(/m/images/bg-input-text-registrace.jpg) no-repeat 0 0;
+	margin: 0 0 10px 20px;
+	padding: 0 2px;
+	width: 256px;
+	height: 31px;
+	border: 0;
+	color: #cfd8de;
 }

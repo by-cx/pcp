@@ -66,7 +66,7 @@ def add(request, dbtype):
                 return HttpResponseServerError(_('Unknown database type'))
             mr.add_db(db_obj.dbname, form.cleaned_data["password"])
 
-            return HttpResponseRedirect(reverse("wsgiadmin.db.views.show", kwargs=dict(dbtype=dbtype)))
+            return HttpResponseRedirect(reverse("db_list", kwargs=dict(dbtype=dbtype)))
         else:
             form.data['dbname'] = orig_dbname
     else:

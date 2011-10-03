@@ -1,6 +1,7 @@
 import anyjson
 
 from django.contrib.auth.decorators import login_required
+from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.utils.decorators import method_decorator
 from django.views.generic.list import ListView
@@ -15,6 +16,7 @@ class JsonResponse(HttpResponse):
 class RostiListView(ListView):
 
     paginate_by = 10
+    delete_url_reverse = ""
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
@@ -27,4 +29,5 @@ class RostiListView(ListView):
         context['menu_active'] = self.menu_active
         context['u'] = self.user
         context['superuser'] = self.request.user
+        context['delete_url'] = reverse(self.delete_url_reverse) if self.delete_url_reverse else "not-defined"
         return context

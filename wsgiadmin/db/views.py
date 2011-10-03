@@ -16,6 +16,7 @@ class DatabasesListView(RostiListView):
 
     menu_active = 'dbs'
     template_name = 'db.html'
+    delete_url_reverse = 'db_remove'
 
     def get(self, request, *args, **kwargs):
         if kwargs.get('dbtype', None) not in ('mysql', 'pgsql'):
@@ -33,7 +34,6 @@ class DatabasesListView(RostiListView):
 
     def get_context_data(self, **kwargs):
         context = super(DatabasesListView, self).get_context_data(**kwargs)
-        context['menu_active'] = self.menu_active
         context['dbtype'] = self.kwargs['dbtype']
         return context
 

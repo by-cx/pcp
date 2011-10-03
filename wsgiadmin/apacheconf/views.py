@@ -23,6 +23,7 @@ class AppsListView(RostiListView):
 
     menu_active = 'webapps'
     template_name = 'apache.html'
+    delete_url_reverse = 'remove_site'
 
     def get_queryset(self):
         return self.user.usersite_set.filter(removed=False).order_by("pub_date")

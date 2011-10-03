@@ -15,7 +15,6 @@ from django.conf import settings
 from wsgiadmin.domains.forms import RegistrationRequestForm
 from wsgiadmin.domains.models import Domain
 from wsgiadmin.requests.request import BindRequest
-#from wsgiadmin.keystore.tools import *
 from wsgiadmin.service.views import JsonResponse, RostiListView
 
 
@@ -23,6 +22,7 @@ class DomainsListView(RostiListView):
 
     menu_active = 'domains'
     template_name = 'domains.html'
+    delete_url_reverse = 'domain_remove'
 
     def get_queryset(self):
         return self.user.domain_set.all()

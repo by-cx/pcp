@@ -5,32 +5,11 @@
     {% trans "Administration" %} &gt; {{ dbtype }} {% trans "databases" %}
 {% endblock %}
 
+{% comment %}
 {% block jsblock %}
     {{ block.super }}
-
-    $(function() {
-        $("#objects_list .object_delete").click(function() {
-            var orly = confirm('{% trans "Are you sure?" %}');
-            el = $(this);
-            if (orly) {
-                var object_id = $(this).attr('rel');
-                $.ajax({
-                    url:"{% url db_remove dbtype=dbtype %}",
-                    type:"POST",
-                    data:{'object_id': object_id, 'csrfmiddlewaretoken':'{{ csrf_token }}' },
-                    dataType:"json",
-                    success:function(data) {
-                        if (data.result == 'OK') {
-                            el.parent().html(data.messages[1]);
-                        } else {
-                            alert(data.messages[1]);
-                        }
-                    }
-                });
-            }
-        });
-    });
 {% endblock %}
+{% endcomment %}
 
 {% block content %}
     <div id="message-box"></div>

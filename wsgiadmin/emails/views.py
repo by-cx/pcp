@@ -1,13 +1,11 @@
-# -*- coding: utf-8 -*-
-
 import crypt
 from datetime import date
+
 from django.contrib import messages
-from django.core.paginator import Paginator
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponseNotFound
+from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.template.context import RequestContext
 from django.utils.translation import ugettext_lazy as _, ugettext
 
@@ -21,6 +19,7 @@ class MailboxListView(RostiListView):
 
     menu_active = 'emails'
     template_name = 'boxes.html'
+    delete_url_reverse = 'mailbox_remove'
 
     def get_queryset(self, **kwargs):
         return Email.objects.filter(domain__in=self.user.domain_set.all(), remove=False)
@@ -118,8 +117,8 @@ def changePasswdBox(request, eid):
     return render_to_response('universal.html',
             {
             "form": form,
-            "title": _(u"Change password for e-mail box"),
-            "submit": _(u"Change password"),
+            "title": _("Change password for e-mail box"),
+            "submit": _("Change password"),
             "action": reverse("wsgiadmin.emails.views.changePasswdBox", args=[e.id]),
             "u": u,
             "superuser": superuser,
@@ -133,6 +132,7 @@ class EmailAliasListView(RostiListView):
 
     menu_active = 'emails'
     template_name = 'redirects.html'
+    delete_url_reverse = 'alias_remove'
 
     def get_queryset(self, **kwargs):
         return EmailRedirect.objects.filter(domain__in=self.user.domain_set.all())

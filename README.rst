@@ -41,7 +41,7 @@ DEPTS
 
 * South
 * psycopg2
-* django >= 1.2
+* django >= 1.3
 * django-uniform
 * django-debug-toolbar
 * anyjson

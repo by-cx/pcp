@@ -55,7 +55,7 @@
                         <li{% if menu_active == "webapps" %} class="active"{% endif %}><a href="{% url app_list %}">{% trans "Web apps" %}<span></span></a></li>
                         <li{% if menu_active == "dbs" %} class="active"{% endif %}><a href="{% url db_list %}">{% trans "Databases" %}<span></span></a></li>
                         <li{% if menu_active == "ftps" %} class="active"{% endif %}><a href="{% url wsgiadmin.ftps.views.show %}">{% trans "FTP" %}<span></span></a></li>
-                        <li{% if menu_active == "emails" %} class="active"{% endif %}><a href="{% url wsgiadmin.emails.views.boxes %}">{% trans "E-mails" %}<span></span></a></li>
+                        <li{% if menu_active == "emails" %} class="active"{% endif %}><a href="{% url mailbox_list %}">{% trans "E-mails" %}<span></span></a></li>
                         <li{% if menu_active == "settings" %} class="active"{% endif %}><a href="{% url wsgiadmin.users.views.ssh_passwd %}">{% trans "Settings" %}<span></span></a></li>
                     </ul>
                 </div>
@@ -154,9 +154,9 @@
                         <li>
                             <ul>
                                 <li><a href="{% url wsgiadmin.emails.views.addBox %}">{% trans "Add e-mail account" %}</a></li>
-                                <li><a href="{% url wsgiadmin.emails.views.boxes %}">{% trans "E-mail's accounts" %}</a></li>
+                                <li><a href="{% url mailbox_list %}">{% trans "E-mail's accounts" %}</a></li>
                                 <li><a href="{% url wsgiadmin.emails.views.addRedirect %}">{% trans "Add redirection" %}</a></li>
-                                <li><a href="{% url wsgiadmin.emails.views.redirects %}">{% trans "Redirections" %}</a></li>
+                                <li><a href="{% url redirect_list %}">{% trans "Redirections" %}</a></li>
                             </ul>
                         </li>
                     </ul>

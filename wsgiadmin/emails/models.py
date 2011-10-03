@@ -27,6 +27,7 @@ class EmailRedirect(models.Model):
 
     class Meta:
         db_table = 'emails_redirect'
+        unique_together = ( ('alias', 'domain', 'email'), )
 
     def __unicode__(self):
         return "%s to %s" % (self.alias, self.email)

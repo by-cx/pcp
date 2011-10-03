@@ -1,14 +1,14 @@
 from django.conf.urls.defaults import *
+from wsgiadmin.emails.views import mailbox_remove, alias_remove, MailboxListView, EmailAliasListView
 
 urlpatterns = patterns('wsgiadmin.emails.views',
-    (r'^boxes/([0-9]{1,10})/$', 'boxes'),
-    (r'^boxes/$', 'boxes'),
+    url(r'^boxes/$', MailboxListView.as_view(),  name='mailbox_list'),
     (r'^add_box/$', 'addBox'),
-    (r'^remove_box/([0-9]*)/$', 'removeBox'),
+    url(r'^remove_box/$', mailbox_remove, name='mailbox_remove'),
     (r'^change_passwd_box/([0-9]*)/$', 'changePasswdBox'),
-    (r'^redirects/([0-9]{1,10})/$', 'redirects'),
-    (r'^redirects/$', 'redirects'),
+
+    url(r'^redirects/$', EmailAliasListView.as_view(), name='redirect_list'),
     (r'^add_redirect/$', 'addRedirect'),
     (r'^change_redirect/([0-9]*)/$', 'changeRedirect'),
-    (r'^removeRedirect/([0-9]*)/$', 'removeRedirect'),
+    url(r'^removeRedirect/$', alias_remove, name='alias_remove'),
 )

@@ -4,16 +4,35 @@
 {% block title %}
     {% trans "Administration" %} &gt; {% trans "E-mail boxes" %}
 {% endblock %}
+
 {% block jsblock %}
-    function remove(what) {
-        $("#remove_"+what).hide()
-        $("#removed_"+what).load("{% url wsgiadmin.emails.views.removeBox 0 %}"+what)
-    }
+    {{ block.super }}
+
+    $(function() {
+        $("#objects_list .object_delete").click(function() {
+            var orly = confirm('{% trans "Are you sure?" %}');
+            el = $(this);
+            if (orly) {
+                var object_id = $(this).attr('rel');
+                $.ajax({
+                    url:"{% url mailbox_remove %}",
+                    type:"POST",
+                    data:{'object_id': object_id, 'csrfmiddlewaretoken':'{{ csrf_token }}' },
+                    dataType:"json",
+                    success:function(data) {
+                        if (data.result == 'OK') {
+                            el.parent().html(data.messages[1]);
+                        } else {
+                            alert(data.messages[1]);
+                        }
+                    }
+                });
+            }
+        });
+    });
 {% endblock %}
+
 {% block content %}
-
-    <h2>{% trans "E-mail boxes" %}</h2>
-
     <div id="message-box"></div>
 
     <h3>{% trans "List of e-mail boxes" %}</h3>
@@ -25,16 +44,21 @@
             <th>{% trans "Action" %}</th>
         </tr>
         </thead>
-        {% if emails %}
-            <tbody>
-            {% for email in emails.object_list %}
+        {% if object_list %}
+            <tbody id="objects_list">
+            {% for email in object_list %}
                 <tr>
                     <td>{{ email.login }}@{{ email.domain.name }}</td>
                     <td>{{ email.pub_date|date:"d.m.Y" }}</td>
                     <td>
-                        <a href="{% url wsgiadmin.emails.views.changePasswdBox email.id %}" title="{% trans "Edit" %}"><img src="{{ STATIC_URL }}icons/raster/gray_dark/key_stroke_16x16.png" alt="{% trans "Change password" %}"/></a>
-                        <a href="#" id="remove_{{email.id}}" onclick="if(confirm('{% trans "Are you sure?" %}')) {remove('{{email.id}}');};" class="bold"><img src="{{ STATIC_URL }}icons/raster/gray_dark/trash_fill_16x16.png" alt="Delete"/></a>
-                        <span id="removed_{{email.id}}" class="info"></span>
+                        <a href="{% url wsgiadmin.emails.views.changePasswdBox email.id %}" title="{% trans "Edit" %}">
+                            <img src="{{ STATIC_URL }}icons/raster/gray_dark/key_stroke_16x16.png" alt="{% trans "Change password" %}"/>
+                        </a>
+
+                        <a href="#" class="object_delete" title="{% trans "Delete" %}" rel="{{ email.id }}">
+                            <img src="{{ STATIC_URL }}icons/raster/gray_dark/trash_fill_16x16.png" alt="{% trans "Delete" %}"/>
+                        </a>
+                        <span id="removed_{{ email.id }}" class="info"></span>
                     </td>
                 </tr>
             {% endfor %}
@@ -43,25 +67,8 @@
             <tr>
                 <td colspan="3">
                     <div class="pagination">
-                        {% if emails.has_previous %}
-                            <a href="{% url wsgiadmin.emails.views.boxes 1 %}" title="{% trans "First page" %}">&laquo; {% trans "First" %}</a>{% endif %}
-                        {% if emails.has_previous %}
-                            <a href="{% url wsgiadmin.emails.views.boxes emails.previous_page_number %}" title="{% trans "Previous page" %}">&laquo; {% trans "Previous" %}</a>{% endif %}
-
-                        {% for p in paginator.page_range %}
-                            {% if p == num_page %}
-                                <a href="{% url wsgiadmin.emails.views.boxes p %}" class="number current" title="{{ p }}">{{ p }}</a>
-                            {% else %}
-                                <a href="{% url wsgiadmin.emails.views.boxes p %}" class="number" title="{{ p }}">{{ p }}</a>
-                            {% endif %}
-                        {% endfor %}
-
-                        {% if emails.has_next %}
-                            <a href="{% url wsgiadmin.emails.views.boxes emails.next_page_number %}" title="{% trans "Next page" %}">{% trans "Next" %} &raquo;</a>{% endif %}
-                        {% if emails.has_next %}
-                            <a href="{% url wsgiadmin.emails.views.boxes paginator.num_pages %}" title="{% trans "Last page" %}">{% trans "Last" %} &raquo;</a>{% endif %}
+                        {% include "paginator.html" %}
                     </div>
-                    <div class="clear"></div>
                 </td>
             </tr>
             </tfoot>
@@ -73,5 +80,4 @@
             </tbody>
         {% endif %}
     </table>
-
 {% endblock %}

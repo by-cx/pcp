@@ -14,31 +14,17 @@ from django.utils.translation import ugettext_lazy as _, ugettext
 from wsgiadmin.emails.forms import FormEmail, FormEmailPassword, FormRedirect
 from wsgiadmin.emails.models import Email, EmailRedirect
 from wsgiadmin.requests.request import EMailRequest
+from wsgiadmin.service.views import JsonResponse, RostiListView
 
 
-@login_required
-def boxes(request, p=1):
-    u = request.session.get('switched_user', request.user)
-    superuser = request.user
-    p = int(p)
+class MailboxListView(RostiListView):
 
-    emails = list(Email.objects.filter(domain__in=u.domain_set.all(), remove=False))
-    paginator = Paginator(emails, 25)
+    menu_active = 'emails'
+    template_name = 'boxes.html'
 
-    if not paginator.count:
-        page = None
-    else:
-        page = paginator.page(p)
+    def get_queryset(self, **kwargs):
+        return Email.objects.filter(domain__in=self.user.domain_set.all(), remove=False)
 
-    return render_to_response("boxes.html",
-            {
-            "emails": page,
-            "paginator": paginator,
-            "num_page": p,
-            "u": u,
-            "superuser": superuser,
-            "menu_active": "emails",
-            }, context_instance=RequestContext(request))
 
 @login_required
 def addBox(request):
@@ -66,7 +52,7 @@ def addBox(request):
             er.create_mailbox(email)
 
             messages.add_message(request, messages.INFO, _('Box will be created in few minutes'))
-            return HttpResponseRedirect(reverse("wsgiadmin.emails.views.boxes"))
+            return HttpResponseRedirect(reverse("mailbox_list"))
     else:
         form = FormEmail()
         form.fields["xdomain"].choices = domains
@@ -86,24 +72,25 @@ def addBox(request):
 
 
 @login_required
-def removeBox(request, eid):
-    eid = int(eid)
-    u = request.session.get('switched_user', request.user)
-
+def mailbox_remove(request):
     try:
-        mail = Email.objects.get(domain__in=u.domain_set.all(), id=eid)
-    except Email.DoesNotExist:
-        return HttpResponseNotFound(_("Mailbox not found .("))
-    else:
-        mail.remove = True
-        mail.save()
+        object_id = request.POST['object_id']
+        u = request.session.get('switched_user', request.user)
 
-        er = EMailRequest(u, u.parms.mail_machine)
-        er.remove_mailbox(mail)
+        try:
+            mail = Email.objects.get(domain__in=u.domain_set.all(), id=object_id)
+        except EmailRedirect.DoesNotExist:
+            raise Exception("redirect doesn't exist, obviously")
+        else:
+            mail.remove = True
+            mail.save()
 
-        messages.add_message(request, messages.SUCCESS, _('Box has been deleted'))
-        return HttpResponseRedirect(reverse("wsgiadmin.emails.views.boxes"))
+            er = EMailRequest(u, u.parms.mail_machine)
+            er.remove_mailbox(mail)
 
+        return JsonResponse("OK", {1: ugettext("Mailbox was successfuly deleted")})
+    except Exception, e:
+        return JsonResponse("KO", {1: ugettext("Error during mailbox delete")})
 
 
 @login_required
@@ -124,7 +111,7 @@ def changePasswdBox(request, eid):
             email.password = crypt.crypt(form.cleaned_data["password1"], email.login)
             email.save()
             messages.add_message(request, messages.SUCCESS, _('Password has been changed'))
-            return HttpResponseRedirect(reverse("wsgiadmin.emails.views.boxes"))
+            return HttpResponseRedirect(reverse("mailbox_list"))
     else:
         form = FormEmailPassword(instance=e)
 
@@ -142,46 +129,31 @@ def changePasswdBox(request, eid):
     )
 
 
-@login_required
-def redirects(request, p=1):
-    u = request.session.get('switched_user', request.user)
-    superuser = request.user
-    p = int(p)
+class EmailAliasListView(RostiListView):
 
-    redirects = EmailRedirect.objects.filter(domain__in=u.domain_set.all())
-    paginator = Paginator(redirects, 25)
+    menu_active = 'emails'
+    template_name = 'redirects.html'
 
-    if not paginator.count:
-        page = None
-    else:
-        page = paginator.page(p)
-
-    return render_to_response("redirects.html",
-            {
-            "redirects": page,
-            "paginator": paginator,
-            "num_page": p,
-            "u": u,
-            "superuser": superuser,
-            "menu_active": "emails",
-            },
-        context_instance=RequestContext(request))
+    def get_queryset(self, **kwargs):
+        return EmailRedirect.objects.filter(domain__in=self.user.domain_set.all())
 
 
 @login_required
-def removeRedirect(request, rid):
-    u = request.session.get('switched_user', request.user)
-    superuser = request.user
-    rid = int(rid)
+def alias_remove(request):
+    try:
+        object_id = request.POST['object_id']
+        u = request.session.get('switched_user', request.user)
 
-    r = get_object_or_404(EmailRedirect, id=rid)
-    if r.domain.owner != u:
-        return HttpResponseForbidden(ugettext("Forbidden operation"))
+        try:
+            r = EmailRedirect.objects.get(id=object_id, domain__owner=u)
+        except EmailRedirect.DoesNotExist:
+            raise Exception("redirect doesn't exist, obviously")
+        else:
+            r.delete()
 
-    r.delete()
-
-    messages.add_message(request, messages.SUCCESS, _('Redirect has been removed'))
-    return HttpResponseRedirect(reverse("wsgiadmin.emails.views.redirects"))
+        return JsonResponse("OK", {1: ugettext("Email alias was successfuly deleted")})
+    except Exception, e:
+        return JsonResponse("KO", {1: ugettext("Error during alias delete")})
 
 
 @login_required
@@ -190,7 +162,7 @@ def changeRedirect(request, rid):
     superuser = request.user
     rid = int(rid)
 
-    r = get_object_or_404(redirect, id=rid)
+    r = get_object_or_404(EmailRedirect, id=rid)
     if r.domain.owner != u:
         return HttpResponseForbidden(ugettext("Forbidden operation"))
 
@@ -203,7 +175,7 @@ def changeRedirect(request, rid):
             fredirect.domain = get_object_or_404(u.domain_set, name=form.cleaned_data["_domain"])
             fredirect.save()
             messages.add_message(request, messages.SUCCESS, _('Redirect has been changed'))
-            return HttpResponseRedirect(reverse("wsgiadmin.emails.views.redirects"))
+            return HttpResponseRedirect(reverse("redirect_list"))
     else:
         form = FormRedirect(instance=r)
         form.fields["_domain"].choices = domains
@@ -238,7 +210,7 @@ def addRedirect(request):
             redirect.save()
 
             messages.add_message(request, messages.SUCCESS, _('Redirect has been added'))
-            return HttpResponseRedirect(reverse("wsgiadmin.emails.views.redirects"))
+            return HttpResponseRedirect(reverse("redirect_list"))
     else:
         form = FormRedirect()
         form.fields["_domain"].choices = domains

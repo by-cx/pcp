@@ -360,10 +360,11 @@ class EMailRequest(SSHHandler):
         self.run("chown email:email %s -R" % homedir)
         self.run("maildirmake %s" % maildir)
         self.run("chown email:email %s -R" % maildir)
-        self.run("maildirmake %s.Spam" % maildir)
-        self.run("chown email:email %s -R/Spam" % maildir)
+        self.run("maildirmake %s" % join(maildir, '.Spam'))
+        self.run("chown email:email %s -R" % join(maildir, 'Spam'))
 
     def remove_mailbox(self, email):
+        #TODO - check if delete isn't nasty
         maildir = join(config.maildir, email.domain.name, email.login)
         self.run("rm -rf %s" % maildir, plan_to=datetime.today() + timedelta(90))
 

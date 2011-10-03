@@ -74,8 +74,8 @@ def addBox(request):
     return render_to_response('universal.html',
             {
             "form": form,
-            "title": _(u"New e-mail"),
-            "submit": _(u"Create box"),
+            "title": _("New e-mail"),
+            "submit": _("Create box"),
             "action": reverse("wsgiadmin.emails.views.addBox"),
             "u": u,
             "superuser": superuser,
@@ -90,8 +90,11 @@ def removeBox(request, eid):
     eid = int(eid)
     u = request.session.get('switched_user', request.user)
 
-    mail = Email.objects.filter(domain__in=u.domain_set.all(), id=eid)[0]
-    if mail:
+    try:
+        mail = Email.objects.get(domain__in=u.domain_set.all(), id=eid)
+    except Email.DoesNotExist:
+        return HttpResponseNotFound(_("Mailbox not found .("))
+    else:
         mail.remove = True
         mail.save()
 
@@ -101,7 +104,6 @@ def removeBox(request, eid):
         messages.add_message(request, messages.SUCCESS, _('Box has been deleted'))
         return HttpResponseRedirect(reverse("wsgiadmin.emails.views.boxes"))
 
-    return HttpResponseNotFound("Mailbox not found .(")
 
 
 @login_required
@@ -110,7 +112,10 @@ def changePasswdBox(request, eid):
     u = request.session.get('switched_user', request.user)
     superuser = request.user
 
-    e = Email.objects.filter(domain__in=u.domain_set.all(), id=eid)[0]
+    try:
+        e = Email.objects.get(domain__in=u.domain_set.all(), id=eid)
+    except Email.DoesNotExist:
+        e = None
 
     if request.method == 'POST':
         form = FormEmailPassword(request.POST, instance=e)

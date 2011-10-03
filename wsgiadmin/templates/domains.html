@@ -17,7 +17,7 @@
                 $.ajax({
                     url:"{% url domain_remove %}",
                     type:"POST",
-                    data:{'object_id': domain, 'csrfmiddlewaretoken':'{{ csrf_token }}' },
+                    data:{'object_id': object_id, 'csrfmiddlewaretoken':'{{ csrf_token }}' },
                     dataType:"json",
                     success:function(data) {
                         if (data.result == 'OK') {

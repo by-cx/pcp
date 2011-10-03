@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
+from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.utils.translation import ugettext_lazy as _, ugettext
 from django.template.context import RequestContext
 
@@ -33,7 +33,8 @@ def domain_check(request, form, this_site=None):
     u = request.session.get('switched_user', request.user)
 
     form_domains = form.data["domains"].split() # domains typed in form
-    my_domains = [str(x.name) for x in u.domain_set.all()]
+    # whatever.count.of.dots.vanyli.net -> vanyli.net
+    my_domains = ['.'.join(x.name.split('.')[-2:]) for x in u.domain_set.all()]
 
     used_domains = []
     for tmp_domains in [one.domains.split() for one in UserSite.objects.filter(owner=u, removed=False) if one != this_site]:
@@ -42,7 +43,8 @@ def domain_check(request, form, this_site=None):
     error_domains = []
     for domain in form_domains:
         # Permission test
-        error = domain not in my_domains
+        sld_tld = '.'.join(domain.split('.')[-2:])
+        error = sld_tld not in my_domains
         if error and "%s - %s" % (domain, ugettext("Missing permission")) not in error_domains:
             error_domains.append("%s - %s" % (domain, ugettext("Missing permission")))
             continue

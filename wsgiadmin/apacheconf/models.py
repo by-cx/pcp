@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from constance import config
 
 from django.contrib.auth.models import User as user
@@ -8,12 +7,18 @@ from django.conf import settings
 
 from os.path import join
 
+SITE_TYPE_CHOICES = [
+    ("uwsgi", "uWSGI"),
+    ("modwsgi", "mod_wsgi"),
+    ("php", "PHP"),
+    ("static", "Static")
+]
+
 
 class UserSite(models.Model):
     pub_date = models.DateField(auto_now_add=True)
     end_date = models.DateField(blank=True, null=True)
-    type = models.CharField(_("Type"), max_length=20,
-        choices=[("uwsgi", "uWSGI"), ("modwsgi", "mod_wsgi"), ("php", "PHP"), ("static", "Static")])
+    type = models.CharField(_("Type"), max_length=20, choices=SITE_TYPE_CHOICES)
 
     domains = models.CharField(_("Domains"), max_length=1024,
         help_text=_("VirtualHost domains, space separated; ie. 'rosti.cz www.rosti.cz '; First domain is taken as primary"))
@@ -21,19 +26,19 @@ class UserSite(models.Model):
     documentRoot = models.CharField(_("DocumentRoot"), max_length=200, blank=True)
     htaccess = models.BooleanField(_(".htaccess"), default=True)
     indexes = models.BooleanField(_("Allow directory index"), default=True)
-    allow_ips = models.TextField(_("Whitelist"), default="", blank=True)
-    deny_ips = models.TextField(_("Blacklist"), default="", blank=True, help_text=_("One IP per one line"))
+    allow_ips = models.TextField(_("Whitelist"), blank=True)
+    deny_ips = models.TextField(_("Blacklist"), blank=True, help_text=_("One IP per one line"))
 
     script = models.CharField(_("Script"), max_length=100)
     processes = models.IntegerField(_("No. of proccesses"), default=1)
     threads = models.IntegerField(_("No. of threads"), default=5)
     virtualenv = models.CharField(_("Virtualenv"), default="default", max_length=100)
-    static = models.TextField(_("Static data path"), default="", blank=True)
-    python_path = models.TextField(_("Python path"), default="", blank=True)
+    static = models.TextField(_("Static data path"), blank=True)
+    python_path = models.TextField(_("Python path"), blank=True)
 
-    extra = models.TextField(_("Extra configuration"), blank=True, null=True, default="")
+    extra = models.TextField(_("Extra configuration"), blank=True, null=True)
 
-    removed = models.BooleanField(_("Removed"), default=False) # nezmizí dokud se nezaplatí
+    removed = models.BooleanField(_("Removed"), default=False) # nezmizi dokud se nezaplati
     owner = models.ForeignKey(user, verbose_name=_('Owner'))
 
     class Meta:
@@ -97,7 +102,7 @@ class UserSite(models.Model):
     @property
     def pay(self):
         """
-        Vypočítá cenu stránky za den včetně slevy
+        Vypocita cenu web/den vc. slevy
         """
         if self.owner.parms.fee:
             return 0

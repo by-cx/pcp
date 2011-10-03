@@ -1,7 +1,5 @@
 from os.path import join
 
-from wsgiadmin.settings import *
-from wsgiadmin.apacheconf.models import *
 from wsgiadmin.requests.request import SSHHandler, NginxRequest, ApacheRequest
 
 from django.conf import settings

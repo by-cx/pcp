@@ -1,5 +1,3 @@
-#TODO:Remove, put it in settings
-#^WUT?
 import logging
 
 from constance import config
@@ -14,9 +12,10 @@ from django.template.context import RequestContext
 from django.utils.translation import ugettext_lazy as _, ugettext
 from django.conf import settings
 
-from wsgiadmin.domains.models import Domain, form_registration_request
+from wsgiadmin.domains.forms import RegistrationRequestForm
+from wsgiadmin.domains.models import Domain
 from wsgiadmin.requests.request import BindRequest
-from wsgiadmin.keystore.tools import *
+#from wsgiadmin.keystore.tools import *
 from wsgiadmin.service.views import JsonResponse, RostiListView
 
 
@@ -65,7 +64,7 @@ def add(request):
     superuser = request.user
 
     if request.method == 'POST':
-        form = form_registration_request(request.POST)
+        form = RegistrationRequestForm(request.POST)
         if form.is_valid():
             name = form.cleaned_data["domain"]
 
@@ -87,7 +86,7 @@ def add(request):
             messages.add_message(request, messages.SUCCESS, _('Domain has been added'))
             return HttpResponseRedirect(reverse("domains_list"))
     else:
-        form = form_registration_request()
+        form = RegistrationRequestForm()
 
     return render_to_response('universal.html',
             {

@@ -36,23 +36,6 @@
     <div id="message-box"></div>
 
     <h2>{% trans "Web pages and apps" %}</h2>
-    <ul>
-        <li>
-            <a href="{% url wsgiadmin.apacheconf.views.add_static "0" %}">
-                {% trans "Add static web page" %}
-            </a>
-        </li>
-        <li>
-            <a href="{% url wsgiadmin.apacheconf.views.add_static "1" %}">
-                {% trans "Add PHP web page" %}
-            </a>
-        </li>
-        <li>
-            <a href="{% url app_wsgi %}">
-                {% trans "Add WSGI app" %}
-            </a>
-        </li>
-    </ul>
 
     <h3>{% trans "List of existing apps and webs" %}</h3>
     <table>

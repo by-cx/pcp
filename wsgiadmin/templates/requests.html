@@ -2,30 +2,38 @@
 {% load i18n %}
 
 {% block title %}
-	{% trans "Administrace > Souhrné informace" %}
+    {% trans "Administration" %} &gt; {% trans "Summary info" %}
 {% endblock %}
 
 {% block content %}
 
-<h2>{% trans "Posledních 20 požadavků" %}</h2>
+    {% with 20 as req_cnt %}
+        <h2>
+            {% blocktrans %}Posledních {{ req_cnt }} požadavků{% endblocktrans %}</h2>
+    {% endwith %}
 
-<table>
-	<tr>
-		<th>{% trans "Datum" %}</th>
-		<th>{% trans "Stav" %}</th>
-		<th>{% trans "Akce" %}</th>
-		<th>{% trans "Server" %}</th>
-		<th>{% trans "Návratový kód" %}</th>
-	</tr>
-{% for request in requests %}
-	<tr>
-		<td>{{ request.add_date }}</td>
-		<td>{{ request.done }}</td>
-		<td>{{ request.action }}</td>
-		<td>{{ request.machine }}</td>
-		<td>{{ request.retcode }}</td>
-	</tr>
-{% endfor %}
-</table>
+    <table>
+        <tr>
+            <th>{% trans "Date" %}</th>
+            <th>{% trans "Status" %}</th>
+            <th>{% trans "Action" %}</th>
+            <th>{% trans "Server" %}</th>
+            <th>{% trans "Return code" %}</th>
+        </tr>
+        {% for request in requests %}
+            <tr>
+                <td>{{ request.add_date }}</td>
+                <td>{% if request.done %}
+                    <img src="{{ STATIC_URL }}images/ico-ok.png" alt="{% trans "Request completed" %}"/>
+                {% else %}
+                    <img src="{{ STATIC_URL }}images/ico-01.png" alt="{% trans "Request did not run yet" %}"/>
+                {% endif %}
+                </td>
+                <td>{{ request.action }}</td>
+                <td>{{ request.machine }}</td>
+                <td>{{ request.retcode }}</td>
+            </tr>
+        {% endfor %}
+    </table>
 
 {% endblock %}

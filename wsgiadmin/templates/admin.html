@@ -16,15 +16,14 @@
     <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-ui-1.8.9.custom.min.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.cookie.js"></script>
     <script type="text/javascript">
-        {% block jsblock %}
-            var success_callback = function(data) {
-                if (data.result == 'OK') {
-                    el.parent().html(data.messages[1]);
-                } else {
-                    alert(data.messages[1]);
-                }
+        var delete_success_callback = function(data) {
+            if (data.result == 'OK') {
+                el.parent().html(data.messages[1]);
+            } else {
+                alert(data.messages[1]);
             }
-
+        }
+        {% block jsblock %}
             $(function() {
                 $("#objects_list .object_delete").click(function() {
                     var orly = confirm('{% trans "Are you sure?" %}');
@@ -34,9 +33,12 @@
                         $.ajax({
                             url: '{% if delete_url %}{{ delete_url }}{% else %}not-def{% endif %}',
                             type: "POST",
-                            data: {'object_id':object_id, 'csrfmiddlewaretoken':'{{ csrf_token }}' },
+                            data: {
+                                'object_id':object_id,
+                                'csrfmiddlewaretoken':'{{ csrf_token }}'
+                            },
                             dataType: "json",
-                            success: success_callback
+                            success: delete_success_callback
                         });
                     }
                 });

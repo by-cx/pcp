@@ -146,7 +146,7 @@ msgstr "Cesty ke statickým datům"
 
 #: apacheconf/models.py:32
 msgid "Python path"
-msgstr "Cesty k aplikacím"
+msgstr "Python path"
 
 #: apacheconf/models.py:34
 msgid "Extra configuration"
@@ -1074,7 +1074,7 @@ msgstr ""
 
 #: templates/admin.html:94
 msgid "Last 20 server's request"
-msgstr "Poslední 20 požadavků"
+msgstr "Posledních 20 požadavků"
 
 #: templates/admin.html:95
 msgid "Incomed payments"
@@ -1462,7 +1462,7 @@ msgid "Peníze z jednotlivých let"
 msgstr ""
 
 #: templates/invoices.html:51
-msgid "Seznam faktůr"
+msgid "Seznam faktur"
 msgstr ""
 
 #: templates/invoices.html:55

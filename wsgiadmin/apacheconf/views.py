@@ -63,7 +63,7 @@ def add_static(request, php="0"):
     superuser = request.user
     title = _("Static website") if php == "0" else _("PHP website")
     siteErrors = []
-    choices = [(d, d) for d in user_directories(u, True)]
+    choices = [(d, d) for d in user_directories(u, use_cache=True)]
 
     if request.method == 'POST':
         form = FormStatic(request.POST)
@@ -310,5 +310,5 @@ def refresh_userdirs(request):
     if not (request.method == 'POST' and request.is_ajax()):
         return HttpResponseForbidden('non ajax not allowed')
 
-    user_dirs = user_directories(request.session.get('switched_user', request.user), False)
+    user_dirs = user_directories(request.session.get('switched_user', request.user), use_cache=False)
     return JsonResponse('OK', user_dirs)

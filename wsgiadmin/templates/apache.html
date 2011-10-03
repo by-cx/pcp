@@ -13,8 +13,6 @@
 {% block content %}
     <div id="message-box"></div>
 
-    <h2>{% trans "Web pages and apps" %}</h2>
-
     <h3>{% trans "List of existing apps and webs" %}</h3>
     <table>
         <thead>
@@ -40,15 +38,15 @@
                         {% endif %}
                         {% if site.type == "uwsgi" or site.type == "modwsgi" %}
                             {% if site.type == "uwsgi" %}
-                                <a href="{% url wsgiadmin.apacheconf.views.restart site.id %}">
+                                <a href="{% url wsgiadmin.apacheconf.views.restart site.id %}" title="{% trans "Restart" %}">
                                     <img src="{{ STATIC_URL }}icons/raster/gray_dark/loop_16x16.png" alt="{% trans "Restart" %}"/>
                                 </a>
                             {% endif %}
-                            <a href="{% url wsgiadmin.apacheconf.views.app_wsgi site.id %}">
+                            <a href="{% url wsgiadmin.apacheconf.views.app_wsgi site.id %}" title="{% trans "Edit" %}">
                                 <img src="{{ STATIC_URL }}icons/raster/gray_dark/pen_alt_stroke_16x16.png" alt="{% trans "Edit" %}"/>
                             </a>
                         {% endif %}
-                        <a href="#" id="remove_{{ site.id }}" rel="{{ site.id }}" class="bold object_delete">
+                        <a href="#" id="remove_{{ site.id }}" rel="{{ site.id }}" class="bold object_delete" title="{% trans "Delete" %}">
                             <img src="{{ STATIC_URL }}icons/raster/gray_dark/trash_fill_16x16.png" alt="{% trans "Delete" %}"/>
                         </a>
                         <span id="removed_{{ site.id }}" class="info"></span>

@@ -29,5 +29,6 @@ class RostiListView(ListView):
         context['menu_active'] = self.menu_active
         context['u'] = self.user
         context['superuser'] = self.request.user
-        context['delete_url'] = reverse(self.delete_url_reverse) if self.delete_url_reverse else "not-defined"
+        if self.delete_url_reverse:
+            context['delete_url'] = reverse(self.delete_url_reverse)
         return context

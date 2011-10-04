@@ -327,7 +327,7 @@ class BindRequest(Service):
         except Machine.DoesNotExist:
             raise RequestException("Error: NS machine not found")
 
-        super(Service, self).__init__(user, machine, config.bind_init_script)
+        super(BindRequest, self).__init__(user, machine, config.bind_init_script)
 
     def mod_zone(self, domain):
         configfile = render_to_string("bind_zone.conf", {

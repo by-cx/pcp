@@ -37,7 +37,7 @@ class FormWsgi(ModelForm):
         self.fields['static'].help_text = _(u"<br />Format <strong>/url/ /path/to/media/</strong>, separated by space.<br /><ul><li>/path/to/media/ is path without your home directory</li><li>one directory per one line</li><li>wrong lines will be ignored</li></ul>.")
         self.fields['python_path'].help_text=_(u"<br /><strong>~/&lt;your_path&gt;</strong> - One directory per line. Format <strong>/there/is/my/app</strong>. Path is without your home directory")
         self.fields['virtualenv'].help_text= _(u"<br />Python virtual environment. You can find yours in '<strong>~/virtualenvs/&lt;selected_virtualenv&gt;</strong>'. Be free create new one.")
-        self.fields['allow_ips'].help_text = help_text=_(u"<br />One IP per line. If it is blank, no limitation will be applied.")
+        self.fields['allow_ips'].help_text = _(u"<br />One IP per line. If it is blank, no limitation will be applied.")
 
         wsgis = get_user_wsgis(self.user)
         wsgis_choices = [("", _("Not selected"))] + [(x, x) for x in wsgis]

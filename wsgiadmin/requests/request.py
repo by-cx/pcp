@@ -163,7 +163,7 @@ class SSHHandler(object):
             ret = None
 
             if request.action in ("run", "run|wipe"):
-                ret = self._run(data["cmd"])
+                ret = self._run(data["cmd"], data['stdin'])
             elif request.action == "write":
                 ret = self._write(data["filename"], data["content"])
             elif request.action == "unlink":

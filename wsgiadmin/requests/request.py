@@ -387,7 +387,7 @@ class PostgreSQLRequest(SSHHandler):
 
 class MySQLRequest(SSHHandler):
 
-    _default_cmd = "mysql -u root"
+    _default_cmd = settings.DEFAULT_MYSQL_COMMAND
 
     def add_db(self, db, password):
         self.run(stdin="CREATE DATABASE %s;" % db, instant=True)
@@ -421,13 +421,3 @@ class SystemRequest(SSHHandler):
 
     def passwd(self, password):
         self.run("/usr/sbin/chpasswd", stdin="%s:%s" % (self.user.username, password), wipe=True, instant=True)
-
-#TODO:E-mail request
-
-def main():
-    """
-    from wsgiadmin.requests.request import main
-    main()
-    """
-    sh = SSHHandler(None, None)
-    sh.commit()

@@ -522,10 +522,10 @@ a:hover {
 	border: solid 1px #fb9ca4;
 	color: #430006;
 }
-.notifications {
+#notifications {
 	margin: 0 0 30px 0;
 }
-.notifications li {
+#notifications li {
 	background: #f2f2f2 !important;
 	margin: 0 0 10px 0;
 	padding: 10px 30px 10px 50px !important;
@@ -535,23 +535,23 @@ a:hover {
 	-moz-border-radius: 6px;
 	border-radius: 6px;
 }
-.notifications li.error {
+#notifications li.error {
 	background: #fdd1d1 url(/m/images/ico-error.png) no-repeat 20px 10px !important;
 	border: solid 1px #dc8787;
 }
-.notifications li.info {
+#notifications li.info {
 	background: #dde4fe url(/m/images/ico-info.png) no-repeat 20px 10px  !important;
 	border: solid 1px #94a8e8;
 }
-.notifications li.warning {
+#notifications li.warning {
 	background: #fefbd4 url(/m/images/ico-upozorneni.png) no-repeat 20px 10px  !important;
 	border: solid 1px #e6db54;
 }
-.notifications li.success {
+#notifications li.success {
 	background: url(/m/images/ico-ok.png) no-repeat 20px 10px  #d8fed1 !important;
 	border: solid 1px #8ad17f;
 }
-.notifications li .zavrit {
+#notifications li .zavrit {
 	position: absolute;
 	right: -5px;
 	top: -5px;

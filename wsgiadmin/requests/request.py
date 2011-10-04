@@ -372,7 +372,8 @@ class EMailRequest(SSHHandler):
 class PostgreSQLRequest(SSHHandler):
 
     def add_db(self, db, password):
-        self.run("createuser -D -R -S %s" % db)
+        self.run("createuser -D -R -S %s" % db, instant=True)
+        self.run("createdb -O %s %s" % (db, db))
         self.passwd_db(db, password)
 
     def remove_db(self, db):

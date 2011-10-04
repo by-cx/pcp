@@ -22,4 +22,4 @@ class PGSQL(models.Model):
         db_table = 'pgs_pgsql'
 
     def __unicode__(self):
-        return "%s (%s)" % (self.dbname, self.owner)
+        return "%s" % self.dbname

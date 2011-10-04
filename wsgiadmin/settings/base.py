@@ -3,10 +3,7 @@
 
 _ = lambda x: x
 
-import os, sys
-
-sys.path.append("/home/cx/co/pcp/")
-
+#import os
 from os.path import join, abspath, pardir, dirname
 
 ROOT = abspath(join(dirname(__file__), pardir))

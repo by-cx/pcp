@@ -58,7 +58,7 @@ def domain_check(request, form, this_site=None):
 @login_required
 def app_static(request, app_type="static", app_id=0):
     if app_type not in ("static", "php"):
-            return HttpResponseForbidden(ugettext("Invalid type of application"))
+        return HttpResponseForbidden(ugettext("Invalid type of application"))
 
     u = request.session.get('switched_user', request.user)
     superuser = request.user

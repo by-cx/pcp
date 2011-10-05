@@ -8,8 +8,10 @@
 {% block content %}
     <div class="clear"></div>
 
-    <h3>{% trans "Account's informations" %}</h3>
     <table>
+        <tr>
+            <th colspan="2">{% trans "Account's informations" %}</th>
+        </tr>
         <tr>
             <td><strong>{% trans "Name" %}</strong></td>
             <td>{{ u.parms.address.getName }}</td>

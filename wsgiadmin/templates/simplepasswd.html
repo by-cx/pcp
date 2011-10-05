@@ -1,4 +1,5 @@
 {% extends "admin.html" %}
+{% load uni_form_tags %}
 {% load i18n %}
 
 {% block content %}
@@ -9,11 +10,11 @@
             <div class="clear"></div>
         </div>
 
-        <form action="{% url db_passwd dbtype=dbtype dbname=dbname %}" method="post">
+        <form action="{% url db_passwd dbtype=dbtype dbname=dbname %}" method="post" class="uniForm">
             {% csrf_token %}
-            {{ form.as_p }}
+            {{ form|as_uni_form }}
             <p>
-                <input type="button" id="submit_button" value="{{ submit }}"/>
+                <input type="submit" id="submit_button" class="input-submit" value="{{ submit }}"/>
             </p>
         </form>
     </div>

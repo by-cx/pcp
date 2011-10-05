@@ -156,8 +156,8 @@
                     <ul id="sidebar-menu">
                         <li>
                             <ul>
-                                <li><a href="{% url wsgiadmin.apacheconf.views.add_static "0" %}">{% trans "Add static page" %}</a></li>
-                                <li><a href="{% url wsgiadmin.apacheconf.views.add_static "1" %}">{% trans "Add PHP app" %}</a></li>
+                                <li><a href="{% url app_static app_type='static' %}">{% trans "Add static page" %}</a></li>
+                                <li><a href="{% url app_static app_type='php' %}">{% trans "Add PHP app" %}</a></li>
                                 <li><a href="{% url app_wsgi %}">{% trans "Add WSGI app" %}</a></li>
                                 <li><a href="{% url app_list %}">{% trans "Your apps" %}</a></li>
                             </ul>

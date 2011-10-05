@@ -23,7 +23,7 @@ class UserSite(models.Model):
     domains = models.CharField(_("Domains"), max_length=1024,
         help_text=_("VirtualHost domains, space separated; ie. 'rosti.cz www.rosti.cz '; First domain is taken as primary"))
 
-    documentRoot = models.CharField(_("DocumentRoot"), max_length=200, blank=True)
+    document_root = models.CharField(_("DocumentRoot"), max_length=200, blank=True)
     htaccess = models.BooleanField(_(".htaccess"), default=True)
     indexes = models.BooleanField(_("Allow directory index"), default=True)
     allow_ips = models.TextField(_("Whitelist"), blank=True)

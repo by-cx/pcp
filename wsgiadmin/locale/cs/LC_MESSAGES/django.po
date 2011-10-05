@@ -203,7 +203,7 @@ msgstr "Uložit změny"
 
 #: apacheconf/views.py:182
 msgid "Site was successfuly removed"
-msgstr "Stránka byla odstraněna"
+msgstr "Web byl odstraněn"
 
 #: apacheconf/views.py:184
 msgid "Error deleting site"

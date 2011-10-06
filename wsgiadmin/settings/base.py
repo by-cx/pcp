@@ -180,6 +180,8 @@ CONSTANCE_CONFIG = {
     "default_mail_machine": ("localhost", "Default mail machine for new accounts. (must be in Machines table)"),
     "default_mysql_machine": ("localhost", "Default mysql machine for new accounts. (must be in Machines table)"),
     "default_pgsql_machine": ("localhost", "Default pgsql machine for new accounts. (must be in Machines table)"),
+
+    "mysql_bind": ("localhost", "Host for mysql's users"),
     }
 
 VIRTUALENVS_DIR = 'virtualenvs'

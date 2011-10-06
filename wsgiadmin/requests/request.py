@@ -274,6 +274,7 @@ class NginxRequest(Service):
                 configfile.append(render_to_string("nginx_vhost_wsgi.conf", {
                     "site": site,
                     'log_dir': settings.LOG_DIR,
+                    "config": config,
                 }))
             elif site.type == "php":
                 # PHP always throw Apache
@@ -281,11 +282,13 @@ class NginxRequest(Service):
                     "site": site,
                     "proxy": config.apache_url,
                     'log_dir': settings.LOG_DIR,
+                    "config": config,
                 }))
             elif site.type == "static":
                 configfile.append(render_to_string("nginx_vhost_static.conf", {
                     "site": site,
                     'log_dir': settings.LOG_DIR,
+                    "config": config,
                 }))
         self.write(self.config_path, "\n".join(configfile))
 
@@ -332,6 +335,7 @@ class BindRequest(Service):
     def mod_zone(self, domain):
         configfile = render_to_string("bind_zone.conf", {
             "domain": domain,
+            "config": config,
             })
         self.write(config.bind_zone_conf % domain.name, configfile)
 
@@ -347,6 +351,7 @@ class BindRequest(Service):
             
         configfile = render_to_string(tmpl, {
             "domains": Domain.objects.all(),
+            "config": config,
             })
         self.write(config.bind_conf, configfile)
 
@@ -391,7 +396,7 @@ class MySQLRequest(SSHHandler):
 
     def add_db(self, db, password):
         self.run(stdin="CREATE DATABASE %s;" % db, instant=True)
-        self.run(stdin="CREATE USER '%s'@'localhost' IDENTIFIED BY '%s';" % (db, password), wipe=True, instant=True)
+        self.run(stdin="CREATE USER '%s'@'%s' IDENTIFIED BY '%s';" % (db, config.mysql_bind, password), wipe=True, instant=True)
         self.run(stdin="GRANT ALL PRIVILEGES ON %s.* TO '%s'@'localhost' WITH GRANT OPTION;" % (db, db), instant=True)
 
     def remove_db(self, db):

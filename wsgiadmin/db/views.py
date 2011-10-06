@@ -9,8 +9,8 @@ from django.utils.translation import ugettext_lazy as _, ugettext
 from wsgiadmin.db.forms import PgsqlForm, MysqlForm
 from wsgiadmin.db.models import MySQLDB, PGSQL
 from wsgiadmin.requests.request import MySQLRequest, PostgreSQLRequest
+from wsgiadmin.service.forms import PassCheckForm
 from wsgiadmin.service.views import JsonResponse, RostiListView
-from wsgiadmin.useradmin.forms import PasswordForm
 
 
 class DatabasesListView(RostiListView):
@@ -67,7 +67,7 @@ def add(request, dbtype):
                 mr = PostgreSQLRequest(u, u.parms.pgsql_machine)
             else:
                 return HttpResponseBadRequest(_('Unknown database type'))
-            mr.add_db(db_obj.dbname, form.cleaned_data["password"])
+            mr.add_db(db_obj.dbname, form.cleaned_data["password1"])
 
             return HttpResponseRedirect(reverse("db_list", kwargs=dict(dbtype=dbtype)))
         else:
@@ -96,7 +96,7 @@ def passwd(request, dbtype, dbname):
     superuser = request.user
 
     if request.method == 'POST':
-        form = PasswordForm(request.POST)
+        form = PassCheckForm(request.POST)
         if form.is_valid():
             if dbtype == 'mysql':
                 #TODO - raise better exception
@@ -120,7 +120,7 @@ def passwd(request, dbtype, dbname):
             messages.add_message(request, messages.SUCCESS, _('Password has been changed'))
             return HttpResponseRedirect(reverse('db_list', kwargs=dict(dbtype=dbtype)))
     else:
-        form = PasswordForm()
+        form = PassCheckForm()
 
     return render_to_response('simplepasswd.html',
             {

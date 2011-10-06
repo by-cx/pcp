@@ -71,9 +71,8 @@ def ftp_upsert(request, ftp_id=0):
 
 
 @login_required
-def passwd_ftp(request, fid):
-    fid = int(fid)
-    iftp = get_object_or_404(Ftp, id=fid)
+def passwd_ftp(request, ftp_id):
+    iftp = get_object_or_404(Ftp, id=ftp_id)
     u = request.session.get('switched_user', request.user)
     superuser = request.user
 
@@ -97,7 +96,7 @@ def passwd_ftp(request, fid):
             "form": form,
             "title": _("Edit FTP account"),
             "submit": _("Save changes"),
-            "action": reverse("ftp_passwd", args=[fid]),
+            "action": reverse("ftp_passwd", kwargs={'ftp_id': ftp_id}),
             "u": u,
             "superuser": superuser,
             "menu_active": "ftps",

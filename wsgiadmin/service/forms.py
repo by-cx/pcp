@@ -39,7 +39,8 @@ class PassCheckModelForm(ModelForm):
     password2 = forms.CharField(label=_("Password again"), widget=forms.PasswordInput(render_value=False))
 
     def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('user')
+        if 'user' in kwargs:
+            self.user = kwargs.pop('user')
         if 'pwd_min_length' in kwargs:
             self._pwd_min_length = kwargs.pop('pwd_min_length')
         super(PassCheckModelForm, self).__init__(*args, **kwargs)
@@ -55,7 +56,6 @@ class PassCheckModelForm(ModelForm):
         if not ("password1" in self.cleaned_data and "password2" in self.cleaned_data):
             raise forms.ValidationError(_("You have to put your password into both inputs"))
 
-        print self.cleaned_data
         if self.cleaned_data["password1"] != self.cleaned_data["password2"]:
             raise forms.ValidationError(_("First password isn't equal to second one"))
 

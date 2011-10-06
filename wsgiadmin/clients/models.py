@@ -11,7 +11,6 @@ from wsgiadmin.keystore.tools import kget
 
 from wsgiadmin.requests.tools import RawRequest
 from wsgiadmin.tools import size_format
-from wsgiadmin.useradmin.forms import PasswordForm
 
 
 class Machine(models.Model):

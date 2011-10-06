@@ -8,16 +8,6 @@ PAYMENT_CHOICES = (
     ("fee", _("Constant fee (200 CZK/196 MB RAM)")),
 )
 
-class PasswordForm(forms.Form):
-    password = forms.CharField(_("Password"), widget=forms.PasswordInput)
-
-    def clean_password(self):
-        if len(self.cleaned_data["password"]) < 6:
-            raise forms.ValidationError(_("Password needs at least 6 chars"))
-
-        return self.cleaned_data["password"]
-
-
 class formReg(forms.Form):
     company = forms.CharField(label=_(u"Company"), max_length=250,
                               required=False)

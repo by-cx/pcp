@@ -55,8 +55,13 @@ def ftp_upsert(request, ftp_id=0):
         else:
             form = FTPForm(user=u)
 
+    dynamic_refreshs = (
+        (reverse("refresh_userdirs"), 'id_dir'),
+    )
+
     return render_to_response('universal.html',
             {
+            "dynamic_refreshs": dynamic_refreshs,
             "form": form,
             "title": _("FTP account"),
             "submit": _("Save FTP account"),

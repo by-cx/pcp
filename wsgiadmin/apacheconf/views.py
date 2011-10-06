@@ -2,8 +2,8 @@ import logging
 
 from constance import config
 from datetime import date
-from django.contrib import messages
 
+from django.contrib import messages
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse

@@ -10,7 +10,6 @@ class MysqlForm(models.ModelForm):
     dbname_max_length = 8
     pwd_min_length = 6
 
-
     class Meta:
         model = MySQLDB
         fields = ( 'dbname', 'password',)

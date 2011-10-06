@@ -11,6 +11,7 @@ from wsgiadmin.keystore.tools import kget
 
 from wsgiadmin.requests.tools import RawRequest
 from wsgiadmin.tools import size_format
+from wsgiadmin.useradmin.forms import PasswordForm
 
 
 class Machine(models.Model):
@@ -104,27 +105,6 @@ class Address(models.Model):
 
 
 
-class formPassword(forms.Form):
-    password1 = forms.CharField(label=_(u"Password"), widget=forms.PasswordInput(render_value=False))
-    password2 = forms.CharField(label=_(u"Password again"), widget=forms.PasswordInput(render_value=False))
-
-    def clean_password1(self):
-        if not "password1" in self.cleaned_data:
-            raise forms.ValidationError(_(u"You have to put your password into both inputs"))
-        if len(self.cleaned_data["password1"]) < 6:
-            raise forms.ValidationError(_(u"Password needs at least 6 chars"))
-        return self.cleaned_data["password1"]
-
-    def clean_password2(self):
-        if not ("password1" in self.cleaned_data and "password2" in self.cleaned_data):
-            raise forms.ValidationError(_(u"You have to put your password into both inputs"))
-
-        if self.cleaned_data["password1"] != self.cleaned_data["password2"]:
-            raise forms.ValidationError(_(u"First password isn't equal to second one"))
-
-        return self.cleaned_data["password2"]
-
-
 class Parms(models.Model):
     home = models.CharField(_(u"Home"), max_length=100)
     note = models.TextField(_(u"Poznámka"), blank=True)
@@ -177,7 +157,7 @@ class Parms(models.Model):
         if size:
             return size_format(int(size))
         else:
-            return _(u"Undetected")
+            return _("Undetected")
 
     def pay_for_sites(self, use_cache=True):
         pay = cache.get('user_payment_%s' % self.user_id)

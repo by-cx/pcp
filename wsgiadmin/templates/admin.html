@@ -81,7 +81,7 @@
                         <li{% if menu_active == "domains" %} class="active"{% endif %}><a href="{% url domains_list %}">{% trans "Domains" %}<span></span></a></li>
                         <li{% if menu_active == "webapps" %} class="active"{% endif %}><a href="{% url app_list %}">{% trans "Web apps" %}<span></span></a></li>
                         <li{% if menu_active == "dbs" %} class="active"{% endif %}><a href="{% url db_list %}">{% trans "Databases" %}<span></span></a></li>
-                        <li{% if menu_active == "ftps" %} class="active"{% endif %}><a href="{% url wsgiadmin.ftps.views.show %}">{% trans "FTP" %}<span></span></a></li>
+                        <li{% if menu_active == "ftps" %} class="active"{% endif %}><a href="{% url ftp_list %}">{% trans "FTP" %}<span></span></a></li>
                         <li{% if menu_active == "emails" %} class="active"{% endif %}><a href="{% url mailbox_list %}">{% trans "E-mails" %}<span></span></a></li>
                         <li{% if menu_active == "settings" %} class="active"{% endif %}><a href="{% url wsgiadmin.users.views.ssh_passwd %}">{% trans "Settings" %}<span></span></a></li>
                     </ul>
@@ -192,8 +192,8 @@
                     <ul id="sidebar-menu">
                         <li>
                             <ul>
-                                <li><a href="{% url wsgiadmin.ftps.views.add %}">{% trans "Add FTP account" %}</a></li>
-                                <li><a href="{% url wsgiadmin.ftps.views.show %}">{% trans "List of FTP accounts" %}</a></li>
+                                <li><a href="{% url ftp_upsert %}">{% trans "Add FTP account" %}</a></li>
+                                <li><a href="{% url ftp_list %}">{% trans "List of FTP accounts" %}</a></li>
                             </ul>
                         </li>
                     </ul>

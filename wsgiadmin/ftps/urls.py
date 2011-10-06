@@ -1,11 +1,12 @@
-# -*- coding: utf-8 -*-
 from django.conf.urls.defaults import *
+from wsgiadmin.ftps.views import FTPListView, ftp_upsert, remove_ftp, passwd_ftp
 
 urlpatterns = patterns('',
-		(r'^add/?$', 'wsgiadmin.ftps.views.add'),
-		(r'^show/?$', 'wsgiadmin.ftps.views.show'),
-		(r'^show/([0-9]{1,11})/?$', 'wsgiadmin.ftps.views.show'),
-		(r'^rm/([0-9]{1,11})/?$', 'wsgiadmin.ftps.views.rm'),
-		(r'^update/([0-9]{1,11})/?$', 'wsgiadmin.ftps.views.update'),
-		(r'^passwd/([0-9]{1,11})/?$', 'wsgiadmin.ftps.views.passwd'),
+    url(r'^ftp_upsert/(?P<ftp_id>\d+)/$', ftp_upsert, name='ftp_upsert'),
+    url(r'^ftp_upsert/$', ftp_upsert, name='ftp_upsert'),
+
+    url(r'^remove_site/$', remove_ftp, name="ftp_remove"),
+    url(r'^passwd/(?P<ftp_id>\d+)/$', passwd_ftp, name='ftp_passwd'),
+
+    url(r'^$', FTPListView.as_view(), name='ftp_list'),
 )

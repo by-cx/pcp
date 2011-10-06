@@ -74,10 +74,10 @@ def app_static(request, app_type="static", app_id=0):
 
         site_errors = domain_check(request, form, this_site=site)
         if not site_errors and form.is_valid():
-            site = form.save(commit=False)
-            site.type = app_type
-            site.owner = u
-            site.save()
+            isite = form.save(commit=False)
+            isite.type = app_type
+            isite.owner = u
+            isite.save()
 
             # Requests
             restart_master(config.mode, u)

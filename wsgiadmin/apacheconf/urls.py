@@ -3,7 +3,6 @@ from wsgiadmin.apacheconf.views import *
 
 urlpatterns = patterns('wsgiadmin.apacheconf.views',
     url(r'^sites/$', AppsListView.as_view(), name='app_list'),
-    url(r'^sites/(\d+)/$', AppsListView.as_view(), name='app_list'),
 
     url(r'^remove_site/$', remove_site, name="remove_site"),
     (r'^reload/([0-9]+)/$', 'reload'),

@@ -35,7 +35,24 @@
             "date_joined": "2011-07-01 22:52:44"
         }
     },
-
+    {
+        "pk": 3,
+        "model": "auth.user",
+        "fields": {
+            "username": "another_customer",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": false,
+            "is_staff": true,
+            "last_login": "2011-07-01 22:52:44",
+            "groups": [],
+            "user_permissions": [],
+            "password": "sha1$10ab3$c05f0a62650258b9c43c193db47e6a0ae9315978",
+            "email": "bar@vanyli.net",
+            "date_joined": "2011-07-01 22:52:44"
+        }
+    },
     {
         "pk": 1,
         "model": "clients.machine",

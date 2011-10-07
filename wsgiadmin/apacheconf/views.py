@@ -85,7 +85,7 @@ def app_static(request, app_type="static", app_id=0):
             # calculate!
             u.parms.pay_for_sites(use_cache=False)
 
-            messages.add_message(request, messages.SUCCESS, _('Site has been %s') % _('changed') if site else _('added'))
+            messages.add_message(request, messages.SUCCESS, _('Site has been %s') % (_('changed') if site else _('added')))
             messages.add_message(request, messages.INFO, _('Changes will be performed in few minutes'))
             return HttpResponseRedirect(reverse("app_list"))
     else:
@@ -171,7 +171,7 @@ def app_wsgi(request, app_id=0):
             # calculate!
             u.parms.pay_for_sites(use_cache=False)
 
-            messages.add_message(request, messages.SUCCESS, _('App has been %s') % _('changed') if site else _('added'))
+            messages.add_message(request, messages.SUCCESS, _('App has been %s') % (_('changed') if site else _('added')))
             messages.add_message(request, messages.INFO, _('Changes will be performed in few minutes'))
             return HttpResponseRedirect(reverse("app_list"))
     else:

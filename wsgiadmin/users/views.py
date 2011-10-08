@@ -14,6 +14,7 @@ from wsgiadmin.clients.forms import UserForm, ParmsForm, AddressForm
 
 from wsgiadmin.clients.models import *
 from wsgiadmin.requests.request import SystemRequest
+from wsgiadmin.service.forms import PassCheckForm
 
 @login_required
 def show(request, p=1):
@@ -246,7 +247,7 @@ def ssh_passwd(request):
     superuser = request.user
 
     if request.method == 'POST':
-        form = formPassword(request.POST)
+        form = PassCheckForm(request.POST)
         if form.is_valid():
             sr = SystemRequest(u, u.parms.web_machine)
             sr.passwd(form.cleaned_data["password1"])
@@ -254,7 +255,7 @@ def ssh_passwd(request):
             messages.add_message(request, messages.SUCCESS, _('Password has been changed'))
             return HttpResponseRedirect(reverse("wsgiadmin.useradmin.views.ok"))
     else:
-        form = formPassword()
+        form = PassCheckForm()
 
     return render_to_response('universal.html',
             {

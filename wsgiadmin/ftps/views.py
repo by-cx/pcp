@@ -1,80 +1,72 @@
 import crypt
 
 from django.contrib import messages
-from django.core.paginator import Paginator
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
+from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.template.context import RequestContext
-from django.views.decorators.csrf import csrf_exempt
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, ugettext
 
-from wsgiadmin.apacheconf.tools import user_directories
+from wsgiadmin.ftps.forms import FTPForm, FTPUpdateForm
 from wsgiadmin.ftps.models import *
+from wsgiadmin.service.forms import PassCheckForm
+from wsgiadmin.service.views import RostiListView, JsonResponse
+
+
+class FTPListView(RostiListView):
+
+    menu_active = 'ftps'
+    template_name = 'ftps.html'
+    delete_url_reverse = 'ftp_remove'
+
+    def get_queryset(self, **kwargs):
+        return Ftp.objects.filter(owner=self.user)
 
 
 @login_required
-def show(request, p=1):
-    u = request.session.get('switched_user', request.user)
-    superuser = request.user
-    p = int(p)
-
-    paginator = Paginator(list(u.ftp_set.all()), 10)
-
-    if not paginator.count:
-        page = None
-    else:
-        page = paginator.page(p)
-
-    return render_to_response('ftps.html',
-            {
-            "ftps": page,
-            "paginator": paginator,
-            "num_page": p,
-            "u": u,
-            "superuser": superuser,
-            "menu_active": "ftps",
-            }, context_instance=RequestContext(request))
-
-
-@login_required
-def add(request):
+def ftp_upsert(request, ftp_id=0):
     u = request.session.get('switched_user', request.user)
     superuser = request.user
 
-    choices = [(d, d) for d in user_directories(u)]
+    try:
+        ftp = Ftp.objects.get(pk=ftp_id)
+    except Ftp.DoesNotExist:
+        ftp = None
 
     if request.method == 'POST':
-        form = form_ftp(request.POST)
-        form.u = u
-        form.fields["dir"].choices = choices
+        if ftp:
+            form = FTPUpdateForm(request.POST, user=u, instance=ftp)
+        else:
+            form = FTPForm(request.POST, user=u)
 
         if form.is_valid():
-            iftp = ftp()
-            iftp.username = u.username + "_" + form.cleaned_data["name"]
-            iftp.dir = form.cleaned_data["dir"]
-            iftp.password = crypt.crypt(form.cleaned_data["password1"],
-                                        form.cleaned_data["name"])
+            iftp = form.save(commit=False)
             iftp.uid = u.parms.uid
             iftp.gid = u.parms.gid
             iftp.owner = u
             iftp.save()
 
-            messages.add_message(request, messages.SUCCESS, _('FTP account has been created'))
-            return HttpResponseRedirect(reverse("wsgiadmin.ftps.views.show"))
+            messages.add_message(request, messages.SUCCESS, _('FTP account has been %s') % _("changed") if ftp else _("added"))
+            return HttpResponseRedirect(reverse("ftp_list"))
     else:
-        form = form_ftp()
-        form.u = u
-        form.fields["dir"].choices = choices
+        if ftp:
+            form = FTPUpdateForm(user=u, instance=ftp)
+        else:
+            form = FTPForm(user=u)
+
+    dynamic_refreshs = (
+        (reverse("refresh_userdirs"), 'id_dir'),
+    )
 
     return render_to_response('universal.html',
             {
+            "dynamic_refreshs": dynamic_refreshs,
             "form": form,
-            "title": _("Add FTP account"),
+            "title": _("FTP account"),
             "submit": _("Save FTP account"),
             "note": [_("* Username will be prefixed with `%s_`" % u.username)],
-            "action": reverse("wsgiadmin.ftps.views.add"),
+            "action": reverse("ftp_upsert", kwargs={'ftp_id': ftp_id}),
             "u": u,
             "superuser": superuser,
             "menu_active": "ftps",
@@ -84,42 +76,32 @@ def add(request):
 
 
 @login_required
-def update(request, fid):
-    fid = int(fid)
-    iftp = get_object_or_404(ftp, id=fid)
+def passwd_ftp(request, ftp_id):
+    iftp = get_object_or_404(Ftp, id=ftp_id)
     u = request.session.get('switched_user', request.user)
     superuser = request.user
 
-    choices = [(d, d) for d in user_directories(u)]
-
     if request.method == 'POST':
-        form = form_ftp_update(request.POST)
-        form.u = u
-        form.edit_name = iftp.username
-        form.fields["dir"].choices = choices
-
+        form = PassCheckForm(request.POST)
+        
         if form.is_valid():
-            if iftp.owner == u:
-                iftp.username = u.username + "_" + form.cleaned_data["name"]
-                iftp.dir = form.cleaned_data["dir"]
-                iftp.save()
+            if iftp.owner != u:
+                return HttpResponseForbidden(ugettext("Unable to edit chosen account"))
 
-                messages.add_message(request, messages.SUCCESS, _('FTP account has been updated'))
-                return HttpResponseRedirect(reverse("wsgiadmin.ftps.views.show"))
+            iftp.password = crypt.crypt(form.cleaned_data["password1"], iftp.owner.username)
+            iftp.save()
+            #iftp.password = crypt.crypt(form.cleaned_data["password1"], iftp.owner.username)
+            messages.add_message(request, messages.SUCCESS, _('Password has been changed'))
+            return HttpResponseRedirect(reverse("ftp_list"))
     else:
-        form = form_ftp_update()
-        form.u = u
-        form.fields["dir"].choices = choices
-        form.initial = {"name": iftp.username[len(u.username + "_"):],
-                        "dir": iftp.dir}
+        form = PassCheckForm()
 
     return render_to_response('universal.html',
             {
             "form": form,
             "title": _("Edit FTP account"),
             "submit": _("Save changes"),
-            "note": [_("* Username will be prefixed with `%s_`" % u.username)],
-            "action": reverse("wsgiadmin.ftps.views.update", args=[fid]),
+            "action": reverse("ftp_passwd", kwargs={'ftp_id': ftp_id}),
             "u": u,
             "superuser": superuser,
             "menu_active": "ftps",
@@ -129,50 +111,17 @@ def update(request, fid):
 
 
 @login_required
-def passwd(request, fid):
-    fid = int(fid)
-    iftp = get_object_or_404(ftp, id=fid)
-    u = request.session.get('switched_user', request.user)
-    superuser = request.user
+def remove_ftp(request):
+    try:
+        object_id = request.POST['object_id']
 
-    if request.method == 'POST':
-        form = form_ftp_passwd(request.POST)
+        try:
+            ftp = Ftp.objects.get(id=object_id)
+        except Ftp.DoesNotExist:
+            raise Exception("redirect doesn't exist, obviously")
+        else:
+            ftp.delete()
 
-        if form.is_valid():
-            if iftp.owner == u:
-                iftp.password = crypt.crypt(form.cleaned_data["password1"], iftp.owner.username)
-                iftp.save()
-
-                messages.add_message(request, messages.SUCCESS, _('Password has been changed'))
-                return HttpResponseRedirect(reverse("wsgiadmin.ftps.views.show"))
-    else:
-        form = form_ftp_passwd()
-
-    return render_to_response('universal.html',
-            {
-            "form": form,
-            "title": _("Edit FTP account"),
-            "submit": _("Save changes"),
-            "action": reverse("wsgiadmin.ftps.views.passwd", args=[fid]),
-            "u": u,
-            "superuser": superuser,
-            "menu_active": "ftps",
-            },
-        context_instance=RequestContext(request)
-    )
-
-
-@login_required
-@csrf_exempt
-def rm(request, fid):
-    fid = int(fid)
-    iftp = get_object_or_404(ftp, id=fid)
-    u = request.session.get('switched_user', request.user)
-    superuser = request.user
-
-    if iftp.owner == u:
-        iftp.delete()
-        #TODO message redirect
-        return HttpResponse(_("FTP has been deleted"))
-
-    return HttpResponseForbidden(_("Permission error"))
+        return JsonResponse("OK", {1: ugettext("FTP account was successfuly deleted")})
+    except Exception, e:
+        return JsonResponse("KO", {1: ugettext("Error during FTP account delete")})

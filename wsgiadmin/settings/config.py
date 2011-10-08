@@ -18,3 +18,4 @@ PAYMENT_PHP    = {"czk": 60, "usd": 0, "eur": 0}
 PAYMENT_STATIC = {"czk": 10, "usd": 0, "eur": 0}
 PAYMENT_FEE    = {"czk": 200, "usd": 11, "eur": 8}
 
+DEFAULT_MYSQL_COMMAND = 'mysql -uroot'

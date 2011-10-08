@@ -2,70 +2,59 @@
 {% load i18n %}
 
 {% block title %}
-	{% trans "Administration - FTP accounts" %}
-{% endblock %}
-
-{% block jsblock %}
-function remove(what) {
-		$("#ftp_"+what).load("{% url wsgiadmin.ftps.views.rm 0 %}"+what)
-	}
+    {% trans "Administration" %} &gt; {% trans "FTP accounts" %}
 {% endblock %}
 
 {% block content %}
+    <div id="message-box"></div>
 
-<div id="message-box"></div>
-<h3>{% trans "List of FTP accounts" %}</h3>
-<table>
-	<thead>
-		<tr>
-		   <th>{% trans "Login" %}</th>
-		   <th>{% trans "Directory" %}</th>
-		   <th>{% trans "Action" %}</th>
-		</tr>
-	</thead>
-	{% if ftps %}
-	<tbody>
-		{% for ftp in ftps.object_list %}
-		<tr>
-			<td>{{ ftp.username }}</td>
-			<td>{{ ftp.dir }}</td>
-			<td id="ftp_{{ ftp.id }}">
-				<a href="{% url wsgiadmin.ftps.views.passwd ftp.id %}" title="{% trans "Change password" %}"><img src="{{ STATIC_URL }}icons/raster/gray_dark/key_stroke_16x16.png" alt="{% trans "Change password" %}" /></a>
-				<a href="{% url wsgiadmin.ftps.views.update ftp.id %}" title="{% trans "Edit" %}"><img src="{{ STATIC_URL }}icons/raster/gray_dark/pen_alt_stroke_16x16.png" alt="{% trans "Edit" %}" /></a>
-				<a href="#" title="{% trans "Delete" %}" onclick="if(confirm('Are you sure?')) remove({{ ftp.id }})"><img src="{{ STATIC_URL }}icons/raster/gray_dark/trash_fill_16x16.png" alt="{% trans "Delete" %}" /></a>
-			</td>
-		</tr>
-		{% endfor %}
-	</tbody>
-	<tfoot>
-		<tr>
-			<td colspan="3">
-					<div class="pagination">
-						{% if ftps.has_previous %}<a href="{% url wsgiadmin.ftps.views.show 1 %}" title="{% trans "First page" %}">&laquo; {% trans "First" %}</a>{% endif %}
-						{% if ftps.has_previous %}<a href="{% url wsgiadmin.ftps.views.show ftps.previous_page_number %}" title="{% trans "Previous page" %}">&laquo; {% trans "Previous" %}</a>{% endif %}
+    <h3>{% trans "List of FTP accounts" %}</h3>
+    <table>
+        <thead>
+        <tr>
+            <th>{% trans "Login" %}</th>
+            <th>{% trans "Directory" %}</th>
+            <th>{% trans "Action" %}</th>
+        </tr>
+        </thead>
+        {% if object_list %}
+            <tbody id="objects_list">
+            {% for ftp in object_list %}
+                <tr>
+                    <td>{{ ftp.username }}</td>
+                    <td>{{ ftp.dir }}</td>
+                    <td id="ftp_{{ ftp.id }}">
+                        <a href="{% url ftp_passwd ftp.id %}" title="{% trans "Change password" %}">
+                            <img src="{{ STATIC_URL }}icons/raster/gray_dark/key_stroke_16x16.png" alt="{% trans "Change password" %}"/>
+                        </a>
+                        <a href="{% url ftp_upsert ftp.id %}" title="{% trans "Edit" %}">
+                            <img src="{{ STATIC_URL }}icons/raster/gray_dark/pen_alt_stroke_16x16.png" alt="{% trans "Edit" %}"/>
+                        </a>
+                        <a href="#" class="object_delete" title="{% trans "Delete" %}" rel="{{ ftp.id }}">
+                            <img src="{{ STATIC_URL }}icons/raster/gray_dark/trash_fill_16x16.png" alt="{% trans "Delete" %}"/>
+                        </a>
 
-						{% for p in paginator.page_range %}
-							{% if p == num_page %}
-								<a href="{% url wsgiadmin.ftps.views.show p %}" class="number current" title="{{ p }}">{{ p }}</a>
-							{% else %}
-								<a href="{% url wsgiadmin.ftps.views.show p %}" class="number" title="{{ p }}">{{ p }}</a>
-							{% endif %}
-						{% endfor %}
-
-						{% if ftps.has_next %}<a href="{% url wsgiadmin.ftps.views.show ftps.next_page_number %}" title="{% trans "Next page" %}">{% trans "Next" %} &raquo;</a>{% endif %}
-						{% if ftps.has_next %}<a href="{% url wsgiadmin.ftps.views.show paginator.num_pages %}" title="{% trans "Last page" %}">{% trans "Last" %} &raquo;</a>{% endif %}
-					</div>
-					<div class="clear"></div>
-			</td>
-		</tr>
-	</tfoot>
-	{% else %}
-	<tbody>
-	<tr>
-		<td colspan="3">{% trans "Žádný FTP účet nebyl ještě vytvořen." %}</td>
-	</tr>
-	</tbody>
-	{% endif%}
-</table>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="3">
+                    <div class="pagination">
+                        {% include "paginator.html" %}
+                    </div>
+                    <div class="clear"></div>
+                </td>
+            </tr>
+            </tfoot>
+        {% else %}
+            <tbody>
+            <tr>
+                <td colspan="3">{% trans "No FTP account created yet" %}</td>
+            </tr>
+            </tbody>
+        {% endif %}
+    </table>
 
 {% endblock %}

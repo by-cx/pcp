@@ -9,9 +9,10 @@ from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.template.context import RequestContext
 from django.utils.translation import ugettext_lazy as _, ugettext
 
-from wsgiadmin.emails.forms import FormEmail, FormEmailPassword, FormRedirect
+from wsgiadmin.emails.forms import FormEmail, FormRedirect
 from wsgiadmin.emails.models import Email, EmailRedirect
 from wsgiadmin.requests.request import EMailRequest
+from wsgiadmin.service.forms import PassCheckModelForm
 from wsgiadmin.service.views import JsonResponse, RostiListView
 
 
@@ -104,7 +105,7 @@ def changePasswdBox(request, eid):
         e = None
 
     if request.method == 'POST':
-        form = FormEmailPassword(request.POST, instance=e)
+        form = PassCheckModelForm(request.POST, instance=e)
         if form.is_valid():
             email = form.save(commit=False)
             email.password = crypt.crypt(form.cleaned_data["password1"], email.login)
@@ -112,7 +113,7 @@ def changePasswdBox(request, eid):
             messages.add_message(request, messages.SUCCESS, _('Password has been changed'))
             return HttpResponseRedirect(reverse("mailbox_list"))
     else:
-        form = FormEmailPassword(instance=e)
+        form = PassCheckModelForm(instance=e)
 
     return render_to_response('universal.html',
             {

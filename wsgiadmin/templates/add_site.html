@@ -4,56 +4,6 @@
 
 {% block jsblock %}
     {{ block.super }}
-
-    $(function() {
-
-    add_refresh_handler = function(ids_object) {
-    var $refresh = $('<div class="ajax_refresh"><span class="caption">refresh</span><span class="status"></span></div>');
-    var $runner = $("#div_" + ids_object[1]);
-    $runner.prepend($refresh);
-
-		$refresh.click(function() {
-			$.ajax({
-				url: ids_object[0],
-				type: "POST",
-				data: { 'csrfmiddlewaretoken': '{{ csrf_token }}' },
-				dataType: "json",
-				beforeSend: function() {
-					$runner.find(".ajax_refresh").addClass('running');
-				},
-				complete: function(){
-					$runner.find(".ajax_refresh").removeClass('running');
-				},
-				success: function(data) {
-					var combo = $("#" + ids_object[1] )
-					var old_selected = combo.find(":selected").val();
-					combo[0].options.length = 1;
-					msgs = data['messages'];
-					var l = msgs.length;
-					for (var i=0; i < l; i++){
-						combo[0].options[i+1] = new Option(msgs[i], msgs[i], (msgs[i] == old_selected));					}
-
-    $refresh.find(".status img").remove();
-    var $status = $('<img src="{{ STATIC_URL }}icons/raster/green/check_12x10.png"/>');
-    $status.appendTo($refresh.find(".status")).fadeOut(1500);
-    }
-    });
-    }) //eof refresh
-    } // eof add_refresh_handler
-
-    {% if dynamic_refreshs %}
-        var refreshs = [
-        {% for url, input_id in dynamic_refreshs %}
-            ["{{ url }}", "{{ input_id }}"]{% if not forloop.last %},{% endif %}
-        {% endfor %}
-        ];
-
-        for (var fce in refreshs) {
-        add_refresh_handler(refreshs[fce]);
-        }
-    {% endif %}
-
-    });
 {% endblock %}
 
 

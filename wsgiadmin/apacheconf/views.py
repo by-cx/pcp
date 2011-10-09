@@ -2,8 +2,8 @@ import logging
 
 from constance import config
 from datetime import date
-from django.contrib import messages
 
+from django.contrib import messages
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
@@ -11,8 +11,8 @@ from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.utils.translation import ugettext_lazy as _, ugettext
 from django.template.context import RequestContext
 
-from wsgiadmin.apacheconf.models import *
 from wsgiadmin.apacheconf.forms import FormStatic, FormWsgi
+from wsgiadmin.apacheconf.models import UserSite
 from wsgiadmin.requests.request import UWSGIRequest
 from wsgiadmin.apacheconf.tools import get_user_wsgis, get_user_venvs, user_directories, restart_master
 from wsgiadmin.service.views import JsonResponse, RostiListView
@@ -32,7 +32,6 @@ class AppsListView(RostiListView):
 @login_required
 def domain_check(request, form, this_site=None):
     u = request.session.get('switched_user', request.user)
-
     form_domains = form.data["domains"].split() # domains typed in form
     # whatever.count.of.dots.vanyli.net -> vanyli.net
     my_domains = ['.'.join(x.name.split('.')[-2:]) for x in u.domain_set.all()]
@@ -56,26 +55,29 @@ def domain_check(request, form, this_site=None):
 
     return error_domains
 
-
 @login_required
-def add_static(request, php="0"):
+def app_static(request, app_type="static", app_id=0):
+    if app_type not in ("static", "php"):
+        return HttpResponseForbidden(ugettext("Invalid type of application"))
+
     u = request.session.get('switched_user', request.user)
     superuser = request.user
-    title = _("Static website") if php == "0" else _("PHP website")
-    siteErrors = []
     choices = [(d, d) for d in user_directories(u, use_cache=True)]
 
+    try:
+        site = UserSite.objects.get(id=app_id, owner=u)
+    except UserSite.DoesNotExist:
+        site = None
+
     if request.method == 'POST':
-        form = FormStatic(request.POST)
-        form.fields["documentRoot"].choices = choices
-        siteErrors = domain_check(request, form)
-        if not siteErrors and form.is_valid():
-            web = UserSite()
-            web.domains = form.cleaned_data["domains"]
-            web.documentRoot = form.cleaned_data["documentRoot"]
-            web.type = "static" if php == "0" else "php" 
-            web.owner = u
-            web.save()
+        form = FormStatic(request.POST, user=u, instance=site)
+
+        site_errors = domain_check(request, form, this_site=site)
+        if not site_errors and form.is_valid():
+            isite = form.save(commit=False)
+            isite.type = app_type
+            isite.owner = u
+            isite.save()
 
             # Requests
             restart_master(config.mode, u)
@@ -83,25 +85,25 @@ def add_static(request, php="0"):
             # calculate!
             u.parms.pay_for_sites(use_cache=False)
 
-            messages.add_message(request, messages.SUCCESS, _('Site has been added'))
+            messages.add_message(request, messages.SUCCESS, _('Site has been %s') % (_('changed') if site else _('added')))
             messages.add_message(request, messages.INFO, _('Changes will be performed in few minutes'))
             return HttpResponseRedirect(reverse("app_list"))
     else:
-        form = FormStatic()
-        form.fields["documentRoot"].choices = [("", _("Not selected"))] + choices
+        form = FormStatic(user=u, instance=site)
+        site_errors = ()
 
     dynamic_refreshs = (
-        (reverse("refresh_userdirs"), 'id_documentRoot'),
+        (reverse("refresh_userdirs"), 'id_document_root'),
     )
 
     return render_to_response('add_site.html',
             {
             "dynamic_refreshs": dynamic_refreshs,
-            "siteErrors": siteErrors,
+            "siteErrors": site_errors,
             "form": form,
-            "title": title,
-            "submit": _("Add website"),
-            "action": reverse("add_static", args=[php]),
+            "title": {'static': _("Static website"), 'php': _("PHP website")}[app_type],
+            "submit": _("Add website") if not site else _("Modify website"),
+            "action": reverse("app_static", kwargs={'app_type': app_type, 'app_id': app_id}),
             "u": u,
             "superuser": superuser,
             "menu_active": "webapps",
@@ -109,55 +111,6 @@ def add_static(request, php="0"):
         context_instance=RequestContext(request)
     )
 
-
-@login_required
-def update_static(request, sid):
-    u = request.session.get('switched_user', request.user)
-    superuser = request.user
-    siteErrors = []
-    sid = int(sid)
-
-    s = get_object_or_404(UserSite, id=sid)
-    choices = [(d, d) for d in user_directories(u)]
-
-    if request.method == 'POST':
-        form = FormStatic(request.POST)
-        form.fields["documentRoot"].choices = choices
-        siteErrors = domain_check(request, form, s)
-        if not siteErrors and form.is_valid():
-            s.domains = form.cleaned_data["domains"]
-            s.documentRoot = form.cleaned_data["documentRoot"]
-            s.save()
-
-            #Signal
-            restart_master(config.mode, u)
-
-            messages.add_message(request, messages.SUCCESS, _('Site has been updated'))
-            messages.add_message(request, messages.INFO, _('Changes will be performed in few minutes'))
-            return HttpResponseRedirect(reverse("app_list"))
-    else:
-        form = FormStatic(initial={"domains": s.domains, "documentRoot": s.documentRoot})
-        form.fields["documentRoot"].choices = [("", _("Not selected"))] + choices
-
-
-    dynamic_refreshs = (
-        (reverse("refresh_userdirs"), 'id_documentRoot'),
-    )
-
-    return render_to_response('add_site.html',
-            {
-            "dynamic_refreshs": dynamic_refreshs,
-            "siteErrors": siteErrors,
-            "form": form,
-            "title": _("Static web modification"),
-            "submit": _("Save changes"),
-            "action": reverse("update_static", args=[s.id]),
-            "u": u,
-            "superuser": superuser,
-            "menu_active": "webapps",
-            },
-        context_instance=RequestContext(request)
-    )
 
 @login_required
 def remove_site(request):
@@ -188,13 +141,12 @@ def remove_site(request):
 
 
 @login_required
-def app_wsgi(request, sid=None):
+def app_wsgi(request, app_id=0):
     u = request.session.get('switched_user', request.user)
     superuser = request.user
-    site_errors = []
 
     try:
-        site = UserSite.objects.get(id=sid, owner=u)
+        site = UserSite.objects.get(id=app_id, owner=u)
     except UserSite.DoesNotExist:
         site = None
 
@@ -219,11 +171,12 @@ def app_wsgi(request, sid=None):
             # calculate!
             u.parms.pay_for_sites(use_cache=False)
 
-            messages.add_message(request, messages.SUCCESS, _('App has been %s') % _('changed') if site else _('added'))
+            messages.add_message(request, messages.SUCCESS, _('App has been %s') % (_('changed') if site else _('added')))
             messages.add_message(request, messages.INFO, _('Changes will be performed in few minutes'))
             return HttpResponseRedirect(reverse("app_list"))
     else:
         form = FormWsgi(user=u, instance=site)
+        site_errors = ()
 
 
     dynamic_refreshs = (
@@ -238,7 +191,7 @@ def app_wsgi(request, sid=None):
             "form": form,
             "title": _("%s WSGI application") % _('Modify') if site else _('Add'),
             "submit": _("Save changes"),
-            "action": reverse("app_wsgi", args=[site.id] if site else None),
+            "action": reverse("app_wsgi", args=[app_id]),
             "u": u,
             "superuser": superuser,
             "menu_active": "webapps",

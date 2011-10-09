@@ -4,7 +4,6 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<meta http-equiv="content-language" content="cs" />
-    <meta http-equiv="refresh" content="1;url=/">
 	<link type="text/css" media="all" href="{{ STATIC_URL }}style/style.css" rel="stylesheet" />
 
 	<title>{% trans "Administration" %} - {{ site }}</title>
@@ -18,7 +17,23 @@
 			<div class="container">
 				<div class="container-top">
 					<div class="container-bottom">
-						<h2>{% trans "You've been logout" %}</h2>
+						<h2>{% trans "Login" %}</h2>
+						<form action="#" id="reg-form" class="registrace-prihlaseni" method="post">
+                            {% csrf_token %}
+							{{ form.as_p }}
+							<p>
+								<input type="submit" name="" class="input-submit-prihlasit" value="{% trans "Login" %}" />
+							</p>
+							<p class="help"><a href="{% url registration %}">{% trans "Registration" %}</a></p>
+						</form>
+
+						{% if messages %}
+                            <ul id="notifications">
+                            {% for message in messages %}
+                                <li{% if message.tags %} class="{{ message.tags }}"{% else %} class="info"{% endif %}>{{ message }}</li>
+                            {% endfor %}
+                            </ul>
+                        {% endif %}
 					</div>
 				</div>
 			</div>

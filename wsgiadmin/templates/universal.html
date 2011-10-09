@@ -2,7 +2,7 @@
 {% load uni_form_tags %}
 {% load i18n %}
 
-{% block title %}{% trans "Administrace" %} > {{ title }}{% endblock %}
+{% block title %}{% trans "Administration" %} > {{ title }}{% endblock %}
 {% block content %}
 
     <h3>{{ title }}</h3>
@@ -12,7 +12,7 @@
     {% endif %}
 
     {% if siteErrors %}
-        <p>{% trans "Následující doménu jsou použity již u jiné stránky nebo je nemáte zadané" %}:</p>
+        <p>{% trans "Listed domains are already used by another app or you don't have set them in your domains list" %}:</p>
         <ul>
             {% for x in siteErrors %}
                 <li>{{ x }}</li>
@@ -81,4 +81,58 @@
     ['TextColor', 'BGColor'],
     ['Maximize', 'ShowBlocks', '-', 'About']
     ]});};};
+
+    {{ block.super }}
+
+    {% if dynamic_refreshs %}
+            $(function() {
+
+                add_refresh_handler = function(ids_object) {
+                    var $refresh = $('<div class="ajax_refresh"><span class="caption">refresh</span><span class="status"></span></div>');
+                    var $runner = $("#div_" + ids_object[1]);
+                    $runner.prepend($refresh);
+
+                    $refresh.click(function() {
+                        $.ajax({
+                            url:ids_object[0],
+                            type:"POST",
+                            data:{ 'csrfmiddlewaretoken':'{{ csrf_token }}' },
+                            dataType:"json",
+                            beforeSend:function() {
+                                $runner.find(".ajax_refresh").addClass('running');
+                            },
+                            complete:function() {
+                                $runner.find(".ajax_refresh").removeClass('running');
+                            },
+                            success:function(data) {
+                                var combo = $("#" + ids_object[1])
+                                var old_selected = combo.find(":selected").val();
+                                combo[0].options.length = 1;
+                                msgs = data['messages'];
+                                var l = msgs.length;
+                                for (var i = 0; i < l; i++) {
+                                    combo[0].options[i + 1] = new Option(msgs[i], msgs[i], (msgs[i] == old_selected));
+                                }
+
+                                $refresh.find(".status img").remove();
+                                var $status = $('<img src="{{ STATIC_URL }}icons/raster/green/check_12x10.png"/>');
+                                $status.appendTo($refresh.find(".status")).fadeOut(1500);
+                            }
+                        });
+                    }) //eof refresh
+                } // eof add_refresh_handler
+
+
+                var refreshs = [
+                    {% for url, input_id in dynamic_refreshs %}
+                        ["{{ url }}", "{{ input_id }}"]
+                        {% if not forloop.last %},{% endif %}
+                    {% endfor %}
+                ];
+
+                for (var fce in refreshs) {
+                    add_refresh_handler(refreshs[fce]);
+                }
+            });
+    {% endif %}
 {% endblock %}

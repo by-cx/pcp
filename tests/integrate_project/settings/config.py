@@ -4,6 +4,7 @@ import integrate_project
 FILE_ROOT = dirname(integrate_project.__file__)
 
 USERS_FIXTURE = join(FILE_ROOT, 'data', 'users.json')
+APPS_FIXTURE = join(FILE_ROOT, 'data', 'apps.json')
 
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),

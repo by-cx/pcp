@@ -3,34 +3,10 @@ from django.forms.models import ModelForm
 from django.utils.translation import ugettext_lazy as _
 
 from wsgiadmin.emails.models import Email, EmailRedirect
-
-class FormEmailPassword(ModelForm):
-    password1 = forms.CharField(label=_("Password"), widget=forms.PasswordInput(render_value=False))
-    password2 = forms.CharField(label=_("Password (check)"), widget=forms.PasswordInput(render_value=False))
-
-    class Meta:
-        model = Email
-        fields = ("password1", "password2")
+from wsgiadmin.service.forms import PassCheckModelForm
 
 
-    def clean_password1(self):
-        if not "password1" in self.cleaned_data:
-            raise forms.ValidationError(_("Fill password in both fields"))
-        if len(self.cleaned_data["password1"]) < 6:
-            raise forms.ValidationError(_("Password length is at least 6 chars"))
-
-        return self.cleaned_data["password1"]
-
-    def clean_password2(self):
-        if not "password2" in self.cleaned_data:
-            raise forms.ValidationError(_("Fill password in both fields"))
-        if self.cleaned_data["password1"] != self.cleaned_data["password2"]:
-            raise forms.ValidationError(_("Password in fields doesn't match"))
-
-        return self.cleaned_data["password2"]
-
-
-class FormEmail(FormEmailPassword):
+class FormEmail(PassCheckModelForm):
     login = forms.CharField(label=_("Name"), help_text=_("Mailbox in name@domain format"))
     xdomain = forms.ChoiceField(label=_("Domain"), choices=[(11, 22)])
 

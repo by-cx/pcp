@@ -32,7 +32,7 @@
                     <td>{{ site.server_name }}</td>
                     <td class="list_actions">
                         {% if site.type == "php" or site.type == "static" %}
-                            <a href="{% url wsgiadmin.apacheconf.views.update_static site.id %}">
+                            <a href="{% url app_static app_type=site.type app_id=site.id %}">
                                 <img src="{{ STATIC_URL }}icons/raster/gray_dark/pen_alt_stroke_16x16.png" alt="{% trans "Edit" %}"/>
                             </a>
                         {% endif %}

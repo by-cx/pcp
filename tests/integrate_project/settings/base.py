@@ -47,6 +47,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 
 INSTALLED_APPS = (
+    'uni_form',
+
     # main apps
     'wsgiadmin.apacheconf',
     'wsgiadmin.domains',
@@ -54,6 +56,7 @@ INSTALLED_APPS = (
     'wsgiadmin.users',
     'wsgiadmin.clients',
     'wsgiadmin.db',
+    'wsgiadmin.requests',
 
     # django contrib apps
     'django.contrib.auth',
@@ -98,3 +101,7 @@ LOGGING = {
         'level': 'INFO',
         },
     }
+
+DEFAULT_MYSQL_COMMAND = 'mysql -uroot'
+
+VIRTUALENVS_DIR = 'virtualenvs'

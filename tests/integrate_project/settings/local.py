@@ -19,3 +19,6 @@ DATABASES = {
         'HOST': 'localhost',
     },
 }
+
+
+DEFAULT_MYSQL_COMMAND = 'mysql -uroot -pdbpwd'

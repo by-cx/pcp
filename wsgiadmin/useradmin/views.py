@@ -13,7 +13,8 @@ from django.core.mail import send_mail
 from wsgiadmin.apacheconf.models import UserSite
 from wsgiadmin.clients.models import *
 from wsgiadmin.invoices.models import invoice
-from wsgiadmin.useradmin.forms import formReg, formReg2, form_reg_payment
+from wsgiadmin.service.forms import PassCheckForm
+from wsgiadmin.useradmin.forms import formReg, formReg2, PaymentRegForm
 from wsgiadmin.clients.models import Parms
 
 @login_required
@@ -85,7 +86,7 @@ def change_passwd(request):
     superuser = request.user
 
     if request.method == 'POST':
-        form = formPassword(request.POST)
+        form = PassCheckForm(request.POST)
         if form.is_valid():
             u.set_password(form.cleaned_data["password1"])
             u.save()
@@ -93,7 +94,7 @@ def change_passwd(request):
             messages.add_message(request, messages.SUCCESS, _('Password has been changed'))
             return HttpResponseRedirect(reverse("wsgiadmin.useradmin.views.change_passwd"))
     else:
-        form = formPassword()
+        form = PassCheckForm()
 
     return render_to_response('universal.html',
             {
@@ -112,7 +113,7 @@ def reg(request):
     if request.method == 'POST':
         form1 = formReg(request.POST)
         form2 = formReg2(request.POST)
-        form3 = form_reg_payment(request.POST)
+        form3 = PaymentRegForm(request.POST)
         if form1.is_valid() and form2.is_valid() and form3.is_valid():
             # user
             u = user.objects.create_user(form2.cleaned_data["username"],
@@ -169,9 +170,9 @@ def reg(request):
     else:
         form1 = formReg()
         form2 = formReg2()
-        form3 = form_reg_payment()
+        form3 = PaymentRegForm()
 
-    return render_to_response('login_reg.html',
+    return render_to_response('reg.html',
             {
             "form1": form1,
             "form2": form2,

@@ -398,6 +398,7 @@ class MySQLRequest(SSHHandler):
         self.run(stdin="CREATE DATABASE %s;" % db, instant=True)
         self.run(stdin="CREATE USER '%s'@'%s' IDENTIFIED BY '%s';" % (db, config.mysql_bind, password), wipe=True, instant=True)
         self.run(stdin="GRANT ALL PRIVILEGES ON %s.* TO '%s'@'localhost' WITH GRANT OPTION;" % (db, db), instant=True)
+        self.passwd_db(db, password)
 
     def remove_db(self, db):
         self.run(stdin="DROP DATABASE %s;" % db)

@@ -133,6 +133,10 @@ DROP TABLE apacheconf_custom;
 
 DROP TABLE apacheconf_alias;
 
+-- rename document_root
+
+ALTER TABLE apacheconf_site RENAME COLUMN "documentRoot" TO document_root;
+
 ---------------
 -- Databases --
 ---------------

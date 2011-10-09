@@ -1,14 +1,14 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-
+from constance import config
 
 class Email(models.Model):
     pub_date = models.DateField(auto_now=True)
     login = models.CharField(_("Login"), max_length=100)
     domain = models.ForeignKey("domains.Domain")
     password = models.CharField(_("Heslo"), max_length=100)
-    uid = models.IntegerField(_("UID"), default="117")
-    gid = models.IntegerField(_("GID"), default="118")
+    uid = models.IntegerField(_("UID"), default=config.email_uid)
+    gid = models.IntegerField(_("GID"), default=config.email_gid)
     homedir = models.CharField(_("Homedir"), max_length=100, default="/var/mail")
     remove = models.BooleanField(_("Remove"), default=False)
 

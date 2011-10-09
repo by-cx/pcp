@@ -182,6 +182,9 @@ CONSTANCE_CONFIG = {
     "default_pgsql_machine": ("localhost", "Default pgsql machine for new accounts. (must be in Machines table)"),
 
     "mysql_bind": ("localhost", "Host for mysql's users"),
+
+    "email_uid": (117, "Email UID"),
+    "email_gid": (117, "Email GID"),
     }
 
 VIRTUALENVS_DIR = 'virtualenvs'

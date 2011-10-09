@@ -229,7 +229,7 @@ class UWSGIRequest(SSHHandler):
             uwsgi.append("\t<processes>%s</processes>" % site.processes)
             uwsgi.append("\t<optimize>0</optimize>")
             uwsgi.append("\t<home>%s</home>" % site.virtualenv_path)
-            uwsgi.append("\t<limit-as>128</limit-as>")
+            uwsgi.append("\t<limit-as>%d</limit-as>" % config.uwsgi_memory)
             uwsgi.append("\t<chmod-socket>660</chmod-socket>")
             uwsgi.append("\t<uid>%s</uid>" % site.owner.username)
             uwsgi.append("\t<gid>%s</gid>" % site.owner.username)

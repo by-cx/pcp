@@ -159,6 +159,7 @@ CONSTANCE_CONFIG = {
 
     "uwsgi_conf": ("/etc/uwsgi/config.xml", "uWSGI's XML config file"),
     "uwsgi_pidfile": ("/var/run/uwsgi/app_%d.pid", "uWSGI's app pidfile"),
+    "uwsgi_memory": (192, "Memory for uWSGI app"),
 
     "bind_conf": ("/etc/bind/named.pandora.auto", "BIND's config"),
     "bind_zone_conf": ("/etc/bind/pri_auto/%s.zone", "BIND's zone file"),

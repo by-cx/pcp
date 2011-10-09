@@ -2,11 +2,11 @@
 {
 	margin: 0;
 	padding: 0;
-	list-style-type: none;
 	outline: none;
 }
 body {
 	background: #fff;
+	background: #fff url(/m/images/bg-body.gif) repeat-y left;
 	font-family: Helvetica, Arial, sans-serif;
 	font-size: 12px;
 }
@@ -19,6 +19,9 @@ a {
 }
 a:hover {
 	text-decoration: none;
+}
+img {
+	border: 0;
 }
 .tlacitko a {
 	/* fallback */
@@ -131,7 +134,6 @@ a:hover {
 #header #main-menu {
 	margin: 0 30px 0 0;
 	padding: 0 0 0 30px;
-	width: 100%;
 	height: 31px;
 	position: absolute;
 	left: 0;
@@ -142,6 +144,7 @@ a:hover {
 	height: 30px;
 	float: left;
 	line-height: 31px;
+	list-style-type: none;
 	text-transform: uppercase;
 	font-size: 11px;
 }
@@ -193,9 +196,8 @@ a:hover {
 	Sidebar
 --------------------------------------------------------------------------------------------------------*/
 #sidebar {
-	background: #f2f2f2;
 	padding: 0 0 100px 0;
-	width: 250px;
+	width: 280px;
 	position: absolute;
 	left: 0;
 	top: 150px;
@@ -206,12 +208,15 @@ a:hover {
 #sidebar ul {
 	margin: 30px 0 30px 0;
 }
+#sidebar ul li {
+	list-style-type: none;
+}
 #sidebar ul li a {
 	background: url(/m/images/bg-sidebar-menu-a.png) no-repeat 0 0;
 	margin: 0 0 5px 0;
 	padding: 0 0 0 20px;
 	height: 30px;
-	line-height: 30px;
+	line-height: 32px;
 	font-size: 11px;
 	text-transform: uppercase;
 	display: block;
@@ -230,9 +235,8 @@ a:hover {
 	Content
 --------------------------------------------------------------------------------------------------------*/
 #content {
-	background: url(/m/images/bg-content.png) repeat-y left;
 	margin: 0;
-	padding: 0 0 100px 250px;
+	padding: 0 0 100px 280px;
 }
 #content ul {
 	margin: 0 0 30px 0;
@@ -241,6 +245,7 @@ a:hover {
 	background: url(/m/images/bullet-01.png) no-repeat 0 6px;
 	padding: 0 0 0 10px;
 	line-height: 18px;
+	list-style-type: none;
 }
 #content ul li a {
 	color: #666;
@@ -412,14 +417,13 @@ a:hover {
 	margin: 0 0 30px 0;
 	width: 100%;
 	border-collapse: collapse;
+	border-bottom: solid 5px #d7d7d7;
 	-webkit-border-top-left-radius: 5px;
 	-webkit-border-top-right-radius: 5px;
 	-moz-border-radius-topleft: 5px;
 	-moz-border-radius-topright: 5px;
 	border-top-left-radius: 5px;
 	border-top-right-radius: 5px;
-	overflow: hidden;
-	border-bottom: solid 10px #d7d7d7;
 }
 #content table tr th {
 	/* fallback */
@@ -456,11 +460,24 @@ a:hover {
   	background: -o-linear-gradient(top, #f2f2f2, #e8e7ef);
 	padding: 10px 20px 10px 20px;
 	border-right: solid 1px #d7d7d7;
+	table-layout: auto;
+}
+#content table tr td.last {
+	border-right: 0;
 }
 #content table .akce {
-	margin: 0;
+	margin: 0 !important;
+	padding: 0 !important;
 	height: 23px;
-	min-width: 80px;
+	float: left;
+}
+#content table .akce li {
+	background: none;
+	padding: 0;
+	line-height: normal;
+	float: left;
+	display: block;
+	list-style-type: none;
 }
 #content table .akce li a {
 	/* fallback */
@@ -486,9 +503,6 @@ a:hover {
 	text-decoration: none;
 	float: left;
 	display: block;
-}
-#content table .akce li {
-	line-height: normal;
 }
 #content table .akce li a:hover {
 	/* fallback */
@@ -522,10 +536,10 @@ a:hover {
 	border: solid 1px #fb9ca4;
 	color: #430006;
 }
-#notifications {
+.notifications {
 	margin: 0 0 30px 0;
 }
-#notifications li {
+.notifications li {
 	background: #f2f2f2 !important;
 	margin: 0 0 10px 0;
 	padding: 10px 30px 10px 50px !important;
@@ -534,24 +548,25 @@ a:hover {
 	-webkit-border-radius: 6px;
 	-moz-border-radius: 6px;
 	border-radius: 6px;
+	list-style: none;
 }
-#notifications li.error {
+.notifications li.error {
 	background: #fdd1d1 url(/m/images/ico-error.png) no-repeat 20px 10px !important;
 	border: solid 1px #dc8787;
 }
-#notifications li.info {
+.notifications li.info {
 	background: #dde4fe url(/m/images/ico-info.png) no-repeat 20px 10px  !important;
 	border: solid 1px #94a8e8;
 }
-#notifications li.warning {
+.notifications li.warning {
 	background: #fefbd4 url(/m/images/ico-upozorneni.png) no-repeat 20px 10px  !important;
 	border: solid 1px #e6db54;
 }
-#notifications li.success {
+.notifications li.success {
 	background: url(/m/images/ico-ok.png) no-repeat 20px 10px  #d8fed1 !important;
 	border: solid 1px #8ad17f;
 }
-#notifications li .zavrit {
+.notifications li .zavrit {
 	position: absolute;
 	right: -5px;
 	top: -5px;
@@ -572,7 +587,7 @@ a:hover {
 }
 .registrace h1 strong {
 	color: #3b4248;
-} 
+}
 .registrace #main {
 	padding: 40px 0 150px 0;
 }
@@ -582,7 +597,7 @@ a:hover {
 }
 .container {
 	background: url(/m/images/bg-container.jpg) repeat-y center;
-	margin: 0 50px 10px 50px;
+	margin: 0 0 0 50px;
 	width: 300px;
 	float: left;
 }
@@ -619,10 +634,12 @@ a:hover {
 	height: 31px;
 	border: 0;
 	color: #cfd8de;
+	font-size: 12px;
 }
 .container .input-submit-prihlasit {
 	background: url(/m/images/input-submit-prihlasit.jpg) no-repeat 0 0;
 	margin: 15px 0 15px 95px;
+	padding-bottom: 2px;
 	width: 110px;
 	height: 31px;
 	border: 0;
@@ -637,6 +654,7 @@ a:hover {
 .container .input-submit-registrovat {
 	background: url(/m/images/input-submit-registrovat.jpg) no-repeat 0 0;
 	margin: 15px 0 15px 85px;
+	padding-bottom: 2px;
 	width: 130px;
 	height: 31px;
 	border: 0;
@@ -672,12 +690,39 @@ a:hover {
 	Co jsem doplnil, přetížil
 --------------------------------------------------------------------------------------------------------*/
 
-#registrace-prihlaseni input {
-    background: url(/m/images/bg-input-text-registrace.jpg) no-repeat 0 0;
+#reg-form input {
+	background: url(/m/images/bg-input-text-registrace.jpg) no-repeat 0 0;
 	margin: 0 0 10px 20px;
 	padding: 0 2px;
 	width: 256px;
 	height: 31px;
 	border: 0;
 	color: #cfd8de;
+	font-size: 12px;
+}
+
+#reg-form select {
+	background: url(/m/images/bg-input-text-registrace.jpg) no-repeat 0 0;
+	margin: 0 0 10px 20px;
+	padding: 0 2px;
+	width: 256px;
+	height: 31px;
+	border: 0;
+	color: #cfd8de;
+	font-size: 12px;
+}
+
+.errorlist {
+    margin-left: 15px;
+    color: red;
+    font-weight: bold;
+}
+
+.errorlist li {
+    list-style-type: none;
+}
+
+.helptext {
+    color: #ccc;
+    margin: 0 0 20px 120px;
 }

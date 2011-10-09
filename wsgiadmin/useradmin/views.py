@@ -172,7 +172,7 @@ def reg(request):
         form2 = formReg2()
         form3 = PaymentRegForm()
 
-    return render_to_response('login_reg.html',
+    return render_to_response('reg.html',
             {
             "form1": form1,
             "form2": form2,

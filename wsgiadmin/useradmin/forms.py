@@ -1,4 +1,5 @@
 from django import forms
+from django.forms.widgets import RadioSelect
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User as user
 from wsgiadmin.service.forms import PassCheckForm
@@ -22,7 +23,11 @@ class formReg(forms.Form):
 
 
 class formReg2(PassCheckForm):
-    username = forms.CharField(label=_("Username"), max_length=30)
+    username = forms.CharField(label=_("Username"), help_text=_("Will be used as system user"), max_length=30)
+
+    def __init__(self, *args, **kwargs):
+        super(formReg2, self).__init__(*args, **kwargs)
+        self.fields.keyOrder = ['username', 'password1', 'password2']
 
     def clean_username(self):
         if user.objects.filter(username=self.cleaned_data["username"]):
@@ -31,4 +36,4 @@ class formReg2(PassCheckForm):
 
 
 class PaymentRegForm(forms.Form):
-    pay_method = forms.ChoiceField(label=_("Pay method"), required=True, choices=PAYMENT_CHOICES)
+    pay_method = forms.ChoiceField(label=_("Pay method"), required=True, choices=PAYMENT_CHOICES, widget=RadioSelect)

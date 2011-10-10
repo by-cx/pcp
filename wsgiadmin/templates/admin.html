@@ -63,8 +63,8 @@
                             {% if not u.is_superuser and superuser != u %}
                                 {{ u.username }}
                                 <br />
-                                (<i>{% trans "switched" %}</i> - <a href="{% url wsgiadmin.users.views.switch_to_admin 1 %}">{% trans "back" %}</a>)
-                                <span id="uzivatel">({% trans "superuser" %})</span>
+                                <p id="prepnuti-uzivatele">(<i>{% trans "switched" %}</i> - <a href="{% url wsgiadmin.users.views.switch_to_admin 1 %}">{% trans "back" %}</a>)
+                                <span id="uzivatel">({% trans "superuser" %})</span></p>
                             {% else %}
                                 {{ u.username }} {% if u.is_superuser %} <span id="uzivatel">({% trans "superuser" %})</span>{% endif %}
                             {% endif %}

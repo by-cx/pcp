@@ -87,7 +87,7 @@ class genInvoice(object):
         self.pdf.drawString((LEFT) * mm, (TOP) * mm, "Údaje pro platbu")
         #self.pdf.setFillColorRGB(255, 0, 0)
         text = self.pdf.beginText((LEFT + 2) * mm, (TOP - 6) * mm)
-        text.textLines("""%s Číslo účtu: %s Variabilní symbol: %s""" % (
+        text.textLines("""%s\nČíslo účtu: %s\nVariabilní symbol: %s""" % (
             str(self.invoice.bank),
             str(self.invoice.bank_account),
             str(self.invoice.payment_id))

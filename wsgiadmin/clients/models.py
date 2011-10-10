@@ -91,7 +91,7 @@ class Address(models.Model):
     def getInvoiceContact(self):
         contact = []
         if not self.different:
-            contact.append("Telefon: %" % self.residency_phone)
+            contact.append("Telefon: %s" % self.residency_phone)
             contact.append("Email: %s" % self.residency_email)
         else:
             contact.append("Telefon: %s" % self.invoice_phone)

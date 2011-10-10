@@ -36,4 +36,4 @@ class formReg2(PassCheckForm):
 
 
 class PaymentRegForm(forms.Form):
-    pay_method = forms.ChoiceField(label=_("Pay method"), required=True, choices=PAYMENT_CHOICES, widget=RadioSelect)
+    pay_method = forms.ChoiceField(label=_("Pay method"), required=True, choices=PAYMENT_CHOICES)

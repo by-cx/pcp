@@ -721,46 +721,7 @@ div.notifications .zavrit {
 	font-weight: bold;
 	display: block;
 }
-.container .input-text-registrace {
-	background: url(/m/images/bg-input-text-registrace.jpg) no-repeat 0 0;
-	margin: 0 0 10px 20px;
-	padding: 0 2px;
-	width: 256px;
-	height: 31px;
-	border: 0;
-	color: #cfd8de;
-	font-size: 12px;
-}
-.container .input-submit-prihlasit {
-	background: url(/m/images/input-submit-prihlasit.jpg) no-repeat 0 0;
-	margin: 15px 0 15px 95px;
-	padding-bottom: 2px;
-	width: 110px;
-	height: 31px;
-	border: 0;
-	cursor: pointer;
-	font-size: 12px;
-	font-weight: bold;
-	color: #fff;
-}
-.container .input-submit-prihlasit:hover {
-	background: url(/m/images/input-submit-prihlasit.jpg) no-repeat 0 -31px;
-}
-.container .input-submit-registrovat {
-	background: url(/m/images/input-submit-registrovat.jpg) no-repeat 0 0;
-	margin: 15px 0 15px 85px;
-	padding-bottom: 2px;
-	width: 130px;
-	height: 31px;
-	border: 0;
-	cursor: pointer;
-	font-size: 12px;
-	font-weight: bold;
-	color: #fff;
-}
-.container .input-submit-registrovat:hover {
-	background: url(/m/images/input-submit-registrovat.jpg) no-repeat 0 -31px;
-}
+
 .container .help {
 	margin: 0 0 20px 0;
 	text-align: center;
@@ -826,3 +787,47 @@ div.notifications .zavrit {
     list-style-type: none;
 }
 
+#reg-form .input-text-registrace {
+	background: url(/m/images/bg-input-text-registrace.jpg) no-repeat 0 0;
+	margin: 0 0 10px 20px;
+	padding: 0 2px;
+	width: 256px;
+	height: 31px;
+	border: 0;
+	color: #cfd8de;
+	font-size: 12px;
+}
+
+#reg-form .input-submit-prihlasit {
+	background: url(/m/images/input-submit-prihlasit.jpg) no-repeat 0 0;
+	margin: 15px 0 15px 95px;
+	padding-bottom: 2px;
+	width: 110px;
+	height: 31px;
+	border: 0;
+	cursor: pointer;
+	font-size: 12px;
+	font-weight: bold;
+	color: #fff;
+}
+
+#reg-form .input-submit-prihlasit:hover {
+	background: url(/m/images/input-submit-prihlasit.jpg) no-repeat 0 -31px;
+}
+
+#reg-form .input-submit-registrovat {
+	background: url(/m/images/input-submit-registrovat.jpg) no-repeat 0 0;
+	margin: 15px 0 15px 85px;
+	padding-bottom: 2px;
+	width: 130px;
+	height: 31px;
+	border: 0;
+	cursor: pointer;
+	font-size: 12px;
+	font-weight: bold;
+	color: #fff;
+}
+
+#reg-form .input-submit-registrovat:hover {
+	background: url(/m/images/input-submit-registrovat.jpg) no-repeat 0 -31px;
+}

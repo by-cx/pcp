@@ -191,6 +191,10 @@ CONSTANCE_CONFIG = {
 VIRTUALENVS_DIR = 'virtualenvs'
 LOG_DIR = '/var/log/webs/' #trailing slash required!
 
+PAYMENT_CHOICES = (
+    ("per_web", _("Per application (60 CZK/app/month)")),
+    ("fee", _("Constant fee (200 CZK/196 MB RAM)")),
+)
 
 ## Logování
 import logging

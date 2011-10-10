@@ -11,7 +11,7 @@ DATABASES = {
 }
 
 EMAIL_FROM = "info@rosti.cz"
-EMAIL_HOST = "tresnovec.net"
+EMAIL_HOST = "localhost"
 
 PAYMENT_WSGI   = {"czk": 60, "usd": 0, "eur": 0}
 PAYMENT_PHP    = {"czk": 60, "usd": 0, "eur": 0}

@@ -3,9 +3,9 @@
 
 import os, sys
 
-sys.path.append('/home/cx/co/')
-sys.path.append('/home/cx/co/rosti')
-os.environ['DJANGO_SETTINGS_MODULE'] = 'rosti.settings'
+sys.path.append('/home/cx/co/pcp')
+sys.path.append('/home/cx/co/pcp/wsgiadmin')
+os.environ['DJANGO_SETTINGS_MODULE'] = 'wsgiadmin.settings'
 
 from django.contrib.auth.models import User as user
 

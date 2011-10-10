@@ -46,6 +46,7 @@ def show(request, p=1):
             "num_page": p,
             "u": u,
             "superuser": request.user,
+            "menu_active": "users",
             },
         context_instance=RequestContext(request)
     )
@@ -206,6 +207,7 @@ def update(request, uid):
             "action": reverse("wsgiadmin.users.views.update", args=[uid]),
             "u": u,
             "superuser": superuser,
+            "menu_active": "users",
             },
                               context_instance=RequestContext(request)
     )

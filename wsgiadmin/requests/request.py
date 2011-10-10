@@ -236,8 +236,8 @@ class UWSGIRequest(SSHHandler):
             uwsgi.append("\t<wsgi-file>%s</wsgi-file>" % site.script)
             uwsgi.append("\t<daemonize>%s</daemonize>" % site.logfile)
             uwsgi.append("\t<chdir>%s</chdir>" % home)
-            for pp in [join(home, x.strip()) for x in site.python_path.split("\n") if x.strip()]:
-                uwsgi.append("\t<pythonpath>%s/%s</pythonpath>" % (home, pp))
+            for pp in [join(home, x.lstrip("/")) for x in site.python_path.split("\n") if x.lstrip("/")]:
+                uwsgi.append("\t<pythonpath>%s</pythonpath>" % pp)
 
             uwsgi.append("</uwsgi>")
 

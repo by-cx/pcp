@@ -4,9 +4,9 @@
 import os, sys, datetime
 from wsgiadmin.apacheconf.models import UserSite
 
-sys.path.append('/home/cx/co/')
-sys.path.append('/home/cx/co/rosti')
-os.environ['DJANGO_SETTINGS_MODULE'] = 'rosti.settings'
+sys.path.append('/home/cx/co/pcp')
+sys.path.append('/home/cx/co/pcp/wsgiadmin')
+os.environ['DJANGO_SETTINGS_MODULE'] = 'wsgiadmin.settings'
 
 from django.conf import settings
 

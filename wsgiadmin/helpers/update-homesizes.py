@@ -6,9 +6,9 @@ from wsgiadmin.keystore.tools import kset
 from wsgiadmin.requests.tools import RawRequest
 from wsgiadmin.clients.models import *
 
-sys.path.append('/home/cx/co/')
-sys.path.append('/home/cx/co/rosti')
-os.environ['DJANGO_SETTINGS_MODULE'] = 'rosti.settings'
+sys.path.append('/home/cx/co/pcp')
+sys.path.append('/home/cx/co/pcp/wsgiadmin')
+os.environ['DJANGO_SETTINGS_MODULE'] = 'wsgiadmin.settings'
 
 print "deprecated, use ./manage.py update_homesizes instead\n" * 5
 

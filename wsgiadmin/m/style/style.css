@@ -595,10 +595,10 @@ img {
 	border: solid 1px #fb9ca4;
 	color: #430006;
 }
-ul #notifications {
+ul#notifications {
 	margin: 0 0 30px 0;
 }
-ul #notifications li {
+ul#notifications li {
 	background: #f2f2f2 !important;
 	margin: 0 0 10px 0;
 	padding: 10px 30px 10px 50px !important;
@@ -609,23 +609,23 @@ ul #notifications li {
 	border-radius: 6px;
 	list-style: none;
 }
-ul #notifications li.error {
+ul#notifications li.error {
 	background: #fdd1d1 url(/m/images/ico-error.png) no-repeat 20px 10px !important;
 	border: solid 1px #dc8787;
 }
-ul #notifications li.info {
+ul#notifications li.info {
 	background: #dde4fe url(/m/images/ico-info.png) no-repeat 20px 10px  !important;
 	border: solid 1px #94a8e8;
 }
-ul #notifications li.warning {
+ul#notifications li.warning {
 	background: #fefbd4 url(/m/images/ico-upozorneni.png) no-repeat 20px 10px  !important;
 	border: solid 1px #e6db54;
 }
-ul #notifications li.success {
+ul#notifications li.success {
 	background: url(/m/images/ico-ok.png) no-repeat 20px 10px  #d8fed1 !important;
 	border: solid 1px #8ad17f;
 }
-ul #notifications li .zavrit {
+ul#notifications li .zavrit {
 	position: absolute;
 	right: -5px;
 	top: -5px;

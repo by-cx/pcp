@@ -33,21 +33,21 @@
                     <td class="list_actions">
                         {% if site.type == "php" or site.type == "static" %}
                             <a href="{% url app_static app_type=site.type app_id=site.id %}">
-                                <img src="{{ STATIC_URL }}icons/raster/gray_dark/pen_alt_stroke_16x16.png" alt="{% trans "Edit" %}"/>
+                                <img src="{{ STATIC_URL }}images/ico-editovat.png" alt="{% trans "Edit" %}"/>
                             </a>
                         {% endif %}
                         {% if site.type == "uwsgi" or site.type == "modwsgi" %}
                             {% if site.type == "uwsgi" %}
                                 <a href="{% url wsgiadmin.apacheconf.views.restart site.id %}" title="{% trans "Restart" %}">
-                                    <img src="{{ STATIC_URL }}icons/raster/gray_dark/loop_16x16.png" alt="{% trans "Restart" %}"/>
+                                    <img src="{{ STATIC_URL }}images/ico-obnovit.png" alt="{% trans "Restart" %}"/>
                                 </a>
                             {% endif %}
                             <a href="{% url wsgiadmin.apacheconf.views.app_wsgi site.id %}" title="{% trans "Edit" %}">
-                                <img src="{{ STATIC_URL }}icons/raster/gray_dark/pen_alt_stroke_16x16.png" alt="{% trans "Edit" %}"/>
+                                <img src="{{ STATIC_URL }}images/ico-editovat.png" alt="{% trans "Edit" %}"/>
                             </a>
                         {% endif %}
                         <a href="#" id="remove_{{ site.id }}" rel="{{ site.id }}" class="bold object_delete" title="{% trans "Delete" %}">
-                            <img src="{{ STATIC_URL }}icons/raster/gray_dark/trash_fill_16x16.png" alt="{% trans "Delete" %}"/>
+                            <img src="{{ STATIC_URL }}images/ico-smazat.png" alt="{% trans "Delete" %}"/>
                         </a>
                         <span id="removed_{{ site.id }}" class="info"></span>
                     </td>

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import crypt
 from datetime import date
 
@@ -14,6 +15,7 @@ from wsgiadmin.emails.models import Email, EmailRedirect
 from wsgiadmin.requests.request import EMailRequest
 from wsgiadmin.service.forms import PassCheckModelForm
 from wsgiadmin.service.views import JsonResponse, RostiListView
+from constance import config
 
 
 class MailboxListView(RostiListView):
@@ -46,6 +48,8 @@ def addBox(request):
             email.pub_date = date.today()
             email.password = crypt.crypt(form.cleaned_data["password1"],
                                          form.cleaned_data["login"])
+            email.uid = config.email_uid
+            email.gid = config.email_gid
             email.save()
 
             er = EMailRequest(u, u.parms.mail_machine)

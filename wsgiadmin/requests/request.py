@@ -6,7 +6,7 @@ import shlex
 
 from os.path import join
 from constance import config
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 
 from django.db.models.query_utils import Q
 from django.template.loader import render_to_string
@@ -333,7 +333,22 @@ class BindRequest(Service):
         super(BindRequest, self).__init__(user, machine, config.bind_init_script)
 
     def mod_zone(self, domain):
+        date_now = date.today()
+        num = 0
+        if len(str(domain.serial)) == 10 and domain.serial[0:8] == "%.4d%.2d%.2d%" % \
+                                                                   (date_now.year,date_now.month,date_now.day):
+            ye  = int(str(domain.serial)[0:4])
+            mo  = int(str(domain.serial)[4:6])
+            da  = int(str(domain.serial)[6:8])
+            num = int(str(domain.serial)[8:10])
+
+            if date_now == date(ye, mo, da):
+                num += 1
+
+        serial = int("%.4d%.2d%.2d%.2d"%(date_now.year,date_now.month,date_now.day,num))
+
         configfile = render_to_string("bind_zone.conf", {
+            "serial": serial,
             "domain": domain,
             "config": config,
             })

@@ -17,6 +17,11 @@ TODO for v0.3
 * Clean, clean, clean
 * Fix, fix, fix
 
+TODO for v0.4
+=============
+
+* rework invoice system
+
 Main features
 =============
 

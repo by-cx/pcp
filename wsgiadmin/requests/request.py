@@ -416,7 +416,10 @@ class SystemRequest(SSHHandler):
 
         self.run("useradd -m -s /bin/bash %s" % user.username)
         self.run("chmod 750 %s " % HOME)
-        self.run("cp -R %s %s" % ( join(settings.ROOT, 'service/www_data/'), join('/var/www', user.username)))
+        #TODO:This three lines needs more love - consider fastcgi_wrapper_dir killing, it's useless
+        self.run("mkdir -p /var/www/%s" % user.username)
+        self.run("cp -R %s %s" % ( join(settings.ROOT, 'service/www_data/php5_wrap'), config.fastcgi_wrapper_dir % user.username))
+        self.run("chmod 755 %s" % (config.fastcgi_wrapper_dir % user.username))
         self.run("chown -R %(user)s:%(user)s /var/www/%(user)s" % dict(user=user.username))
         self.run("usermod -G %s -a %s" % (user.username, user.username))
         self.run("usermod -G %s -a %s" % (config.apache_user, user.username))

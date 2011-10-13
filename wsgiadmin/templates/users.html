@@ -52,10 +52,12 @@
 						<td>{{ user.parms.count_pgs }}×/{{ user.parms.count_mys }}×</td>
 						<td>{{ user.parms.home_size }}</td>
 						<td id="user_{{ user.id }}">
-							<a href="{% url wsgiadmin.users.views.switch_to_user user.id num_page %}">{% trans "Switch" %}</a>
-							<a href="{% url wsgiadmin.users.views.install user.id %}" title="{% trans "Install" %}">{% trans "Install" %}</a>
-							<a href="{% url wsgiadmin.users.views.update user.id %}" title="{% trans "Edit" %}"><img src="{{ STATIC_URL }}images/ico-editovat.png" alt="{% trans "Edit" %}" /></a>
-							<a href="#" title="{% trans "Delete" %}" onclick="if(confirm('{% trans "Are you sure?" %}')) remove('{{ user.id }}')"><img src="{{ STATIC_URL }}images/ico-smazat.png" alt="{% trans "Delete" %}" /></a>
+                            <ul class="akce">
+                                <li><a href="{% url wsgiadmin.users.views.switch_to_user user.id num_page %}">{% trans "Switch" %}</a></li>
+                                <li><a href="{% url wsgiadmin.users.views.install user.id %}" title="{% trans "Install" %}">{% trans "Install" %}</a></li>
+                                <li><a href="{% url wsgiadmin.users.views.update user.id %}" title="{% trans "Edit" %}"><img src="{{ STATIC_URL }}images/ico-editovat.png" alt="{% trans "Edit" %}" /></a></li>
+                                <li><a href="#" title="{% trans "Delete" %}" onclick="if(confirm('{% trans "Are you sure?" %}')) remove('{{ user.id }}')"><img src="{{ STATIC_URL }}images/ico-smazat.png" alt="{% trans "Delete" %}" /></a></li>
+                            </ul>
 						</td>
 					</tr>
 					{% endfor %}

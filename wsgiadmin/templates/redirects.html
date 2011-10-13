@@ -30,13 +30,15 @@
                     <td>{{ redirect.alias }}@{{ redirect.domain.name }}</td>
                     <td>{{ redirect.email }}</td>
                     <td>
-                        <a href="{% url wsgiadmin.emails.views.changeRedirect redirect.id %}">
+                        <ul class="akce">
+                        <li><a href="{% url wsgiadmin.emails.views.changeRedirect redirect.id %}">
                             <img src="{{ STATIC_URL }}images/ico-editovat.png" alt="{% trans "Edit" %}"/>
-                        </a>
+                        </a></li>
 
-                        <a href="#" class="object_delete" title="{% trans "Delete" %}" rel="{{ redirect.id }}">
+                        <li><a href="#" class="object_delete" title="{% trans "Delete" %}" rel="{{ redirect.id }}">
                             <img src="{{ STATIC_URL }}images/ico-smazat.png" alt="{% trans "Delete" %}"/>
-                        </a>
+                        </a></li>
+                        </ul>
                         <span id="removed_{{ redirect.id }}" class="info"></span>
                     </td>
                 </tr>

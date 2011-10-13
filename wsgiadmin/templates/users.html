@@ -29,10 +29,6 @@
 					   <th>Informace</th>
 					   <th>Domény</th>
 					   <th>Web/app</th>
-					   <th>E-maily</th>
-					   <th>FTP účty</th>
-					   <th>Pg/My</th>
-					   <th>Home</th>
 					   <th>Akce</th>
 					</tr>
 				</thead>
@@ -47,10 +43,6 @@
 						</td>
 						<td>{{ user.parms.count_domains }}×</td>
 						<td>{{ user.parms.count_sites }}×</td>
-						<td>{{ user.parms.count_emails }}×</td>
-						<td>{{ user.parms.count_ftps }}×</td>
-						<td>{{ user.parms.count_pgs }}×/{{ user.parms.count_mys }}×</td>
-						<td>{{ user.parms.home_size }}</td>
 						<td id="user_{{ user.id }}">
                             <ul class="akce">
                                 <li><a href="{% url wsgiadmin.users.views.switch_to_user user.id num_page %}">{% trans "Switch" %}</a></li>
@@ -64,7 +56,7 @@
 				</tbody>
 				<tfoot>
 					<tr>
-						<td colspan="9">
+						<td colspan="5">
 								<div class="pagination">
 									{% if users.has_previous %}<a href="{% url wsgiadmin.users.views.show 1 %}" title="{% trans "First page" %}">&laquo; {% trans "First" %}</a>{% endif %}
 									{% if users.has_previous %}<a href="{% url wsgiadmin.users.views.show users.previous_page_number %}" title="{% trans "Previous page" %}">&laquo; {% trans "Previous" %}</a>{% endif %}
@@ -87,7 +79,7 @@
 				{% else %}
 				<tbody>
 				<tr>
-					<td colspan="9">Žádný uživatel ještě nebyl přidán.</td>
+					<td colspan="5">Žádný uživatel ještě nebyl přidán.</td>
 				</tr>
 				</tbody>
 				{% endif%}

@@ -48,7 +48,7 @@
                                 <li><a href="{% url wsgiadmin.users.views.switch_to_user user.id num_page %}"><img src="{{ STATIC_URL }}images/ico-prepnout.png" alt="{% trans "Switch" %}" /></a></li>
                                 <li><a href="{% url wsgiadmin.users.views.install user.id %}" title="{% trans "Install" %}"><img src="{{ STATIC_URL }}images/ico-instalace.png" alt="{% trans "Install" %}" /></a></li>
                                 <li><a href="{% url wsgiadmin.users.views.update user.id %}" title="{% trans "Edit" %}"><img src="{{ STATIC_URL }}images/ico-editovat.png" alt="{% trans "Edit" %}" /></a></li>
-                                <li><a href="#" title="{% trans "Delete" %}" onclick="if(confirm('{% trans "Are you sure?" %}')) remove('{{ user.id }}')"><img src="{{ STATIC_URL }}images/ico-smazat.png" alt="{% trans "Delete" %}" /></a></li>
+                                <li class="smazat"><a href="#" title="{% trans "Delete" %}" onclick="if(confirm('{% trans "Are you sure?" %}')) remove('{{ user.id }}')"><img src="{{ STATIC_URL }}images/ico-smazat.png" alt="{% trans "Delete" %}" /></a></li>
                             </ul>
 						</td>
 					</tr>

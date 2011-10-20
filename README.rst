@@ -7,6 +7,9 @@ applications throw Apache and mod_fcgid. It's not complete
 yet, but we use it in production. We are working hard to make
 wsgiadmin to be the best solution for servers.
 
+.. image:: https://github.com/creckx/pcp/raw/master/stuff/screen1.png
+   :width: 450 px
+
 TODO for v0.3
 =============
 

@@ -5,11 +5,7 @@ from django.forms.widgets import RadioSelect
 from django.utils.translation import ugettext_lazy as _
 
 from wsgiadmin.service.forms import PassCheckForm
-
-PAYMENT_CHOICES = (
-    ("per_web", _("Per application (60 CZK/app/month)")),
-    ("fee", _("Constant fee (200 CZK/196 MB RAM)")),
-)
+from django.conf import settings
 
 class formReg(forms.Form):
     company = forms.CharField(label=_("Company"), max_length=250, required=False)
@@ -37,7 +33,7 @@ class formReg2(PassCheckForm):
 
 
 class PaymentRegForm(forms.Form):
-    pay_method = forms.ChoiceField(label=_("Pay method"), required=True, choices=PAYMENT_CHOICES)
+    pay_method = forms.ChoiceField(label=_("Pay method"), required=True, choices=settings.PAYMENT_CHOICES)
 
 
 class SendPwdForm(forms.Form):

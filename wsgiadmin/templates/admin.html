@@ -7,6 +7,7 @@
     <meta name="robots" content="index, follow" />
     <meta name="keywords" content="{{ site }}" />
     <meta name="description" content="{{ site }}" />
+    <link rel="icon" href="/m/favicon.png" type="image/png">
     <link type="text/css" media="all" href="{{ STATIC_URL }}style/style.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}uni-form/css/uni-form.css">
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}uni-form/css/default.uni-form.css">
@@ -59,16 +60,14 @@
                         <strong>{{ site }}</strong><span></span>
                     </a></h1>
                     <p id="login">
-                        <strong>
                             {% if not u.is_superuser and superuser != u %}
-                                {{ u.username }}
+                                <strong>{{ u.username }}</strong>
                                 <br />
-                                <p id="prepnuti-uzivatele">(<i>{% trans "switched" %}</i> - <a href="{% url wsgiadmin.users.views.switch_to_admin 1 %}">{% trans "back" %}</a>)
+                                <p id="prepnuti-uzivatele"><i>{% trans "switched" %}</i> <a href="{% url wsgiadmin.users.views.switch_to_admin 1 %}">{% trans "back" %}</a>
                                 <span id="uzivatel">({% trans "superuser" %})</span></p>
                             {% else %}
                                 {{ u.username }} {% if u.is_superuser %} <span id="uzivatel">({% trans "superuser" %})</span>{% endif %}
                             {% endif %}
-                        </strong>
                         <span class="odhlasit"><a href="{% url django.contrib.auth.views.logout %}">{% trans "Logout" %}</a></span>
                     </p>
 
@@ -83,7 +82,7 @@
                         <li{% if menu_active == "dbs" %} class="active"{% endif %}><a href="{% url db_list %}">{% trans "Databases" %}<span></span></a></li>
                         <li{% if menu_active == "ftps" %} class="active"{% endif %}><a href="{% url ftp_list %}">{% trans "FTP" %}<span></span></a></li>
                         <li{% if menu_active == "emails" %} class="active"{% endif %}><a href="{% url mailbox_list %}">{% trans "E-mails" %}<span></span></a></li>
-                        <li{% if menu_active == "settings" %} class="active"{% endif %}><a href="{% url wsgiadmin.users.views.ssh_passwd %}">{% trans "Settings" %}<span></span></a></li>
+                        <li{% if menu_active == "settings" %} class="active"{% endif %}><a href="{% url wsgiadmin.useradmin.views.change_passwd %}">{% trans "Settings" %}<span></span></a></li>
                     </ul>
                 </div>
             </div>

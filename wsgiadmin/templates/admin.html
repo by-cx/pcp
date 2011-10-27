@@ -76,7 +76,6 @@
                         <li{% if menu_active == "dashboard" %} class="active"{% endif %}><a href="{% url wsgiadmin.useradmin.views.info %}">{% trans "Dashboard" %}<span></span></a></li>
                         {% if superuser.is_superuser %}
                         <li{% if menu_active == "users" %} class="active"{% endif %}><a href="{% url wsgiadmin.users.views.show %}" class="red">{% trans "Users" %}<span></span></a></li>
-                        <li{% if menu_active == "invoices" %} class="active"{% endif %}><a href="{% url wsgiadmin.invoices.views.show %}" class="red">{% trans "Invoices" %}<span></span></a></li>
                         {% endif %}
                         <li{% if menu_active == "domains" %} class="active"{% endif %}><a href="{% url domains_list %}">{% trans "Domains" %}<span></span></a></li>
                         <li{% if menu_active == "webapps" %} class="active"{% endif %}><a href="{% url app_list %}">{% trans "Web apps" %}<span></span></a></li>
@@ -117,8 +116,6 @@
                                 <li><a href="{% url wsgiadmin.useradmin.views.info %}">{% trans "Home" %}</a></li>
                                 {% if superuser.is_superuser %}<li><a href="{% url wsgiadmin.useradmin.views.master %}" class="red">{% trans "Master panel" %}</a></li>{% endif %}
                                 <li><a href="{% url wsgiadmin.useradmin.views.requests %}">{% trans "Last 20 server's request" %}</a></li>
-                                <li><a href="{% url wsgiadmin.bills.views.show "income" 1 %}">{% trans "Incomed payments" %}</a></li>
-                                <li><a href="{% url wsgiadmin.bills.views.show "bills" 1 %}">{% trans "Payments for services" %}</a></li>
                             </ul>
                         </li>
                     </ul>

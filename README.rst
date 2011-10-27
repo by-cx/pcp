@@ -23,7 +23,6 @@ TODO for v0.3
 TODO for v0.4
 =============
 
-* rework invoice system
 * fix some bugs
 * e-mail redirects
 * master panel with cool things

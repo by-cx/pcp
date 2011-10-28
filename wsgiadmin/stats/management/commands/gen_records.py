@@ -1,9 +1,9 @@
-from datetime import date
+from datetime import date, timedelta
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 from wsgiadmin.stats.models import RecordExists, Record
 
-class RecordUser(User):
+class RecordUser(object):
     def __init__(self, user):
         self.user = user
         self.gen()
@@ -17,7 +17,7 @@ class RecordUser(User):
 
     def _record(self, service, value):
         record = Record()
-        record.date = date.today()
+        record.date = date.today()+timedelta(3)
         record.user = self.user
         record.service = service
         record.value = value
@@ -28,9 +28,9 @@ class RecordUser(User):
 
     def record_sites(self):
         for site in self.user.usersite_set.filter(type="modwsgi"):
-            self._record("modwsgi", "%s|%d" % (site.server_name, site.processes))
+            self._record("modwsgi", "%s (%d proc.)" % (site.server_name, site.processes))
         for site in self.user.usersite_set.filter(type="uwsgi"):
-            self._record("uwsgi", "%s|%d" % (site.server_name, site.processes))
+            self._record("uwsgi", "%s (%d proc.)" % (site.server_name, site.processes))
         for site in self.user.usersite_set.filter(type="php"):
             self._record("php", site.server_name)
         for site in self.user.usersite_set.filter(type="static"):
@@ -52,7 +52,7 @@ class RecordUser(User):
         self._record("pgsql", "%d" % self.user.pgsql_set.count())
 
 class Command(BaseCommand):
-    help = "Generate report for invoice system"
+    help = "Create records"
 
     def handle(self, *args, **options):
         users = User.objects.all()

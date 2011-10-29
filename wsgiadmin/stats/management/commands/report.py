@@ -84,16 +84,16 @@ class Command(BaseCommand):
             for record in records:
                 if last and record.value != last.value:
                     if web_record:
-                        web_record["date_end"] = pickle.dumps(last.date)
+                        web_record["date_end"] = last.date.strftime("%Y-%m-%d")
                         report["webs"].append(web_record)
-                    web_record = {"date_start": pickle.dumps(record.date), "date_end": pickle.dumps(record.date), "service": record.service,
+                    web_record = {"date_start": record.date.strftime("%Y-%m-%d"), "date_end": record.date.strftime("%Y-%m-%d"), "service": record.service,
                                   "domain": record.value}
                     proc = re.findall("\(([0-9]+) proc.\)", record.value)
                     if proc:
                         web_record["processes"] = proc[0]
                 last = record
             if record and web_record:
-                web_record["date_end"] = pickle.dumps(record.date)
+                web_record["date_end"] = record.date.strftime("%Y-%m-%d")
                 report["webs"].append(web_record)
             report["address"] = self.get_address(user)
             report["fee"] = user.parms.fee

@@ -93,29 +93,4 @@
         {% endif %}
     </table>
 
-    {% if invoices %}
-        <h3>{% trans "Invoices" %}</h3>
-        <table>
-            <tr>
-                <th>{% trans "Invoice no." %}</th>
-                <th>{% trans "Total payment" %}</th>
-                <th>{% trans "Status" %}</th>
-                <th>{% trans "Download link" %}</th>
-            </tr>
-            {% for invoice in invoices %}
-                <tr>
-                    <td>{{ invoice.payment_id }}</td>
-                    <td>{{ invoice.total }}</td>
-                    <td>
-                        {{ invoice.payed|yesno:"paid,not paid,unknown" }}
-                    </td>
-                    <td>
-                        <a href="{% url wsgiadmin.invoices.views.invoice_get invoice.payment_id %}">{% trans "Download" %}</a>
-                    </td>
-                </tr>
-            {% endfor %}
-        </table>
-
-    {% endif %}
-
 {% endblock %}

@@ -11,3 +11,5 @@ SELECT u.id AS user_id,
        COALESCE((SELECT SUM(cash) FROM bills_income WHERE user_id = u.id),0)-COALESCE((SELECT SUM(price) FROM bills_bill WHERE user_id = u.id),0) AS "sum"
 FROM auth_user u
 GROUP BY user_id, username;
+
+CREATE VIEW email_pam AS SELECT e.password AS password,e.login||'@'||d.name AS user FROM emails_email e, domains_domain d WHERE e.domain_id = d.id;

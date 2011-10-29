@@ -6,7 +6,7 @@ import shlex
 
 from os.path import join
 from constance import config
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 
 from django.db.models.query_utils import Q
 from django.template.loader import render_to_string
@@ -333,7 +333,22 @@ class BindRequest(Service):
         super(BindRequest, self).__init__(user, machine, config.bind_init_script)
 
     def mod_zone(self, domain):
+        date_now = date.today()
+        num = 0
+        if len(str(domain.serial)) == 10 and domain.serial[0:8] == "%.4d%.2d%.2d%" % \
+                                                                   (date_now.year,date_now.month,date_now.day):
+            ye  = int(str(domain.serial)[0:4])
+            mo  = int(str(domain.serial)[4:6])
+            da  = int(str(domain.serial)[6:8])
+            num = int(str(domain.serial)[8:10])
+
+            if date_now == date(ye, mo, da):
+                num += 1
+
+        serial = int("%.4d%.2d%.2d%.2d"%(date_now.year,date_now.month,date_now.day,num))
+
         configfile = render_to_string("bind_zone.conf", {
+            "serial": serial,
             "domain": domain,
             "config": config,
             })
@@ -416,9 +431,12 @@ class SystemRequest(SSHHandler):
 
         self.run("useradd -m -s /bin/bash %s" % user.username)
         self.run("chmod 750 %s " % HOME)
-        self.run("cp -R %s %s" % ( join(settings.ROOT, 'service/www_data/'), join('/var/www', user.username)))
+        #TODO:This three lines needs more love - consider fastcgi_wrapper_dir killing, it's useless
+        self.run("mkdir -p /var/www/%s" % user.username)
+        self.run("cp %s %s" % ( join(settings.ROOT, 'service/www_data/php5_wrap'), config.fastcgi_wrapper_dir % user.username))
+        self.run("chmod 755 %s" % (config.fastcgi_wrapper_dir % user.username))
         self.run("chown -R %(user)s:%(user)s /var/www/%(user)s" % dict(user=user.username))
-        self.run("usermod -G %s -a %s" % (user.username, user.username))
+        self.run("usermod -G %s -a %s" % (user.username, config.apache_user))
         self.run("usermod -G %s -a %s" % (config.apache_user, user.username))
         self.run("usermod -G clients -a %s" % user.username)
         self.run("su %s -c\'mkdir -p %s\'" % (user.username, join(HOME, settings.VIRTUALENVS_DIR)))

@@ -30,13 +30,15 @@
                     <td>{{ email.login }}@{{ email.domain.name }}</td>
                     <td>{{ email.pub_date|date:"d.m.Y" }}</td>
                     <td>
-                        <a href="{% url wsgiadmin.emails.views.changePasswdBox email.id %}" title="{% trans "Edit" %}">
-                            <img src="{{ STATIC_URL }}icons/raster/gray_dark/key_stroke_16x16.png" alt="{% trans "Change password" %}"/>
-                        </a>
+                        <ul class="akce">
+                        <li><a href="{% url wsgiadmin.emails.views.changePasswdBox email.id %}" title="{% trans "Edit" %}">
+                            <img src="{{ STATIC_URL }}images/ico-heslo.png" alt="{% trans "Change password" %}"/>
+                        </a></li>
 
-                        <a href="#" class="object_delete" title="{% trans "Delete" %}" rel="{{ email.id }}">
-                            <img src="{{ STATIC_URL }}icons/raster/gray_dark/trash_fill_16x16.png" alt="{% trans "Delete" %}"/>
-                        </a>
+                        <li class="smazat"><a href="#" class="object_delete" title="{% trans "Delete" %}" rel="{{ email.id }}">
+                            <img src="{{ STATIC_URL }}images/ico-smazat.png" alt="{% trans "Delete" %}"/>
+                        </a></li>
+                        </ul>
                         <span id="removed_{{ email.id }}" class="info"></span>
                     </td>
                 </tr>

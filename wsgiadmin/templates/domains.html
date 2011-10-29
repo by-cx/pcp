@@ -32,9 +32,11 @@
                     <td>{{ domain.pub_date|date:"d.m.Y" }}</td>
                     <td>{{ domain.name }}</td>
                     <td id="domain_{{ domain.id }}">
-                        <a href="#" title="{% trans "Delete" %}" rel="{{ domain.id }}" class="object_delete">
-                            <img src="{{ STATIC_URL }}icons/raster/gray_dark/trash_fill_16x16.png" alt="{% trans "Delete" %}"/>
-                        </a>
+                        <ul class="akce">
+                        <li class="smazat"><a href="#" title="{% trans "Delete" %}" rel="{{ domain.id }}" class="object_delete">
+                            <img src="{{ STATIC_URL }}images/ico-smazat.png" alt="{% trans "Delete" %}"/>
+                        </a></li>
+                        </ul>
                     </td>
                 </tr>
             {% endfor %}

@@ -92,6 +92,8 @@ class Command(BaseCommand):
                     proc = re.findall("\(([0-9]+) proc.\)", record.value)
                     if proc:
                         web_record["processes"] = proc[0]
+                    else:
+                        web_record["processes"] = "1"
                 last = record
                 web_record["days"] += 1
             if record and web_record:

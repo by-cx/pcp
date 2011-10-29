@@ -83,18 +83,19 @@ class Command(BaseCommand):
             web_record = {}
             record = None
             for record in records:
-                if last and record.value != last.value:
+                if not last or (last and record.value != last.value):
                     if web_record:
-                        web_record["date_end"] = last.date.strftime("%Y-%m-%d")
+                        web_record["date_end"] = last.date
                         report["webs"].append(web_record)
-                    web_record = {"date_start": record.date.strftime("%Y-%m-%d"), "date_end": record.date.strftime("%Y-%m-%d"), "service": record.service,
-                                  "domain": record.value}
+                    web_record = {"date_start": record.date, "date_end": record.date, "service": record.service,
+                                  "domain": record.value, "days": 0}
                     proc = re.findall("\(([0-9]+) proc.\)", record.value)
                     if proc:
                         web_record["processes"] = proc[0]
                 last = record
+                web_record["days"] += 1
             if record and web_record:
-                web_record["date_end"] = record.date.strftime("%Y-%m-%d")
+                web_record["date_end"] = record.date
                 report["webs"].append(web_record)
             report["address"] = self.get_address(user)
             report["fee"] = user.parms.fee

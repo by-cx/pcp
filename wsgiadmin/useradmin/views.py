@@ -12,7 +12,6 @@ from django.core.mail import send_mail
 
 from wsgiadmin.apacheconf.models import UserSite
 from wsgiadmin.clients.models import *
-from wsgiadmin.invoices.models import invoice
 from wsgiadmin.service.forms import PassCheckForm
 from wsgiadmin.useradmin.forms import formReg, formReg2, PaymentRegForm
 from wsgiadmin.clients.models import Parms
@@ -44,13 +43,11 @@ def master(request):
 def info(request):
     u = request.session.get('switched_user', request.user)
     superuser = request.user
-    invoices = invoice.objects.filter(client_address=u.parms.address)
 
     return render_to_response('info.html',
             {"u": u,
              "superuser": superuser,
-             "menu_active": "dashboard",
-             "invoices": invoices},
+             "menu_active": "dashboard",},
         context_instance=RequestContext(request)
     )
 

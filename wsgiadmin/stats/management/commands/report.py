@@ -1,9 +1,10 @@
 from datetime import date
-import json
 import pickle
 import re
 from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand
+import sys
+import json
 from wsgiadmin.stats.models import Record
 
 class Command(BaseCommand):
@@ -95,9 +96,13 @@ class Command(BaseCommand):
             if record and web_record:
                 web_record["date_end"] = record.date.strftime("%Y-%m-%d")
                 report["webs"].append(web_record)
-            report["address"] = self.get_address(user)
+            #report["address"] = self.get_address(user)
             report["fee"] = user.parms.fee
             report["discount"] = user.parms.discount
             if report["webs"]:
                 reports.append(report)
-            print json.dumps(reports)
+
+            #TODO:pipe doesn't work, find why and put it here
+            f = open("report-%d-%d.pickle" % (year, month), "w")
+            pickle.dump(reports, f)
+            f.close()

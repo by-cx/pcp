@@ -99,6 +99,8 @@ class Command(BaseCommand):
             report["address"] = self.get_address(user)
             report["fee"] = user.parms.fee
             report["discount"] = user.parms.discount
+            report["month"] = month
+            report["year"] = year
             if report["webs"]:
                 reports.append(report)
 

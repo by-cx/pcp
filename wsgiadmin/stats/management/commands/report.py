@@ -84,6 +84,8 @@ class Command(BaseCommand):
                 web_record.date_end = record.date
                 report.webs.append(web_record)
             report.address = user.parms.address
+            report.fee = user.parms.fee
+            report.discount = user.parms.discount
             if report.webs:
                 reports.append(report)
             print pickle.dumps(reports)

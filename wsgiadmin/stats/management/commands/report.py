@@ -96,7 +96,7 @@ class Command(BaseCommand):
             if record and web_record:
                 web_record["date_end"] = record.date.strftime("%Y-%m-%d")
                 report["webs"].append(web_record)
-            #report["address"] = self.get_address(user)
+            report["address"] = self.get_address(user)
             report["fee"] = user.parms.fee
             report["discount"] = user.parms.discount
             if report["webs"]:

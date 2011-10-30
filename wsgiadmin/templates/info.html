@@ -84,13 +84,6 @@
                 <td>{{ u.parms.pay_total_month|floatformat:2 }} {{ u.parms.currency|upper }}</td>
             </tr>
         {% endif %}
-        {% if u.balance_set.all %}
-            <tr>
-                <td><strong>{% trans "Account status" %}</strong></td>
-                <td></td>
-                <td>{{ u.balance_set.all.0.sum|floatformat:2 }} {{ u.parms.currency|upper }}</td>
-            </tr>
-        {% endif %}
     </table>
 
 {% endblock %}

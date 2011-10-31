@@ -1009,11 +1009,11 @@ msgstr "Administrace"
 
 #: templates/admin.html:41
 msgid "switched"
-msgstr "přepnuto"
+msgstr "Přepnout uživatele"
 
 #: templates/admin.html:41
 msgid "back"
-msgstr "zpět"
+msgstr "Zpět"
 
 #: templates/admin.html:42 templates/admin.html.py:44
 msgid "superuser"

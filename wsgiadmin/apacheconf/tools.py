@@ -61,7 +61,7 @@ def restart_master(config_mode, user):
         nr = NginxRequest(user, user.parms.web_machine)
         nr.mod_vhosts()
         nr.reload()
-    else:
+    if 'apache' in config_mode:
         ar = ApacheRequest(user, user.parms.web_machine)
         ar.mod_vhosts()
         ar.reload()

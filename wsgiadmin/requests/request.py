@@ -271,25 +271,53 @@ class NginxRequest(Service):
         sites = UserSite.objects.filter(removed=False, owner__parms__enable=True)
         for site in sites:
             if site.type== "uwsgi":
-                configfile.append(render_to_string("nginx_vhost_wsgi.conf", {
-                    "site": site,
-                    'log_dir': settings.LOG_DIR,
-                    "config": config,
-                }))
+                if site.ssl_mode in ("none", "both"):
+                    configfile.append(render_to_string("nginx_vhost_wsgi.conf", {
+                        "site": site,
+                        'log_dir': settings.LOG_DIR,
+                        "config": config,
+                        "ssl": False,
+                    }))
+                if site.ssl_mode in ("both", "sslonly"):
+                    configfile.append(render_to_string("nginx_vhost_wsgi.conf", {
+                        "site": site,
+                        'log_dir': settings.LOG_DIR,
+                        "config": config,
+                        "ssl": True,
+                    }))
             elif site.type in ("php", "modwsgi"):
                 # PHP always throw Apache
-                configfile.append(render_to_string("nginx_vhost_proxy.conf", {
-                    "site": site,
-                    "proxy": config.apache_url,
-                    'log_dir': settings.LOG_DIR,
-                    "config": config,
-                }))
+                if site.ssl_mode in ("none", "both"):
+                    configfile.append(render_to_string("nginx_vhost_proxy.conf", {
+                        "site": site,
+                        "proxy": config.apache_url,
+                        'log_dir': settings.LOG_DIR,
+                        "config": config,
+                        "ssl": False,
+                    }))
+                if site.ssl_mode in ("both", "sslonly"):
+                    configfile.append(render_to_string("nginx_vhost_proxy.conf", {
+                        "site": site,
+                        "proxy": config.apache_url,
+                        'log_dir': settings.LOG_DIR,
+                        "config": config,
+                        "ssl": True,
+                    }))
             elif site.type == "static":
-                configfile.append(render_to_string("nginx_vhost_static.conf", {
-                    "site": site,
-                    'log_dir': settings.LOG_DIR,
-                    "config": config,
-                }))
+                if site.ssl_mode in ("none", "both"):
+                    configfile.append(render_to_string("nginx_vhost_static.conf", {
+                        "site": site,
+                        'log_dir': settings.LOG_DIR,
+                        "config": config,
+                        "ssl": False,
+                    }))
+                if site.ssl_mode in ("both", "sslonly"):
+                    configfile.append(render_to_string("nginx_vhost_static.conf", {
+                        "site": site,
+                        'log_dir': settings.LOG_DIR,
+                        "config": config,
+                        "ssl": True,
+                    }))
         self.write(self.config_path, "\n".join(configfile))
 
 

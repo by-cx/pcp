@@ -128,8 +128,6 @@ INSTALLED_APPS = (
 
     'wsgiadmin.requests',
     'wsgiadmin.useradmin',
-    'wsgiadmin.bills',
-    'wsgiadmin.invoices',
     'wsgiadmin.clients',
     'wsgiadmin.domains',
     'wsgiadmin.emails',
@@ -139,6 +137,7 @@ INSTALLED_APPS = (
     'wsgiadmin.apacheconf',
     'wsgiadmin.keystore',
     'wsgiadmin.service',
+    'wsgiadmin.stats',
 )
 
 CONSTANCE_BACKEND = "constance.backends.database.DatabaseBackend"

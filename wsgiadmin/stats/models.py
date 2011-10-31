@@ -1,0 +1,33 @@
+from django.db import models
+from django.utils.translation import ugettext_lazy as _
+from django.contrib.auth.models import User
+
+class RecordExists(Exception): pass
+
+SERVICES = (
+    ("modwsgi", 'modwsgi'), #domain|processes
+    ("uwsgi", 'uwsgi'), #domain|processes
+    ("php", 'php'), #domain
+    ("static", 'static'), #domain
+    ("pgsql", 'pgsql'), #count
+    ("mysql", 'mysql'), #count
+    ("ftp", 'ftp'), #count
+    ("email", 'email') #count
+)
+
+class Record(models.Model):
+    date = models.DateField(_("Date"))
+    user = models.ForeignKey(User, verbose_name=_("User"))
+    service = models.CharField(_("Serivce"), max_length=128, choices=SERVICES)
+    value = models.CharField(_("Value"), max_length=512)
+
+    def save(self):
+        if Record.objects.filter(date = self.date,
+                            user = self.user,
+                            service = self.service,
+                            value = self.value).count() > 0:
+            raise RecordExists()
+        super(Record, self).save()
+
+    def __unicode__(self):
+        return "%s %s %s for %s" % (self.date, self.user, self.service, self.value)

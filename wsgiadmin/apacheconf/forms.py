@@ -40,7 +40,7 @@ class FormWsgi(FormStatic):
 
     class Meta:
         model = UserSite
-        fields = ('domains', 'static', 'python_path', 'virtualenv', 'script', 'allow_ips')
+        fields = ('domains', 'static', 'python_path', 'virtualenv', 'script', 'processes', 'allow_ips')
         widgets = {
             'static': forms.Textarea,
             'python_path': forms.Textarea,
@@ -57,6 +57,9 @@ class FormWsgi(FormStatic):
         self.fields['python_path'].help_text=_(u"<br /><strong>~/&lt;your_path&gt;</strong> - One directory per line. Format <strong>/there/is/my/app</strong>. Path is without your home directory")
         self.fields['virtualenv'].help_text= _(u"<br />Python virtual environment. You can find yours in '<strong>~/virtualenvs/&lt;selected_virtualenv&gt;</strong>'. Be free create new one.")
         self.fields['allow_ips'].help_text = _(u"<br />One IP per line. If it is blank, no limitation will be applied.")
+        self.fields['processes'].help_text = _(u"<br />There could be extra fee for additinal processes")
+        
+        self.fields['processes'].choices = ((1, '1'), (2, '2'), (3, '3'), (4, '4'), (5, '5'))
 
         wsgis = get_user_wsgis(self.user)
         wsgis_choices = [("", _("Not selected"))] + [(x, x) for x in wsgis]

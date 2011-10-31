@@ -306,7 +306,7 @@ class ApacheRequest(Service):
         for site in sites:
             if site.type in ("uwsgi", "modwsgi"):
                 # Nginx mode cancel handling wsgi by Apache
-                if config.mode != "apache": continue
+                if "apache" not in config.mode: continue
 
                 configfile.append(render_to_string("apache_vhost_wsgi.conf", {
                     "site": site,

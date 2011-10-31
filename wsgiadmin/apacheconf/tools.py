@@ -57,7 +57,7 @@ def get_user_venvs(user, use_cache=True):
     return venvs
 
 def restart_master(config_mode, user):
-    if config_mode == 'nginx':
+    if 'nginx' in config_mode:
         nr = NginxRequest(user, user.parms.web_machine)
         nr.mod_vhosts()
         nr.reload()

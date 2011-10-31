@@ -14,7 +14,7 @@ if getattr(settings, 'ENABLE_DEBUG_URLS', False):
 
 urlpatterns += patterns('',
     (r'^django-admin/', include(admin.site.urls)),
-    (r'^favicon\.ico$', 'django.views.generic.simple.redirect_to', {'url': '/m/favicon.ico'}),
+    (r'^favicon\.ico$', 'django.views.generic.simple.redirect_to', {'url': '/m/favicon.png'}),
     (r'^invoices', include('wsgiadmin.invoices.urls')),
     (r'^i18n/', include('django.conf.urls.i18n')),
 )

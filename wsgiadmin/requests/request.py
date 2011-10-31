@@ -270,13 +270,13 @@ class NginxRequest(Service):
         configfile = []
         sites = UserSite.objects.filter(removed=False, owner__parms__enable=True)
         for site in sites:
-            if site.type in ("uwsgi", "modwsgi"):
+            if site.type== "uwsgi":
                 configfile.append(render_to_string("nginx_vhost_wsgi.conf", {
                     "site": site,
                     'log_dir': settings.LOG_DIR,
                     "config": config,
                 }))
-            elif site.type == "php":
+            elif site.type in ("php", "modwsgi"):
                 # PHP always throw Apache
                 configfile.append(render_to_string("nginx_vhost_proxy.conf", {
                     "site": site,
@@ -306,14 +306,16 @@ class ApacheRequest(Service):
         for site in sites:
             if site.type in ("uwsgi", "modwsgi"):
                 # Nginx mode cancel handling wsgi by Apache
-                if "apache" not in config.mode: continue
+                if "nginx" in config.mode and site.type == "uwsgi": continue
 
                 configfile.append(render_to_string("apache_vhost_wsgi.conf", {
+                    "listen": config.apache_url,
                     "site": site,
                     'log_dir': settings.LOG_DIR,
                 }))
             else:
                 configfile.append(render_to_string("apache_vhost_%s.conf" % site.type, {
+                    "listen": config.apache_url,
                     "site": site,
                     'log_dir': settings.LOG_DIR,
                 }))

@@ -1,6 +1,7 @@
 from os.path import join
 
 from wsgiadmin.requests.request import SSHHandler, NginxRequest, ApacheRequest
+from constance import config
 
 from django.conf import settings
 from django.core.cache import cache
@@ -13,7 +14,7 @@ def user_directories(user, use_cache=False):
 
     if not dirs:
         sh = SSHHandler(user, user.parms.web_machine)
-        dirs = sh.run("/usr/bin/find %s -maxdepth 2 -type d" % user.parms.home, instant=True)[0].split("\n")
+        dirs = sh.run("/usr/bin/find %s -maxdepth %d -type d" % (user.parms.home, config.find_directory_deep), instant=True)[0].split("\n")
 
         if dirs:
             cache.set('user_directories_%s' % user.pk, dirs, timeout=3600*24*7)

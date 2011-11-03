@@ -274,14 +274,14 @@ class NginxRequest(Service):
                 if site.ssl_mode in ("none", "both"):
                     configfile.append(render_to_string("nginx_vhost_wsgi.conf", {
                         "site": site,
-                        'log_dir': settings.LOG_DIR,
+                        'log_dir': config.nginx_log_dir,
                         "config": config,
                         "ssl": False,
                     }))
                 if site.ssl_mode in ("both", "sslonly"):
                     configfile.append(render_to_string("nginx_vhost_wsgi.conf", {
                         "site": site,
-                        'log_dir': settings.LOG_DIR,
+                        'log_dir': config.nginx_log_dir,
                         "config": config,
                         "ssl": True,
                     }))
@@ -291,7 +291,7 @@ class NginxRequest(Service):
                     configfile.append(render_to_string("nginx_vhost_proxy.conf", {
                         "site": site,
                         "proxy": config.apache_url,
-                        'log_dir': settings.LOG_DIR,
+                        'log_dir': config.nginx_log_dir,
                         "config": config,
                         "ssl": False,
                     }))
@@ -299,7 +299,7 @@ class NginxRequest(Service):
                     configfile.append(render_to_string("nginx_vhost_proxy.conf", {
                         "site": site,
                         "proxy": config.apache_url,
-                        'log_dir': settings.LOG_DIR,
+                        'log_dir': config.nginx_log_dir,
                         "config": config,
                         "ssl": True,
                     }))
@@ -307,14 +307,14 @@ class NginxRequest(Service):
                 if site.ssl_mode in ("none", "both"):
                     configfile.append(render_to_string("nginx_vhost_static.conf", {
                         "site": site,
-                        'log_dir': settings.LOG_DIR,
+                        'log_dir': config.nginx_log_dir,
                         "config": config,
                         "ssl": False,
                     }))
                 if site.ssl_mode in ("both", "sslonly"):
                     configfile.append(render_to_string("nginx_vhost_static.conf", {
                         "site": site,
-                        'log_dir': settings.LOG_DIR,
+                        'log_dir': config.nginx_log_dir,
                         "config": config,
                         "ssl": True,
                     }))
@@ -339,13 +339,14 @@ class ApacheRequest(Service):
                 configfile.append(render_to_string("apache_vhost_wsgi.conf", {
                     "listen": config.apache_url,
                     "site": site,
-                    'log_dir': settings.LOG_DIR,
+                    'log_dir': config.apache_log_dir,
                 }))
             else:
+                if "nginx" in config.mode and site.type == "static": continue
                 configfile.append(render_to_string("apache_vhost_%s.conf" % site.type, {
                     "listen": config.apache_url,
                     "site": site,
-                    'log_dir': settings.LOG_DIR,
+                    'log_dir': config.apache_log_dir,
                 }))
         self.write(self.config_path, "\n".join(configfile))
 

@@ -17,7 +17,7 @@ class RecordUser(object):
 
     def _record(self, service, value):
         record = Record()
-        record.date = date.today()+timedelta(3)
+        record.date = date.today()
         record.user = self.user
         record.service = service
         record.value = value

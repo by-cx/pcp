@@ -116,7 +116,7 @@ def passwd(request, dbtype, dbname):
             else:
                 return HttpResponseBadRequest(_('Unknown database type'))
 
-            mr.passwd_db(dbname, dbname)
+            mr.passwd_db(dbname, form.cleaned_data["password1"])
             messages.add_message(request, messages.SUCCESS, _('Password has been changed'))
             return HttpResponseRedirect(reverse('db_list', kwargs=dict(dbtype=dbtype)))
     else:

@@ -14,6 +14,7 @@ except ImportError:
 #logging.basicConfig(level=logging.INFO, filename=ROOT + 'rosti.log',
 #                    format='%(asctime)s %(levelname)s %(message)s')
 
+DEBUG_TOOLBAR = False
 if DEBUG_TOOLBAR:
 
     INSTALLED_APPS += ('debug_toolbar',)

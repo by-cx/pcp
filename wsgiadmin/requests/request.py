@@ -246,19 +246,19 @@ class UWSGIRequest(SSHHandler):
 
     def start(self, site):
         """Start site"""
-        self.run("/usr/bin/env uwsgi-manager.py -s %s" % str(site.id))
+        self.run("/usr/bin/env uwsgi-manager -s %s" % str(site.id))
 
     def restart(self, site):
         """Restart site"""
-        self.run("/usr/bin/env uwsgi-manager.py -R %s" % str(site.id))
+        self.run("/usr/bin/env uwsgi-manager -R %s" % str(site.id))
 
     def stop(self, site):
         """Stop site"""
-        self.run("/usr/bin/env uwsgi-manager.py -S %s" % str(site.id))
+        self.run("/usr/bin/env uwsgi-manager -S %s" % str(site.id))
 
     def reload(self, site):
         """Reload site"""
-        self.run("/usr/bin/env uwsgi-manager.py -r %s" % str(site.id))
+        self.run("/usr/bin/env uwsgi-manager -r %s" % str(site.id))
 
 
 class NginxRequest(Service):

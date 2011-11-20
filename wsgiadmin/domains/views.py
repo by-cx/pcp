@@ -38,7 +38,7 @@ def rm(request):
         if d.owner == u:
             logging.info(_("Deleting domain %s") % d.name)
 
-            if config.handle_dns:
+            if config.handle_dns and d.dns:
                 pri_br = BindRequest(u, "master")
                 pri_br.remove_zone(d)
                 pri_br.mod_config()
@@ -70,7 +70,7 @@ def add(request):
 
             instance, created = Domain.objects.get_or_create(name=name, owner=u)
 
-            if config.handle_dns:
+            if config.handle_dns and instance.dns:
                 pri_br = BindRequest(u, "master")
                 pri_br.mod_zone(instance)
                 pri_br.mod_config()

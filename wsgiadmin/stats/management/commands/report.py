@@ -26,8 +26,8 @@ class Command(BaseCommand):
         year = date.today().year
         if len(args) and re.match("([0-9]{1,2})/([0-9]{4})", args[0]):
             s = re.match("([0-9]{1,2})/([0-9]{4})", args[0])
-            month = s.groups()[0]
-            year = s.groups()[1]
+            month = int(s.groups()[0])
+            year = int(s.groups()[1])
         return month, year
 
     def get_address(self, user):

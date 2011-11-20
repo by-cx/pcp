@@ -5,6 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 
 class RegistrationRequestForm(forms.Form):
     domain = forms.CharField(label=_("Domain"))
+    dns = forms.BooleanField(label="Manage DNS records", required=False, initial=True)
     ipv4 = forms.BooleanField(label="Manage IPv4 records", required=False, initial=True)
     ipv6 = forms.BooleanField(label="Manage IPv6 records", required=False, initial=True)
 

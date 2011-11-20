@@ -191,8 +191,8 @@ class Parms(models.Model):
             return date.today() + timedelta(days)
         return False
 
-    def add_credit(self, value):
-        credit = Credit(user=self.user, value=value)
+    def add_credit(self, value, free=False):
+        credit = Credit(user=self.user, value=value, invoice=free)
         credit.save()
 
     def installed(self):

@@ -20,6 +20,7 @@ class Record(models.Model):
     user = models.ForeignKey(User, verbose_name=_("User"))
     service = models.CharField(_("Serivce"), max_length=128, choices=SERVICES)
     value = models.CharField(_("Value"), max_length=512)
+    cost = models.FloatField(_("Cost"), default=0)
 
     def save(self):
         if Record.objects.filter(date = self.date,
@@ -31,3 +32,12 @@ class Record(models.Model):
 
     def __unicode__(self):
         return "%s %s %s for %s" % (self.date, self.user, self.service, self.value)
+
+class Credit(models.Model):
+    date = models.DateField(_("Date"), auto_now_add=True)
+    user = models.ForeignKey(User, verbose_name=_("User"))
+    value = models.FloatField(_("Cost"))
+    invoice = models.BooleanField(_("Sended to invoice system"), default=False)
+
+    def __unicode__(self):
+        return "%s += %.2f" % (self.user.username, self.value)

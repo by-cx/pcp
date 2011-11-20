@@ -100,19 +100,19 @@ class UserSite(models.Model):
         return config.fastcgi_wrapper_dir % self.owner
 
     @property
-    def pay(self):
+    def pay(self):#AttributeError:
         """
-        Vypocita cenu web/den vc. slevy
+        Credits per day
         """
         if self.owner.parms.fee:
             return 0
 
         if self.type in ("uwsgi", "modwsgi"):
-            return (settings.PAYMENT_WSGI[self.owner.parms.currency] / 30.0) * self.owner.parms.dc()
+            return (float(self.processes) * config.credit_wsgi_proc + config.credit_wsgi) * self.owner.parms.dc()
         elif self.type in ("php",):
-            return (settings.PAYMENT_PHP[self.owner.parms.currency] / 30.0) * self.owner.parms.dc()
+            return config.credit_php * self.owner.parms.dc()
         else:
-            return (settings.PAYMENT_STATIC[self.owner.parms.currency] / 30.0) * self.owner.parms.dc()
+            return config.credit_static * self.owner.parms.dc()
 
     def __repr__(self):
         return "<Web %s>" % self.server_name

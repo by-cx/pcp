@@ -45,9 +45,12 @@ def info(request):
     superuser = request.user
 
     return render_to_response('info.html',
-            {"u": u,
-             "superuser": superuser,
-             "menu_active": "dashboard",},
+            {
+                "u": u,
+                "superuser": superuser,
+                "menu_active": "dashboard",
+                "config": config,
+            },
         context_instance=RequestContext(request)
     )
 

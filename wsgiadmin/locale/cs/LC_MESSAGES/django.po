@@ -416,7 +416,7 @@ msgstr "První heslo nesouhlasí s druhým"
 
 #: clients/models.py:129 templates/admin.html:92
 msgid "Home"
-msgstr "Domácí adresář"
+msgstr "Domů"
 
 #: clients/models.py:131 emails/models.py:10
 msgid "UID"

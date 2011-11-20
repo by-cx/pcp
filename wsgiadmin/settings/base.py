@@ -185,6 +185,14 @@ CONSTANCE_CONFIG = {
 
     "email_uid": (117, "Email UID"),
     "email_gid": (117, "Email GID"),
+
+    "credit_wsgi": (1.0, "Credits for WSGI"),
+    "credit_wsgi_proc": (0.2, "Credits for extra WSGI process"),
+    "credit_php": (1.0, "Credits for PHP"),
+    "credit_static": (0.25, "Credits for STATIC"),
+    "credit_fee": (3.0, "Credits for VM"),
+    "credit_bm": (8.0, "Credits for VM"),
+    "credit_description": ("1 cr. = 2 Kč", "Credit description")
     }
 
 VIRTUALENVS_DIR = 'virtualenvs'

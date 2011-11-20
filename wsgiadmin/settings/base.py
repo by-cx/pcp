@@ -143,6 +143,8 @@ INSTALLED_APPS = (
 CONSTANCE_BACKEND = "constance.backends.database.DatabaseBackend"
 
 CONSTANCE_CONFIG = {
+    "email": ("info@rosti.cz", "Your e-mail"),
+
     "mode": ("apache", "apache or nginx"), # main web server, (apache/nginx)
     "ipv6": (True, "Turn on/off support for IPv6"),
     "maildir": ("/var/mail", "Directory with maildirs"),

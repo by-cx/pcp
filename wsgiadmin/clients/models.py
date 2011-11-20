@@ -114,6 +114,8 @@ class Parms(models.Model):
     fee = models.IntegerField(_(u"Paušál"), default=0)
     currency = models.CharField(_(u"Měna"), max_length=20, choices=settings.CURRENCY, default="czk")
     enable = models.BooleanField(_(u"Stav účtu"), default=True)
+    low_level_credits = models.CharField(_("Low level of credits"), max_length=30, default="send_email")
+    last_notification = models.DateField(_("Last low level notification"), blank=True, null=True)
 
     #address		= models.ForeignKey("address")
     address = models.OneToOneField(Address)

@@ -22,6 +22,10 @@ class CreditView(TemplateView):
             credit.save()
             messages.add_message(request, messages.SUCCESS, _('Credit has been added on your account'))
             messages.add_message(request, messages.INFO, _('Invoice is going to reach your e-mail in next 24 hours'))
+        if request.POST.get("what_to_do"):
+            self.user.parms.low_level_credits = request.POST.get("what_to_do")
+            self.user.parms.save()
+            messages.add_message(request, messages.SUCCESS, _('Low level behavior has been setted'))
         return HttpResponseRedirect(reverse("credit"))
 
     def get_context_data(self, **kwargs):

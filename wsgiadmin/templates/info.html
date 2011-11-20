@@ -62,13 +62,13 @@
             <tr>
                 <td>{% trans "Webs/Applications" %}</td>
                 <td>{{ u.parms.count_sites }}×</td>
-                <td>{{ u.parms.fee|floatformat:2 }} cr.</td>
+                <td>{{ u.parms.fee|floatformat:2 }}</td>
             </tr>
         {% else %}
             <tr>
                 <td>{% trans "Webs/Applications" %}</td>
                 <td>{{ u.parms.count_sites }}×</td>
-                <td>{{ u.parms.pay_for_sites|floatformat:2 }} cr.</td>
+                <td>{{ u.parms.pay_for_sites|floatformat:2 }}</td>
             </tr>
         {% endif %}
 
@@ -76,21 +76,21 @@
             <tr>
                 <td><strong>{% trans "Credits per day" %}</strong></td>
                 <td></td>
-                <td>{{ u.parms.pay_total_day|floatformat:2 }} cr.</td>
+                <td>{{ u.parms.pay_total_day|floatformat:2 }}</td>
             </tr>
             <tr>
                 <td><strong>{% trans "Credits per month" %}</strong></td>
                 <td></td>
-                <td>{{ u.parms.pay_total_month|floatformat:2 }} cr.</td>
+                <td>{{ u.parms.pay_total_month|floatformat:2 }}</td>
             </tr>
         {% endif %}
             <tr>
                 <td><strong>{% trans "Your credits" %}</strong></td>
                 <td></td>
                 {% if u.parms.credit < 0 %}
-                    <td style="color: red;"><strong>{{ u.parms.credit|floatformat:2 }} cr.</strong> <a href="{% url credit %}">{% trans "Earn some more!" %}</a></td>
+                    <td style="color: red;"><strong>{{ u.parms.credit|floatformat:2 }}</strong> <a href="{% url credit %}">{% trans "Buy some more!" %}</a></td>
                 {% else %}
-                    <td style="color: green;"><strong>{{ u.parms.credit|floatformat:2 }} cr.</strong> <a href="{% url credit %}">{% trans "Earn some more!" %}</a></td>
+                    <td style="color: green;"><strong>{{ u.parms.credit|floatformat:2 }}</strong> <a href="{% url credit %}">{% trans "Buy some more!" %}</a></td>
                 {% endif %}
             </tr>
             {% if u.parms.credit_until %}

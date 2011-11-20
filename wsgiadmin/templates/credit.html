@@ -7,7 +7,7 @@
 
 {% block content %}
 
-    <h3>{% blocktrans %}Earn some credit{% endblocktrans %}</h3>
+    <h3>{% blocktrans %}Buy some credit{% endblocktrans %}</h3>
 
     <table>
     <tr>
@@ -17,13 +17,13 @@
             <tr>
                 <td>{% trans "Webs/Applications" %}</td>
                 <td>{{ u.parms.count_sites }}×</td>
-                <td>{{ u.parms.fee|floatformat:2 }} cr.</td>
+                <td>{{ u.parms.fee|floatformat:2 }}</td>
             </tr>
         {% else %}
             <tr>
                 <td>{% trans "Webs/Applications" %}</td>
                 <td>{{ u.parms.count_sites }}×</td>
-                <td>{{ u.parms.pay_for_sites|floatformat:2 }} cr.</td>
+                <td>{{ u.parms.pay_for_sites|floatformat:2 }}</td>
             </tr>
         {% endif %}
 
@@ -31,21 +31,21 @@
             <tr>
                 <td><strong>{% trans "Credits per day" %}</strong></td>
                 <td></td>
-                <td>{{ u.parms.pay_total_day|floatformat:2 }} cr.</td>
+                <td>{{ u.parms.pay_total_day|floatformat:2 }}</td>
             </tr>
             <tr>
                 <td><strong>{% trans "Credits per month" %}</strong></td>
                 <td></td>
-                <td>{{ u.parms.pay_total_month|floatformat:2 }} cr.</td>
+                <td>{{ u.parms.pay_total_month|floatformat:2 }}</td>
             </tr>
         {% endif %}
     <tr>
         <td><strong>{% trans "Your credits" %}</strong></td>
         <td></td>
         {% if u.parms.credit < 0 %}
-            <td style="color: red;"><strong>{{ u.parms.credit|floatformat:2 }} cr.</strong></td>
+            <td style="color: red;"><strong>{{ u.parms.credit|floatformat:2 }}</strong></td>
         {% else %}
-            <td style="color: green;"><strong>{{ u.parms.credit|floatformat:2 }} cr.</strong></td>
+            <td style="color: green;"><strong>{{ u.parms.credit|floatformat:2 }}</strong></td>
         {% endif %}
     </tr>
     {% if u.parms.credit_until %}
@@ -55,68 +55,116 @@
         <td>~ {{ u.parms.credit_until }}</td>
     </tr>
     {% endif %}
+    </table>
+
+    <table>
+    <tr>
+        <th colspan="2">What you get for 1 credit</th>
+    </tr>
+    <tr>
+        <td>{% trans "WSGI app" %}</td>
+        <td>{% trans "for one day" %}</td>
+    </tr>
+    <tr>
+        <td>{% trans "WSGI extra process" %}</td>
+        <td>{% trans "one extra process for 5 days" %}</td>
+    </tr>
+    <tr>
+        <td>{% trans "PHP app" %}</td>
+        <td>{% trans "for one day" %}</td>
+    </tr>
+    <tr>
+        <td>{% trans "Static app" %}</td>
+        <td>{% trans "for four days" %}</td>
+    </tr>
     <tr>
         <td><strong>{% trans "Credits versus currency" %}</strong></td>
-        <td></td>
         <td>{{ config.credit_description }}</td>
     </tr>
     </table>
 
     <table>
     <tr>
-        <th colspan="2">{% trans "Earn some more" %}</th>
+        <th colspan="2">{% trans "Buy some more" %}</th>
     </tr>
     <tr>
-        <td>{% trans "Earn for month" %} (30 {% trans "days" %})</td>
+        <td>{% trans "Buy credit for month" %} (30 {% trans "days" %})</td>
         <td>
             <form method="post" action="{% url credit %}">
                 <input type="hidden" name="credit" value="{{ for_month }}" />
-                <strong>+{{ for_month|floatformat:2 }} cr.</strong>
-                <input type="submit" value="{% trans "earn" %}" />
+                <strong>+{{ for_month|floatformat:2 }}</strong>
+                <input type="submit" value="{% trans "BUY" %}" />
                 {% csrf_token %}
             </form>
         </td>
     </tr>
     <tr>
-        <td>{% trans "Earn for three months" %} (90 {% trans "days" %})</td>
+        <td>{% trans "Buy credit for three months" %} (90 {% trans "days" %})</td>
         <td>
             <form method="post" action="{% url credit %}">
                 <input type="hidden" name="credit" value="{{ for_three_months }}" />
-                <strong>+{{ for_three_months|floatformat:2 }} cr.</strong>
-                <input type="submit" value="{% trans "earn" %}" />
+                <strong>+{{ for_three_months|floatformat:2 }}</strong>
+                <input type="submit" value="{% trans "BUY" %}" />
                 {% csrf_token %}
             </form>
         </td>
     </tr>
     <tr>
-        <td>{% trans "Earn for six months" %} (180 {% trans "days" %})</td>
+        <td>{% trans "Buy for six months" %} (180 {% trans "days" %})</td>
         <td>
             <form method="post" action="{% url credit %}">
                 <input type="hidden" name="credit" value="{{ for_six_months }}" />
-                <strong>+{{ for_six_months|floatformat:2 }} cr.</strong>
-                <input type="submit" value="{% trans "earn" %}" />
+                <strong>+{{ for_six_months|floatformat:2 }}</strong>
+                <input type="submit" value="{% trans "BUY" %}" />
                 {% csrf_token %}
             </form>
         </td>
     </tr>
     <tr>
-        <td>{% trans "Earn for year" %} (360 {% trans "days" %})</td>
+        <td>{% trans "Buy for year" %} (360 {% trans "days" %})</td>
         <td>
             <form method="post" action="{% url credit %}">
                 <input type="hidden" name="credit" value="{{ for_year }}" />
-                <strong>+{{ for_year|floatformat:2 }} cr.</strong>
-                <input type="submit" value="{% trans "earn" %}" />
+                <strong>+{{ for_year|floatformat:2 }}</strong>
+                <input type="submit" value="{% trans "BUY" %}" />
                 {% csrf_token %}
             </form>
         </td>
     </tr>
     <tr>
-        <td>{% trans "Earn custom" %}</td>
+        <td>{% trans "Buy custom" %}</td>
         <td>
             <form method="post" action="{% url credit %}">
                 <input type="text" name="credit" value="100" />
-                <input type="submit" value="{% trans "earn" %}" />
+                <input type="submit" value="{% trans "Buy" %}" />
                 {% csrf_token %}
+            </form>
+        </td>
+    </tr>
+    </table>
+
+    <table>
+    <tr>
+        <th>{% trans "If your credit's level reachs last 14 days" %}</th>
+    </tr>
+    <tr>
+        <td>
+            {% trans "If your credits goes low, you don't have to keep your eye on this site. It can be done for you automaticly, just select what you want." %}
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <form action="{% url credit %}" method="post">
+                {% csrf_token %}
+                <select name="what_to_do">
+                    <option value="nothing"{% if u.parms.low_level_credits == "nothing" %} selected="selected" {% endif %}>{% trans "Do nothing" %}</option>
+                    <option value="send_email"{% if u.parms.low_level_credits == "send_email" %} selected="selected" {% endif %}>{% trans "Send me e-mail" %}</option>
+                    <option value="buy_month"{% if u.parms.low_level_credits == "buy_month" %} selected="selected" {% endif %}>{% trans "Buy ONE month" %}</option>
+                    <option value="buy_three_months"{% if u.parms.low_level_credits == "buy_three_months" %} selected="selected" {% endif %}>{% trans "Buy THREE months" %}</option>
+                    <option value="buy_six_months"{% if u.parms.low_level_credits == "buy_six_months" %} selected="selected" {% endif %}>{% trans "Buy SIX months" %}</option>
+                    <option value="buy_year"{% if u.parms.low_level_credits == "buy_year" %} selected="selected" {% endif %}>{% trans "Buy ONE year" %}</option>
+                </select><br />
+                <input type="submit" value="{% trans "Confirm" %}" />
             </form>
         </td>
     </tr>

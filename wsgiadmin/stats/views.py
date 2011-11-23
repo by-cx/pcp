@@ -18,8 +18,7 @@ class CreditView(TemplateView):
 
     def post(self, request, *args, **kwargs):
         if request.POST.get("credit"):
-            credit = Credit(user=self.user, value=float(request.POST.get("credit")))
-            credit.save()
+            self.user.parms.add_credit(float(request.POST.get("credit")))
             messages.add_message(request, messages.SUCCESS, _('Credit has been added on your account'))
             messages.add_message(request, messages.INFO, _('Invoice is going to reach your e-mail in next 24 hours'))
         if request.POST.get("what_to_do"):

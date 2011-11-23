@@ -188,6 +188,8 @@ class Parms(models.Model):
     def credit_until(self):
         credit = self.credit
         pay_per_day = self.pay_total_day()
+        if not pay_per_day:
+            return False
         days = int(credit/pay_per_day)
         if days > 0:
             return date.today() + timedelta(days)

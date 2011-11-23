@@ -143,6 +143,8 @@ INSTALLED_APPS = (
 CONSTANCE_BACKEND = "constance.backends.database.DatabaseBackend"
 
 CONSTANCE_CONFIG = {
+    "email": ("info@rosti.cz", "Your e-mail"),
+
     "mode": ("apache", "apache or nginx"), # main web server, (apache/nginx)
     "ipv6": (True, "Turn on/off support for IPv6"),
     "maildir": ("/var/mail", "Directory with maildirs"),
@@ -191,7 +193,19 @@ CONSTANCE_CONFIG = {
     "email_uid": (117, "Email UID"),
     "email_gid": (117, "Email GID"),
 
-    "find_directory_deep":(2, "Finding directory deep")
+    "credit_wsgi": (1.0, "Credits for WSGI"),
+    "credit_wsgi_proc": (0.2, "Credits for extra WSGI process"),
+    "credit_php": (1.0, "Credits for PHP"),
+    "credit_static": (0.25, "Credits for STATIC"),
+    "credit_fee": (3.0, "Credits for VM"),
+    "credit_bm": (8.0, "Credits for VM"),
+    "credit_description": ("1 cr. = 2 Kč", "Credit description"),
+    "credit_250_bonus": (1.0, "250 credits bonus (credits * this number)"),
+    "credit_500_bonus": (1.1, "500 credits bonus (credits * this number)"),
+    "credit_750_bonus": (1.1, "750 credits bonus (credits * this number)"),
+    "credit_1000_bonus": (1.2, "500 credits bonus (credits * this number)"),
+
+    "find_directory_deep":(2, "Finding directory deep"),
     }
 
 VIRTUALENVS_DIR = 'virtualenvs'

@@ -14,13 +14,15 @@ class RecordUser(object):
         self.record_ftps()
         self.record_mysql()
         self.record_pgsql()
+        self.record_fee()
 
-    def _record(self, service, value):
+    def _record(self, service, value, cost=0):
         record = Record()
         record.date = date.today()
         record.user = self.user
         record.service = service
         record.value = value
+        record.cost = cost
         try:
             record.save()
         except RecordExists:
@@ -28,13 +30,13 @@ class RecordUser(object):
 
     def record_sites(self):
         for site in self.user.usersite_set.filter(type="modwsgi"):
-            self._record("modwsgi", "%s (%d proc.)" % (site.server_name, site.processes))
+            self._record("modwsgi", "%s (%d proc.)" % (site.server_name, site.processes), site.pay)
         for site in self.user.usersite_set.filter(type="uwsgi"):
-            self._record("uwsgi", "%s (%d proc.)" % (site.server_name, site.processes))
+            self._record("uwsgi", "%s (%d proc.)" % (site.server_name, site.processes), site.pay)
         for site in self.user.usersite_set.filter(type="php"):
-            self._record("php", site.server_name)
+            self._record("php", site.server_name, site.pay)
         for site in self.user.usersite_set.filter(type="static"):
-            self._record("static", site.server_name)
+            self._record("static", site.server_name, site.pay)
 
     def record_emails(self):
         total = 0
@@ -50,6 +52,10 @@ class RecordUser(object):
 
     def record_pgsql(self):
         self._record("pgsql", "%d" % self.user.pgsql_set.count())
+
+    def record_fee(self):
+        if self.user.parms.fee:
+            self._record("fee", "1", float(self.user.parms.fee) / 30.0)
 
 class Command(BaseCommand):
     help = "Create records"

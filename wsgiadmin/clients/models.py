@@ -1,16 +1,19 @@
 # -*- coding: utf-8 -*-
+from datetime import date, timedelta
+from constance import config
 
 from django.contrib.auth.models import User as user
 from django.core.cache import cache
 from django.db import models
-from django import forms
+from django.db.models import Sum
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
-from wsgiadmin.emails.models import Email
+from wsgiadmin.emails.models import Email, Message
 from wsgiadmin.keystore.tools import kget
-
 from wsgiadmin.requests.tools import RawRequest
+from wsgiadmin.stats.models import Credit
 from wsgiadmin.tools import size_format
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class Machine(models.Model):
@@ -113,6 +116,8 @@ class Parms(models.Model):
     fee = models.IntegerField(_(u"Paušál"), default=0)
     currency = models.CharField(_(u"Měna"), max_length=20, choices=settings.CURRENCY, default="czk")
     enable = models.BooleanField(_(u"Stav účtu"), default=True)
+    low_level_credits = models.CharField(_("Low level of credits"), max_length=30, default="send_email")
+    last_notification = models.DateField(_("Last low level notification"), blank=True, null=True)
 
     #address		= models.ForeignKey("address")
     address = models.OneToOneField(Address)
@@ -172,6 +177,41 @@ class Parms(models.Model):
 
     def pay_total_month(self):
         return self.pay_for_sites() * 30.0
+
+    @property
+    def credit(self):
+        credit = self.user.credit_set.aggregate(Sum("value"))["value__sum"]
+        cost = self.user.record_set.aggregate(Sum("cost"))["cost__sum"]
+        return (credit if credit else 0) - (cost if cost else 0)
+
+    @property
+    def credit_until(self):
+        credit = self.credit
+        pay_per_day = self.pay_total_day()
+        days = int(credit/pay_per_day)
+        if days > 0:
+            return date.today() + timedelta(days)
+        return False
+
+    def add_credit(self, value, free=False):
+        bonus = 1.0
+        if value > 250:
+            bonus = config.credit_250_bonus
+        elif value > 500:
+            bonus = config.credit_500_bonus
+        elif value > 750:
+            bonus = config.credit_750_bonus
+        elif value > 1000:
+            bonus = config.credit_1000_bonus
+
+        credit = Credit(user=self.user, value=value * bonus, invoice=free)
+        credit.save()
+
+        try:
+            message = Message.objects.get(purpose="add_credit")
+            message.send(config.email, {"user": self.user.username, "credit": value, "bonus": value * (bonus - 1.0)})
+        except ObjectDoesNotExist:
+            pass
 
     def installed(self):
         rr = RawRequest(self.web_machine.ip)

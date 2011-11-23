@@ -1107,7 +1107,7 @@ msgstr "Kreditů za den"
 
 #: templates/credit.html:37 templates/info.html:82
 msgid "Credits per month"
-msgstr "Kreditů zaměsíc"
+msgstr "Kreditů za měsíc"
 
 #: templates/credit.html:43 templates/info.html:88
 msgid "Your credits"

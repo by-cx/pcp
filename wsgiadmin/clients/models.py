@@ -195,14 +195,15 @@ class Parms(models.Model):
 
     def add_credit(self, value, free=False):
         bonus = 1.0
-        if value > 250:
-            bonus = config.credit_250_bonus
-        elif value > 500:
-            bonus = config.credit_500_bonus
-        elif value > 750:
-            bonus = config.credit_750_bonus
-        elif value > 1000:
+
+        if value >= 1000:
             bonus = config.credit_1000_bonus
+        elif value >= 750:
+            bonus = config.credit_750_bonus
+        elif value >= 500:
+            bonus = config.credit_500_bonus
+        elif value >= 250:
+            bonus = config.credit_250_bonus
 
         credit = Credit(user=self.user, value=value * bonus, invoice=free)
         credit.save()

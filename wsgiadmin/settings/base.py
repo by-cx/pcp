@@ -204,6 +204,7 @@ CONSTANCE_CONFIG = {
     "credit_500_bonus": (1.1, "500 credits bonus (credits * this number)"),
     "credit_750_bonus": (1.1, "750 credits bonus (credits * this number)"),
     "credit_1000_bonus": (1.2, "500 credits bonus (credits * this number)"),
+    "credit_currency": ("0.5,12.5,9.5", "CZK, EUR, USD"),
 
     "find_directory_deep":(2, "Finding directory deep"),
     }

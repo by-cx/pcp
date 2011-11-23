@@ -111,7 +111,7 @@ class UserSite(models.Model):
             return 0
 
         if self.type in ("uwsgi", "modwsgi"):
-            return (float(self.processes) * config.credit_wsgi_proc + config.credit_wsgi) * self.owner.parms.dc()
+            return (float(self.processes - 1) * config.credit_wsgi_proc + config.credit_wsgi) * self.owner.parms.dc()
         elif self.type in ("php",):
             return config.credit_php * self.owner.parms.dc()
         else:

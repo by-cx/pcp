@@ -936,7 +936,7 @@ msgstr "Posledních 20 požadavků"
 
 #: templates/admin.html:118 templates/credit.html:10
 msgid "Buy some credit"
-msgstr ""
+msgstr "Koupit kredit"
 
 #: templates/admin.html:127
 msgid "User's list"

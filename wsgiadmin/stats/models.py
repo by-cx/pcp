@@ -39,7 +39,8 @@ class Record(models.Model):
 class Credit(models.Model):
     date = models.DateField(_("Date"), auto_now_add=True)
     user = models.ForeignKey(User, verbose_name=_("User"))
-    value = models.FloatField(_("Cost"))
+    value = models.FloatField(_("Cost (bonus included)"))
+    bonus = models.FloatField(_("Bonus"), default=0)
     invoice = models.BooleanField(_("Sended to invoice system"), default=False)
 
     def __unicode__(self):

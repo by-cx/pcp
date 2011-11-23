@@ -113,6 +113,8 @@ def install(request, uid):
     iuser.parms.gid = gid
     iuser.parms.save()
 
+    iuser.parms.add_credit(30)
+
     iuser.is_active = True
     iuser.save()
 

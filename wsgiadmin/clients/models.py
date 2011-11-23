@@ -207,7 +207,7 @@ class Parms(models.Model):
         elif value >= 250:
             bonus = config.credit_250_bonus
 
-        credit = Credit(user=self.user, value=value * bonus, invoice=free)
+        credit = Credit(user=self.user, value=value * bonus, bonus=value * (bonus - 1.0), invoice=free)
         credit.save()
 
         message = Message.objects.filter(purpose="add_credit")

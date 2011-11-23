@@ -116,11 +116,9 @@ def install(request, uid):
     iuser.is_active = True
     iuser.save()
 
-    try:
-        message = Message.objects.get(purpose="approved_reg")
-        message.send(iuser.parms.address.residency_email)
-    except ObjectDoesNotExist:
-        pass
+    message = Message.objects.filter(purpose="approved_reg")
+    if message:
+        message[0].send(iuser.parms.address.residency_email)
 
     messages.add_message(request, messages.SUCCESS, _('User has been installed'))
     return HttpResponseRedirect(reverse("wsgiadmin.useradmin.views.ok"))

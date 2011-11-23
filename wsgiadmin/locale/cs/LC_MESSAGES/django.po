@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-11-23 01:16+0100\n"
+"POT-Creation-Date: 2011-11-23 17:38+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -182,7 +182,7 @@ msgid "Invalid type of application"
 msgstr ""
 
 #: apacheconf/views.py:88
-#,  python-format
+#, python-format
 msgid "Site has been %s"
 msgstr "Stránka byla %s"
 
@@ -372,16 +372,16 @@ msgstr "Poslední upozornění na nízkou hodnotu kreditů"
 msgid "Uživatel"
 msgstr ""
 
-#: clients/models.py:164
+#: clients/models.py:171
 msgid "Undetected"
 msgstr "Nezjištěno"
 
-#: clients/models.py:228 db/models.py:8 db/models.py:19 stats/models.py:20
-#: stats/models.py:38
+#: clients/models.py:236 db/models.py:8 db/models.py:19 stats/models.py:23
+#: stats/models.py:41
 msgid "User"
 msgstr "Uživatel"
 
-#: clients/models.py:229 templates/admin.html:77
+#: clients/models.py:237 templates/admin.html:77
 msgid "Users"
 msgstr "Uživatelé"
 
@@ -416,7 +416,7 @@ msgid "Unable to modify chosen database"
 msgstr ""
 
 #: db/views.py:120 emails/views.py:117 ftps/views.py:95 useradmin/views.py:94
-#: users/views.py:261
+#: users/views.py:265
 msgid "Password has been changed"
 msgstr "Heslo bylo změněno"
 
@@ -428,7 +428,7 @@ msgstr "Heslo pro databázi %s"
 #: db/views.py:131 emails/views.py:126 templates/admin.html:202
 #: templates/boxes.html:35 templates/db.html:32 templates/db.html.py:33
 #: templates/ftps.html:28 templates/ftps.html.py:29 useradmin/views.py:103
-#: users/views.py:270
+#: users/views.py:274
 msgid "Change password"
 msgstr "Změnit heslo"
 
@@ -806,43 +806,51 @@ msgstr "Heslo musí mít alespoň %s znaků"
 msgid "First password isn't equal to second one"
 msgstr "První heslo nesouhlasí s druhým"
 
-#: settings/base.py:215
+#: settings/base.py:216
 msgid "Per application (60 CZK/app/month)"
 msgstr "Za aplikaci (60 Kč/app/měsíc)"
 
-#: settings/base.py:216
+#: settings/base.py:217
 msgid "Constant fee (200 CZK/196 MB RAM)"
 msgstr "Paušální poplatek (200 Kč/196 MB RAM)"
 
-#: stats/models.py:19 stats/models.py:37 templates/requests.html:17
+#: stats/models.py:22 stats/models.py:40 templates/requests.html:17
 msgid "Date"
 msgstr "Datum"
 
-#: stats/models.py:21
+#: stats/models.py:24 templates/info.html:50
 msgid "Service"
 msgstr "Služba"
 
-#: stats/models.py:22
+#: stats/models.py:25
 msgid "Value"
 msgstr "Hodnota"
 
-#: stats/models.py:23 stats/models.py:39
+#: stats/models.py:26
 msgid "Cost"
 msgstr "Cena"
 
-#: stats/models.py:40
+#: stats/models.py:42
+msgid "Cost (bonus included)"
+msgstr ""
+
+#: stats/models.py:43
+msgid "Bonus"
+msgstr ""
+
+#: stats/models.py:44
 msgid "Sended to invoice system"
 msgstr "Odesláno do fakturačního systému"
 
-#: stats/views.py:23
+#: stats/views.py:22
 msgid "Credit has been added on your account"
 msgstr "Kredity byly přidány na váš účet"
 
-#: stats/views.py:24
+#: stats/views.py:23
 msgid "Invoice is going to reach your e-mail in next 24 hours"
 msgstr "Faktura vám přijde během 24 hodin"
 
-#: stats/views.py:28
+#: stats/views.py:27
 msgid "Low level behavior has been setted"
 msgstr "Chování při nízkém kreditu bylo upraveno"
 
@@ -856,7 +864,7 @@ msgstr ""
 "Tyto domény nelze použít, protože nejsou zadány v sekci domény nebo je "
 "používá jiná aplikace"
 
-#: templates/admin.html:30 templates/users.html:59
+#: templates/admin.html:30 templates/users.html:61
 msgid "Are you sure?"
 msgstr "Určitě?"
 
@@ -1041,7 +1049,7 @@ msgstr "Akce"
 #: templates/apache.html:37 templates/apache.html.py:46
 #: templates/apache.html:47 templates/boxes.html:34 templates/ftps.html:31
 #: templates/ftps.html.py:32 templates/invoices.html:96
-#: templates/redirects.html:35 templates/users.html:58
+#: templates/redirects.html:35 templates/users.html:60
 msgid "Edit"
 msgstr "Upravit"
 
@@ -1055,7 +1063,7 @@ msgstr ""
 #: templates/domains.html.py:37 templates/ftps.html:34
 #: templates/ftps.html.py:35 templates/invoices.html:77
 #: templates/invoices.html.py:97 templates/redirects.html:38
-#: templates/redirects.html.py:39 templates/users.html:59
+#: templates/redirects.html.py:39 templates/users.html:61
 msgid "Delete"
 msgstr "Smazat"
 
@@ -1117,6 +1125,10 @@ msgstr "Vaše kredity"
 msgid "You can use services until"
 msgstr "Můžete využívat služby do"
 
+#: templates/credit.html:62
+msgid "What you get for 1 credit"
+msgstr "Co dostanete za jeden kredit"
+
 #: templates/credit.html:65
 msgid "WSGI app"
 msgstr "WSGI aplikace"
@@ -1157,73 +1169,73 @@ msgstr "Koupit kredity"
 msgid "Buy credit for month"
 msgstr "Koupit kredity na jeden měsíc"
 
-#: templates/credit.html:91 templates/credit.html.py:102
-#: templates/credit.html:113 templates/credit.html.py:124
+#: templates/credit.html:91 templates/credit.html.py:103
+#: templates/credit.html:115 templates/credit.html.py:127
 msgid "days"
 msgstr "dní"
 
-#: templates/credit.html:96 templates/credit.html.py:107
-#: templates/credit.html:118 templates/credit.html.py:129
+#: templates/credit.html:96 templates/credit.html.py:108
+#: templates/credit.html:120 templates/credit.html.py:132
 msgid "BUY"
 msgstr "Koupit"
 
-#: templates/credit.html:102
+#: templates/credit.html:103
 msgid "Buy credit for three months"
 msgstr "Koupit kredity na tři měsíce"
 
-#: templates/credit.html:113
+#: templates/credit.html:115
 msgid "Buy for six months"
 msgstr "Koupit kredity na šest měsíců"
 
-#: templates/credit.html:124
+#: templates/credit.html:127
 msgid "Buy for year"
 msgstr "Koupit kredity na rok"
 
-#: templates/credit.html:135
+#: templates/credit.html:139
 msgid "Buy custom"
 msgstr "Koupit volitelný počet kreditů"
 
-#: templates/credit.html:139
+#: templates/credit.html:143
 msgid "Buy"
 msgstr "Koupit"
 
-#: templates/credit.html:148
+#: templates/credit.html:152
 msgid "If your credit's level reachs last 14 days"
 msgstr "Pokud úroveň kreditů dosáhne na posledních 14 dní provozu"
 
-#: templates/credit.html:152
+#: templates/credit.html:156
 msgid ""
 "If your credits goes low, you don't have to keep your eye on this site. It "
 "can be done for you automaticly, just select what you want."
 msgstr ""
-"Nemusíte si hlídat stav vašich kredtů a sledovat tuto stránku. Stačí když "
-"si zde vyberete, co se má stát, pokud hodnota kreditů klesne na nízkou úroveň"
+"Nemusíte si hlídat stav vašich kredtů a sledovat tuto stránku. Stačí když si "
+"zde vyberete, co se má stát, pokud hodnota kreditů klesne na nízkou úroveň"
 
-#: templates/credit.html:160
+#: templates/credit.html:164
 msgid "Do nothing"
 msgstr "Nedělat nic"
 
-#: templates/credit.html:161
+#: templates/credit.html:165
 msgid "Send me e-mail"
 msgstr "Pošli mi e-mail"
 
-#: templates/credit.html:162
+#: templates/credit.html:166
 msgid "Buy ONE month"
 msgstr "Prodloužit služby o jeden měsíc"
 
-#: templates/credit.html:163
+#: templates/credit.html:167
 msgid "Buy THREE months"
 msgstr "Prdloužit služby o tři měsíce"
 
-#: templates/credit.html:164
+#: templates/credit.html:168
 msgid "Buy SIX months"
 msgstr "Prodloužit služby o šest měsíců"
 
-#: templates/credit.html:165
+#: templates/credit.html:169
 msgid "Buy ONE year"
 msgstr "Prodloužit služby o jeden rok"
 
-#: templates/credit.html:167
+#: templates/credit.html:171
 msgid "Confirm"
 msgstr "Potvrdit"
 
@@ -1382,42 +1394,42 @@ msgid "Přidat položku"
 msgstr ""
 
 #: templates/invoices.html:108 templates/paginator.html:3
-#: templates/users.html:69
+#: templates/users.html:71
 msgid "First page"
 msgstr "První stránka"
 
 #: templates/invoices.html:108 templates/paginator.html:3
-#: templates/paginator.html.py:6 templates/users.html:69
+#: templates/paginator.html.py:6 templates/users.html:71
 msgid "First"
 msgstr "První"
 
 #: templates/invoices.html:109 templates/paginator.html:4
-#: templates/users.html:70
+#: templates/users.html:72
 msgid "Previous page"
 msgstr "Předchozí stránka"
 
 #: templates/invoices.html:109 templates/paginator.html:4
-#: templates/paginator.html.py:6 templates/users.html:70
+#: templates/paginator.html.py:6 templates/users.html:72
 msgid "Previous"
 msgstr "Předchozí"
 
 #: templates/invoices.html:119 templates/paginator.html:18
-#: templates/users.html:80
+#: templates/users.html:82
 msgid "Next page"
 msgstr "Další stránka"
 
 #: templates/invoices.html:119 templates/paginator.html:18
-#: templates/paginator.html.py:21 templates/users.html:80
+#: templates/paginator.html.py:21 templates/users.html:82
 msgid "Next"
 msgstr "Další"
 
 #: templates/invoices.html:120 templates/paginator.html:19
-#: templates/users.html:81
+#: templates/users.html:83
 msgid "Last page"
 msgstr "Poslední stránka"
 
 #: templates/invoices.html:120 templates/paginator.html:19
-#: templates/paginator.html.py:21 templates/users.html:81
+#: templates/paginator.html.py:21 templates/users.html:83
 msgid "Last"
 msgstr "Poslední"
 
@@ -1515,14 +1527,18 @@ msgstr ""
 "používá jiná aplikace"
 
 #: templates/users.html:32
+msgid "Pay per day"
+msgstr "Platí za den"
+
+#: templates/users.html:33
 msgid "Credits"
 msgstr "Kredity"
 
-#: templates/users.html:56
+#: templates/users.html:58
 msgid "Switch"
 msgstr "Přepnout uživatele"
 
-#: templates/users.html:57
+#: templates/users.html:59
 msgid "Install"
 msgstr ""
 
@@ -1566,8 +1582,8 @@ msgstr "Jméno už existuje"
 msgid "Pay method"
 msgstr "Metoda platby"
 
-#: useradmin/views.py:24 users/views.py:26 users/views.py:64 users/views.py:81
-#: users/views.py:94 users/views.py:133 users/views.py:183 users/views.py:229
+#: useradmin/views.py:24 users/views.py:27 users/views.py:65 users/views.py:82
+#: users/views.py:95 users/views.py:137 users/views.py:187 users/views.py:233
 msgid "Permission error"
 msgstr "Chyba oprávnění"
 
@@ -1587,27 +1603,27 @@ msgstr "Nová registrace"
 msgid "Register"
 msgstr "Registrace"
 
-#: users/views.py:86
+#: users/views.py:87
 msgid "User has been changed"
 msgstr "Uživatel byl upraven"
 
-#: users/views.py:121
+#: users/views.py:125
 msgid "User has been installed"
 msgstr "Uživatel byl nainstalován"
 
-#: users/views.py:165 users/views.py:166
+#: users/views.py:169 users/views.py:170
 msgid "Add user"
 msgstr "Přidat uživatele"
 
-#: users/views.py:209
+#: users/views.py:213
 msgid "User update"
 msgstr "Úprava uživatele"
 
-#: users/views.py:210
+#: users/views.py:214
 msgid "Update information"
 msgstr "Upravit informace"
 
-#: users/views.py:269
+#: users/views.py:273
 msgid "Change password for SSH/FTP"
 msgstr "Změna heslo pro SSH/SFTP"
 

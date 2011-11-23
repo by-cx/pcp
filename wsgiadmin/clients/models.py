@@ -210,11 +210,9 @@ class Parms(models.Model):
         credit = Credit(user=self.user, value=value * bonus, invoice=free)
         credit.save()
 
-        try:
-            message = Message.objects.get(purpose="add_credit")
-            message.send(config.email, {"user": self.user.username, "credit": value, "bonus": value * (bonus - 1.0)})
-        except ObjectDoesNotExist:
-            pass
+        message = Message.objects.filter(purpose="add_credit")
+        if message:
+            message[0].send(config.email, {"user": self.user.username, "credit": value, "bonus": value * (bonus - 1.0)})
 
     def installed(self):
         rr = RawRequest(self.web_machine.ip)

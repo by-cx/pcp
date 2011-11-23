@@ -21,4 +21,4 @@ class Command(BaseCommand):
                     site = site[0]
                     record.cost = site.pay
                     record.save(False)
-                    print record.cost, "for", domain
+                    print record.cost, "credits for", domain

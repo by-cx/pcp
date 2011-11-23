@@ -29,6 +29,7 @@
 					   <th>Informace</th>
 					   <th>Domény</th>
 					   <th>Web/app</th>
+                        <th>{% trans "Credits" %}</th>
 					   <th>Akce</th>
 					</tr>
 				</thead>
@@ -43,6 +44,13 @@
 						</td>
 						<td>{{ user.parms.count_domains }}×</td>
 						<td>{{ user.parms.count_sites }}×</td>
+                        {% with user.parms.credit as credits %}
+                        {% if credits >= 0 %}
+                        <td style="color: green;">{{ credits }}</td>
+                        {% else %}
+                        <td style="color: red;">{{ credits }}</td>
+                        {% endif %}
+                        {% endwith %}
 						<td id="user_{{ user.id }}">
                             <ul class="akce">
                                 <li><a href="{% url wsgiadmin.users.views.switch_to_user user.id num_page %}"><img src="{{ STATIC_URL }}images/ico-prepnout.png" alt="{% trans "Switch" %}" /></a></li>

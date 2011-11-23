@@ -14,6 +14,7 @@ class RecordUser(object):
         self.record_ftps()
         self.record_mysql()
         self.record_pgsql()
+        self.record_fee()
 
     def _record(self, service, value, cost=0):
         record = Record()
@@ -51,6 +52,10 @@ class RecordUser(object):
 
     def record_pgsql(self):
         self._record("pgsql", "%d" % self.user.pgsql_set.count())
+
+    def record_fee(self):
+        if self.user.parms.fee:
+            self._record("fee", "1", float(self.user.parms.fee) / 30.0)
 
 class Command(BaseCommand):
     help = "Create records"

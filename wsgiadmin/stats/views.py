@@ -37,4 +37,8 @@ class CreditView(TemplateView):
         context["for_three_months"] = self.user.parms.pay_total_day() * 90
         context["for_six_months"] = self.user.parms.pay_total_day() * 180
         context["for_year"] = self.user.parms.pay_total_day() * 360
+        context["for_month_cost"] = (self.user.parms.pay_total_day() * 30.0) / self.user.parms.one_credit_cost
+        context["for_three_months_cost"] = (self.user.parms.pay_total_day() * 90) / self.user.parms.one_credit_cost
+        context["for_six_months_cost"] = (self.user.parms.pay_total_day() * 180) / self.user.parms.one_credit_cost
+        context["for_year_cost"] = (self.user.parms.pay_total_day() * 360) / self.user.parms.one_credit_cost
         return context

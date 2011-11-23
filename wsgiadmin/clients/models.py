@@ -156,6 +156,13 @@ class Parms(models.Model):
     def count_emails(self):
         return Email.objects.filter(domain__in=self.user.domain_set.all(), remove=False).count()
 
+    @property
+    def one_credit_cost(self):
+        """Return cost for one credit"""
+        #TODO:make currency works
+        czk = float(config.credit_currency.split(",")[0])
+        return czk
+
     def home_size(self):
         size = kget("%s:homesize" % self.user.username)
         if size:

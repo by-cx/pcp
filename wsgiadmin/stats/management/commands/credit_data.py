@@ -54,7 +54,7 @@ class Command(BaseCommand):
             credits = []
             invoice = {}
             for credit in user.credit_set.filter(invoice=False):
-                credits.append((credit.date.strftime("%Y-%m-%d"), credit.value))
+                credits.append((credit.date.strftime("%Y-%m-%d"), credit.value - credit.bonus))
                 credit.invoice = True
                 credit.save()
             invoice["address"] = self.get_address(user)

@@ -22,8 +22,8 @@ class Record(models.Model):
     value = models.CharField(_("Value"), max_length=512)
     cost = models.FloatField(_("Cost"), default=0)
 
-    def save(self):
-        if Record.objects.filter(date = self.date,
+    def save(self, check=True):
+        if check and Record.objects.filter(date = self.date,
                             user = self.user,
                             service = self.service,
                             value = self.value).count() > 0:

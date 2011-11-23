@@ -200,6 +200,10 @@ CONSTANCE_CONFIG = {
     "credit_fee": (3.0, "Credits for VM"),
     "credit_bm": (8.0, "Credits for VM"),
     "credit_description": ("1 cr. = 2 Kč", "Credit description"),
+    "credit_250_bonus": (1.0, "250 credits bonus (credits * this number)"),
+    "credit_500_bonus": (1.1, "500 credits bonus (credits * this number)"),
+    "credit_750_bonus": (1.1, "750 credits bonus (credits * this number)"),
+    "credit_1000_bonus": (1.2, "500 credits bonus (credits * this number)"),
 
     "find_directory_deep":(2, "Finding directory deep"),
     }

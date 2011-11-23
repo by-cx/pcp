@@ -10,6 +10,7 @@ CHOICES = (
     ("reg", _("Registration")),
     ("approved_reg", _("Approved registration")),
     ("low_credit", _("Low credit notification")),
+    ("add_credit", _("Credit notification - admin")),
 )
 
 class Message(models.Model):

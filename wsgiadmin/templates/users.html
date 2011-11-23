@@ -29,7 +29,8 @@
 					   <th>Informace</th>
 					   <th>Domény</th>
 					   <th>Web/app</th>
-                        <th>{% trans "Credits" %}</th>
+                       <th>{% trans "Pay per day" %}</th>
+                       <th>{% trans "Credits" %}</th>
 					   <th>Akce</th>
 					</tr>
 				</thead>
@@ -44,6 +45,7 @@
 						</td>
 						<td>{{ user.parms.count_domains }}×</td>
 						<td>{{ user.parms.count_sites }}×</td>
+                        <td>{{ user.parms.pay_total_day }}×</td>
                         {% with user.parms.credit as credits %}
                         {% if credits >= 0 %}
                         <td style="color: green;">{{ credits }}</td>

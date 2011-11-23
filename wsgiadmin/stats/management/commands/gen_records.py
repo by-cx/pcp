@@ -1,6 +1,7 @@
 from datetime import date, timedelta
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
+from wsgiadmin.apacheconf.models import UserSite
 from wsgiadmin.stats.models import RecordExists, Record
 
 class RecordUser(object):
@@ -29,13 +30,13 @@ class RecordUser(object):
             pass
 
     def record_sites(self):
-        for site in self.user.usersite_set.filter(type="modwsgi"):
+        for site in self.user.usersite_set.filter(removed=False, type="modwsgi"):
             self._record("modwsgi", "%s (%d proc.)" % (site.server_name, site.processes), site.pay)
-        for site in self.user.usersite_set.filter(type="uwsgi"):
+        for site in self.user.usersite_set.filter(removed=False, type="uwsgi"):
             self._record("uwsgi", "%s (%d proc.)" % (site.server_name, site.processes), site.pay)
-        for site in self.user.usersite_set.filter(type="php"):
+        for site in self.user.usersite_set.filter(removed=False, type="php"):
             self._record("php", site.server_name, site.pay)
-        for site in self.user.usersite_set.filter(type="static"):
+        for site in self.user.usersite_set.filter(removed=False, type="static"):
             self._record("static", site.server_name, site.pay)
 
     def record_emails(self):
@@ -64,4 +65,7 @@ class Command(BaseCommand):
         users = User.objects.all()
         for user in users:
             RecordUser(user)
+
+        for site in UserSite.objects.filter(removed=True):
+            site.delete()
 

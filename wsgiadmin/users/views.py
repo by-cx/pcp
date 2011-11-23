@@ -16,6 +16,7 @@ from wsgiadmin.clients.models import *
 from wsgiadmin.emails.models import Message
 from wsgiadmin.requests.request import SystemRequest
 from wsgiadmin.service.forms import PassCheckForm
+from django.core.exceptions import ObjectDoesNotExist
 
 @login_required
 def show(request, p=1):
@@ -115,8 +116,11 @@ def install(request, uid):
     iuser.is_active = True
     iuser.save()
 
-    message = Message.objects.get(purpose="approved_reg")
-    message.send(iuser.parms.address.residency_email)
+    try:
+        message = Message.objects.get(purpose="approved_reg")
+        message.send(iuser.parms.address.residency_email)
+    except ObjectDoesNotExist:
+        pass
 
     messages.add_message(request, messages.SUCCESS, _('User has been installed'))
     return HttpResponseRedirect(reverse("wsgiadmin.useradmin.views.ok"))

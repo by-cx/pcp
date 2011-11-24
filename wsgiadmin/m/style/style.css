@@ -6,7 +6,7 @@
 }
 body {
 	background: #fff;
-	background: #fff url(../images/bg-body.gif) repeat-y left;
+	background: #fff url(/m/images/bg-body.gif) repeat-y left;
 	font-family: Helvetica, Arial, sans-serif;
 	font-size: 12px;
 }
@@ -69,13 +69,13 @@ img {
 	position: relative;
 }
 .registrace {
-	background: url(../images/bg-body-registrace.jpg) repeat-x top;
+	background: url(/m/images/bg-body-registrace.jpg) repeat-x top;
 }
 /*--------------------------------------------------------------------------------------------------------
 	Header
 --------------------------------------------------------------------------------------------------------*/
 #header {
-	background: url(../images/bg-hlavicka.jpg) repeat-x top;
+	background: url(/m/images/bg-hlavicka.jpg) repeat-x top;
 	height: 145px;
 	position: relative;
 	overflow: hidden;
@@ -97,7 +97,7 @@ img {
 	font-weight: bold;
 }
 #header #login {
-	background: url(../images/bg-login.png) no-repeat 0 0;
+	background: url(/m/images/bg-login.png) no-repeat 0 0;
 	padding: 23px 0 0 30px;
 	width: 387px;
 	height: 61px;
@@ -106,7 +106,7 @@ img {
 	top: 20px;
 }
 #header #login strong {
-	background: url(../images/ico-uzivatel.png) no-repeat 0 2px;
+	background: url(/m/images/ico-uzivatel.png) no-repeat 0 2px;
 	margin: 0 30px 0 0;
 	padding: 4px 0 2px 20px;
 }
@@ -116,7 +116,7 @@ img {
 	font-weight: normal;
 }
 .odhlasit a {
-	background: url(../images/tlacitko-odhlasit.png) no-repeat 0 0;
+	background: url(/m/images/tlacitko-odhlasit.png) no-repeat 0 0;
 	padding: 0 0 0 50px;
 	width: 80px;
 	height: 30px;
@@ -129,7 +129,7 @@ img {
 	top: 15px;
 }
 .odhlasit a:hover {
-	background: url(../images/tlacitko-odhlasit.png) no-repeat 0 -30px;
+	background: url(/m/images/tlacitko-odhlasit.png) no-repeat 0 -30px;
 }
 #header #main-menu {
 	margin: 0 30px 0 0;
@@ -149,7 +149,7 @@ img {
 	font-size: 11px;
 }
 #header #main-menu li a {
-	background: url(../images/bg-main-menu-li-left-a.jpg) no-repeat left top;
+	background: url(/m/images/bg-main-menu-li-left-a.jpg) no-repeat left top;
 	padding: 0 0 0 20px;
 	height: 31px;
 	float: left;
@@ -157,13 +157,13 @@ img {
 	color: #f2f2f2;
 }
 #header #main-menu li a span {
-	background: url(../images/bg-main-menu-li-right-a.jpg) no-repeat right top;
+	background: url(/m/images/bg-main-menu-li-right-a.jpg) no-repeat right top;
 	width: 20px;
 	height: 31px;
 	float: right;
 }
 #header #main-menu li a:hover {
-	background: url(../images/bg-main-menu-li-left.jpg) no-repeat left top;
+	background: url(/m/images/bg-main-menu-li-left.jpg) no-repeat left top;
 	padding: 0 0 0 20px;
 	height: 31px;
 	float: left;
@@ -171,14 +171,14 @@ img {
 	color: #f2f2f2;
 }
 #header #main-menu li a:hover span {
-	background: url(../images/bg-main-menu-li-right.jpg) no-repeat right top;
+	background: url(/m/images/bg-main-menu-li-right.jpg) no-repeat right top;
 	width: 20px;
 	height: 31px;
 	float: right;
 	color: #444;
 }
 #header #main-menu li.active a {
-	background: url(../images/bg-main-menu-li-left.jpg) no-repeat left top;
+	background: url(/m/images/bg-main-menu-li-left.jpg) no-repeat left top;
 	padding: 0 0 0 20px;
 	height: 31px;
 	float: left;
@@ -186,7 +186,7 @@ img {
 	color: #f2f2f2;
 }
 #header #main-menu li.active a span {
-	background: url(../images/bg-main-menu-li-right.jpg) no-repeat right top;
+	background: url(/m/images/bg-main-menu-li-right.jpg) no-repeat right top;
 	width: 20px;
 	height: 31px;
 	float: right;
@@ -212,7 +212,7 @@ img {
 	list-style-type: none;
 }
 #sidebar ul li a {
-	background: url(../images/bg-sidebar-menu-a.png) no-repeat 0 0;
+	background: url(/m/images/bg-sidebar-menu-a.png) no-repeat 0 0;
 	margin: 0 0 5px 0;
 	padding: 0 0 0 20px;
 	height: 30px;
@@ -224,11 +224,11 @@ img {
 	color: #f2f2f2;
 }
 #sidebar ul li a:hover {
-	background: url(../images/bg-sidebar-menu-hover.png) no-repeat 0 0;
+	background: url(/m/images/bg-sidebar-menu-hover.png) no-repeat 0 0;
   	color: #f2f2f2;
 }
 #sidebar ul li.active a {
-	background: url(../images/bg-sidebar-menu-hover.png) no-repeat 0 0;
+	background: url(/m/images/bg-sidebar-menu-hover.png) no-repeat 0 0;
   	color: #f2f2f2;
 }
 /*--------------------------------------------------------------------------------------------------------
@@ -242,7 +242,7 @@ img {
 	margin: 0 0 30px 0;
 }
 #content ul li {
-	background: url(../images/bullet-01.png) no-repeat 0 6px;
+	background: url(/m/images/bullet-01.png) no-repeat 0 6px;
 	padding: 0 0 0 10px;
 	line-height: 18px;
 	list-style-type: none;
@@ -618,19 +618,19 @@ ul#notifications li {
 	list-style: none;
 }
 ul#notifications li.error {
-	background: #fdd1d1 url(../images/ico-error.png) no-repeat 20px 10px !important;
+	background: #fdd1d1 url(/m/images/ico-error.png) no-repeat 20px 10px !important;
 	border: solid 1px #dc8787;
 }
 ul#notifications li.info {
-	background: #dde4fe url(../images/ico-info.png) no-repeat 20px 10px  !important;
+	background: #dde4fe url(/m/images/ico-info.png) no-repeat 20px 10px  !important;
 	border: solid 1px #94a8e8;
 }
 ul#notifications li.warning {
-	background: #fefbd4 url(../images/ico-upozorneni.png) no-repeat 20px 10px  !important;
+	background: #fefbd4 url(/m/images/ico-upozorneni.png) no-repeat 20px 10px  !important;
 	border: solid 1px #e6db54;
 }
 ul#notifications li.success {
-	background: url(../images/ico-ok.png) no-repeat 20px 10px  #d8fed1 !important;
+	background: url(/m/images/ico-ok.png) no-repeat 20px 10px  #d8fed1 !important;
 	border: solid 1px #8ad17f;
 }
 ul#notifications li .zavrit {
@@ -647,7 +647,7 @@ div.ctrlHolder {
 	border-bottom: none !important;
 }
 div.ctrlHolder.error {
-	background: #fdd1d1 url(../images/ico-error.png) no-repeat 20px 10px !important;
+	background: #fdd1d1 url(/m/images/ico-error.png) no-repeat 20px 10px !important;
 	margin: 0 0 10px 0;
 	padding: 10px 30px 10px 50px !important;
 	position: relative;
@@ -657,7 +657,7 @@ div.ctrlHolder.error {
 	border: solid 1px #dc8787;
 }
 div.ctrlHolder.info {
-	background: #dde4fe url(../images/ico-info.png) no-repeat 20px 10px  !important;
+	background: #dde4fe url(/m/images/ico-info.png) no-repeat 20px 10px  !important;
 	margin: 0 0 10px 0;
 	padding: 10px 30px 10px 50px !important;
 	position: relative;
@@ -667,7 +667,7 @@ div.ctrlHolder.info {
 	border: solid 1px #94a8e8;
 }
 div.ctrlHolder.warning {
-	background: #fefbd4 url(../images/ico-upozorneni.png) no-repeat 20px 10px  !important;
+	background: #fefbd4 url(/m/images/ico-upozorneni.png) no-repeat 20px 10px  !important;
 	margin: 0 0 10px 0;
 	padding: 10px 30px 10px 50px !important;
 	position: relative;
@@ -677,7 +677,7 @@ div.ctrlHolder.warning {
 	border: solid 1px #e6db54;
 }
 div.ctrlHolder.success {
-	background: url(../images/ico-ok.png) no-repeat 20px 10px  #d8fed1 !important;
+	background: url(/m/images/ico-ok.png) no-repeat 20px 10px  #d8fed1 !important;
 	margin: 0 0 10px 0;
 	padding: 10px 30px 10px 50px !important;
 	position: relative;
@@ -696,7 +696,7 @@ div.ctrlHolder .zavrit {
 	Registrace a prihlaseni
 --------------------------------------------------------------------------------------------------------*/
 .registrace {
-	background: url(../images/bg-body-registrace.jpg) repeat;
+	background: url(/m/images/bg-body-registrace.jpg) repeat;
 }
 .registrace a {
 	color: #d73951;
@@ -737,20 +737,20 @@ div.ctrlHolder .zavrit {
 	width: 800px;
 }
 .container {
-	background: url(../images/bg-container.jpg) repeat-y center;
+	background: url(/m/images/bg-container.jpg) repeat-y center;
 	margin: 0 0 0 50px;
 	width: 300px;
 	float: left;
 }
 .container-top {
-	background: url(../images/bg-container-top.jpg) no-repeat center 50px;
+	background: url(/m/images/bg-container-top.jpg) no-repeat center 50px;
 }
 .container-bottom {
-	background: url(../images/bg-container-bottom.jpg) no-repeat center bottom;
+	background: url(/m/images/bg-container-bottom.jpg) no-repeat center bottom;
 	padding: 0 0 30px 0;
 }
 .container h2 {
-	background: url(../images/bg-h2-registrace.jpg) no-repeat 0 0;
+	background: url(/m/images/bg-h2-registrace.jpg) no-repeat 0 0;
 	margin: 0;
 	padding: 0 0 20px 0;
 	width: 300px;
@@ -769,7 +769,7 @@ div.ctrlHolder .zavrit {
 	display: block;
 }
 .container .textinput -registrace {
-	background: url(../images/bg-textinput -registrace.jpg) no-repeat 0 0;
+	background: url(/m/images/bg-textinput -registrace.jpg) no-repeat 0 0;
 	margin: 0 0 10px 20px;
 	padding: 0 2px;
 	width: 256px;
@@ -779,7 +779,7 @@ div.ctrlHolder .zavrit {
 	font-size: 12px;
 }
 .container .input-submit-prihlasit {
-	background: url(../images/input-submit-prihlasit.jpg) no-repeat 0 0;
+	background: url(/m/images/input-submit-prihlasit.jpg) no-repeat 0 0;
 	margin: 15px 0 15px 95px;
 	padding-bottom: 2px;
 	width: 110px;
@@ -791,10 +791,10 @@ div.ctrlHolder .zavrit {
 	color: #fff;
 }
 .container .input-submit-prihlasit:hover {
-	background: url(../images/input-submit-prihlasit.jpg) no-repeat 0 -31px;
+	background: url(/m/images/input-submit-prihlasit.jpg) no-repeat 0 -31px;
 }
 .container .input-submit-registrovat {
-	background: url(../images/input-submit-registrovat.jpg) no-repeat 0 0;
+	background: url(/m/images/input-submit-registrovat.jpg) no-repeat 0 0;
 	margin: 15px 0 15px 85px;
 	padding-bottom: 2px;
 	width: 130px;
@@ -806,7 +806,7 @@ div.ctrlHolder .zavrit {
 	color: #fff;
 }
 .container .input-submit-registrovat:hover {
-	background: url(../images/input-submit-registrovat.jpg) no-repeat 0 -31px;
+	background: url(/m/images/input-submit-registrovat.jpg) no-repeat 0 -31px;
 }
 .container .help {
 	margin: 0 0 20px 0;
@@ -823,7 +823,7 @@ div.ctrlHolder .zavrit {
 	margin: 0 20px !important;
 }
 .container .border-01 {
-	background: url(../images/border-01.jpg) no-repeat 0 0;
+	background: url(/m/images/border-01.jpg) no-repeat 0 0;
 	width: 300px;
 	height: 45px;
 }
@@ -940,4 +940,9 @@ div.ctrlHolder .zavrit {
 #prepnuti-uzivatele i {
 	margin: 0 5px 0 0;
 	font-style: normal;
+}
+
+.terms {
+    color: #FFF161;
+    text-align: center;
 }

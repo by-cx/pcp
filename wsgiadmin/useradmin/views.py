@@ -157,6 +157,10 @@ def reg(request):
                 p.fee = settings.PAYMENT_FEE[p.currency]
                 p.save()
 
+            message = Message.objects.filter(purpose="reg")
+            if message:
+                message[0].send(form1.cleaned_data["email"])
+
             message = _("New user has been registered.")
             send_mail(_('New registration'),
                       message,
@@ -179,7 +183,8 @@ def reg(request):
             "form3": form3,
             "title": _("Registration"),
             "submit": _("Register"),
-            "action": reverse("wsgiadmin.useradmin.views.reg")
+            "action": reverse("wsgiadmin.useradmin.views.reg"),
+            "config": config,
         },
         context_instance=RequestContext(request)
     )

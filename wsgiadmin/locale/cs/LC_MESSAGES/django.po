@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-11-23 17:38+0100\n"
+"POT-Creation-Date: 2011-11-25 00:18+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -567,7 +567,7 @@ msgid "Given alias already exists"
 msgstr "Alias už existuje"
 
 #: emails/models.py:10 templates/login.html:27 templates/reg.html:16
-#: templates/reg.html.py:21 useradmin/views.py:180
+#: templates/reg.html.py:21 useradmin/views.py:184
 msgid "Registration"
 msgstr "Registrace"
 
@@ -601,7 +601,7 @@ msgstr "Tělo"
 
 #: emails/models.py:37 ftps/models.py:8 templates/ftps.html:15
 #: templates/login.html:16 templates/login.html.py:20 templates/login.html:25
-#: templates/logout.html:17 templates/reg.html:31
+#: templates/logout.html:17 templates/reg.html:32
 msgid "Login"
 msgstr ""
 
@@ -689,7 +689,7 @@ msgstr "Přidat přesměrování"
 msgid "Add redirect"
 msgstr "Přidat přesměrování"
 
-#: ftps/forms.py:35 ftps/forms.py:61
+#: ftps/forms.py:35 ftps/forms.py:62
 msgid "Chosen username already exists"
 msgstr "Vybrané uživatelské Jméno už je použito"
 
@@ -806,11 +806,11 @@ msgstr "Heslo musí mít alespoň %s znaků"
 msgid "First password isn't equal to second one"
 msgstr "První heslo nesouhlasí s druhým"
 
-#: settings/base.py:216
+#: settings/base.py:218
 msgid "Per application (60 CZK/app/month)"
 msgstr "Za aplikaci (60 Kč/app/měsíc)"
 
-#: settings/base.py:217
+#: settings/base.py:219
 msgid "Constant fee (200 CZK/196 MB RAM)"
 msgstr "Paušální poplatek (200 Kč/196 MB RAM)"
 
@@ -832,7 +832,7 @@ msgstr "Cena"
 
 #: stats/models.py:42
 msgid "Cost (bonus included)"
-msgstr ""
+msgstr "Cena (s bonusem)"
 
 #: stats/models.py:43
 msgid "Bonus"
@@ -1493,6 +1493,14 @@ msgstr ""
 msgid "Create new email redirect"
 msgstr "Vytvořit nový redirect"
 
+#: templates/reg.html:31
+msgid "By click on the button, you agree with our terms"
+msgstr "Kliknutím souhlasíte se smluvními podmínkami"
+
+#: templates/reg.html:32
+msgid "Terms"
+msgstr "Smluvní podmínky"
+
 #: templates/regok.html:13
 msgid "Registrace proběhla v pořádku."
 msgstr ""
@@ -1572,7 +1580,7 @@ msgstr "Telefon"
 
 #: useradmin/forms.py:22
 msgid "Will be used as system user"
-msgstr ""
+msgstr "Bude použito pro syst. účet"
 
 #: useradmin/forms.py:30
 msgid "Username already exists"
@@ -1591,15 +1599,15 @@ msgstr "Chyba oprávnění"
 msgid "Change password for this administration"
 msgstr "Změna hesla pro administraci"
 
-#: useradmin/views.py:160
+#: useradmin/views.py:164
 msgid "New user has been registered."
 msgstr "Nový uživatel byl registrován"
 
-#: useradmin/views.py:161
+#: useradmin/views.py:165
 msgid "New registration"
 msgstr "Nová registrace"
 
-#: useradmin/views.py:181
+#: useradmin/views.py:185
 msgid "Register"
 msgstr "Registrace"
 

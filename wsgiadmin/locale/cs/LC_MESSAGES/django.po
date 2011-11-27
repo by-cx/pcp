@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-11-25 00:18+0100\n"
+"POT-Creation-Date: 2011-11-27 03:45+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -425,7 +425,7 @@ msgstr "Heslo bylo změněno"
 msgid "Password for database %s"
 msgstr "Heslo pro databázi %s"
 
-#: db/views.py:131 emails/views.py:126 templates/admin.html:202
+#: db/views.py:131 emails/views.py:126 templates/admin.html:203
 #: templates/boxes.html:35 templates/db.html:32 templates/db.html.py:33
 #: templates/ftps.html:28 templates/ftps.html.py:29 useradmin/views.py:103
 #: users/views.py:274
@@ -814,7 +814,8 @@ msgstr "Za aplikaci (60 Kč/app/měsíc)"
 msgid "Constant fee (200 CZK/196 MB RAM)"
 msgstr "Paušální poplatek (200 Kč/196 MB RAM)"
 
-#: stats/models.py:22 stats/models.py:40 templates/requests.html:17
+#: stats/models.py:22 stats/models.py:40 templates/bill.html:39
+#: templates/requests.html:17
 msgid "Date"
 msgstr "Datum"
 
@@ -842,15 +843,15 @@ msgstr ""
 msgid "Sended to invoice system"
 msgstr "Odesláno do fakturačního systému"
 
-#: stats/views.py:22
+#: stats/views.py:24
 msgid "Credit has been added on your account"
 msgstr "Kredity byly přidány na váš účet"
 
-#: stats/views.py:23
+#: stats/views.py:25
 msgid "Invoice is going to reach your e-mail in next 24 hours"
 msgstr "Faktura vám přijde během 24 hodin"
 
-#: stats/views.py:27
+#: stats/views.py:29
 msgid "Low level behavior has been setted"
 msgstr "Chování při nízkém kreditu bylo upraveno"
 
@@ -868,10 +869,10 @@ msgstr ""
 msgid "Are you sure?"
 msgstr "Určitě?"
 
-#: templates/admin.html:50 templates/apache.html:5 templates/boxes.html:5
-#: templates/credit.html:5 templates/db.html:5 templates/domains.html:5
-#: templates/ftps.html:5 templates/info.html:5 templates/login.html:9
-#: templates/login.html.py:16 templates/logout.html:10
+#: templates/admin.html:50 templates/apache.html:5 templates/bill.html:5
+#: templates/boxes.html:5 templates/credit.html:5 templates/db.html:5
+#: templates/domains.html:5 templates/ftps.html:5 templates/info.html:5
+#: templates/login.html:9 templates/login.html.py:16 templates/logout.html:10
 #: templates/logout.html.py:17 templates/redirects.html:5
 #: templates/reg.html:10 templates/reg.html.py:16 templates/requests.html:5
 #: templates/universal.html:5
@@ -890,7 +891,7 @@ msgstr "Zpět"
 msgid "superuser"
 msgstr "superuživatel"
 
-#: templates/admin.html:71 templates/admin.html.py:204
+#: templates/admin.html:71 templates/admin.html.py:205
 msgid "Logout"
 msgstr "Odhlásit"
 
@@ -942,87 +943,91 @@ msgstr ""
 msgid "Last 20 server's request"
 msgstr "Posledních 20 požadavků"
 
-#: templates/admin.html:118 templates/credit.html:10
+#: templates/admin.html:118
+msgid "Payout stats"
+msgstr "Statistiky odečtů"
+
+#: templates/admin.html:119 templates/credit.html:10
 msgid "Buy some credit"
 msgstr "Koupit kredit"
 
-#: templates/admin.html:127
+#: templates/admin.html:128
 msgid "User's list"
 msgstr "Seznam uživatelů"
 
-#: templates/admin.html:136
+#: templates/admin.html:137
 msgid "Add invoice"
 msgstr "Přidat fakturu"
 
-#: templates/admin.html:137
+#: templates/admin.html:138
 msgid "Invoice's list"
 msgstr "Seznam faktur"
 
-#: templates/admin.html:146
+#: templates/admin.html:147
 msgid "Add registered domain"
 msgstr "Přidat registrovanou doménu"
 
-#: templates/admin.html:147
+#: templates/admin.html:148
 msgid "Domain's list"
 msgstr "Seznam domén"
 
-#: templates/admin.html:156
+#: templates/admin.html:157
 msgid "Add static page"
 msgstr "Přidat statickou stránku"
 
-#: templates/admin.html:157
+#: templates/admin.html:158
 msgid "Add PHP app"
 msgstr "Přidat PHP aplikaci"
 
-#: templates/admin.html:158
+#: templates/admin.html:159
 msgid "Add WSGI app"
 msgstr "Přidat WSGI aplikaci"
 
-#: templates/admin.html:159
+#: templates/admin.html:160
 msgid "Your apps"
 msgstr "Vaše aplikace"
 
-#: templates/admin.html:168
+#: templates/admin.html:169
 msgid "Add MySQL database"
 msgstr "Přidat MySQL databázi"
 
-#: templates/admin.html:169
+#: templates/admin.html:170
 msgid "MySQL databases"
 msgstr "MySQL databáze"
 
-#: templates/admin.html:170
+#: templates/admin.html:171
 msgid "Add postgresql database"
 msgstr "Přidat PostgreSQL databázi"
 
-#: templates/admin.html:171
+#: templates/admin.html:172
 msgid "PostgreSQL databases"
 msgstr "PostgreSQL databáze"
 
-#: templates/admin.html:180
+#: templates/admin.html:181
 msgid "Add e-mail account"
 msgstr "Přidat E-mail"
 
-#: templates/admin.html:181
+#: templates/admin.html:182
 msgid "E-mail's accounts"
 msgstr "E-mailové schránky"
 
-#: templates/admin.html:182
+#: templates/admin.html:183
 msgid "Add redirection"
 msgstr "Přidat přesměrování"
 
-#: templates/admin.html:183
+#: templates/admin.html:184
 msgid "Redirections"
 msgstr "Přesměrování"
 
-#: templates/admin.html:192
+#: templates/admin.html:193
 msgid "Add FTP account"
 msgstr "Přidat FTP přístup"
 
-#: templates/admin.html:193 templates/ftps.html:11
+#: templates/admin.html:194 templates/ftps.html:11
 msgid "List of FTP accounts"
 msgstr "Seznam FTP účtů"
 
-#: templates/admin.html:203
+#: templates/admin.html:204
 msgid "Change SSH/SFTP/FTP passwod"
 msgstr "Změnit SSH/SFTP/FTP heslo"
 
@@ -1073,6 +1078,34 @@ msgid ""
 msgstr ""
 "Žádný web nebo aplikace ještě nebyly přidány, můžete to napravit v levém "
 "menu."
+
+#: templates/bill.html:5
+msgid "credit stats"
+msgstr "kreditové statistiky"
+
+#: templates/bill.html:10
+msgid "Credit statistics"
+msgstr "Kreditové statistiky"
+
+#: templates/bill.html:14
+msgid "What you payed in last 14 days"
+msgstr "Odečtené kredity za posledních 14 dní"
+
+#: templates/bill.html:24
+msgid "What you pay by months"
+msgstr "Odečtené kredity podle měsíců"
+
+#: templates/bill.html:36
+msgid "Buyed credits"
+msgstr "Nákupy kreditů"
+
+#: templates/bill.html:40 templates/users.html:33
+msgid "Credits"
+msgstr "Kredity"
+
+#: templates/bill.html:41
+msgid "Earned bonus"
+msgstr "Získaný bonus"
 
 #: templates/boxes.html:5
 msgid "E-mail boxes"
@@ -1538,10 +1571,6 @@ msgstr ""
 msgid "Pay per day"
 msgstr "Platí za den"
 
-#: templates/users.html:33
-msgid "Credits"
-msgstr "Kredity"
-
 #: templates/users.html:58
 msgid "Switch"
 msgstr "Přepnout uživatele"
@@ -1703,9 +1732,6 @@ msgstr "Změna heslo pro SSH/SFTP"
 
 #~ msgid "Note"
 #~ msgstr "Poznámka"
-
-#~ msgid "Account status"
-#~ msgstr "Stav účtu"
 
 #~ msgid "Invoice no."
 #~ msgstr "Číslo faktury"

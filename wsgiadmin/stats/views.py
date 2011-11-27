@@ -75,12 +75,14 @@ class StatsView(TemplateView):
         return data
 
     def day_stats(self):
-        records = self.user.record_set.filter(date__gte=date.today() - timedelta(14)).values("date", "cost").extra(select={"date": "date", "cost": "SUM(cost)"})
-        records.query.group_by = ["date"]
-        records.order_by("date")
+        records = self.user.record_set.filter(date__gte=date.today() - timedelta(14)).order_by("date").distinct().values("date")
         data = []
         for record in records.all():
-            data.append(record)
+            res = self.user.record_set.filter(date=record["date"]).aggregate(Sum("cost"))
+            if res:
+                data.append({"date": record["date"], "cost": res["cost__sum"]})
+            else:
+                data.append({"date": record["date"], "cost": 0.0})
         return data
 
     def buyed_stats(self):

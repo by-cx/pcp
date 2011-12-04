@@ -108,7 +108,7 @@ def passwd(request, dbtype, dbname):
                     mr = MySQLRequest(u, u.parms.mysql_machine)
             elif dbtype == 'pgsql':
                 try:
-                    m = u.pgsqldb_set.get(dbname=dbname)
+                    m = u.pgsql_set.get(dbname=dbname)
                 except PGSQL.DoesNotExist:
                     return HttpResponseForbidden(ugettext("Unable to modify chosen database"))
                 else:
@@ -148,7 +148,7 @@ def rm(request, dbtype):
             m = u.mysqldb_set.get(pk=object_id)
             mr = MySQLRequest(u, u.parms.mysql_machine)
         elif dbtype == 'pgsql':
-            m = u.pgsqldb_set.get(pk=object_id)
+            m = u.pgsql_set.get(pk=object_id)
             mr = PostgreSQLRequest(u, u.parms.pgsql_machine)
         else:
             raise Exception(ugettext('Unknown database type'))

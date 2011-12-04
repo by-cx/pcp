@@ -57,6 +57,8 @@ class StatsView(TemplateView):
         today = date.today()
         objs = self.user.record_set.aggregate(Min("date"))
         first_day = objs["date__min"] if objs else date.today()
+        if not first_day:
+            return []
         month = first_day.month
         year = first_day.year
         data = []

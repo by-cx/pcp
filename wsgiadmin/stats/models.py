@@ -14,6 +14,7 @@ SERVICES = (
     ("ftp", 'ftp'), #count
     ("email", 'email'), #count
     ("fee", 'fee'), #count
+    ("correction", 'correction'), #count
 )
 
 class Record(models.Model):

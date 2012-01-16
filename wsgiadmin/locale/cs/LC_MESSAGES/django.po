@@ -78,7 +78,7 @@ msgstr "Jedna nebo více IP adres je špatném formátu"
 
 #: apacheconf/forms.py:88
 msgid "Virtualenv hasn't to contain chars ./~"
-msgstr "Virtualenv nesmí obsahovat naky ./~"
+msgstr "Virtualenv nesmí obsahovat znaky ./~"
 
 #: apacheconf/models.py:21 templates/apache.html:21
 msgid "Type"

@@ -8,7 +8,7 @@ from os.path import join, abspath, pardir, dirname
 
 ROOT = abspath(join(dirname(__file__), pardir))
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 DEBUG_TOOLBAR = DEBUG
 ENABLE_DEBUG_URLS = DEBUG

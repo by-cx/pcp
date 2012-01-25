@@ -305,7 +305,8 @@ img {
 	font-weight: bold;
 	display: block;
 }
-#content form .input-text {
+#content form .textinput  {
+	margin: 0 0 10px 0;
 	padding: 7px 2px;
 	width: 300px;
 	border: solid 1px #c2c2c2;
@@ -325,10 +326,10 @@ img {
 	-moz-border-radius: 4px;
 	border-radius: 4px;
 }
-#content form .input-text:hover {
+#content form .textinput:hover {
 	border: solid 1px #959595;
 }
-#content form .input-text:focus {
+#content form .textinput:focus {
 	border: solid 1px #959595;
 }
 #content form select {
@@ -344,6 +345,7 @@ img {
   	background: -ms-linear-gradient(top, #f2f2f2, #fff);
   	/* Opera 11.10+ */
   	background: -o-linear-gradient(top, #f2f2f2, #fff);
+  	margin: 0 0 10px 0;
 	padding: 7px 7px 7px 2px;
 	width: 306px;
 	height: 29px;
@@ -393,8 +395,8 @@ img {
 	font-weight: bold;
 	display: block;
 }
-#content form .input-checkbox, #content form .input-radio {
-	margin: 0 5px 5px 0;
+#content form .checkboxinput, #content form .input-radio {
+	margin: 0 5px 10px 0;
 }
 .input-submit {
 	/* fallback */
@@ -409,6 +411,7 @@ img {
   	background: -ms-linear-gradient(top, #f4f5fa, #dfdde2);
   	/* Opera 11.10+ */
   	background: -o-linear-gradient(top, #f4f5fa, #dfdde2);
+  	margin: 10px 0 0 0;
 	padding: 7px 20px;
 	-webkit-border-radius: 5px;
 	-moz-border-radius: 5px;
@@ -435,6 +438,12 @@ img {
   	background: -o-linear-gradient(top, #f4f5fa, #d3d1d6);
 	border: solid 1px #c8c6c9;
 	color: #252525;
+}
+.formHint {
+	margin: 7px 0 0 0 !important;
+	width: 58% !important;
+	font-size: 12px !important;
+	color: #777 !important;
 }
 #content-inside {
 	margin: 0 30px 0 30px;
@@ -536,7 +545,7 @@ img {
 	line-height: normal;
 	float: left;
 	display: block;
-	list-style-type: none;
+	list-style-type: none;	
 }
 #content table .akce li a {
 	/* fallback */
@@ -595,11 +604,10 @@ img {
 	border: solid 1px #fb9ca4;
 	color: #430006;
 }
-#notifications {
+ul#notifications {
 	margin: 0 0 30px 0;
 }
-#notifications li {
-	background: #f2f2f2 !important;
+ul#notifications li {
 	margin: 0 0 10px 0;
 	padding: 10px 30px 10px 50px !important;
 	border: solid 1px #eee;
@@ -609,23 +617,23 @@ img {
 	border-radius: 6px;
 	list-style: none;
 }
-#notifications li.error {
+ul#notifications li.error {
 	background: #fdd1d1 url(/m/images/ico-error.png) no-repeat 20px 10px !important;
 	border: solid 1px #dc8787;
 }
-#notifications li.info {
+ul#notifications li.info {
 	background: #dde4fe url(/m/images/ico-info.png) no-repeat 20px 10px  !important;
 	border: solid 1px #94a8e8;
 }
-#notifications li.warning {
+ul#notifications li.warning {
 	background: #fefbd4 url(/m/images/ico-upozorneni.png) no-repeat 20px 10px  !important;
 	border: solid 1px #e6db54;
 }
-#notifications li.success {
+ul#notifications li.success {
 	background: url(/m/images/ico-ok.png) no-repeat 20px 10px  #d8fed1 !important;
 	border: solid 1px #8ad17f;
 }
-#notifications li .zavrit {
+ul#notifications li .zavrit {
 	position: absolute;
 	right: -5px;
 	top: -5px;
@@ -634,34 +642,51 @@ img {
 /*--------------------------------------------------------------------------------------------------------
 	Notifications form
 --------------------------------------------------------------------------------------------------------*/
-div.notifications {
-	background: #f2f2f2 !important;
+div.ctrlHolder {
+	padding: 0 !important;
+	border-bottom: none !important;
+}
+div.ctrlHolder.error {
+	background: #fdd1d1 url(/m/images/ico-error.png) no-repeat 20px 10px !important;
 	margin: 0 0 10px 0;
-	padding: 10px 30px 0 50px !important;
-	border: solid 1px #eee;
+	padding: 10px 30px 10px 50px !important;
 	position: relative;
 	-webkit-border-radius: 6px;
 	-moz-border-radius: 6px;
 	border-radius: 6px;
-	list-style: none;
-}
-div.notifications.error {
-	background: #fdd1d1 url(/m/images/ico-error.png) no-repeat 20px 10px !important;
 	border: solid 1px #dc8787;
 }
-div.notifications.info {
+div.ctrlHolder.info {
 	background: #dde4fe url(/m/images/ico-info.png) no-repeat 20px 10px  !important;
+	margin: 0 0 10px 0;
+	padding: 10px 30px 10px 50px !important;
+	position: relative;
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+	border-radius: 6px;
 	border: solid 1px #94a8e8;
 }
-div.notifications.warning {
+div.ctrlHolder.warning {
 	background: #fefbd4 url(/m/images/ico-upozorneni.png) no-repeat 20px 10px  !important;
+	margin: 0 0 10px 0;
+	padding: 10px 30px 10px 50px !important;
+	position: relative;
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+	border-radius: 6px;
 	border: solid 1px #e6db54;
 }
-div.notifications.success {
+div.ctrlHolder.success {
 	background: url(/m/images/ico-ok.png) no-repeat 20px 10px  #d8fed1 !important;
+	margin: 0 0 10px 0;
+	padding: 10px 30px 10px 50px !important;
+	position: relative;
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+	border-radius: 6px;
 	border: solid 1px #8ad17f;
 }
-div.notifications .zavrit {
+div.ctrlHolder .zavrit {
 	position: absolute;
 	right: -5px;
 	top: -5px;
@@ -673,6 +698,9 @@ div.notifications .zavrit {
 .registrace {
 	background: url(/m/images/bg-body-registrace.jpg) repeat;
 }
+.registrace a {
+	color: #d73951;
+}
 .registrace h1 {
 	margin: 0 0 40px 50px;
 	font-size: 40px;
@@ -683,6 +711,24 @@ div.notifications .zavrit {
 .registrace h1 strong {
 	color: #3b4248;
 }
+.registrace h2 {
+	margin: 0 0 20px 50px;
+	font-size: 25px;
+	color: #71808a;
+	text-shadow: 0 1px 1px #fff;
+} 
+.registrace p {
+	margin: 0 0 40px 50px;
+	font-size: 15px;
+	color: #3b4248;
+	text-shadow: 0 1px 1px #fff;
+	line-height: 25px;
+} 
+.registrace form p {
+	margin: 0;
+	font-size: 12px;
+	text-shadow: none;
+} 
 .registrace #main {
 	padding: 40px 0 150px 0;
 }
@@ -705,6 +751,7 @@ div.notifications .zavrit {
 }
 .container h2 {
 	background: url(/m/images/bg-h2-registrace.jpg) no-repeat 0 0;
+	margin: 0;
 	padding: 0 0 20px 0;
 	width: 300px;
 	height: 50px;
@@ -721,7 +768,46 @@ div.notifications .zavrit {
 	font-weight: bold;
 	display: block;
 }
-
+.container .textinput -registrace {
+	background: url(/m/images/bg-textinput -registrace.jpg) no-repeat 0 0;
+	margin: 0 0 10px 20px;
+	padding: 0 2px;
+	width: 256px;
+	height: 31px;
+	border: 0;
+	color: #cfd8de;
+	font-size: 12px;
+}
+.container .input-submit-prihlasit {
+	background: url(/m/images/input-submit-prihlasit.jpg) no-repeat 0 0;
+	margin: 15px 0 15px 95px;
+	padding-bottom: 2px;
+	width: 110px;
+	height: 31px;
+	border: 0;
+	cursor: pointer;
+	font-size: 12px;
+	font-weight: bold;
+	color: #fff;
+}
+.container .input-submit-prihlasit:hover {
+	background: url(/m/images/input-submit-prihlasit.jpg) no-repeat 0 -31px;
+}
+.container .input-submit-registrovat {
+	background: url(/m/images/input-submit-registrovat.jpg) no-repeat 0 0;
+	margin: 15px 0 15px 85px;
+	padding-bottom: 2px;
+	width: 130px;
+	height: 31px;
+	border: 0;
+	cursor: pointer;
+	font-size: 12px;
+	font-weight: bold;
+	color: #fff;
+}
+.container .input-submit-registrovat:hover {
+	background: url(/m/images/input-submit-registrovat.jpg) no-repeat 0 -31px;
+}
 .container .help {
 	margin: 0 0 20px 0;
 	text-align: center;
@@ -741,7 +827,6 @@ div.notifications .zavrit {
 	width: 300px;
 	height: 45px;
 }
-
 /*--------------------------------------------------------------------------------------------------------
 	Co jsem doplnil, přetížil
 --------------------------------------------------------------------------------------------------------*/
@@ -830,4 +915,34 @@ div.notifications .zavrit {
 
 #reg-form .input-submit-registrovat:hover {
 	background: url(/m/images/input-submit-registrovat.jpg) no-repeat 0 -31px;
+}
+#prepnuti-uzivatele {
+	position: absolute;
+	left: 450px;
+	top: 43px;
+	color: #c2c2c2;
+}
+#prepnuti-uzivatele a {
+	background: #2d3238;
+	padding: 5px 10px;
+	color: #f2f2f2;
+	text-decoration: none;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+}
+#prepnuti-uzivatele a:hover {
+	background: #393f46;
+}
+#prepnuti-uzivatele #uzivatel {
+	margin: 0 0 0 5px;
+}
+#prepnuti-uzivatele i {
+	margin: 0 5px 0 0;
+	font-style: normal;
+}
+
+.terms {
+    color: #FFF161;
+    text-align: center;
 }

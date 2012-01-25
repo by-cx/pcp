@@ -13,8 +13,10 @@ from django.utils.translation import ugettext_lazy as _
 from wsgiadmin.clients.forms import UserForm, ParmsForm, AddressForm
 
 from wsgiadmin.clients.models import *
+from wsgiadmin.emails.models import Message
 from wsgiadmin.requests.request import SystemRequest
 from wsgiadmin.service.forms import PassCheckForm
+from django.core.exceptions import ObjectDoesNotExist
 
 @login_required
 def show(request, p=1):
@@ -111,8 +113,14 @@ def install(request, uid):
     iuser.parms.gid = gid
     iuser.parms.save()
 
+    iuser.parms.add_credit(30)
+
     iuser.is_active = True
     iuser.save()
+
+    message = Message.objects.filter(purpose="approved_reg")
+    if message:
+        message[0].send(iuser.parms.address.residency_email)
 
     messages.add_message(request, messages.SUCCESS, _('User has been installed'))
     return HttpResponseRedirect(reverse("wsgiadmin.useradmin.views.ok"))

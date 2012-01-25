@@ -19,7 +19,7 @@
                 <div class="container-top">
                     <div class="container-bottom">
                         <h2>{% trans "Registration" %}</h2>
-                        <form action="." class="registrace-prihlaseni" id="reg-form" method="post">
+                        <form action="{% url registration %}" class="registrace-prihlaseni" id="reg-form" method="post">
                             {% csrf_token %}
                             {{ form1.as_p }}
                             <div class="border-01"></div>
@@ -28,7 +28,8 @@
                             <p>
                                 <input type="submit" name="" class="input-submit-registrovat" value="Registrovat" />
                             </p>
-                            <p class="help"><a href="{% url login %}">{% trans "Login" %}</a></p>
+                            {% if config.terms_url %}<div class="terms">{% trans "By click on the button, you agree with our terms" %}</div>{% endif %}
+                            <p class="help"><a href="{% url login %}">{% trans "Login" %}</a> {% if config.terms_url %}| <a href="{{ config.terms_url }}" target="_blank">{% trans "Terms" %}</a>{% endif %}</p>
                         </form>
 
                         {% if messages %}

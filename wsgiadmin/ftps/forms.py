@@ -52,6 +52,7 @@ class FTPForm(PassCheckModelForm, FTPUpdateForm):
 
     def clean(self):
         super(FTPForm, self).clean()
+        super(FTPForm, self).clean_password1()
         self.cleaned_data['password1'] = crypt(self.cleaned_data['password1'], self.user.username)
         return self.cleaned_data
 

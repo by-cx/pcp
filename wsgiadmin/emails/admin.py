@@ -1,6 +1,6 @@
 from django.contrib import admin
 from wsgiadmin.domains.models import Domain
-from wsgiadmin.emails.models import Email, EmailRedirect
+from wsgiadmin.emails.models import Email, EmailRedirect, Message
 
 class EmailAdmin(admin.ModelAdmin):
     list_display = ("pub_date", "address")
@@ -46,3 +46,4 @@ class EmailAdmin(admin.ModelAdmin):
 
 admin.site.register(Email, EmailAdmin)
 admin.site.register(EmailRedirect)
+admin.site.register(Message)

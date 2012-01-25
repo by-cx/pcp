@@ -27,7 +27,7 @@
         {% if u.parms.fee %}
             <tr>
                 <td><strong>{% trans "Flat rate" %}</strong></td>
-                <td>{{ u.parms.fee }} {{ u.parms.currency|upper }}</td>
+                <td>{{ u.parms.fee }} cr.</td>
             </tr>
         {% else %}
             <tr>
@@ -49,7 +49,7 @@
         <tr>
             <th><strong>{% trans "Service" %}</strong></th>
             <th><strong>{% trans "Count" %}</strong></th>
-            <th><strong>{% trans "Payment per day" %}</strong></th>
+            <th><strong>{% trans "Credits per day" %}</strong></th>
         </tr>
         <tr>
             <td>{% trans "Domains" %}</td>
@@ -62,60 +62,44 @@
             <tr>
                 <td>{% trans "Webs/Applications" %}</td>
                 <td>{{ u.parms.count_sites }}×</td>
-                <td>{{ u.parms.fee|floatformat:2 }} {{ u.parms.currency|upper }}</td>
+                <td>{{ u.parms.fee|floatformat:2 }}</td>
             </tr>
         {% else %}
             <tr>
                 <td>{% trans "Webs/Applications" %}</td>
                 <td>{{ u.parms.count_sites }}×</td>
-                <td>{{ u.parms.pay_for_sites|floatformat:2 }} {{ u.parms.currency|upper }}</td>
+                <td>{{ u.parms.pay_for_sites|floatformat:2 }}</td>
             </tr>
         {% endif %}
 
         {% if not u.parms.fee %}
             <tr>
-                <td><strong>{% trans "Payment per day" %}</strong></td>
+                <td><strong>{% trans "Credits per day" %}</strong></td>
                 <td></td>
-                <td>{{ u.parms.pay_total_day|floatformat:2 }} {{ u.parms.currency|upper }}</td>
+                <td>{{ u.parms.pay_total_day|floatformat:2 }}</td>
             </tr>
             <tr>
-                <td><strong>{% trans "Payment per month" %}</strong></td>
+                <td><strong>{% trans "Credits per month" %}</strong></td>
                 <td></td>
-                <td>{{ u.parms.pay_total_month|floatformat:2 }} {{ u.parms.currency|upper }}</td>
+                <td>{{ u.parms.pay_total_month|floatformat:2 }}</td>
             </tr>
         {% endif %}
-        {% if u.balance_set.all %}
             <tr>
-                <td><strong>{% trans "Account status" %}</strong></td>
+                <td><strong>{% trans "Your credits" %}</strong></td>
                 <td></td>
-                <td>{{ u.balance_set.all.0.sum|floatformat:2 }} {{ u.parms.currency|upper }}</td>
+                {% if u.parms.credit < 0 %}
+                    <td style="color: red;"><strong>{{ u.parms.credit|floatformat:2 }}</strong> <a href="{% url credit %}">{% trans "Buy some more!" %}</a></td>
+                {% else %}
+                    <td style="color: green;"><strong>{{ u.parms.credit|floatformat:2 }}</strong> <a href="{% url credit %}">{% trans "Buy some more!" %}</a></td>
+                {% endif %}
             </tr>
-        {% endif %}
+            {% if u.parms.credit_until %}
+            <tr>
+                <td><strong>{% trans "You can use services until" %}</strong></td>
+                <td></td>
+                <td>~ {{ u.parms.credit_until }}</td>
+            </tr>
+            {% endif %}
     </table>
-
-    {% if invoices %}
-        <h3>{% trans "Invoices" %}</h3>
-        <table>
-            <tr>
-                <th>{% trans "Invoice no." %}</th>
-                <th>{% trans "Total payment" %}</th>
-                <th>{% trans "Status" %}</th>
-                <th>{% trans "Download link" %}</th>
-            </tr>
-            {% for invoice in invoices %}
-                <tr>
-                    <td>{{ invoice.payment_id }}</td>
-                    <td>{{ invoice.total }}</td>
-                    <td>
-                        {{ invoice.payed|yesno:"paid,not paid,unknown" }}
-                    </td>
-                    <td>
-                        <a href="{% url wsgiadmin.invoices.views.invoice_get invoice.payment_id %}">{% trans "Download" %}</a>
-                    </td>
-                </tr>
-            {% endfor %}
-        </table>
-
-    {% endif %}
 
 {% endblock %}

@@ -37,4 +37,20 @@
 		{% endfor %}
 	</table>
 
+    <h2>{% trans "Copy php/static application" %}</h2>
+
+    <p>
+        <form action="{% url app_copy %}" method="post">
+            {% csrf_token %}
+            <select name="app">
+                {% for app in apps %}
+                <option value="{{ app.id }}">{{ app.server_name }}</option>
+                {% endfor %}
+            </select>
+            <input type="text" name="new_location" />
+            <input type="submit" value="{% trans 'Copy this application now' %}" />
+        </form>
+    </p>
+    <p><em>{% trans "Use full path - for example /home/user1/www/app/" %}</em><br /><em>{% trans "Be very VERY carefull!" %}</em></p>
+
 {% endblock %}

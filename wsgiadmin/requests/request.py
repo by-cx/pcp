@@ -22,7 +22,6 @@ class RequestException(Exception): pass
 
 
 class SSHHandler(object):
-
     # raise exception if not overriden, maybe
     _default_cmd = ""
 

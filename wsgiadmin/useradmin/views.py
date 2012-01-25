@@ -2,6 +2,7 @@ from constance import config
 from os.path import join
 
 from django.contrib import messages
+from django.db.models.query_utils import Q
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
@@ -12,9 +13,29 @@ from django.core.mail import send_mail
 
 from wsgiadmin.apacheconf.models import UserSite
 from wsgiadmin.clients.models import *
+from wsgiadmin.requests.request import SSHHandler
 from wsgiadmin.service.forms import PassCheckForm
 from wsgiadmin.useradmin.forms import formReg, formReg2, PaymentRegForm
 from wsgiadmin.clients.models import Parms
+
+@login_required
+def app_copy(request):
+    u = request.session.get('switched_user', request.user)
+    superuser = request.user
+    if not superuser.is_superuser:
+        return HttpResponseForbidden(_("Permission error"))
+
+    app = UserSite.objects.get(id=int(request.POST.get("app")))
+    new_location = request.POST.get("new_location")
+
+    sh = SSHHandler(request.user, app.owner.parms.web_machine)
+    cmd = "cp -a %s %s" % (app.document_root, new_location)
+    sh.run(cmd=cmd, instant=True)
+    print cmd
+
+    messages.add_message(request, messages.SUCCESS, _('Site has copied'))
+
+    return HttpResponseRedirect(reverse("master"))
 
 @login_required
 def master(request):
@@ -35,6 +56,7 @@ def master(request):
         "menu_active": "dashboard",
         "balance_day": balance_day,
         "balance_month": balance_month,
+        "apps": UserSite.objects.filter(Q(type="static")|Q(type="php")),
         },
         context_instance=RequestContext(request)
     )

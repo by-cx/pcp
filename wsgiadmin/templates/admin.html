@@ -1,5 +1,4 @@
-{% load i18n %}
-<!DOCTYPE html>
+<!DOCTYPE html>{% load i18n %}{% load dajaxice_templatetags %}
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -46,6 +45,9 @@
             });
         {% endblock %}
     </script>
+
+    {% dajaxice_js_import %}
+    <script src="{{ STATIC_URL }}js/jquery.dajax.core.js" type="text/javascript" charset="utf-8"></script>
 
     <title>{% trans "Administration" %} {{ site }}</title>
 </head>

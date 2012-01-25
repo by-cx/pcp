@@ -7,7 +7,8 @@ urlpatterns = patterns('wsgiadmin.useradmin.views',
     url(r'^change_passwd/$', 'change_passwd'),
     url(r'^ok/$', 'ok'),
     url(r'^info/$', 'info'),
-    url(r'^master/$', 'master'),
+    url(r'^master/$', 'master', name="master"),
+    url(r'^master/app_copy/$', 'app_copy', name="app_copy"),
     url(r'^requests/$', 'requests'),
 )
 

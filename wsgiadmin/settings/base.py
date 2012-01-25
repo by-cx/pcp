@@ -8,7 +8,7 @@ from os.path import join, abspath, pardir, dirname
 
 ROOT = abspath(join(dirname(__file__), pardir))
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 DEBUG_TOOLBAR = DEBUG
 ENABLE_DEBUG_URLS = DEBUG
@@ -125,6 +125,9 @@ INSTALLED_APPS = (
     'south',
     'constance',
     'constance.backends.database',
+
+    'dajaxice',
+    'dajax',
 
     'wsgiadmin.requests',
     'wsgiadmin.useradmin',

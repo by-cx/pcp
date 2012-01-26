@@ -968,7 +968,7 @@ msgid "Add registered domain"
 msgstr "Přidat registrovanou doménu"
 
 #: templates/admin.html:148
-msgid "Domain's list"
+msgid "Domains list"
 msgstr "Seznam domén"
 
 #: templates/admin.html:157

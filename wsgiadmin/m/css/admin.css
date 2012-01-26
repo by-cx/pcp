@@ -1,7 +1,7 @@
 .ajax_refresh {
     margin: 15px;
     float: left;
-    background-image: url('/m/icons/ajax-loader.png');
+    background-image: url('../icons/ajax-loader.png');
     background-repeat: no-repeat;
     padding-left: 30px;
     cursor: pointer;
@@ -9,7 +9,7 @@
 }
 
 .ajax_refresh.running {
-    background-image: url('/m/icons/ajax-loader.gif');
+    background-image: url('../icons/ajax-loader.gif');
 }
 
 .ajax_refresh .status {

@@ -1,7 +1,7 @@
 WSGIAdmin
 =========
 
-Web interface for your server based on Django and Python.
+Web interface for your server, based on Django and Python.
 It can handle a Python's applications through uWSGI and PHP
 applications throw Apache and mod_fcgid. It's not complete
 yet, but we use it in production. We are working hard to make
@@ -23,7 +23,10 @@ TODO for v0.3
 TODO for v0.4
 =============
 
-* rework invoice system
+* fix some bugs
+* e-mail redirects
+* master panel with cool things
+* brand new and external invoice system (PCP-Invoices) - https://github.com/creckx/PCP-Invoices
 
 Main features
 =============

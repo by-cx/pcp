@@ -1,6 +1,36 @@
 # -*- coding: utf-8 -*-
+from constance import config
+from django.core.mail.message import EmailMessage
 from django.db import models
+from django.template.context import Context
 from django.utils.translation import ugettext_lazy as _
+from django.template.base import Template
+
+CHOICES = (
+    ("reg", _("Registration")),
+    ("approved_reg", _("Approved registration")),
+    ("low_credit", _("Low credit notification")),
+    ("add_credit", _("Credit notification - admin")),
+)
+
+class Message(models.Model):
+    purpose = models.CharField(_("Purpose"), max_length=20, choices=CHOICES)
+    lang = models.CharField(_("Language"), max_length=5, blank=True, null=True)
+    subject = models.CharField(_("Subject"), max_length=100)
+    body = models.TextField(_("Body"))
+
+    def __unicode__(self):
+        return self.subject
+
+    def send(self, email, context={}):
+        template = Template(self.body)
+        message = EmailMessage(self.subject,
+                            template.render(Context(context)),
+                            from_email=config.email,
+                            to=[email],
+                            bcc=[config.email],
+                            headers={'Reply-To': config.email})
+        message.send()
 
 class Email(models.Model):
     pub_date = models.DateField(auto_now=True)

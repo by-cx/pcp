@@ -45,6 +45,7 @@ def ftp_upsert(request, ftp_id=0):
             iftp.uid = u.parms.uid
             iftp.gid = u.parms.gid
             iftp.owner = u
+            iftp.password = crypt.crypt(form.cleaned_data["password1"], iftp.owner.username)
             iftp.save()
 
             messages.add_message(request, messages.SUCCESS, _('FTP account has been %s') % _("changed") if ftp else _("added"))

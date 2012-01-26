@@ -29,14 +29,17 @@ class UserSite(models.Model):
     allow_ips = models.TextField(_("Whitelist"), blank=True)
     deny_ips = models.TextField(_("Blacklist"), blank=True, help_text=_("One IP per one line"))
 
-    script = models.CharField(_("Script"), max_length=100)
-    processes = models.IntegerField(_("No. of proccesses"), default=1)
-    threads = models.IntegerField(_("No. of threads"), default=5)
-    virtualenv = models.CharField(_("Virtualenv"), default="default", max_length=100)
+    script = models.CharField(_("Script"), max_length=100, blank=True)
+    processes = models.IntegerField(_("No. of proccesses"), default=1, blank=True)
+    threads = models.IntegerField(_("No. of threads"), default=5, blank=True)
+    virtualenv = models.CharField(_("Virtualenv"), default="default", max_length=100, blank=True)
     static = models.TextField(_("Static data path"), blank=True)
     python_path = models.TextField(_("Python path"), blank=True)
 
     extra = models.TextField(_("Extra configuration"), blank=True, null=True)
+    ssl_crt = models.CharField(_("SSL certificate filename"), blank=True, null=True, max_length=256)
+    ssl_key = models.CharField(_("SSL key filename"), blank=True, null=True, max_length=256)
+    ssl_mode = models.CharField(_("SSL mode"), choices=(("none", "None"), ("sslonly", "SSL Only"), ("both", "Both")), max_length=20, default="none")
 
     removed = models.BooleanField(_("Removed"), default=False) # nezmizi dokud se nezaplati
     owner = models.ForeignKey(user, verbose_name=_('Owner'))
@@ -100,19 +103,19 @@ class UserSite(models.Model):
         return config.fastcgi_wrapper_dir % self.owner
 
     @property
-    def pay(self):
+    def pay(self):#AttributeError:
         """
-        Vypocita cenu web/den vc. slevy
+        Credits per day
         """
         if self.owner.parms.fee:
             return 0
 
         if self.type in ("uwsgi", "modwsgi"):
-            return (settings.PAYMENT_WSGI[self.owner.parms.currency] / 30.0) * self.owner.parms.dc()
+            return (float(self.processes - 1) * config.credit_wsgi_proc + config.credit_wsgi) * self.owner.parms.dc()
         elif self.type in ("php",):
-            return (settings.PAYMENT_PHP[self.owner.parms.currency] / 30.0) * self.owner.parms.dc()
+            return config.credit_php * self.owner.parms.dc()
         else:
-            return (settings.PAYMENT_STATIC[self.owner.parms.currency] / 30.0) * self.owner.parms.dc()
+            return config.credit_static * self.owner.parms.dc()
 
     def __repr__(self):
         return "<Web %s>" % self.server_name

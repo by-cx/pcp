@@ -22,7 +22,6 @@ class RequestException(Exception): pass
 
 
 class SSHHandler(object):
-
     # raise exception if not overriden, maybe
     _default_cmd = ""
 
@@ -237,7 +236,7 @@ class UWSGIRequest(SSHHandler):
             uwsgi.append("\t<daemonize>%s</daemonize>" % site.logfile)
             uwsgi.append("\t<chdir>%s</chdir>" % home)
             for pp in [join(home, x.lstrip("/")) for x in site.python_path.split("\n") if x.lstrip("/")]:
-                uwsgi.append("\t<pythonpath>%s</pythonpath>" % pp)
+                uwsgi.append("\t<pythonpath>%s</pythonpath>" % pp.strip())
 
             uwsgi.append("</uwsgi>")
 
@@ -246,19 +245,19 @@ class UWSGIRequest(SSHHandler):
 
     def start(self, site):
         """Start site"""
-        self.run("/usr/bin/env uwsgi-manager.py -s %s" % str(site.id))
+        self.run("/usr/bin/env uwsgi-manager -s %s" % str(site.id))
 
     def restart(self, site):
         """Restart site"""
-        self.run("/usr/bin/env uwsgi-manager.py -R %s" % str(site.id))
+        self.run("/usr/bin/env uwsgi-manager -R %s" % str(site.id))
 
     def stop(self, site):
         """Stop site"""
-        self.run("/usr/bin/env uwsgi-manager.py -S %s" % str(site.id))
+        self.run("/usr/bin/env uwsgi-manager -S %s" % str(site.id))
 
     def reload(self, site):
         """Reload site"""
-        self.run("/usr/bin/env uwsgi-manager.py -r %s" % str(site.id))
+        self.run("/usr/bin/env uwsgi-manager -r %s" % str(site.id))
 
 
 class NginxRequest(Service):
@@ -270,26 +269,54 @@ class NginxRequest(Service):
         configfile = []
         sites = UserSite.objects.filter(removed=False, owner__parms__enable=True)
         for site in sites:
-            if site.type in ("uwsgi", "modwsgi"):
-                configfile.append(render_to_string("nginx_vhost_wsgi.conf", {
-                    "site": site,
-                    'log_dir': settings.LOG_DIR,
-                    "config": config,
-                }))
-            elif site.type == "php":
+            if site.type== "uwsgi":
+                if site.ssl_mode in ("none", "both"):
+                    configfile.append(render_to_string("nginx_vhost_wsgi.conf", {
+                        "site": site,
+                        'log_dir': config.nginx_log_dir,
+                        "config": config,
+                        "ssl": False,
+                    }))
+                if site.ssl_mode in ("both", "sslonly"):
+                    configfile.append(render_to_string("nginx_vhost_wsgi.conf", {
+                        "site": site,
+                        'log_dir': config.nginx_log_dir,
+                        "config": config,
+                        "ssl": True,
+                    }))
+            elif site.type in ("php", "modwsgi"):
                 # PHP always throw Apache
-                configfile.append(render_to_string("nginx_vhost_proxy.conf", {
-                    "site": site,
-                    "proxy": config.apache_url,
-                    'log_dir': settings.LOG_DIR,
-                    "config": config,
-                }))
+                if site.ssl_mode in ("none", "both"):
+                    configfile.append(render_to_string("nginx_vhost_proxy.conf", {
+                        "site": site,
+                        "proxy": config.apache_url,
+                        'log_dir': config.nginx_log_dir,
+                        "config": config,
+                        "ssl": False,
+                    }))
+                if site.ssl_mode in ("both", "sslonly"):
+                    configfile.append(render_to_string("nginx_vhost_proxy.conf", {
+                        "site": site,
+                        "proxy": config.apache_url,
+                        'log_dir': config.nginx_log_dir,
+                        "config": config,
+                        "ssl": True,
+                    }))
             elif site.type == "static":
-                configfile.append(render_to_string("nginx_vhost_static.conf", {
-                    "site": site,
-                    'log_dir': settings.LOG_DIR,
-                    "config": config,
-                }))
+                if site.ssl_mode in ("none", "both"):
+                    configfile.append(render_to_string("nginx_vhost_static.conf", {
+                        "site": site,
+                        'log_dir': config.nginx_log_dir,
+                        "config": config,
+                        "ssl": False,
+                    }))
+                if site.ssl_mode in ("both", "sslonly"):
+                    configfile.append(render_to_string("nginx_vhost_static.conf", {
+                        "site": site,
+                        'log_dir': config.nginx_log_dir,
+                        "config": config,
+                        "ssl": True,
+                    }))
         self.write(self.config_path, "\n".join(configfile))
 
 
@@ -306,16 +333,19 @@ class ApacheRequest(Service):
         for site in sites:
             if site.type in ("uwsgi", "modwsgi"):
                 # Nginx mode cancel handling wsgi by Apache
-                if config.mode != "apache": continue
+                if "nginx" in config.mode and site.type == "uwsgi": continue
 
                 configfile.append(render_to_string("apache_vhost_wsgi.conf", {
+                    "listen": config.apache_url,
                     "site": site,
-                    'log_dir': settings.LOG_DIR,
+                    'log_dir': config.apache_log_dir,
                 }))
             else:
+                if "nginx" in config.mode and site.type == "static": continue
                 configfile.append(render_to_string("apache_vhost_%s.conf" % site.type, {
+                    "listen": config.apache_url,
                     "site": site,
-                    'log_dir': settings.LOG_DIR,
+                    'log_dir': config.apache_log_dir,
                 }))
         self.write(self.config_path, "\n".join(configfile))
 

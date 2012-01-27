@@ -44,7 +44,7 @@
             {% csrf_token %}
             <select name="app">
                 {% for app in apps %}
-                <option value="{{ app.id }}">{{ app.server_name }}</option>
+                <option value="{{ app.id }}">{{ app.main_domain.name }}</option>
                 {% endfor %}
             </select>
             <input type="text" name="new_location" />

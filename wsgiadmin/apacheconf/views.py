@@ -13,6 +13,7 @@ from django.template.context import RequestContext
 
 from wsgiadmin.apacheconf.forms import FormStatic, FormWsgi
 from wsgiadmin.apacheconf.models import UserSite
+from wsgiadmin.domains.models import Domain
 from wsgiadmin.requests.request import UWSGIRequest
 from wsgiadmin.apacheconf.tools import get_user_wsgis, get_user_venvs, user_directories, restart_master
 from wsgiadmin.service.views import JsonResponse, RostiListView
@@ -28,10 +29,12 @@ class AppsListView(RostiListView):
     def get_queryset(self):
         return self.user.usersite_set.filter(removed=False).order_by("pub_date")
 
-
+'''
 @login_required
 def domain_check(request, form, this_site=None):
     u = request.session.get('switched_user', request.user)
+    if not form.is_valid():
+
     form_domains = form.data["domains"].split() # domains typed in form
     # whatever.count.of.dots.vanyli.net -> vanyli.net
     my_domains = ['.'.join(x.name.split('.')[-2:]) for x in u.domain_set.all()]
@@ -54,6 +57,7 @@ def domain_check(request, form, this_site=None):
             error_domains.append("%s - %s" % (domain, ugettext("Already used")))
 
     return error_domains
+'''
 
 @login_required
 def app_static(request, app_type="static", app_id=0):
@@ -62,18 +66,19 @@ def app_static(request, app_type="static", app_id=0):
 
     u = request.session.get('switched_user', request.user)
     superuser = request.user
-    choices = [(d, d) for d in user_directories(u, use_cache=True)]
 
     try:
         site = UserSite.objects.get(id=app_id, owner=u)
     except UserSite.DoesNotExist:
         site = None
 
+    domains = Domain.objects.filter(owner=request.user)
+    FormStatic.base_fields['main_domain'].queryset = domains
+    FormStatic.base_fields['misc_domains'].queryset = domains
     if request.method == 'POST':
         form = FormStatic(request.POST, user=u, instance=site)
 
-        site_errors = domain_check(request, form, this_site=site)
-        if not site_errors and form.is_valid():
+        if form.is_valid():
             isite = form.save(commit=False)
             isite.type = app_type
             isite.owner = u
@@ -90,7 +95,6 @@ def app_static(request, app_type="static", app_id=0):
             return HttpResponseRedirect(reverse("app_list"))
     else:
         form = FormStatic(user=u, instance=site)
-        site_errors = ()
 
     dynamic_refreshs = (
         (reverse("refresh_userdirs"), 'id_document_root'),
@@ -99,7 +103,6 @@ def app_static(request, app_type="static", app_id=0):
     return render_to_response('add_site.html',
             {
             "dynamic_refreshs": dynamic_refreshs,
-            "siteErrors": site_errors,
             "form": form,
             "title": {'static': _("Static website"), 'php': _("PHP website")}[app_type],
             "submit": _("Add website") if not site else _("Modify website"),
@@ -150,11 +153,13 @@ def app_wsgi(request, app_id=0):
     except UserSite.DoesNotExist:
         site = None
 
+    domains = Domain.objects.filter(owner=request.user)
+    FormWsgi.base_fields['main_domain'].queryset = domains
+    FormWsgi.base_fields['misc_domains'].queryset = domains
     if request.method == 'POST':
         form = FormWsgi(request.POST, user=u, instance=site)
 
-        site_errors = domain_check(request, form, site)
-        if not site_errors and form.is_valid():
+        if form.is_valid():
             site = form.save(commit=False)
             site.owner = u
             site.type = 'uwsgi'
@@ -176,7 +181,6 @@ def app_wsgi(request, app_id=0):
             return HttpResponseRedirect(reverse("app_list"))
     else:
         form = FormWsgi(user=u, instance=site)
-        site_errors = ()
 
 
     dynamic_refreshs = (
@@ -187,7 +191,6 @@ def app_wsgi(request, app_id=0):
     return render_to_response('add_site.html',
             {
             "dynamic_refreshs": dynamic_refreshs,
-            "siteErrors": site_errors,
             "form": form,
             "title": _("%s WSGI application") % _('Modify') if site else _('Add'),
             "submit": _("Save changes"),

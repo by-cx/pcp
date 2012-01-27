@@ -3,6 +3,7 @@ import re
 from django import forms
 from django.forms.models import ModelForm
 from django.utils.translation import ugettext_lazy as _
+from django.db.models.query import EmptyQuerySet
 
 from wsgiadmin.apacheconf.models import UserSite
 from wsgiadmin.apacheconf.tools import get_user_wsgis, get_user_venvs, user_directories
@@ -12,7 +13,7 @@ class FormStatic(ModelForm):
 
     class Meta:
         model = UserSite
-        fields = ('domains', 'document_root')
+        fields = ('main_domain', 'misc_domains', 'document_root',)
         widgets = {
             'document_root': forms.Select
         }
@@ -22,8 +23,6 @@ class FormStatic(ModelForm):
 
         super(FormStatic, self).__init__(*args, **kwargs)
 
-        self.fields['domains'].help_text = _(u"<br />Domains separed by space, for example 'rosti.cz www.rosti.cz ' etc. First domain is main.")
-
         if 'document_root' in self.fields:
             user_dirs = user_directories(user=self.user, use_cache=True)
             dirs_choices = [("", _("Not selected"))] + [(x, x) for x in user_dirs]
@@ -32,15 +31,25 @@ class FormStatic(ModelForm):
     def clean_document_root(self):
         if ".." in self.cleaned_data["document_root"] or \
            "~" in self.cleaned_data["document_root"]:
-            raise forms.ValidationError(_(u"This field hasn't to contain .. and ~"))
+            raise forms.ValidationError(_("This field hasn't to contain .. and ~"))
         return self.cleaned_data["document_root"]
 
+    def clean(self):
+        data = self.cleaned_data
+        main_domain = data['main_domain']
+        if 'misc_domains' in data:
+            if main_domain in data['misc_domains']:
+                raise forms.ValidationError(_("Main domain cannot be listed also as misc. domain"))
+            data['domains'] = [main_domain] + data['misc_domains']
+        else:
+            data['domains'] = main_domain
+        return data
 
 class FormWsgi(FormStatic):
 
     class Meta:
         model = UserSite
-        fields = ('domains', 'static', 'python_path', 'virtualenv', 'script', 'processes', 'allow_ips')
+        fields = ('main_domain', 'misc_domains', 'static', 'python_path', 'virtualenv', 'script', 'processes', 'allow_ips')
         widgets = {
             'static': forms.Textarea,
             'python_path': forms.Textarea,
@@ -60,7 +69,7 @@ class FormWsgi(FormStatic):
         self.fields['allow_ips'].help_text = _(u"<br />One IP per line. If it is blank, no limitation will be applied.")
         self.fields['processes'].help_text = _(u"<br />There could be extra fee for additional processes")
         
-        self.fields['processes'].widget.choices = ((1, '1'), (2, '2'), (3, '3'), (4, '4'), (5, '5'))
+        self.fields['processes'].widget.choices = [(one, str(one)) for one in range(1,5)]
 
         wsgis = get_user_wsgis(self.user)
         wsgis_choices = [("", _("Not selected"))] + [(x, x) for x in wsgis]

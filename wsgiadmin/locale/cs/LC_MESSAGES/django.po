@@ -19,7 +19,7 @@ msgstr ""
 
 #: apacheconf/forms.py:25
 msgid ""
-"<br />Domains separed by space, for example 'rosti.cz www.rosti.cz ' etc. "
+"<br />Domains separated with space, for example 'rosti.cz www.rosti.cz ' etc. "
 "First domain is main."
 msgstr ""
 "<br /> Domény oddělujte mezerami, například 'rosti.cz www.rosti.cz' apod."

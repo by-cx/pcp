@@ -1,11 +1,12 @@
 from constance import config
 
-from django.contrib.auth.models import User as user
+from django.contrib.auth.models import User
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 
 from os.path import join
+from wsgiadmin.domains.models import Domain
 
 SITE_TYPE_CHOICES = [
     ("uwsgi", "uWSGI"),
@@ -20,6 +21,8 @@ class UserSite(models.Model):
     end_date = models.DateField(blank=True, null=True)
     type = models.CharField(_("Type"), max_length=20, choices=SITE_TYPE_CHOICES)
 
+    main_domain = models.ForeignKey(Domain, related_name='main_domain', null=True)# TODO - add limit_choices_to
+    misc_domains = models.ManyToManyField(Domain, null=True, related_name='misc_domains')
     domains = models.CharField(_("Domains"), max_length=1024,
         help_text=_("VirtualHost domains, space separated; ie. 'rosti.cz www.rosti.cz '; First domain is taken as primary"))
 
@@ -42,7 +45,7 @@ class UserSite(models.Model):
     ssl_mode = models.CharField(_("SSL mode"), choices=(("none", "None"), ("sslonly", "SSL Only"), ("both", "Both")), max_length=20, default="none")
 
     removed = models.BooleanField(_("Removed"), default=False) # nezmizi dokud se nezaplati
-    owner = models.ForeignKey(user, verbose_name=_('Owner'))
+    owner = models.ForeignKey(User, verbose_name=_('Owner'))
 
     class Meta:
         db_table = 'apacheconf_site'
@@ -66,33 +69,26 @@ class UserSite(models.Model):
                 statics.append(dict(url=url, dir=target))
         return statics
 
-    @property
-    def server_name(self):
-        domains = self.domains.split()
-        if len(domains):
-            return domains[0]
-        else:
-            return "no-domain"
 
     @property
-    def serverAlias(self):
-        domains = self.domains.split()
-        if domains:
-            return " ".join(domains[1:])
-        else:
+    def server_aliases(self):
+        misc = self.misc_domains
+        if not misc:
             return ""
+
+        return " ".join([one.name for one in self.misc_domains])
 
     @property
     def pidfile(self):
-        return join(self.owner.parms.home, "uwsgi", "%s.pid" % self.server_name)
+        return join(self.owner.parms.home, "uwsgi", "%s.pid" % self.main_domain.name)
 
     @property
     def logfile(self):
-        return join(self.owner.parms.home, "uwsgi" , "%s.log" % self.server_name)
+        return join(self.owner.parms.home, "uwsgi" , "%s.log" % self.main_domain.name)
 
     @property
     def socket(self):
-        return join(self.owner.parms.home, "uwsgi", "%s.sock" % self.server_name)
+        return join(self.owner.parms.home, "uwsgi", "%s.sock" % self.main_domain.name)
 
     @property
     def virtualenv_path(self):
@@ -118,7 +114,7 @@ class UserSite(models.Model):
             return config.credit_static * self.owner.parms.dc()
 
     def __repr__(self):
-        return "<Web %s>" % self.server_name
+        return "<Web %s>" % self.main_domain.name
 
     def __unicode__(self):
-        return "%s" % self.server_name
+        return "%s" % self.main_domain.name

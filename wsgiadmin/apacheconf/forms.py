@@ -3,7 +3,6 @@ import re
 from django import forms
 from django.forms.models import ModelForm
 from django.utils.translation import ugettext_lazy as _
-from django.db.models.query import EmptyQuerySet
 
 from wsgiadmin.apacheconf.models import UserSite
 from wsgiadmin.apacheconf.tools import get_user_wsgis, get_user_venvs, user_directories
@@ -23,6 +22,8 @@ class FormStatic(ModelForm):
 
         super(FormStatic, self).__init__(*args, **kwargs)
 
+        self.fields['misc_domains'].required = False
+
         if 'document_root' in self.fields:
             user_dirs = user_directories(user=self.user, use_cache=True)
             dirs_choices = [("", _("Not selected"))] + [(x, x) for x in user_dirs]
@@ -37,12 +38,8 @@ class FormStatic(ModelForm):
     def clean(self):
         data = self.cleaned_data
         main_domain = data['main_domain']
-        if 'misc_domains' in data:
-            if main_domain in data['misc_domains']:
-                raise forms.ValidationError(_("Main domain cannot be listed also as misc. domain"))
-            data['domains'] = [main_domain] + data['misc_domains']
-        else:
-            data['domains'] = main_domain
+        if 'misc_domains' in data and main_domain in data['misc_domains']:
+            raise forms.ValidationError(_("Main domain cannot be listed also as misc. domain"))
         return data
 
 class FormWsgi(FormStatic):

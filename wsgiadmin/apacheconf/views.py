@@ -12,7 +12,7 @@ from django.utils.translation import ugettext_lazy as _, ugettext
 from django.template.context import RequestContext
 
 from wsgiadmin.apacheconf.forms import FormStatic, FormWsgi
-from wsgiadmin.apacheconf.models import UserSite
+from wsgiadmin.apacheconf.models import UserSite, SiteDomain
 from wsgiadmin.domains.models import Domain
 from wsgiadmin.requests.request import UWSGIRequest
 from wsgiadmin.apacheconf.tools import get_user_wsgis, get_user_venvs, user_directories, restart_master
@@ -59,6 +59,16 @@ def domain_check(request, form, this_site=None):
     return error_domains
 '''
 
+
+def get_domains(site, user):
+    #TODO - filter main domains as well
+    if site:
+        exclude_domains = SiteDomain.objects.exclude(user_site=site).values_list('id', flat=True)
+    else:
+        exclude_domains = SiteDomain.objects.all().values_list('id', flat=True)
+
+    return Domain.objects.filter(owner=user).exclude(id__in=exclude_domains)
+
 @login_required
 def app_static(request, app_type="static", app_id=0):
     if app_type not in ("static", "php"):
@@ -72,7 +82,7 @@ def app_static(request, app_type="static", app_id=0):
     except UserSite.DoesNotExist:
         site = None
 
-    domains = Domain.objects.filter(owner=request.user)
+    domains = get_domains(site, request.user)
     FormStatic.base_fields['main_domain'].queryset = domains
     FormStatic.base_fields['misc_domains'].queryset = domains
     if request.method == 'POST':
@@ -83,6 +93,9 @@ def app_static(request, app_type="static", app_id=0):
             isite.type = app_type
             isite.owner = u
             isite.save()
+
+            for one in form.cleaned_data['misc_domains']:
+                SiteDomain.objects.create(domain=one, user_site=isite)
 
             # Requests
             restart_master(config.mode, u)
@@ -153,7 +166,7 @@ def app_wsgi(request, app_id=0):
     except UserSite.DoesNotExist:
         site = None
 
-    domains = Domain.objects.filter(owner=request.user)
+    domains = get_domains(site, request.user)
     FormWsgi.base_fields['main_domain'].queryset = domains
     FormWsgi.base_fields['misc_domains'].queryset = domains
     if request.method == 'POST':
@@ -164,6 +177,10 @@ def app_wsgi(request, app_id=0):
             site.owner = u
             site.type = 'uwsgi'
             site.save()
+
+            for one in form.cleaned_data['misc_domains']:
+                SiteDomain.objects.create(domain=one, user_site=site)
+
 
             if site.type == "uwsgi":
                 ur = UWSGIRequest(u, u.parms.web_machine)

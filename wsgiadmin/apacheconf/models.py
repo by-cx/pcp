@@ -16,15 +16,18 @@ SITE_TYPE_CHOICES = [
 ]
 
 
+class SiteDomain(models.Model):
+    domain = models.ForeignKey('domains.Domain')
+    user_site = models.ForeignKey('apacheconf.UserSite')
+
+
 class UserSite(models.Model):
     pub_date = models.DateField(auto_now_add=True)
     end_date = models.DateField(blank=True, null=True)
     type = models.CharField(_("Type"), max_length=20, choices=SITE_TYPE_CHOICES)
 
     main_domain = models.ForeignKey(Domain, related_name='main_domain', null=True)# TODO - add limit_choices_to
-    misc_domains = models.ManyToManyField(Domain, null=True, related_name='misc_domains')
-    domains = models.CharField(_("Domains"), max_length=1024,
-        help_text=_("VirtualHost domains, space separated; ie. 'rosti.cz www.rosti.cz '; First domain is taken as primary"))
+    misc_domains = models.ManyToManyField(Domain, null=True, related_name='misc_domains', through=SiteDomain)
 
     document_root = models.CharField(_("DocumentRoot"), max_length=200, blank=True)
     htaccess = models.BooleanField(_(".htaccess"), default=True)

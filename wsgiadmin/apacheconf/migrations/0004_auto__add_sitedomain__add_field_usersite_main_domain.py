@@ -1,53 +1,58 @@
 # encoding: utf-8
 import datetime
-import logging
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
-
+import logging
 logger = logging.getLogger(__name__)
+
 
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
         
+        # Adding model 'SiteDomain'
+        db.create_table('apacheconf_sitedomain', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('domain', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['domains.Domain'])),
+            ('user_site', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['apacheconf.UserSite'])),
+        ))
+        db.send_create_signal('apacheconf', ['SiteDomain'])
+
         # Adding field 'UserSite.main_domain'
         db.add_column('apacheconf_site', 'main_domain', self.gf('django.db.models.fields.related.ForeignKey')(related_name='main_domain', null=True, to=orm['domains.Domain']), keep_default=False)
 
-        # Adding M2M table for field misc_domains on 'UserSite'
-        db.create_table('apacheconf_site_misc_domains', (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('usersite', models.ForeignKey(orm['apacheconf.usersite'], null=False)),
-            ('domain', models.ForeignKey(orm['domains.domain'], null=False))
-        ))
-        db.create_unique('apacheconf_site_misc_domains', ['usersite_id', 'domain_id'])
-        #TODO - add data migration!!!
+        if not db.dry_run:
+            for one in orm.UserSite.objects.all():
+                domains = one.domains.split()
+                try:
+                    one.main_domain = orm.Domain.objects.get(name=domains[0].strip(), owner=one.owner)
+                except orm.Domain.DoesNotExist:
+                    logger.error("0004 migration: site %s - MAIN domain %s not found, owner %s" % (one.pk, domains[0], one.owner.username))
 
-        for one in orm.UserSite.objects.all():
-            domains = one.domains.split()
-            try:
-                one.main_domain = orm.Domain.objects.get(name=domains[0].strip(), owner=one.owner)
-            except orm.Domain.DoesNotExist:
-                logger.error("0004 migration: site %s - MAIN domain %s not found, owner %s" % (one.pk, domains[0], one.owner.username))
-
-            if len(domains) > 1:
-                for two in domains[1:]:
-                    try:
-                        one.misc_domains.add(orm.Domain.objects.get(name=two.strip(), owner=one.owner))
-                    except orm.Domain.DoesNotExist:
-                        logger.error("0004 migration: site %s - misc domain %s not found, owner %s" % (one.pk, domains[0], one.owner.username))
-
+                if len(domains) > 1:
+                    for two in domains[1:]:
+                        try:
+                            one.misc_domains.add(orm.Domain.objects.get(name=two.strip(), owner=one.owner))
+                        except orm.Domain.DoesNotExist:
+                            logger.error("0004 migration: site %s - misc domain %s not found, owner %s" % (one.pk, domains[0], one.owner.username))
 
     def backwards(self, orm):
         
+        # Deleting model 'SiteDomain'
+        db.delete_table('apacheconf_sitedomain')
+
         # Deleting field 'UserSite.main_domain'
         db.delete_column('apacheconf_site', 'main_domain_id')
 
-        # Removing M2M table for field misc_domains on 'UserSite'
-        db.delete_table('apacheconf_site_misc_domains')
-
 
     models = {
+        'apacheconf.sitedomain': {
+            'Meta': {'object_name': 'SiteDomain'},
+            'domain': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['domains.Domain']"}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'user_site': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['apacheconf.UserSite']"})
+        },
         'apacheconf.usersite': {
             'Meta': {'object_name': 'UserSite', 'db_table': "'apacheconf_site'"},
             'allow_ips': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
@@ -60,7 +65,7 @@ class Migration(SchemaMigration):
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'indexes': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'main_domain': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'main_domain'", 'null': 'True', 'to': "orm['domains.Domain']"}),
-            'misc_domains': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "'misc_domains'", 'null': 'True', 'to': "orm['domains.Domain']"}),
+            'misc_domains': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "'misc_domains'", 'null': 'True', 'through': "orm['apacheconf.SiteDomain']", 'to': "orm['domains.Domain']"}),
             'owner': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"}),
             'processes': ('django.db.models.fields.IntegerField', [], {'default': '1', 'blank': 'True'}),
             'pub_date': ('django.db.models.fields.DateField', [], {'auto_now_add': 'True', 'blank': 'True'}),

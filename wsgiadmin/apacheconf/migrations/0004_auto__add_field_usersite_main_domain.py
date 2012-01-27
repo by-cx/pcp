@@ -1,8 +1,11 @@
 # encoding: utf-8
 import datetime
+import logging
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
+
+logger = logging.getLogger(__name__)
 
 class Migration(SchemaMigration):
 
@@ -19,6 +22,20 @@ class Migration(SchemaMigration):
         ))
         db.create_unique('apacheconf_site_misc_domains', ['usersite_id', 'domain_id'])
         #TODO - add data migration!!!
+
+        for one in orm.UserSite.objects.all():
+            domains = one.domains.split()
+            try:
+                one.main_domain = orm.Domain.objects.get(name=domains[0].strip(), owner=one.owner)
+            except orm.Domain.DoesNotExist:
+                logger.error("0004 migration: site %s - MAIN domain %s not found, owner %s" % (one.pk, domains[0], one.owner.username))
+
+            if len(domains) > 1:
+                for two in domains[1:]:
+                    try:
+                        one.misc_domains.add(orm.Domain.objects.get(name=two.strip(), owner=one.owner))
+                    except orm.Domain.DoesNotExist:
+                        logger.error("0004 migration: site %s - misc domain %s not found, owner %s" % (one.pk, domains[0], one.owner.username))
 
 
     def backwards(self, orm):

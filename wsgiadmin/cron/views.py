@@ -50,11 +50,6 @@ class CronCreateView(RostiCreateView):
 
         return ret
 
-    def get_context_data(self, **kwargs):
-        data = super(CronCreateView, self).get_context_data(**kwargs)
-        data['action'] = reverse("create_cron")
-        return data
-
 
 @login_required
 def remove_cron(request):

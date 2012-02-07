@@ -1,6 +1,7 @@
 *.pyc
 *.pyo
 *~
+*.mo
 wsgiadmin.egg-info/
 dist/
 build/

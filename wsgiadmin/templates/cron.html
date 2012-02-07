@@ -1,0 +1,62 @@
+{% extends "admin.html" %}
+{% load i18n %}
+
+{% block title %}
+{% trans "Administration" %} &gt; {% trans "Crontab" %}
+{% endblock %}
+
+
+{% block content %}
+<div id="message-box"></div>
+
+<h3>{% trans "List of crontab records" %}</h3>
+        
+<p>{% trans "Important: changes will destroy your current crontab!" %}</p>
+        
+<table>
+    <thead>
+    <tr>
+        <th>{% trans "Time preriod" %}</th>
+        <th>{% trans "Script" %}</th>
+        <th>{% trans "Actions" %}</th>
+    </tr>
+    </thead>
+    {% if object_list %}
+    <tbody id="objects_list">
+    {% for cron in object_list %}
+    <tr>
+        <td>{{ cron.display_time }}</td>
+        <td>{{ cron.script }}</td>
+        <td class="list_actions">
+            <ul class="akce">
+                <li><a href="{% url update_cron pk=cron.id %}" title="{% trans "Edit" %}">
+                    <img src="{{ STATIC_URL }}images/ico-editovat.png" alt="{% trans "Edit" %}"/>
+                    </a></li>
+                <li class="smazat"><a href="#" id="remove_{{ cron.id }}" rel="{{ cron.id }}" class="bold object_delete" title="{% trans "Delete" %}">
+                    <img src="{{ STATIC_URL }}images/ico-smazat.png" alt="{% trans "Delete" %}"/>
+                    </a></li>
+            </ul>
+            <span id="removed_{{ cron.id }}" class="info"></span>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+    <tfoot>
+    <tr>
+        <td colspan="4">
+            <div class="pagination">
+                {% include "paginator.html" %}
+            </div>
+            <div class="clear"></div>
+        </td>
+    </tr>
+    </tfoot>
+    {% else %}
+    <tbody>
+    <tr>
+        <td colspan="4">{% trans "Crap! No cron records found. However, you can add one with the menu on left side." %}</td>
+    </tr>
+    </tbody>
+    {% endif %}
+</table>
+{% endblock %}

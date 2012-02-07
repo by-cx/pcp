@@ -4,7 +4,6 @@ from django.core.urlresolvers import reverse
 from wsgiadmin.cron.forms import FormCron
 from wsgiadmin.requests.request import SystemRequest
 from wsgiadmin.service.views import RostiListView, RostiUpdateView, RostiCreateView
-from wsgiadmin.cron.models import Cron
 from wsgiadmin.service.views import JsonResponse
 from django.utils.translation import ugettext_lazy as _, ugettext
 
@@ -32,6 +31,7 @@ class CronUpdateView(RostiUpdateView):
         messages.add_message(self.request, messages.SUCCESS, _('Cron record has been updated'))
         return ret
 
+
 class CronCreateView(RostiCreateView):
     menu_active = 'webapps'
     template_name="universal.html"
@@ -49,6 +49,11 @@ class CronCreateView(RostiCreateView):
         messages.add_message(self.request, messages.SUCCESS, _('Cron record has been created'))
 
         return ret
+
+    def get_context_data(self, **kwargs):
+        data = super(CronCreateView, self).get_context_data(**kwargs)
+        data['action'] = reverse("create_cron")
+        return data
 
 
 @login_required

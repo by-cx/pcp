@@ -1,1 +1,7 @@
+django<1.4
 django-dajaxice
+django-constance
+django-picklefield
+south
+django-uni-form
+anyjson

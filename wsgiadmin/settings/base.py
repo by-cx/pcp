@@ -126,9 +126,6 @@ INSTALLED_APPS = (
     'constance',
     'constance.backends.database',
 
-    'dajaxice',
-    'dajax',
-
     'wsgiadmin.requests',
     'wsgiadmin.useradmin',
     'wsgiadmin.clients',

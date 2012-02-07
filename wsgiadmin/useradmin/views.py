@@ -31,9 +31,9 @@ def app_copy(request):
     sh = SSHHandler(request.user, app.owner.parms.web_machine)
     cmd = "cp -a %s %s" % (app.document_root, new_location)
     sh.run(cmd=cmd, instant=True)
-    print cmd
+    #print cmd
 
-    messages.add_message(request, messages.SUCCESS, _('Site has copied'))
+    messages.add_message(request, messages.SUCCESS, _('Site has been copied'))
 
     return HttpResponseRedirect(reverse("master"))
 
@@ -50,13 +50,16 @@ def master(request):
         balance_day += site.pay
     balance_month = balance_day * 30
 
+    apps = UserSite.objects.filter(Q(type="static")|Q(type="php"))
+    apps = sorted(apps, key=lambda x: x.server_name)
+
     return render_to_response('master.html', {
         "u": u,
         "superuser": superuser,
         "menu_active": "dashboard",
         "balance_day": balance_day,
         "balance_month": balance_month,
-        "apps": UserSite.objects.filter(Q(type="static")|Q(type="php")),
+        "apps": apps,
         },
         context_instance=RequestContext(request)
     )

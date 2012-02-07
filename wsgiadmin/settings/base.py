@@ -8,7 +8,7 @@ from os.path import join, abspath, pardir, dirname
 
 ROOT = abspath(join(dirname(__file__), pardir))
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 DEBUG_TOOLBAR = DEBUG
 ENABLE_DEBUG_URLS = DEBUG
@@ -159,8 +159,8 @@ CONSTANCE_CONFIG = {
     "nginx_log_dir": ("/var/log/webx/", "NGINX log directory"),
 
     "apache_conf": ("/etc/apache2/vhosts.d/99_auto.conf", "Apache's config file"),
-    "apache_url": ("127.0.0.1:8080", "Apache proxy URL (for nginx)"), # for nginx as proxy
-    "apache_ssl_listen": ("127.0.0.1:443", "Apache listen for SSL"),
+    "apache_url": ("0.0.0.0:80", "Apache proxy URL (for nginx)"), # for nginx as proxy
+    "apache_ssl_listen": ("0.0.0.0:443", "Apache listen for SSL"),
     "apache_init_script": ("/etc/init.d/apache2", "Apache's init script"),
     "apache_user": ('www-data', "Apache's user"), # 'apache' in gentoo
     "apache_log_dir": ("/var/log/webs/", "Apache log directory"),

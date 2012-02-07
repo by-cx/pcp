@@ -136,6 +136,7 @@ INSTALLED_APPS = (
     'wsgiadmin.emails',
     'wsgiadmin.ftps',
     'wsgiadmin.db',
+    'wsgiadmin.cron',
     'wsgiadmin.users',
     'wsgiadmin.apacheconf',
     'wsgiadmin.keystore',

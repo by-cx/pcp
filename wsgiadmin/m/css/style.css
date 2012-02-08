@@ -970,13 +970,15 @@ dd { padding: 0; margin: 0.5em 0; }
 
 
 .ajax_refresh {
-    margin: 15px;
     float: left;
+    margin-top: 20px;
+    margin-right: 20px;
     background-image: url('../icons/ajax-loader.png');
     background-repeat: no-repeat;
-    padding-left: 30px;
     cursor: pointer;
-    width: 100px;
+    display: block;
+    width: 20px;
+    height: 20px;
 }
 
 .ajax_refresh.running {
@@ -984,7 +986,7 @@ dd { padding: 0; margin: 0.5em 0; }
 }
 
 .ajax_refresh .status {
-    padding-left: 10px;
+    padding-left: 20px;
 }
 
 .error {

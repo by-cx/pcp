@@ -1,14 +1,12 @@
 from __future__ import with_statement
 
 from paver.easy import (
-    task, needs, call_task,
-    sh, path, options,
+    task, needs, call_task, sh, options,
 )
 from paver.setuputils import setup
 
 from os.path import join
 import os
-import sys
 
 from setuptools import find_packages
 
@@ -77,12 +75,13 @@ def install_dependencies():
 @task
 def translate(options):
     """ Make messages for all languages from settings"""
+    common_trans = True
     locales = ('cs', )
+
     curdir = os.getcwd()
     proot = join(curdir, PROJECT_ROOT)
-    common_trans = True
-
     os.chdir(proot)
+
     if common_trans:
         if not os.path.exists(join(proot, 'locale')):
             os.mkdir(join(proot, 'locale'))
@@ -103,16 +102,19 @@ def translate(options):
 @task
 def compile_translations(options):
     curdir = os.getcwd()
-    from django.core.management import call_command
-    os.chdir(options.name)
+    proot = join(curdir, PROJECT_ROOT)
+    os.chdir(proot)
 
+    from django.core.management import call_command
     call_command('compilemessages')
     os.chdir(curdir)
 
 @task
 def remove_source_translations(options):
     curdir = os.getcwd()
-    os.chdir(options.name)
+    proot = join(curdir, PROJECT_ROOT)
+    os.chdir(proot)
+
     for lang in os.listdir("locale"):
         for file in os.listdir(join("locale", lang)):
             if file.endswith(".mo"):
@@ -123,8 +125,6 @@ def remove_source_translations(options):
 @task
 @needs([
     'compile_translations',
-    #'minify'
 ])
 def deploy(options):
-    #TODO
-    pass
+    call_task('setuptools.commands.sdist')

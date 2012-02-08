@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-.
 ADMINS = (
-('Adam Strauch', 'cx@initd.cz'),
-    )
+    ('Adam Strauch', 'cx@initd.cz'),
+)
 
 DATABASES = {
     'default': {

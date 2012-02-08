@@ -3,7 +3,6 @@
 
 _ = lambda x: x
 
-#import os
 from os.path import join, abspath, pardir, dirname
 
 ROOT = abspath(join(dirname(__file__), pardir))
@@ -15,18 +14,11 @@ ENABLE_DEBUG_URLS = DEBUG
 
 APPEND_SLASH = True
 
-ADMINS = ()
-
-MANAGERS = ADMINS
+MANAGERS = ADMINS = ()
 
 INTERNAL_IPS = ('127.0.0.1', '89.111.104.66')
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'rosti'
-    }
-}
+DATABASES = {}
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
@@ -38,7 +30,11 @@ MY_ADDRESS_ID = 1
 STAMP_SIGN = join(ROOT, "m", "razitko.png")
 STAMP_NOSIGN = join(ROOT, "m", "razitko-nosign.png")
 
-CURRENCY = (("czk", "CZK"), ("eur", "EUR"), ("usd", "USD"),)
+CURRENCY = (
+    ("czk", "CZK"),
+    ("eur", "EUR"),
+    ("usd", "USD"),
+)
 
 ##########
 
@@ -54,9 +50,9 @@ TIME_ZONE = 'Europe/Prague'
 LANGUAGE_CODE = 'cs'
 
 LANGUAGES = (
-('cs', u'Česky'),
-('en', 'English'),
-    )
+    ('cs', u'Česky'),
+    ('en', 'English'),
+)
 
 #EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
@@ -213,7 +209,6 @@ CONSTANCE_CONFIG = {
     }
 
 VIRTUALENVS_DIR = 'virtualenvs'
-LOG_DIR = '/var/log/webs/' #trailing slash required!
 
 PAYMENT_CHOICES = (
     ("per_web", _("Per application (60 CZK/app/month)")),

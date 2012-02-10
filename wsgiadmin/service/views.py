@@ -38,6 +38,7 @@ class RostiListView(ListView):
 class RostiCreateView(CreateView):
     menu_active = ""
     form_class = None
+    form_action = '.'
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
@@ -50,7 +51,10 @@ class RostiCreateView(CreateView):
         context['u'] = self.user
         context['superuser'] = self.request.user
         context['submit'] = _("Create")
+        if 'action' not in context:
+            context['action'] = self.form_action
         return context
+
 
 class RostiUpdateView(UpdateView):
     menu_active = ""

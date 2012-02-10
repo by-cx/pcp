@@ -1,5 +1,8 @@
+from random import randint
+from time import time
 from constance import config
 from os.path import join
+from hashlib import md5
 
 from django.contrib import messages
 from django.db.models.query_utils import Q
@@ -7,15 +10,16 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponseForbidden
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, ugettext
 from django.template.context import RequestContext
 from django.core.mail import send_mail
+from django.views.generic.edit import FormView
 
 from wsgiadmin.apacheconf.models import UserSite
 from wsgiadmin.clients.models import *
 from wsgiadmin.requests.request import SSHHandler
 from wsgiadmin.service.forms import PassCheckForm
-from wsgiadmin.useradmin.forms import formReg, formReg2, PaymentRegForm
+from wsgiadmin.useradmin.forms import formReg, formReg2, PaymentRegForm, SendPwdForm
 from wsgiadmin.clients.models import Parms
 
 @login_required
@@ -102,6 +106,39 @@ def ok(request):
                               context_instance=RequestContext(request)
     )
 
+class PasswordView(FormView):
+
+    template_name = 'passwd_form.html'
+
+
+    def __init__(self, *args, **kwargs):
+        super(PasswordView, self).__init__(*args, **kwargs)
+        self.success_url = reverse('login')
+
+
+    def get_form_class(self):
+        return SendPwdForm
+
+
+    def form_valid(self, form):
+        user = form.user_object
+
+        pwd = md5( str(time()*randint(1, 300)) ).hexdigest()[:7]
+        message = ugettext("Your password has been reseted: %s" % pwd)
+        user.set_password(pwd)
+
+        try:
+            send_mail(_('Password reset'), message, settings.EMAIL_FROM, [user.email], fail_silently=False)
+        except:
+            pass
+        else:
+            #save changed password only on notification success
+            user.save()
+
+        messages.add_message(self.request, messages.SUCCESS, _("Password has been reseted and sent to your email"))
+        return super(PasswordView, self).form_valid(form)
+
+
 @login_required
 def change_passwd(request):
     u = request.session.get('switched_user', request.user)
@@ -121,14 +158,14 @@ def change_passwd(request):
     return render_to_response('universal.html',
             {
             "form": form,
-            "title": _(u"Change password for this administration"),
-            "submit": _(u"Change password"),
+            "title": _("Change password for this administration"),
+            "submit": _("Change password"),
             "action": reverse("wsgiadmin.useradmin.views.change_passwd"),
             "u": u,
             "superuser": superuser,
             "menu_active": "settings",
             },
-                              context_instance=RequestContext(request)
+        context_instance=RequestContext(request)
     )
 
 def reg(request):

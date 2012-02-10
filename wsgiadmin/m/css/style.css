@@ -6,7 +6,7 @@
 }
 body {
 	background: #fff;
-	background: #fff url(/m/images/bg-body.gif) repeat-y left;
+	background: #fff url('../images/bg-body.gif') repeat-y left;
 	font-family: Helvetica, Arial, sans-serif;
 	font-size: 12px;
 }
@@ -69,17 +69,17 @@ img {
 	position: relative;
 }
 .registrace {
-	background: url(/m/images/bg-body-registrace.jpg) repeat-x top;
+    background: url('../images/bg-body-registrace.jpg') repeat-x top;
 }
 /*--------------------------------------------------------------------------------------------------------
 	Header
 --------------------------------------------------------------------------------------------------------*/
 #header {
-	background: url(/m/images/bg-hlavicka.jpg) repeat-x top;
-	height: 145px;
-	position: relative;
-	overflow: hidden;
-	border-bottom: solid 5px #2d3238;
+    background: url('../images/bg-hlavicka.jpg') repeat-x top;
+    height: 145px;
+    position: relative;
+    overflow: hidden;
+    border-bottom: solid 5px #2d3238;
 }
 #header #logo {
 	position: absolute;
@@ -97,7 +97,7 @@ img {
 	font-weight: bold;
 }
 #header #login {
-	background: url(/m/images/bg-login.png) no-repeat 0 0;
+	background: url('../images/bg-login.png') no-repeat 0 0;
 	padding: 23px 0 0 30px;
 	width: 387px;
 	height: 61px;
@@ -106,7 +106,7 @@ img {
 	top: 20px;
 }
 #header #login strong {
-	background: url(/m/images/ico-uzivatel.png) no-repeat 0 2px;
+	background: url('../images/ico-uzivatel.png') no-repeat 0 2px;
 	margin: 0 30px 0 0;
 	padding: 4px 0 2px 20px;
 }
@@ -116,7 +116,7 @@ img {
 	font-weight: normal;
 }
 .odhlasit a {
-	background: url(/m/images/tlacitko-odhlasit.png) no-repeat 0 0;
+	background: url('../images/tlacitko-odhlasit.png') no-repeat 0 0;
 	padding: 0 0 0 50px;
 	width: 80px;
 	height: 30px;
@@ -129,7 +129,7 @@ img {
 	top: 15px;
 }
 .odhlasit a:hover {
-	background: url(/m/images/tlacitko-odhlasit.png) no-repeat 0 -30px;
+	background: url('../images/tlacitko-odhlasit.png') no-repeat 0 -30px;
 }
 #header #main-menu {
 	margin: 0 30px 0 0;
@@ -141,57 +141,47 @@ img {
 }
 #header #main-menu li {
 	margin: 0 5px 0 0;
-	height: 30px;
 	float: left;
 	line-height: 31px;
 	list-style-type: none;
 	text-transform: uppercase;
 	font-size: 11px;
 }
+
+#sidebar ul li a,
 #header #main-menu li a {
-	background: url(/m/images/bg-main-menu-li-left-a.jpg) no-repeat left top;
-	padding: 0 0 0 20px;
-	height: 31px;
-	float: left;
-	text-decoration: none;
-	color: #f2f2f2;
+    background: #3e454d; /* Old browsers */
+    background: -moz-linear-gradient(top, #3e454d 0%, #3e454d 30%, #2d3238 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#3e454d), color-stop(30%,#3e454d), color-stop(100%,#2d3238)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #3e454d 0%,#3e454d 30%,#2d3238 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #3e454d 0%,#3e454d 30%,#2d3238 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #3e454d 0%,#3e454d 30%,#2d3238 100%); /* IE10+ */
+    background: linear-gradient(top, #3e454d 0%,#3e454d 30%,#2d3238 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#3e454d', endColorstr='#2d3238',GradientType=0 ); /* IE6-9 */
+    padding: 0 20px;
+    height: 31px;
+    line-height: 31px;
+    display: inline-block;
+    text-decoration: none;
+    color: #f2f2f2;
+    border-radius: 5px;
+    border: 1px solid #333;
 }
-#header #main-menu li a span {
-	background: url(/m/images/bg-main-menu-li-right-a.jpg) no-repeat right top;
-	width: 20px;
-	height: 31px;
-	float: right;
-}
-#header #main-menu li a:hover {
-	background: url(/m/images/bg-main-menu-li-left.jpg) no-repeat left top;
-	padding: 0 0 0 20px;
-	height: 31px;
-	float: left;
-	text-decoration: none;
-	color: #f2f2f2;
-}
-#header #main-menu li a:hover span {
-	background: url(/m/images/bg-main-menu-li-right.jpg) no-repeat right top;
-	width: 20px;
-	height: 31px;
-	float: right;
-	color: #444;
-}
+
+#sidebar ul li a:hover,
+#sidebar ul li.active a,
+#header #main-menu li a:hover,
 #header #main-menu li.active a {
-	background: url(/m/images/bg-main-menu-li-left.jpg) no-repeat left top;
-	padding: 0 0 0 20px;
-	height: 31px;
-	float: left;
-	text-decoration: none;
-	color: #f2f2f2;
+    background: #a2d731; /* Old browsers */
+    background: -moz-linear-gradient(top, #a2d731 0%, #a2d731 29%, #739711 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#a2d731), color-stop(29%,#a2d731), color-stop(100%,#739711)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #a2d731 0%,#a2d731 29%,#739711 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #a2d731 0%,#a2d731 29%,#739711 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #a2d731 0%,#a2d731 29%,#739711 100%); /* IE10+ */
+    background: linear-gradient(top, #a2d731 0%,#a2d731 29%,#739711 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a2d731', endColorstr='#739711',GradientType=0 ); /* IE6-9 */
 }
-#header #main-menu li.active a span {
-	background: url(/m/images/bg-main-menu-li-right.jpg) no-repeat right top;
-	width: 20px;
-	height: 31px;
-	float: right;
-	color: #444;
-}
+
 /*--------------------------------------------------------------------------------------------------------
 	Sidebar
 --------------------------------------------------------------------------------------------------------*/
@@ -212,24 +202,10 @@ img {
 	list-style-type: none;
 }
 #sidebar ul li a {
-	background: url(/m/images/bg-sidebar-menu-a.png) no-repeat 0 0;
-	margin: 0 0 5px 0;
-	padding: 0 0 0 20px;
-	height: 30px;
-	line-height: 32px;
-	font-size: 11px;
-	text-transform: uppercase;
-	display: block;
-	text-decoration: none;
-	color: #f2f2f2;
-}
-#sidebar ul li a:hover {
-	background: url(/m/images/bg-sidebar-menu-hover.png) no-repeat 0 0;
-  	color: #f2f2f2;
-}
-#sidebar ul li.active a {
-	background: url(/m/images/bg-sidebar-menu-hover.png) no-repeat 0 0;
-  	color: #f2f2f2;
+    display: block;
+    margin: 0 0 5px;
+    border-radius: 5px 0 0 5px;
+    border-right: none;
 }
 /*--------------------------------------------------------------------------------------------------------
 	Content
@@ -242,7 +218,7 @@ img {
 	margin: 0 0 30px 0;
 }
 #content ul li {
-	background: url(/m/images/bullet-01.png) no-repeat 0 6px;
+	background: url('../images/bullet-01.png') no-repeat 0 6px;
 	padding: 0 0 0 10px;
 	line-height: 18px;
 	list-style-type: none;
@@ -618,19 +594,19 @@ ul#notifications li {
 	list-style: none;
 }
 ul#notifications li.error {
-	background: #fdd1d1 url(/m/images/ico-error.png) no-repeat 20px 10px !important;
+	background: #fdd1d1 url('../images/ico-error.png') no-repeat 20px 10px !important;
 	border: solid 1px #dc8787;
 }
 ul#notifications li.info {
-	background: #dde4fe url(/m/images/ico-info.png) no-repeat 20px 10px  !important;
+	background: #dde4fe url('../images/ico-info.png') no-repeat 20px 10px  !important;
 	border: solid 1px #94a8e8;
 }
 ul#notifications li.warning {
-	background: #fefbd4 url(/m/images/ico-upozorneni.png) no-repeat 20px 10px  !important;
+	background: #fefbd4 url('../images/ico-upozorneni.png') no-repeat 20px 10px  !important;
 	border: solid 1px #e6db54;
 }
 ul#notifications li.success {
-	background: url(/m/images/ico-ok.png) no-repeat 20px 10px  #d8fed1 !important;
+	background: url('../images/ico-ok.png') no-repeat 20px 10px  #d8fed1 !important;
 	border: solid 1px #8ad17f;
 }
 ul#notifications li .zavrit {
@@ -647,7 +623,7 @@ div.ctrlHolder {
 	border-bottom: none !important;
 }
 div.ctrlHolder.error {
-	background: #fdd1d1 url(/m/images/ico-error.png) no-repeat 20px 10px !important;
+	background: #fdd1d1 url('../images/ico-error.png') no-repeat 20px 10px !important;
 	margin: 0 0 10px 0;
 	padding: 10px 30px 10px 50px !important;
 	position: relative;
@@ -657,7 +633,7 @@ div.ctrlHolder.error {
 	border: solid 1px #dc8787;
 }
 div.ctrlHolder.info {
-	background: #dde4fe url(/m/images/ico-info.png) no-repeat 20px 10px  !important;
+	background: #dde4fe url('../images/ico-info.png') no-repeat 20px 10px  !important;
 	margin: 0 0 10px 0;
 	padding: 10px 30px 10px 50px !important;
 	position: relative;
@@ -667,7 +643,7 @@ div.ctrlHolder.info {
 	border: solid 1px #94a8e8;
 }
 div.ctrlHolder.warning {
-	background: #fefbd4 url(/m/images/ico-upozorneni.png) no-repeat 20px 10px  !important;
+	background: #fefbd4 url('../images/ico-upozorneni.png') no-repeat 20px 10px  !important;
 	margin: 0 0 10px 0;
 	padding: 10px 30px 10px 50px !important;
 	position: relative;
@@ -677,7 +653,7 @@ div.ctrlHolder.warning {
 	border: solid 1px #e6db54;
 }
 div.ctrlHolder.success {
-	background: url(/m/images/ico-ok.png) no-repeat 20px 10px  #d8fed1 !important;
+	background: url('../images/ico-ok.png') no-repeat 20px 10px  #d8fed1 !important;
 	margin: 0 0 10px 0;
 	padding: 10px 30px 10px 50px !important;
 	position: relative;
@@ -696,7 +672,7 @@ div.ctrlHolder .zavrit {
 	Registrace a prihlaseni
 --------------------------------------------------------------------------------------------------------*/
 .registrace {
-	background: url(/m/images/bg-body-registrace.jpg) repeat;
+    background: url('../images/bg-body-registrace.jpg') repeat;
 }
 .registrace a {
 	color: #d73951;
@@ -737,20 +713,20 @@ div.ctrlHolder .zavrit {
 	width: 800px;
 }
 .container {
-	background: url(/m/images/bg-container.jpg) repeat-y center;
+	background: url('../images/bg-container.jpg') repeat-y center;
 	margin: 0 0 0 50px;
 	width: 300px;
 	float: left;
 }
 .container-top {
-	background: url(/m/images/bg-container-top.jpg) no-repeat center 50px;
+	background: url('../images/bg-container-top.jpg') no-repeat center 50px;
 }
 .container-bottom {
-	background: url(/m/images/bg-container-bottom.jpg) no-repeat center bottom;
+	background: url('../images/bg-container-bottom.jpg') no-repeat center bottom;
 	padding: 0 0 30px 0;
 }
 .container h2 {
-	background: url(/m/images/bg-h2-registrace.jpg) no-repeat 0 0;
+	background: url('../images/bg-h2-registrace.jpg') no-repeat 0 0;
 	margin: 0;
 	padding: 0 0 20px 0;
 	width: 300px;
@@ -769,7 +745,7 @@ div.ctrlHolder .zavrit {
 	display: block;
 }
 .container .textinput -registrace {
-	background: url(/m/images/bg-textinput -registrace.jpg) no-repeat 0 0;
+	background: url('../images/bg-textinput-registrace.jpg') no-repeat 0 0;
 	margin: 0 0 10px 20px;
 	padding: 0 2px;
 	width: 256px;
@@ -779,7 +755,7 @@ div.ctrlHolder .zavrit {
 	font-size: 12px;
 }
 .container .input-submit-prihlasit {
-	background: url(/m/images/input-submit-prihlasit.jpg) no-repeat 0 0;
+	background: url('../images/input-submit-prihlasit.jpg') no-repeat 0 0;
 	margin: 15px 0 15px 95px;
 	padding-bottom: 2px;
 	width: 110px;
@@ -791,10 +767,10 @@ div.ctrlHolder .zavrit {
 	color: #fff;
 }
 .container .input-submit-prihlasit:hover {
-	background: url(/m/images/input-submit-prihlasit.jpg) no-repeat 0 -31px;
+	background: url('../images/input-submit-prihlasit.jpg') no-repeat 0 -31px;
 }
 .container .input-submit-registrovat {
-	background: url(/m/images/input-submit-registrovat.jpg) no-repeat 0 0;
+	background: url('../images/input-submit-registrovat.jpg') no-repeat 0 0;
 	margin: 15px 0 15px 85px;
 	padding-bottom: 2px;
 	width: 130px;
@@ -806,7 +782,7 @@ div.ctrlHolder .zavrit {
 	color: #fff;
 }
 .container .input-submit-registrovat:hover {
-	background: url(/m/images/input-submit-registrovat.jpg) no-repeat 0 -31px;
+	background: url('../images/input-submit-registrovat.jpg') no-repeat 0 -31px;
 }
 .container .help {
 	margin: 0 0 20px 0;
@@ -823,16 +799,16 @@ div.ctrlHolder .zavrit {
 	margin: 0 20px !important;
 }
 .container .border-01 {
-	background: url(/m/images/border-01.jpg) no-repeat 0 0;
-	width: 300px;
-	height: 45px;
+    background: url('../images/border-01.jpg') no-repeat 0 0;
+    width: 300px;
+    height: 45px;
 }
 /*--------------------------------------------------------------------------------------------------------
 	Co jsem doplnil, přetížil
 --------------------------------------------------------------------------------------------------------*/
 
 #reg-form input {
-	background: url(/m/images/bg-input-text-registrace.jpg) no-repeat 0 0;
+	background: url('../images/bg-input-text-registrace.jpg') no-repeat 0 0;
 	margin: 0 0 10px 20px;
 	padding: 0 2px;
 	width: 256px;
@@ -843,7 +819,7 @@ div.ctrlHolder .zavrit {
 }
 
 #reg-form select {
-	background: url(/m/images/bg-input-text-registrace.jpg) no-repeat 0 0;
+	background: url('../images/bg-input-text-registrace.jpg') no-repeat 0 0;
 	margin: 0 0 10px 20px;
 	padding: 0 2px;
 	width: 256px;
@@ -873,7 +849,7 @@ div.ctrlHolder .zavrit {
 }
 
 #reg-form .input-text-registrace {
-	background: url(/m/images/bg-input-text-registrace.jpg) no-repeat 0 0;
+	background: url('../images/bg-input-text-registrace.jpg') no-repeat 0 0;
 	margin: 0 0 10px 20px;
 	padding: 0 2px;
 	width: 256px;
@@ -884,7 +860,7 @@ div.ctrlHolder .zavrit {
 }
 
 #reg-form .input-submit-prihlasit {
-	background: url(/m/images/input-submit-prihlasit.jpg) no-repeat 0 0;
+	background: url('../images/input-submit-prihlasit.jpg') no-repeat 0 0;
 	margin: 15px 0 15px 95px;
 	padding-bottom: 2px;
 	width: 110px;
@@ -897,11 +873,11 @@ div.ctrlHolder .zavrit {
 }
 
 #reg-form .input-submit-prihlasit:hover {
-	background: url(/m/images/input-submit-prihlasit.jpg) no-repeat 0 -31px;
+	background: url('../images/input-submit-prihlasit.jpg') no-repeat 0 -31px;
 }
 
 #reg-form .input-submit-registrovat {
-	background: url(/m/images/input-submit-registrovat.jpg) no-repeat 0 0;
+	background: url('../images/input-submit-registrovat.jpg') no-repeat 0 0;
 	margin: 15px 0 15px 85px;
 	padding-bottom: 2px;
 	width: 130px;
@@ -914,7 +890,7 @@ div.ctrlHolder .zavrit {
 }
 
 #reg-form .input-submit-registrovat:hover {
-	background: url(/m/images/input-submit-registrovat.jpg) no-repeat 0 -31px;
+	background: url('../images/input-submit-registrovat.jpg') no-repeat 0 -31px;
 }
 #prepnuti-uzivatele {
 	position: absolute;
@@ -946,3 +922,85 @@ div.ctrlHolder .zavrit {
     color: #FFF161;
     text-align: center;
 }
+
+
+
+
+
+/* style2.css
+
+body { background: #ccc; color: #333; padding: 0; font-size: 12px; font-family: sans-serif; line-height: 1.5em; }
+
+a { color: #069; }
+
+h1 { margin: 0; font-size: 2em; font-weight: normal; }
+h2 { margin: 0; font-size: 1em; font-weight: bold; }
+
+.layout { overflow: hidden; }
+
+.panel { width: 25%; float: left; }
+.panelHolder { padding: 1em; }
+
+.items { margin: 1em 0; padding: 0; list-style: none; border: 1px solid #999; background: #fff; -moz-box-shadow: 0 0 2px #999; }
+.items li { padding: 1em; background-image: -moz-linear-gradient( #fff, #f2f2f2 ); -moz-box-shadow: inset 0 -1px 1px #ccc, inset 0 0 2px #fff; }
+.items li:hover { background-image: -moz-linear-gradient( #f2f2f2, #fff ); }
+.items li.active { background-image: -moz-linear-gradient( #f2f2f2, #ccc ); }
+.items h2 { float: left; }
+.items h2 a { color: #333; text-decoration: none; text-shadow: #fff 0 1px; }
+.items .labels { float: right; }
+.items li .general { overflow: hidden; }
+.items .details { display: none; }
+.items .active .details { display: block; }
+
+.labels span { font-size: 0.8em; text-transform: uppercase; color: #fff; background: #999; padding: 0 0.5em; -moz-border-radius: 1em; -webkit-border-radius: 1em; border-radius: 1em; }
+.labels .success { background: #009900; }
+.labels .running { background: #ff9900; }
+
+.details p { margin: 0.5em 0; }
+.details strong { display: block; font-weight: normal; font-size: 0.8em; text-transform: uppercase; color: #999999; }
+
+.icon { vertical-align: middle; }
+
+.note { margin: 0; color: #999; font-size: 0.8em; clear: both; }
+
+dl { margin: 1em 0; }
+dt { font-size: 0.8em; text-transform: uppercase; color: #999; padding: 0; margin: 0; }
+dd { padding: 0; margin: 0.5em 0; }
+*/
+
+
+.ajax_refresh {
+    float: left;
+    margin-top: 20px;
+    margin-right: 20px;
+    background-image: url('../icons/ajax-loader.png');
+    background-repeat: no-repeat;
+    cursor: pointer;
+    display: block;
+    width: 20px;
+    height: 20px;
+}
+
+.ajax_refresh.running {
+    background-image: url('../icons/ajax-loader.gif');
+}
+
+.ajax_refresh .status {
+    padding-left: 20px;
+}
+
+.error {
+    background-color: #FFDFDF;
+    padding: 5px;
+    border: 1px solid #4D4D4D;
+}
+
+.list_actions a{
+    margin-right: 10px;
+}
+
+.pagination a.current {
+    font-weight: bold;
+    text-decoration: none;
+}
+

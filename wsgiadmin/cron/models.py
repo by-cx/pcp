@@ -45,13 +45,9 @@ TIMES = {
 
 class Cron(models.Model):
     time = models.CharField(_("Time period"), max_length=32, choices=CRON_CHOICES, default="1h")
-    script = models.CharField(_("Path to script"), max_length=512, unique=True, help_text=_("Whole path, including your home directory. Script has to have execute permissions"))
+    script = models.CharField(_("Path to script"), max_length=512, help_text=_("Whole path, including your home directory. Script has to have execute permissions"))
 
     owner = models.ForeignKey(User, verbose_name=_("User"))
-
-    @property
-    def display_time(self):
-        return [y for x, y in CRON_CHOICES if x == self.time][0]
 
     @property
     def cron_config(self):

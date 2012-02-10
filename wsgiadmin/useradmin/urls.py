@@ -1,10 +1,12 @@
 from django.conf.urls.defaults import *
+from wsgiadmin.useradmin.views import PasswordView
 
 urlpatterns = patterns('wsgiadmin.useradmin.views',
     url(r'^$', 'info'),
     url(r'^reg/$', 'reg', name="registration"),
     url(r'^reg-ok/$', 'regok'),
     url(r'^change_passwd/$', 'change_passwd'),
+    url(r'^reset_passwd/$', PasswordView.as_view(), name='reset_passwd'),
     url(r'^ok/$', 'ok'),
     url(r'^info/$', 'info'),
     url(r'^master/$', 'master', name="master"),

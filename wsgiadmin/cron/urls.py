@@ -1,5 +1,4 @@
 from django.conf.urls.defaults import *
-from wsgiadmin.cron.forms import FormCron
 from wsgiadmin.cron.views import CronListView, CronUpdateView, CronCreateView
 
 urlpatterns = patterns('wsgiadmin.cron.views',

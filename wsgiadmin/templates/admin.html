@@ -1,4 +1,6 @@
-<!DOCTYPE html>{% load i18n %}{% load dajaxice_templatetags %}
+<!DOCTYPE html>
+{% load i18n %}
+
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -6,14 +8,17 @@
     <meta name="robots" content="index, follow" />
     <meta name="keywords" content="{{ site }}" />
     <meta name="description" content="{{ site }}" />
-    <link rel="icon" href="/m/favicon.png" type="image/png">
-    <link type="text/css" media="all" href="{{ STATIC_URL }}style/style.css" rel="stylesheet" />
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}uni-form/css/uni-form.css">
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}uni-form/css/default.uni-form.css">
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/jquery-ui-1.8.16.custom.css" type="text/css" media="screen" />
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/admin.css" type="text/css" media="screen" />
-    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.6.4.min.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-ui-1.8.9.custom.min.js"></script>
+    <link rel="icon" href="{{ STATIC_URL }}favicon.png" type="image/png">
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/style.css"  media="all" />
+    <!--[if IE lt 8]>
+        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/ie.css" />
+    <![endif]-->
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}uni-form/css/uni-form.css"/>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}uni-form/css/default.uni-form.css"/>
+    {# <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/jquery-ui-1.8.16.custom.css" media="screen"/> #}
+
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.7.1.min.js"></script>
+    {# <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-ui-1.8.9.custom.min.js"></script> #}
     <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.cookie.js"></script>
     <script type="text/javascript">
         var delete_success_callback = function(data) {
@@ -46,9 +51,6 @@
         {% endblock %}
     </script>
 
-    {% dajaxice_js_import %}
-    <script src="{{ STATIC_URL }}js/jquery.dajax.core.js" type="text/javascript" charset="utf-8"></script>
-
     <title>{% trans "Administration" %} {{ site }}</title>
 </head>
 <body>
@@ -70,7 +72,9 @@
                             {% else %}
                                 {{ u.username }} {% if u.is_superuser %} <span id="uzivatel">({% trans "superuser" %})</span>{% endif %}
                             {% endif %}
-                        <span class="odhlasit"><a href="{% url django.contrib.auth.views.logout %}">{% trans "Logout" %}</a></span>
+                        <span class="odhlasit">
+                            <a href="{% url django.contrib.auth.views.logout %}">{% trans "Logout" %}</a>
+                        </span>
                     </p>
 
                     <ul id="main-menu">
@@ -147,7 +151,7 @@
                         <li>
                             <ul>
                                 <li><a href="{% url wsgiadmin.domains.views.add %}">{% trans "Add registered domain" %}</a></li>
-                                <li><a href="{% url domains_list %}">{% trans "Domain's list" %}</a></li>
+                                <li><a href="{% url domains_list %}">{% trans "Domains list" %}</a></li>
                             </ul>
                         </li>
                     </ul>

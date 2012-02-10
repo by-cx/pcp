@@ -32,13 +32,13 @@ class RecordUser(object):
     def record_sites(self):
         fee = self.user.parms.fee
         for site in self.user.usersite_set.filter(removed=False, type="modwsgi"):
-            self._record("modwsgi", "%s (%d proc.)" % (site.server_name, site.processes), site.pay if fee <= 0 else 0.0)
+            self._record("modwsgi", "%s (%d proc.)" % (site.main_domain.name, site.processes), site.pay if fee <= 0 else 0.0)
         for site in self.user.usersite_set.filter(removed=False, type="uwsgi"):
-            self._record("uwsgi", "%s (%d proc.)" % (site.server_name, site.processes), site.pay if fee <= 0 else 0.0)
+            self._record("uwsgi", "%s (%d proc.)" % (site.main_domain.name, site.processes), site.pay if fee <= 0 else 0.0)
         for site in self.user.usersite_set.filter(removed=False, type="php"):
-            self._record("php", site.server_name, site.pay if fee <= 0 else 0.0)
+            self._record("php", site.main_domain.name, site.pay if fee <= 0 else 0.0)
         for site in self.user.usersite_set.filter(removed=False, type="static"):
-            self._record("static", site.server_name, site.pay if fee <= 0 else 0.0)
+            self._record("static", site.main_domain.name, site.pay if fee <= 0 else 0.0)
 
     def record_emails(self):
         total = 0

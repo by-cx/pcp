@@ -27,8 +27,8 @@ class CronUpdateView(RostiUpdateView):
 
     def form_valid(self, form):
         ret = super(CronUpdateView, self).form_valid(form)
-        sr = SystemRequest(self.request.user, self.request.user.parms.web_machine)
-        sr.cron(self.request.user)
+        sr = SystemRequest(self.user, self.user.parms.web_machine)
+        sr.cron(self.user)
         messages.add_message(self.request, messages.SUCCESS, _('Cron record has been updated'))
         return ret
 
@@ -44,8 +44,8 @@ class CronCreateView(RostiCreateView):
 
         ret =  super(CronCreateView, self).form_valid(form)
 
-        sr = SystemRequest(self.request.user, self.request.user.parms.web_machine)
-        sr.cron(self.request.user)
+        sr = SystemRequest(self.user, self.user.parms.web_machine)
+        sr.cron(self.user)
         messages.add_message(self.request, messages.SUCCESS, _('Cron record has been created'))
 
         return ret

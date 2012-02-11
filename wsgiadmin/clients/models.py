@@ -13,7 +13,6 @@ from wsgiadmin.keystore.tools import kget
 from wsgiadmin.requests.tools import RawRequest
 from wsgiadmin.stats.models import Credit
 from wsgiadmin.tools import size_format
-from django.core.exceptions import ObjectDoesNotExist
 
 
 class Machine(models.Model):

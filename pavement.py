@@ -1,15 +1,15 @@
 from __future__ import with_statement
+import os
+from os.path import join, exists
+from subprocess import check_call
 
 from paver.easy import (
     task, needs, call_task, sh, options,
 )
 from paver.setuputils import setup
 
-from os.path import join
-import os
-
 from setuptools import find_packages
-
+from shutil import rmtree
 
 # must be in sync with pcp.VERSION
 VERSION = (0, 1, 0)
@@ -69,10 +69,6 @@ except ImportError:
     pass
 
 @task
-def install_dependencies():
-    sh('pip install --download-cache=/tmp/pip-download-cache -r requirements.txt')
-
-@task
 def translate(options):
     """ Make messages for all languages from settings"""
     common_trans = True
@@ -121,10 +117,30 @@ def remove_source_translations(options):
                 os.remove(join("locale", lang, file))
     os.chdir(curdir)
 
+@task
+def create_package(options):
+    #TODO - use repo w/ packages
+    curdir = os.getcwd()
+    if exists(join(curdir, 'dist')):
+        rmtree(join(curdir, 'dist'))
+
+    call_task('setuptools.commands.sdist')
+
+
+@task
+@needs([
+    'create_package'
+])
+def upload_package(options):
+    curdir = os.getcwd()
+    dist_dir = join(curdir, 'dist')
+    for one in os.listdir(dist_dir):
+        check_call(['fab', 'fab_upload_package:file=%s' % join(dist_dir, one)])
 
 @task
 @needs([
     'compile_translations',
 ])
 def deploy(options):
-    call_task('setuptools.commands.sdist')
+    call_task('upload_package')
+    check_call(['fab', 'deploy'])

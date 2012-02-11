@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from constance import config
 from django.core.mail.message import EmailMessage
 from django.db import models
@@ -31,6 +30,7 @@ class Message(models.Model):
                             bcc=[config.email],
                             headers={'Reply-To': config.email})
         message.send()
+
 
 class Email(models.Model):
     pub_date = models.DateField(auto_now=True)

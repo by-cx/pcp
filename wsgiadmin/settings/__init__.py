@@ -1,20 +1,21 @@
 from wsgiadmin.settings.base import *
 from wsgiadmin.settings.config import *
 
+import sys
+sys.path.insert(0, '/etc/pcp/')
+try:
+    from pcp_config import *
+except ImportError:
+    pass
+finally:
+    del sys.path[0]
+
 try:
     from wsgiadmin.settings.local import *
 except ImportError:
     pass
 
-try:
-    from wsgiadmin.settings.prod import *
-except ImportError:
-    pass
 
-#logging.basicConfig(level=logging.INFO, filename=ROOT + 'rosti.log',
-#                    format='%(asctime)s %(levelname)s %(message)s')
-
-DEBUG_TOOLBAR = False
 if DEBUG_TOOLBAR:
 
     INSTALLED_APPS += ('debug_toolbar',)

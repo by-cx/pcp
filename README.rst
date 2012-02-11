@@ -41,30 +41,23 @@ Main features
 * Simple invoice system
 * IPv6 support
 
-DEPTS
+DEPS
 =====
 
+project dependencies:
+* see requirements.txt
 
+external dependencies:
 * uWSGI
 * Python 2.6, 2.7
-* PostgreSQL 8.x (9.x not tested)
-
-
-* South
-* psycopg2
-* django >= 1.3
-* django-uniform
-* django-debug-toolbar
-* anyjson
-* django-constance
-* django-picklefield
+* PostgreSQL 8.x (9.x not tested) or MySQL
 
 
 Developers
 ==========
 
 * Adam Štrauch - cx@initd.cz (e-mail/jabber)
-* Jiří Suchan
+* Jiří Suchan - @yedpodtrzitko
 * Pavel Buben
 
 You are welcome to join us, just click on the fork button up there.

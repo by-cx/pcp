@@ -2,29 +2,18 @@
 from south.db import db
 from south.v2 import SchemaMigration
 
-
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        
-        # Adding model 'SiteDomain'
-        db.create_table('apacheconf_sitedomain', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('domain', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['domains.Domain'])),
-            ('user_site', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['apacheconf.UserSite'])),
-        ))
-        db.send_create_signal('apacheconf', ['SiteDomain'])
 
-        # Adding field 'UserSite.main_domain'
-        db.add_column('apacheconf_site', 'main_domain', self.gf('django.db.models.fields.related.ForeignKey')(related_name='main_domain', null=True, to=orm['domains.Domain']), keep_default=False)
+        # Deleting field 'UserSite.domains'
+        db.delete_column('apacheconf_site', 'domains')
+
 
     def backwards(self, orm):
         
-        # Deleting model 'SiteDomain'
-        db.delete_table('apacheconf_sitedomain')
-
-        # Deleting field 'UserSite.main_domain'
-        db.delete_column('apacheconf_site', 'main_domain_id')
+        # User chose to not deal with backwards NULL issues for 'UserSite.domains'
+        raise RuntimeError("Cannot reverse this migration. 'UserSite.domains' and its values cannot be restored.")
 
 
     models = {
@@ -39,7 +28,6 @@ class Migration(SchemaMigration):
             'allow_ips': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'deny_ips': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'document_root': ('django.db.models.fields.CharField', [], {'max_length': '200', 'blank': 'True'}),
-            'domains': ('django.db.models.fields.CharField', [], {'max_length': '1024'}),
             'end_date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
             'extra': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'htaccess': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),

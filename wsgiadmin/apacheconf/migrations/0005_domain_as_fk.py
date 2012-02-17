@@ -1,21 +1,34 @@
 # encoding: utf-8
-import datetime
 from south.db import db
-from south.v2 import SchemaMigration
-from django.db import models
+from south.v2 import DataMigration
+import logging
+logger = logging.getLogger(__name__)
 
-class Migration(SchemaMigration):
+
+class Migration(DataMigration):
 
     def forwards(self, orm):
-        
-        # Deleting field 'UserSite.domains'
-        db.delete_column('apacheconf_site', 'domains')
+        if db.dry_run:
+            return
+
+        for one in orm.UserSite.objects.all():
+            domains = one.domains.split()
+            try:
+                one.main_domain = orm.Domain.objects.get(name=domains[0].strip(), owner=one.owner)
+            except orm.Domain.DoesNotExist:
+                logger.error("0004 migration: site %s - MAIN domain %s not found, owner %s" % (one.pk, domains[0], one.owner.username))
+
+            if len(domains) > 1:
+                for two in domains[1:]:
+                    try:
+                        one.misc_domains.add(orm.Domain.objects.get(name=two.strip(), owner=one.owner))
+                    except orm.Domain.DoesNotExist:
+                        logger.error("0004 migration: site %s - misc domain %s not found, owner %s" % (one.pk, domains[0], one.owner.username))
+
 
 
     def backwards(self, orm):
-        
-        # User chose to not deal with backwards NULL issues for 'UserSite.domains'
-        raise RuntimeError("Cannot reverse this migration. 'UserSite.domains' and its values cannot be restored.")
+        "Write your backwards methods here."
 
 
     models = {
@@ -30,6 +43,7 @@ class Migration(SchemaMigration):
             'allow_ips': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'deny_ips': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'document_root': ('django.db.models.fields.CharField', [], {'max_length': '200', 'blank': 'True'}),
+            'domains': ('django.db.models.fields.CharField', [], {'max_length': '1024'}),
             'end_date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
             'extra': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'htaccess': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),

@@ -16,6 +16,7 @@ from wsgiadmin.apacheconf.models import UserSite, SiteDomain
 from wsgiadmin.domains.models import Domain
 from wsgiadmin.requests.request import UWSGIRequest
 from wsgiadmin.apacheconf.tools import get_user_wsgis, get_user_venvs, user_directories, restart_master
+from wsgiadmin.service.forms import RostiFormHelper
 from wsgiadmin.service.views import JsonResponse, RostiListView
 
 info = logging.info
@@ -109,17 +110,12 @@ def app_static(request, app_type="static", app_id=0):
     else:
         form = FormStatic(user=u, instance=site)
 
-    dynamic_refreshs = (
-        (reverse("refresh_userdirs"), 'id_document_root'),
-    )
+    form.helper.form_action = reverse("app_static", kwargs={'app_type': app_type, 'app_id': app_id})
 
     return render_to_response('add_site.html',
             {
-            "dynamic_refreshs": dynamic_refreshs,
             "form": form,
             "title": {'static': _("Static website"), 'php': _("PHP website")}[app_type],
-            "submit": _("Add website") if not site else _("Modify website"),
-            "action": reverse("app_static", kwargs={'app_type': app_type, 'app_id': app_id}),
             "u": u,
             "superuser": superuser,
             "menu_active": "webapps",
@@ -199,19 +195,12 @@ def app_wsgi(request, app_id=0):
     else:
         form = FormWsgi(user=u, instance=site)
 
-
-    dynamic_refreshs = (
-        (reverse("refresh_wsgi"), 'id_script'),
-        (reverse("refresh_venv"), 'id_virtualenv'),
-    )
+    form.helper.form_action = reverse("app_wsgi", args=[app_id])
 
     return render_to_response('add_site.html',
             {
-            "dynamic_refreshs": dynamic_refreshs,
             "form": form,
             "title": _("%s WSGI application") % _('Modify') if site else _('Add'),
-            "submit": _("Save changes"),
-            "action": reverse("app_wsgi", args=[app_id]),
             "u": u,
             "superuser": superuser,
             "menu_active": "webapps",

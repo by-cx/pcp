@@ -80,6 +80,7 @@ SECRET_KEY = 'l=!i_!9q8tc9@jn@m*n*z6zri01$kvjdh94v^1_bzw!8ja5z=*'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
+#    'integrate_project.template_loader.load_template_source',
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
 )
@@ -117,7 +118,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.admin',
 
-    'uni_form',
+    'crispy_forms',
     'south',
     'constance',
     'constance.backends.database',

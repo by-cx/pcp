@@ -27,7 +27,7 @@ class UserSite(models.Model):
     type = models.CharField(_("Type"), max_length=20, choices=SITE_TYPE_CHOICES)
 
     main_domain = models.ForeignKey(Domain, related_name='main_domain', null=True)# TODO - add limit_choices_to
-    misc_domains = models.ManyToManyField(Domain, null=True, related_name='misc_domains', through=SiteDomain)
+    misc_domains = models.ManyToManyField(Domain, null=True, related_name='misc_domains', through=SiteDomain, blank=True)
 
     document_root = models.CharField(_("DocumentRoot"), max_length=200, blank=True)
     htaccess = models.BooleanField(_(".htaccess"), default=True)

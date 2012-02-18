@@ -1,3 +1,5 @@
+from crispy_forms.layout import Layout, Submit
+from django.core.urlresolvers import reverse
 import re
 
 from django import forms
@@ -7,9 +9,11 @@ from django.utils.translation import ugettext_lazy as _
 from wsgiadmin.apacheconf.models import UserSite
 from wsgiadmin.apacheconf.tools import get_user_wsgis, get_user_venvs, user_directories
 
+from crispy_forms.bootstrap import PrependedText
+from wsgiadmin.service.forms import RostiFormHelper
+
 
 class FormStatic(ModelForm):
-
     class Meta:
         model = UserSite
         fields = ('main_domain', 'misc_domains', 'document_root',)
@@ -20,33 +24,59 @@ class FormStatic(ModelForm):
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user')
 
+        self.helper = RostiFormHelper()
+        self.helper.form_class = 'dyn_refresh'
+
         super(FormStatic, self).__init__(*args, **kwargs)
 
-        self.fields['misc_domains'].required = False
+        layout = Layout()
+        if 'script' in self.fields:
+            layout.fields.append(
+                PrependedText('script', '<div class="ajax_refresh" data-el="script" data-target="%s"><span class="status"></span></div>' % reverse('refresh_wsgi')),
+            )
+
+        if 'virtualenv' in self.fields:
+            layout.fields.append(
+                PrependedText('virtualenv', '<div class="ajax_refresh" data-el="virtualenv" data-target="%s"><span class="status"></span></div>' % reverse('refresh_userdirs')),
+            )
+
+        if 'document_root' in self.fields:
+            layout.fields.append(
+                PrependedText('document_root', '<div class="ajax_refresh" data-el="document_root" data-target="%s"><span class="status"></span></div>' % reverse('refresh_userdirs')),
+            )
+
+        self.helper.add_layout(layout)
+
 
         if 'document_root' in self.fields:
             user_dirs = user_directories(user=self.user, use_cache=True)
-            dirs_choices = [("", _("Not selected"))] + [(x, x) for x in user_dirs]
+            dirs_choices = [("", _("Not selected"))] + [(x, x) for x in
+                                                               user_dirs]
             self.fields['document_root'].widget.choices = dirs_choices
 
+
     def clean_document_root(self):
-        if ".." in self.cleaned_data["document_root"] or \
+        if ".." in self.cleaned_data["document_root"] or\
            "~" in self.cleaned_data["document_root"]:
-            raise forms.ValidationError(_("This field hasn't to contain .. and ~"))
+            raise forms.ValidationError(
+                _("This field hasn't to contain .. and ~"))
         return self.cleaned_data["document_root"]
 
     def clean(self):
         data = self.cleaned_data
         main_domain = data['main_domain']
         if 'misc_domains' in data and main_domain in data['misc_domains']:
-            raise forms.ValidationError(_("Main domain cannot be listed also as misc. domain"))
+            raise forms.ValidationError(
+                _("Main domain cannot be listed also as misc. domain"))
         return data
 
-class FormWsgi(FormStatic):
 
+class FormWsgi(FormStatic):
     class Meta:
         model = UserSite
-        fields = ('main_domain', 'misc_domains', 'static', 'python_path', 'virtualenv', 'script', 'processes', 'allow_ips')
+        fields = (
+        'main_domain', 'misc_domains', 'static', 'python_path', 'virtualenv',
+        'script', 'processes', 'allow_ips')
         widgets = {
             'static': forms.Textarea,
             'python_path': forms.Textarea,
@@ -54,27 +84,32 @@ class FormWsgi(FormStatic):
             'virtualenv': forms.Select,
             'script': forms.Select,
             'processes': forms.Select,
-        }
+            }
 
     def __init__(self, *args, **kwargs):
         super(FormWsgi, self).__init__(*args, **kwargs)
 
+        self.fields['static'].help_text = _(
+            u"<br />Format <strong>/url/ /path/to/media/</strong>, separated by space.<br /><ul><li>/path/to/media/ is path without your home directory</li><li>one directory per one line</li><li>wrong lines will be ignored</li></ul>.")
+        self.fields['python_path'].help_text = _(
+            u"<br /><strong>~/&lt;your_path&gt;</strong> - One directory per line. Format <strong>/there/is/my/app</strong>. Path is without your home directory")
+        self.fields['virtualenv'].help_text = _(
+            u"<br />Python virtual environment. You can find yours in '<strong>~/virtualenvs/&lt;selected_virtualenv&gt;</strong>'. Be free create new one.")
+        self.fields['allow_ips'].help_text = _(
+            u"<br />One IP per line. If it is blank, no limitation will be applied.")
+        self.fields['processes'].help_text = _(
+            u"<br />There could be extra fee for additional processes")
 
-        self.fields['static'].help_text = _(u"<br />Format <strong>/url/ /path/to/media/</strong>, separated by space.<br /><ul><li>/path/to/media/ is path without your home directory</li><li>one directory per one line</li><li>wrong lines will be ignored</li></ul>.")
-        self.fields['python_path'].help_text=_(u"<br /><strong>~/&lt;your_path&gt;</strong> - One directory per line. Format <strong>/there/is/my/app</strong>. Path is without your home directory")
-        self.fields['virtualenv'].help_text= _(u"<br />Python virtual environment. You can find yours in '<strong>~/virtualenvs/&lt;selected_virtualenv&gt;</strong>'. Be free create new one.")
-        self.fields['allow_ips'].help_text = _(u"<br />One IP per line. If it is blank, no limitation will be applied.")
-        self.fields['processes'].help_text = _(u"<br />There could be extra fee for additional processes")
-        
-        self.fields['processes'].widget.choices = [(one, str(one)) for one in range(1,5)]
+        self.fields['processes'].widget.choices = [(one, str(one)) for one in
+                                                                   range(1, 5)]
 
         wsgis = get_user_wsgis(self.user)
         wsgis_choices = [("", _("Not selected"))] + [(x, x) for x in wsgis]
         self.fields['script'].widget.choices = wsgis_choices
 
-
         virtualenvs = get_user_venvs(self.user)
-        virtualenvs_choices = [("", _("Not selected"))] + [(one, one) for one in virtualenvs]
+        virtualenvs_choices = [("", _("Not selected"))] + [(one, one) for one in
+                                                                      virtualenvs]
         self.fields["virtualenv"].widget.choices = virtualenvs_choices
 
 

@@ -1,37 +1,27 @@
+{% extends "base.html" %}
 {% load i18n %}
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="cs">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <meta http-equiv="content-language" content="cs"/>
-    <link type="text/css" media="all" href="{{ STATIC_URL }}style/style.css" rel="stylesheet"/>
-    <title>{% trans "Administration" %} - {{ site }}</title>
-</head>
-<body class="{% block bodyclass %}registrace{% endblock %}">
-<div id="main">
-    <div id="main-inside">
-        <h1>
-            <strong>{% trans "Administration" %} /</strong> {{ site }} /
-            {% block h1title %}{% endblock %}
-        </h1>
 
-        {% if messages %}
-            <ul id="notifications">
-                {% for message in messages %}
-                    <li{% if message.tags %} class="{{ message.tags }}"{% else %} class="info"{% endif %}>{{ message }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
+{% block bodyclass %}registrace{% endblock %}
+{% block body %}
+    <h1>
+        <strong>{% trans "Administration" %} /</strong> {{ site }} /
+        {% block h1title %}{% endblock %}
+    </h1>
 
-        <div class="container">
-            <div class="container-top">
-                <div class="container-bottom">
-                    {% block container %}
-                    {% endblock %}
-                </div>
+    {% if messages %}
+        <ul id="notifications">
+            {% for message in messages %}
+                <li class="{% if message.tags %}{{ message.tags }}{% else %}info{% endif %}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <div class="container">
+        <div class="container-top">
+            <div class="container-bottom">
+                {% block container %}
+                {% endblock %}
             </div>
         </div>
     </div>
-</div>
-</body>
-</html>
+{% endblock %}

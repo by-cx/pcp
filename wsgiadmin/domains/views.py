@@ -15,6 +15,7 @@ from django.conf import settings
 from wsgiadmin.domains.forms import RegistrationRequestForm
 from wsgiadmin.domains.models import Domain
 from wsgiadmin.requests.request import BindRequest
+from wsgiadmin.service.forms import RostiFormHelper
 from wsgiadmin.service.views import JsonResponse, RostiListView
 
 
@@ -91,9 +92,8 @@ def add(request):
     return render_to_response('universal.html',
             {
             "form": form,
+            'form_helper': RostiFormHelper(),
             "title": _("Add domain"),
-            "submit": _("Save domain"),
-            "action": reverse("wsgiadmin.domains.views.add"),
             "u": u,
             "superuser": superuser,
             "menu_active": "domains",

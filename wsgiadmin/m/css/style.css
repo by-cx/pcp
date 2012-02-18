@@ -970,15 +970,11 @@ dd { padding: 0; margin: 0.5em 0; }
 
 
 .ajax_refresh {
-    float: left;
-    margin-top: 20px;
-    margin-right: 20px;
     background-image: url('../icons/ajax-loader.png');
     background-repeat: no-repeat;
     cursor: pointer;
-    display: block;
-    width: 20px;
-    height: 20px;
+    width: 35px;
+    height: 15px;
 }
 
 .ajax_refresh.running {

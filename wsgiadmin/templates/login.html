@@ -4,7 +4,7 @@
 {% block container %}
     <h2>{% trans "Login" %}</h2>
 
-    <form action="#" method="post" id="reg-form">
+    <form action="." method="post" id="reg-form">
         {% csrf_token %}
         {{ form.as_p }}
         <p>

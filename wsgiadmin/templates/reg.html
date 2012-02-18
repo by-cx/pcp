@@ -1,50 +1,48 @@
+{% extends "base.html" %}
 {% load i18n %}
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="cs">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta http-equiv="content-language" content="cs" />
-    <meta name="robots" content="index, follow" />
-    <link type="text/css" media="all" href="{{ STATIC_URL }}style/style.css" rel="stylesheet" />
 
-    <title>{% trans "Administration" %} - {{ site }}</title>
+{% block bodyclass %}registrace{% endblock %}
+{% block body %}
+    <h1>
+        <strong>{% trans "Administration" %} /</strong> {{ site }} / {% trans "Registration" %}
+    </h1>
 
-</head>
-<body class="registrace">
-    <div id="main">
-        <div id="main-inside">
-            <h1><strong>{% trans "Administration" %} /</strong> {{ site }} / {% trans "Registration" %}</h1>
+    <div class="container">
+        <div class="container-top">
+            <div class="container-bottom">
+                <h2>{% trans "Registration" %}</h2>
 
-            <div class="container">
-                <div class="container-top">
-                    <div class="container-bottom">
-                        <h2>{% trans "Registration" %}</h2>
-                        <form action="{% url registration %}" class="registrace-prihlaseni" id="reg-form" method="post">
-                            {% csrf_token %}
-                            {{ form1.as_p }}
-                            <div class="border-01"></div>
-                            {{ form2.as_p }}
-                            {{ form3.as_p }}
-                            <p>
-                                <input type="submit" name="" class="input-submit-registrovat" value="Registrovat" />
-                            </p>
-                            {% if config.terms_url %}<div class="terms">{% trans "By click on the button, you agree with our terms" %}</div>{% endif %}
-                            <p class="help"><a href="{% url login %}">{% trans "Login" %}</a> {% if config.terms_url %}| <a href="{{ config.terms_url }}" target="_blank">{% trans "Terms" %}</a>{% endif %}</p>
-                        </form>
+                <form action="{% url registration %}" class="registrace-prihlaseni" id="reg-form" method="post">
+                    {% csrf_token %}
+                    {{ form1.as_p }}
+                    <div class="border-01"></div>
+                    {{ form2.as_p }}
+                    {{ form3.as_p }}
+                    <p>
+                        <input type="submit" name="" class="input-submit-registrovat" value="Registrovat"/>
+                    </p>
 
-                        {% if messages %}
-                            <ul id="notifications">
-                            {% for message in messages %}
-                                <li{% if message.tags %} class="{{ message.tags }}"{% else %} class="info"{% endif %}>{{ message }}</li>
-                            {% endfor %}
-                            </ul>
-                        {% endif %}
-                        
-                    </div>
-                </div>
+                    {% if config.terms_url %}
+                        <div class="terms">{% trans "By click on the button, you agree with our terms" %}</div>{% endif %}
+                    <p class="help">
+                        <a href="{% url login %}">{% trans "Login" %}</a>
+                        {% if config.terms_url %}|
+                            <a href="{{ config.terms_url }}" target="_blank">{% trans "Terms" %}</a>{% endif %}
+                    </p>
+                </form>
+
+                {% if messages %}
+                    <ul id="notifications">
+                        {% for message in messages %}
+                            <li
+                                    {% if message.tags %} class="{{ message.tags }}"{% else %} class="info"{% endif %}>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+
             </div>
-            <div class="clear"></div>
         </div>
     </div>
-</body>
-</html>
+    <div class="clear"></div>
+
+{% endblock %}

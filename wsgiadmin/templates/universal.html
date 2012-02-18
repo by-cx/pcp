@@ -1,6 +1,6 @@
 {% extends "admin.html" %}
-{% load uni_form_tags %}
 {% load i18n %}
+{% load crispy_forms_tags %}
 
 {% block title %}{% trans "Administration" %} > {{ title }}{% endblock %}
 {% block content %}
@@ -20,119 +20,55 @@
         </ul>
     {% endif %}
 
-    <form action="{{ action }}" enctype="multipart/form-data" method="post" id="myform" class="uniForm">
-        {% csrf_token %}
-        {{ form|as_uni_form }}
+    {% if form_helper %}
+        {% crispy form form_helper %}
+    {% else %}
+        {% crispy form %}
+    {% endif %}
 
-        {% for x in note %}
-            <p><em>{{ x }}</em></p>
-        {% endfor %}
-
-        <p><input type="submit" class="input-submit" value="{{ submit }}"/></p>
-    </form>
+    {% for x in note %}
+        <p><em>{{ x }}</em></p>
+    {% endfor %}
 
 {% endblock %}
 
 {% block jsblock %}
-    jQuery(function($) {
-    $.datepicker.regional['cs'] = {
-    closeText:'Zavřít',
-    prevText:'&#x3c;Dříve',
-    nextText:'Později&#x3e;',
-    currentText:'Nyní',
-    monthNames: ['leden', 'únor', 'březen', 'duben', 'květen', 'červen', 'červenec', 'srpen', 'září', 'říjen', 'listopad', 'prosinec'],
-    monthNamesShort: ['led', 'úno', 'bře', 'dub', 'kvě', 'čer', 'čvc', 'srp', 'zář', 'říj', 'lis', 'pro'],
-    dayNames: ['neděle', 'pondělí', 'úterý', 'středa', 'čtvrtek', 'pátek', 'sobota'],
-    dayNamesShort:['ne', 'po', 'út', 'st', 'čt', 'pá', 'so'],
-    dayNamesMin:['ne', 'po', 'út', 'st', 'čt', 'pá', 'so'],
-    //dateFormat: 'dd.mm.yy', firstDay: 1,
-    dateFormat:'yy-mm-dd', firstDay:1,
-    isRTL:false};
-    $.datepicker.setDefaults($.datepicker.regional['cs']);
-    });
-    $("#id_pub_date").datepicker();
-    $("#id_date_exposure").datepicker();
-    $("#id_date_payback").datepicker();
-
-
-    if (typeof(CKEDITOR) != "undefined") {
-    var instance = CKEDITOR.instances["id_text"];
-    if (instance) {
-    CKEDITOR.remove(instance);
-    }
-    if ($("#id_text").length) {
-    CKEDITOR.replace("id_text",
-    {
-    language:'cs',
-    //filebrowserImageBrowseUrl : 'url images.views.ck_browse_images',
-    entities:false,
-    toolbar:[
-    ['Source'],
-    ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'SpellChecker', 'Scayt'],
-    ['Undo', 'Redo', '-', 'Find', 'Replace', '-', 'SelectAll', 'RemoveFormat'],
-    '/',
-    ['Bold', 'Italic', 'Underline', 'Strike', '-', 'Subscript', 'Superscript'],
-    ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', 'Blockquote', 'CreateDiv'],
-    ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
-    ['Link', 'Unlink', 'Anchor'],
-    ['Image', 'Table', 'HorizontalRule', 'SpecialChar'],
-    '/',
-    ['Styles', 'Format', 'Font', 'FontSize'],
-    ['TextColor', 'BGColor'],
-    ['Maximize', 'ShowBlocks', '-', 'About']
-    ]});};};
-
     {{ block.super }}
+        $(function () {
+            var form = $("#main form.dyn_refresh");
+            if (form) {
+                form.on('click', "div.ajax_refresh", function () {
 
-    {% if dynamic_refreshs %}
-            $(function() {
-
-                add_refresh_handler = function(ids_object) {
-                    var $refresh = $('<div class="ajax_refresh"><span class="status"></span></div>');
-                    var $runner = $("#div_" + ids_object[1]);
-                    $runner.prepend($refresh);
-
-                    $refresh.click(function() {
-                        $.ajax({
-                            url:ids_object[0],
-                            type:"POST",
-                            data:{ 'csrfmiddlewaretoken':'{{ csrf_token }}' },
-                            dataType:"json",
-                            beforeSend:function() {
-                                $runner.find(".ajax_refresh").addClass('running');
-                            },
-                            complete:function() {
-                                $runner.find(".ajax_refresh").removeClass('running');
-                            },
-                            success:function(data) {
-                                var combo = $("#" + ids_object[1])
-                                var old_selected = combo.find(":selected").val();
-                                combo[0].options.length = 1;
-                                msgs = data['messages'];
-                                var l = msgs.length;
-                                for (var i = 0; i < l; i++) {
-                                    combo[0].options[i + 1] = new Option(msgs[i], msgs[i], (msgs[i] == old_selected));
-                                }
-
-                                $refresh.find(".status img").remove();
-                                var $status = $('<img src="{{ STATIC_URL }}icons/raster/green/check_12x10.png"/>');
-                                $status.appendTo($refresh.find(".status")).fadeOut(1500);
+                    var that = this;
+                    var url = $(this).data('target');
+                    $.ajax({
+                        url: url,
+                        type: "POST",
+                        data: { 'csrfmiddlewaretoken': '{{ csrf_token }}' },
+                        dataType: "json",
+                        beforeSend: function () {
+                            $(that).addClass('running');
+                        },
+                        complete: function () {
+                            $(that).removeClass('running');
+                        },
+                        success: function (data) {
+                            var combo = $("#id_" + $(that).data('el'));
+                            var old_selected = combo.find(":selected").val();
+                            combo[0].options.length = 1;
+                            msgs = data['messages'];
+                            var l = msgs.length;
+                            for (var i = 0; i < l; i++) {
+                                combo[0].options[i + 1] = new Option(msgs[i], msgs[i], (msgs[i] == old_selected));
                             }
-                        });
-                    }) //eof refresh
-                } // eof add_refresh_handler
 
+                            $(that).find(".status img").remove();
+                            var $status = $('<img src="{{ STATIC_URL }}icons/check_12x10.png"/>');
+                            $status.appendTo($(that).find(".status")).fadeOut(1500);
+                        }
+                    });
+                }); //eof refresh
+            }
+        });
 
-                var refreshs = [
-                    {% for url, input_id in dynamic_refreshs %}
-                        ["{{ url }}", "{{ input_id }}"]
-                        {% if not forloop.last %},{% endif %}
-                    {% endfor %}
-                ];
-
-                for (var fce in refreshs) {
-                    add_refresh_handler(refreshs[fce]);
-                }
-            });
-    {% endif %}
 {% endblock %}

@@ -7,7 +7,6 @@ from djangosanetesting.cases import DatabaseTestCase, HttpTestCase
 
 class TestDatabaseRequests(HttpTestCase):
 
-
     def setUp(self):
         super(TestDatabaseRequests, self).setUp()
         call_command('loaddata', settings.USERS_FIXTURE)
@@ -29,3 +28,15 @@ class TestDatabaseRequests(HttpTestCase):
         response = self.client.get(reverse('db_list'), follow=True)
         self.assert_equals(response.status_code, 200, "List return unexpected code %s" % response.status_code)
         self.assert_equals(response.request['PATH_INFO'], reverse('db_list', kwargs={'dbtype': 'mysql'}), "Logged user should get list, got %s instead" % response.request['PATH_INFO'])
+
+
+    def test_add_response_ok(self):
+        logged = self.client.login(username=self.user, password=self.password)
+        self.assert_equals(logged, True, "Login failed")
+
+        response = self.client.get(reverse('db_add', kwargs={'dbtype': 'mysql'}), follow=True)
+        self.assert_equals(response.status_code, 200, "DB add return unexpected code %s" % response.status_code)
+
+        response = self.client.get(reverse('db_add', kwargs={'dbtype': 'pg'}), follow=True)
+        self.assert_equals(response.status_code, 200, "DB add return unexpected code %s" % response.status_code)
+

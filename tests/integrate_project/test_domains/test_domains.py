@@ -13,7 +13,6 @@ class TestDomains(DatabaseTestCase):
         pass
 
 
-
 class TestDomainsRequests(HttpTestCase):
 
 
@@ -31,10 +30,19 @@ class TestDomainsRequests(HttpTestCase):
         self.assert_equals(response.request['PATH_INFO'], settings.LOGIN_URL, "Anonymous user should be redirected to login page")
 
 
-    def test_response_ok(self):
+    def test_list_response_ok(self):
         logged = self.client.login(username=self.user, password=self.password)
         self.assert_equals(logged, True, "Login failed")
 
         response = self.client.get(reverse('domains_list'), follow=True)
         self.assert_equals(response.status_code, 200, "Domains list return unexpected code %s" % response.status_code)
         self.assert_equals(response.request['PATH_INFO'], reverse('domains_list'), "Logged user should get domains list, got %s instead" % response.request['PATH_INFO'])
+
+    def test_add_response_ok(self):
+        logged = self.client.login(username=self.user, password=self.password)
+        self.assert_equals(logged, True, "Login failed")
+
+        response = self.client.get(reverse('domain_add'), follow=True)
+        self.assert_equals(response.status_code, 200, "Domain add return unexpected code %s" % response.status_code)
+        #self.assert_equals(response.request['PATH_INFO'], reverse('domains_list'), "Logged user should get domains list, got %s instead" % response.request['PATH_INFO'])
+

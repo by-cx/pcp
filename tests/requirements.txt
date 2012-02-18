@@ -1,0 +1,3 @@
+nose
+paver
+-e git://github.com/Almad/django-sane-testing.git#egg=djangosanetesting

@@ -25,6 +25,7 @@ DATABASES = {
 TEMPLATE_LOADERS = (
     'integrate_project.template_loader.load_template_source',
     'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -41,33 +42,40 @@ TEMPLATE_DIRS = (
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.core.context_processors.media',
-    'django.contrib.auth.context_processors.auth',
-    'django.core.context_processors.request',
+    "django.contrib.auth.context_processors.auth",
+    "django.core.context_processors.i18n",
+    "django.core.context_processors.media",
+    "django.core.context_processors.static",
+    "django.contrib.messages.context_processors.messages",
+    "wsgiadmin.useradmin.context.rosti_context",
     'constance.context_processors.config',
 )
 
 INSTALLED_APPS = (
-    'uni_form',
-    'constance',
-    'constance.backends.database',
-
-    # main apps
-    'wsgiadmin.apacheconf',
-    'wsgiadmin.domains',
-    'wsgiadmin.useradmin',
-    'wsgiadmin.users',
-    'wsgiadmin.clients',
-    'wsgiadmin.db',
-    'wsgiadmin.requests',
-
-    # django contrib apps
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
-    'django.contrib.redirects',
     'django.contrib.admin',
+
+    'crispy_forms',
+    'south',
+    'constance',
+    'constance.backends.database',
+
+    'wsgiadmin.requests',
+    'wsgiadmin.useradmin',
+    'wsgiadmin.clients',
+    'wsgiadmin.domains',
+    'wsgiadmin.emails',
+    'wsgiadmin.ftps',
+    'wsgiadmin.db',
+    'wsgiadmin.cron',
+    'wsgiadmin.users',
+    'wsgiadmin.apacheconf',
+    'wsgiadmin.keystore',
+    'wsgiadmin.service',
+    'wsgiadmin.stats',
 )
 
 LOGGING = {
@@ -154,4 +162,5 @@ CONSTANCE_CONFIG = {
 
     "email_uid": (117, "Email UID"),
     "email_gid": (117, "Email GID"),
+    "find_directory_deep":(2, "Finding directory deep"),
     }

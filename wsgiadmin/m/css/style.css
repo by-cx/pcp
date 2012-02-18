@@ -148,40 +148,6 @@ img {
 	font-size: 11px;
 }
 
-#sidebar ul li a,
-#header #main-menu li a {
-    background: #3e454d; /* Old browsers */
-    background: -moz-linear-gradient(top, #3e454d 0%, #3e454d 30%, #2d3238 100%); /* FF3.6+ */
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#3e454d), color-stop(30%,#3e454d), color-stop(100%,#2d3238)); /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(top, #3e454d 0%,#3e454d 30%,#2d3238 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(top, #3e454d 0%,#3e454d 30%,#2d3238 100%); /* Opera 11.10+ */
-    background: -ms-linear-gradient(top, #3e454d 0%,#3e454d 30%,#2d3238 100%); /* IE10+ */
-    background: linear-gradient(top, #3e454d 0%,#3e454d 30%,#2d3238 100%); /* W3C */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#3e454d', endColorstr='#2d3238',GradientType=0 ); /* IE6-9 */
-    padding: 0 20px;
-    height: 31px;
-    line-height: 31px;
-    display: inline-block;
-    text-decoration: none;
-    color: #f2f2f2;
-    border-radius: 5px;
-    border: 1px solid #333;
-}
-
-#sidebar ul li a:hover,
-#sidebar ul li.active a,
-#header #main-menu li a:hover,
-#header #main-menu li.active a {
-    background: #a2d731; /* Old browsers */
-    background: -moz-linear-gradient(top, #a2d731 0%, #a2d731 29%, #739711 100%); /* FF3.6+ */
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#a2d731), color-stop(29%,#a2d731), color-stop(100%,#739711)); /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(top, #a2d731 0%,#a2d731 29%,#739711 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(top, #a2d731 0%,#a2d731 29%,#739711 100%); /* Opera 11.10+ */
-    background: -ms-linear-gradient(top, #a2d731 0%,#a2d731 29%,#739711 100%); /* IE10+ */
-    background: linear-gradient(top, #a2d731 0%,#a2d731 29%,#739711 100%); /* W3C */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a2d731', endColorstr='#739711',GradientType=0 ); /* IE6-9 */
-}
-
 /*--------------------------------------------------------------------------------------------------------
 	Sidebar
 --------------------------------------------------------------------------------------------------------*/
@@ -803,6 +769,11 @@ div.ctrlHolder .zavrit {
     width: 300px;
     height: 45px;
 }
+
+#sidebar-menu li a {
+    text-align: left;
+}
+
 /*--------------------------------------------------------------------------------------------------------
 	Co jsem doplnil, přetížil
 --------------------------------------------------------------------------------------------------------*/

@@ -54,10 +54,9 @@
     <title>{% trans "Administration" %} {{ site }}</title>
 </head>
 <body class="{% block bodyclass %}{% endblock %}">
-<div id="main">
-    <div id="main-inside">
-        {% block body %}{% endblock %}
-    </div>
+{% block header %}{% endblock %}
+<div class="container-fluid">
+    {% block body %}{% endblock %}
 </div>
 </body>
 </html>

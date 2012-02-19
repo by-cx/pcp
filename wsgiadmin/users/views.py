@@ -15,7 +15,7 @@ from wsgiadmin.clients.forms import UserForm, ParmsForm, AddressForm
 from wsgiadmin.clients.models import *
 from wsgiadmin.emails.models import Message
 from wsgiadmin.requests.request import SystemRequest
-from wsgiadmin.service.forms import PassCheckForm
+from wsgiadmin.service.forms import PassCheckForm, RostiFormHelper
 from django.core.exceptions import ObjectDoesNotExist
 
 @login_required
@@ -270,9 +270,8 @@ def ssh_passwd(request):
     return render_to_response('universal.html',
             {
             "form": form,
-            "title": _(u"Change password for SSH/FTP"),
-            "submit": _(u"Change password"),
-            "action": reverse("wsgiadmin.users.views.ssh_passwd"),
+            "form_helper": RostiFormHelper(),
+            "title": _("Change password for SSH/FTP"),
             "u": u,
             "superuser": superuser,
             "menu_active": "settings",

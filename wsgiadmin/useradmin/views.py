@@ -18,7 +18,7 @@ from django.views.generic.edit import FormView
 from wsgiadmin.apacheconf.models import UserSite
 from wsgiadmin.clients.models import *
 from wsgiadmin.requests.request import SSHHandler
-from wsgiadmin.service.forms import PassCheckForm
+from wsgiadmin.service.forms import PassCheckForm, RostiFormHelper
 from wsgiadmin.useradmin.forms import formReg, formReg2, PaymentRegForm, SendPwdForm
 from wsgiadmin.clients.models import Parms
 
@@ -158,9 +158,8 @@ def change_passwd(request):
     return render_to_response('universal.html',
             {
             "form": form,
+            "form_helper": RostiFormHelper(),
             "title": _("Change password for this administration"),
-            "submit": _("Change password"),
-            "action": reverse("wsgiadmin.useradmin.views.change_passwd"),
             "u": u,
             "superuser": superuser,
             "menu_active": "settings",

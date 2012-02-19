@@ -1,63 +1,6 @@
 body {
     background: #fff;
-    background: #fff url('../images/bg-body.gif') repeat-y left;
-    padding-top: 65px;
-}
-
-
-/*--------------------------------------------------------------------------------------------------------
-    Header
---------------------------------------------------------------------------------------------------------*/
-#header {
-    background: url('../images/bg-hlavicka.jpg') repeat-x top;
-    height: 60px;
-    position: fixed;
-    border-bottom: solid 5px #2d3238;
-    width: 100%;
-    top: 0;
-    left: 0;
-    z-index: 10;
-}
-
-#header #login {
-    float: right;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 5px 20px;
-    background-color: #eee;
-}
-
-#login span.username {
-    padding-right: 30px;
-}
-
-#header #main-menu li {
-    float: left;
-    list-style-type: none;
-    text-transform: uppercase;
-    font-size: 10pt;
-    padding-right: 10px;
-}
-
-/*--------------------------------------------------------------------------------------------------------
-	Sidebar
---------------------------------------------------------------------------------------------------------*/
-
-#sidebar-menu {
-    margin: 30px 0 0 0;
-}
-
-#sidebar-menu li {
-    list-style-type: none;
-}
-
-#sidebar-menu li a {
-    display: block;
-    width: 200px;
-    margin: 0 0 5px;
-    border-radius: 5px;
-
-    text-align: left;
+    padding-top: 50px;
 }
 
 /*--------------------------------------------------------------------------------------------------------
@@ -218,114 +161,21 @@ div.ctrlHolder .zavrit {
     width: 800px;
 }
 
-.container {
-    background: url('../images/bg-container.jpg') repeat-y center;
-    margin: 0 0 0 50px;
-    width: 300px;
-    float: left;
+#header {
+    width: 100%;
+    padding: 0 10px;
 }
 
-.container-top {
-    background: url('../images/bg-container-top.jpg') no-repeat center 50px;
+#login {
+    padding-right: 20px;
 }
 
-.container-bottom {
-    background: url('../images/bg-container-bottom.jpg') no-repeat center bottom;
-    padding: 0 0 30px 0;
-}
-
-.container h2 {
-    background: url('../images/bg-h2-registrace.jpg') no-repeat 0 0;
-    margin: 0;
-    padding: 0 0 20px 0;
-    width: 300px;
-    height: 50px;
-    line-height: 55px;
-    text-align: center;
-    color: #f2f2f2;
-    font-size: 20px;
-    font-weight: normal;
-}
-
-.container label {
-    margin: 0 0 10px 20px;
-    color: #cfd8de;
-    font-size: 12px;
-    font-weight: bold;
-    display: block;
-}
-
-.container .textinput -registrace {
-    background: url('../images/bg-textinput-registrace.jpg') no-repeat 0 0;
-    margin: 0 0 10px 20px;
-    padding: 0 2px;
-    width: 256px;
-    height: 31px;
-    border: 0;
-    color: #cfd8de;
-    font-size: 12px;
-}
-
-.container .input-submit-prihlasit {
-    background: url('../images/input-submit-prihlasit.jpg') no-repeat 0 0;
-    margin: 15px 0 15px 95px;
-    padding-bottom: 2px;
-    width: 110px;
-    height: 31px;
-    border: 0;
-    cursor: pointer;
-    font-size: 12px;
-    font-weight: bold;
-    color: #fff;
-}
-
-.container .input-submit-prihlasit:hover {
-    background: url('../images/input-submit-prihlasit.jpg') no-repeat 0 -31px;
-}
-
-.container .input-submit-registrovat {
-    background: url('../images/input-submit-registrovat.jpg') no-repeat 0 0;
-    margin: 15px 0 15px 85px;
-    padding-bottom: 2px;
-    width: 130px;
-    height: 31px;
-    border: 0;
-    cursor: pointer;
-    font-size: 12px;
-    font-weight: bold;
-    color: #fff;
-}
-
-.container .input-submit-registrovat:hover {
-    background: url('../images/input-submit-registrovat.jpg') no-repeat 0 -31px;
-}
-
-.container .help {
-    margin: 0 0 20px 0;
-    text-align: center;
-    color: #cfd8de;
-}
-
-.container .help a {
-    color: #cfd8de;
-}
-
-.container .help a:hover {
-    text-decoration: none;
-}
-
-.container .notifications {
-    margin: 0 20px !important;
-}
-
-.container .border-01 {
-    background: url('../images/border-01.jpg') no-repeat 0 0;
-    width: 300px;
-    height: 45px;
+#login .username {
+    color: white;
 }
 
 /*--------------------------------------------------------------------------------------------------------
-	Co jsem doplnil, přetížil
+    Co jsem doplnil, přetížil
 --------------------------------------------------------------------------------------------------------*/
 
 #reg-form input {

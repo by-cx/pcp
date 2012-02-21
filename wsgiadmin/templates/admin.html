@@ -191,22 +191,21 @@
             </ul>
         </div>
         <div id="main" class="span9">
-            <ul id="notifications">
-                {% if not u.parms.count_domains %}
-                    <li class="info">
+            <div id="notifications">
+                {% if not u.parms.count_domains and menu_active != "domains" %}
+                    <div class="alert alert-info">
                         {% blocktrans %}
                             Most of services depends on domain. Good place to start right now is
                         {% endblocktrans %}
                         <a href="{% url domains_list %}">{% trans "domain managment" %}</a>.
-                    </li>
+                    </div>
                 {% endif %}
                 {% if messages %}
                     {% for message in messages %}
-                        <li
-                                {% if message.tags %} class="{{ message.tags }}"{% else %} class="info"{% endif %}>{{ message }}</li>
+                        <div class="alert alert-info">{{ message }}</div>
                     {% endfor %}
                 {% endif %}
-            </ul>
+            </div>
             {% block content %}{% endblock %}
         </div>
     </div>

@@ -9,6 +9,7 @@ class RostiFormHelper(FormHelper):
     def __init__(self, *args, **kwargs):
         super(RostiFormHelper, self).__init__(*args, **kwargs)
 
+        self.form_class = 'well'
         self.add_input(Submit(_("Save"), _("Save")))
 
 

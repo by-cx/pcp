@@ -9,7 +9,7 @@
 
     <h3>{% trans "Credit statistics" %}</h3>
 
-    <table>
+    <table class="table table-striped">
     <tr>
         <th colspan="3">{% trans "What you payed in last 14 days" %}</th>
     </tr>
@@ -19,7 +19,7 @@
         <td>{{ day.cost|floatformat:2 }}</td>
     </tr>
     {% endfor %}
-    <table>
+    <table class="table table-striped">
     <tr>
         <th colspan="3">{% trans "What you pay by months" %}</th>
     </tr>
@@ -31,7 +31,7 @@
     {% endfor %}
     </table>
 
-    <table>
+    <table class="table table-striped">
     <tr>
         <th colspan="3">{% trans "Buyed credits" %}</th>
     </tr>

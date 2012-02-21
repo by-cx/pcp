@@ -1,25 +1,23 @@
 {% extends "form.html" %}
 {% load i18n %}
-
+{% load crispy_forms_tags %}
 {% block container %}
-    <h2>{% trans "Forgotten password" %}</h2>
-    
-    <p class="help">
-        {% blocktrans %}Please fill in your email address or username.{% endblocktrans %}
-    </p>
+    <div class="row">
+        <div class="span6">
+            <h2>{% trans "Reset password" %}</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span6 offset2">
+            {% crispy form form_helper %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="span3 offset3">
 
-    <form action="#" method="post" id="reg-form">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <p>
-            <input type="submit" name="" class="input-submit-prihlasit" value="{% trans "Resend" %}"/>
-        </p>
-
-        <p class="help">
-            <a href="{% url login %}">
-                {% trans "Go to login page" %}
-            </a> &nbsp;
+            <a href="{% url login %}">{% trans "Go to login page" %}</a>
             <a href="{% url registration %}">{% trans "Registration" %}</a>
-        </p>
-    </form>
+        </div>
+
+    </div>
 {% endblock %}

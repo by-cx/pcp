@@ -1,6 +1,8 @@
 from random import randint
 from time import time
 from constance import config
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout
 from os.path import join
 from hashlib import md5
 
@@ -35,7 +37,6 @@ def app_copy(request):
     sh = SSHHandler(request.user, app.owner.parms.web_machine)
     cmd = "cp -a %s %s" % (app.document_root, new_location)
     sh.run(cmd=cmd, instant=True)
-    print cmd
 
     messages.add_message(request, messages.SUCCESS, _('Site has copied'))
 
@@ -119,6 +120,11 @@ class PasswordView(FormView):
     def get_form_class(self):
         return SendPwdForm
 
+
+    def get_context_data(self, **kwargs):
+        data = super(PasswordView, self).get_context_data(**kwargs)
+        data['form_helper'] = RostiFormHelper()
+        return data
 
     def form_valid(self, form):
         user = form.user_object
@@ -234,13 +240,16 @@ def reg(request):
         form2 = formReg2()
         form3 = PaymentRegForm()
 
+    form_helper = FormHelper()
+    form_helper.form_tag = False
+
     return render_to_response('reg.html',
             {
             "form1": form1,
             "form2": form2,
             "form3": form3,
+            "form_helper": form_helper,
             "title": _("Registration"),
-            "submit": _("Register"),
             "action": reverse("wsgiadmin.useradmin.views.reg"),
             "config": config,
         },

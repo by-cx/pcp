@@ -8,7 +8,7 @@
 {% block content %}
 	<h2>{% trans "Master panel" %}</h2>
 
-	<table>
+	<table class="table table-striped">
 		<tr>
 			<th>{% trans "Incoming per day and month" %}</th>
 			<td>{{ balance_day|floatformat:2 }} Kč/{{ balance_month|floatformat:2 }} Kč</td>
@@ -24,7 +24,7 @@
 
 	<h3>{% trans "Users under 300 Kč" %}</h3>
 
-	<table>
+	<table class="table table-striped">
 		<tr>
 			<th>{% trans "Username" %}</th>
 			<th>{% trans "Balance" %}</th>

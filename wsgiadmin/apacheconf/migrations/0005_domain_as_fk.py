@@ -14,15 +14,17 @@ class Migration(DataMigration):
         for one in orm.UserSite.objects.all():
             domains = one.domains.split()
             try:
-                one.main_domain = orm.Domain.objects.get(name=domains[0].strip(), owner=one.owner)
-            except orm.Domain.DoesNotExist:
+                one.main_domain = orm["domains.Domain"].objects.get(name=domains[0].strip(), owner=one.owner)
+            except orm["domains.Domain"].DoesNotExist:
                 logger.error("0004 migration: site %s - MAIN domain %s not found, owner %s" % (one.pk, domains[0], one.owner.username))
 
             if len(domains) > 1:
                 for two in domains[1:]:
                     try:
-                        one.misc_domains.add(orm.Domain.objects.get(name=two.strip(), owner=one.owner))
-                    except orm.Domain.DoesNotExist:
+                        #one.misc_domains.add(orm["domains.Domain"].objects.get(name=two.strip(), owner=one.owner))
+                        site = orm["apacheconf.SiteDomain"].objects.create(domain=orm["domains.Domain"].objects.get(name=two.strip(), owner=one.owner), user_site=one)
+                        site.save()
+                    except orm["domains.Domain"].DoesNotExist:
                         logger.error("0004 migration: site %s - misc domain %s not found, owner %s" % (one.pk, domains[0], one.owner.username))
 
 

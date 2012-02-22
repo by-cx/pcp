@@ -46,6 +46,8 @@ class Parms(models.Model):
     pgsql_machine = models.ForeignKey(Machine, related_name="pgsql")
 
     user = models.OneToOneField(user, verbose_name=_(u'Uživatel'))
+    # For JSONRPC synchronization
+    address_id = models.IntegerField(_("Address ID"), default=0)
 
     def prefix(self):
         return self.user.username[:3]

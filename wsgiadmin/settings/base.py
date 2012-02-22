@@ -22,6 +22,11 @@ DATABASES = {}
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
+# JSONRPC URL for PCP-Invoice, if "" or None, it will be switched off
+JSONRPC_URL = ""
+JSONRPC_USERNAME = ""
+JSONRPC_PASSWORD = ""
+
 ## Faktury
 
 BANK = "mBank"

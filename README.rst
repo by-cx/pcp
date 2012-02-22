@@ -10,23 +10,15 @@ wsgiadmin to be the best solution for servers.
 .. image:: https://github.com/creckx/pcp/raw/master/stuff/screen1.png
    :width: 450 px
 
-TODO for v0.3
-=============
+TODO
+====
 
-* New design
-* Stable nginx support
-* Configuration to database (constance)
-* Translating in-code texts into english
-* Clean, clean, clean
-* Fix, fix, fix
-
-TODO for v0.4
-=============
-
-* fix some bugs
 * e-mail redirects
 * master panel with cool things
-* brand new and external invoice system (PCP-Invoices) - https://github.com/creckx/PCP-Invoices
+* VPS manager
+* Remove address from model, connect via JSONRPC with PCP-Invoices
+* Remove clients app, merge it with users
+* Provision system
 
 Main features
 =============

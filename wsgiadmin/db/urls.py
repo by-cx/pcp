@@ -6,5 +6,5 @@ urlpatterns = patterns('wsgiadmin.db.views',
     url(r'^show/(?P<dbtype>\w+)/$', DatabasesListView.as_view(), name='db_list'),
     url(r'^show/$', DatabasesListView.as_view(), name='db_list'),
     url(r'^rm/(?P<dbtype>\w+)/$', 'rm', name='db_remove'),
-    url(r'^passwd/(?P<dbtype>\w+)/$', 'passwd', name='db_passwd'),
+    url(r'^passwd/(?P<dbtype>\w+)/(?P<dbname>\w+)/$', 'passwd', name='db_passwd'),
 )

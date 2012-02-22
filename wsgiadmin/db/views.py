@@ -95,26 +95,24 @@ def add(request, dbtype):
 
 
 @login_required
-def passwd(request, dbtype):
+def passwd(request, dbtype, dbname):
     u = request.session.get('switched_user', request.user)
     superuser = request.user
 
     if request.method == 'POST':
         form = PassCheckForm(request.POST)
         if form.is_valid():
-            db_name = request.POST.get('dbname')
-
             if dbtype == 'mysql':
                 #TODO - raise better exception
                 try:
-                    u.mysqldb_set.get(dbname=db_name)
+                    u.mysqldb_set.get(dbname=dbname)
                 except MySQLDB.DoesNotExist:
                     return HttpResponseForbidden(ugettext("Unable to modify chosen database"))
                 else:
                     mr = MySQLRequest(u, u.parms.mysql_machine)
             elif dbtype == 'pgsql':
                 try:
-                    u.pgsql_set.get(dbname=db_name)
+                    u.pgsql_set.get(dbname=dbname)
                 except PGSQL.DoesNotExist:
                     return HttpResponseForbidden(ugettext("Unable to modify chosen database"))
                 else:
@@ -122,7 +120,7 @@ def passwd(request, dbtype):
             else:
                 return HttpResponseBadRequest(_('Unknown database type'))
 
-            mr.passwd_db(db_name, form.cleaned_data['password1'])
+            mr.passwd_db(dbname, form.cleaned_data['password1'])
             messages.add_message(request, messages.SUCCESS, _('Password has been changed'))
             return HttpResponseRedirect(reverse('db_list', kwargs=dict(dbtype=dbtype)))
     else:

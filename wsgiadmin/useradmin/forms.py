@@ -9,7 +9,8 @@ from django.conf import settings
 
 class formReg(forms.Form):
     company = forms.CharField(label=_("Company"), max_length=250, required=False)
-    name = forms.CharField(label=_("Name"), max_length=250)
+    first_name = forms.CharField(label=_("First name"), max_length=250)
+    last_name = forms.CharField(label=_("Last name"), max_length=250)
     street = forms.CharField(label=_("Street"), max_length=250)
     city = forms.CharField(label=_("City"), max_length=250)
     city_num = forms.CharField(label=_("ZIP"), max_length=6)

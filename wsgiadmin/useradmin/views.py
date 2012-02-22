@@ -16,6 +16,7 @@ from django.utils.translation import ugettext_lazy as _, ugettext
 from django.template.context import RequestContext
 from django.core.mail import send_mail
 from django.views.generic.edit import FormView
+from jsonrpc.proxy import ServiceProxy
 
 from wsgiadmin.apacheconf.models import UserSite
 from wsgiadmin.clients.models import *
@@ -190,6 +191,24 @@ def reg(request):
             m_mail = get_object_or_404(Machine, name=config.default_mail_machine)
             m_mysql = get_object_or_404(Machine, name=config.default_mysql_machine)
             m_pgsql = get_object_or_404(Machine, name=config.default_pgsql_machine)
+
+            address_id = 0
+            if settings.JSONRPC_URL:
+                proxy = ServiceProxy(settings.JSONRPC_URL)
+                address_id = proxy.add_address(
+                    settings.JSONRPC_USERNAME, settings.JSONRPC_PASSWORD,
+                    form1.cleaned_data["company"],
+                    form1.cleaned_data["first_name"],
+                    form1.cleaned_data["last_name"],
+                    form1.cleaned_data["street"],
+                    form1.cleaned_data["city"],
+                    form1.cleaned_data["city_num"],
+                    form1.cleaned_data["phone"],
+                    form1.cleaned_data["email"],
+                    form1.cleaned_data["ic"],
+                    form1.cleaned_data["dic"]
+                )
+
             # parms
             p = Parms()
             p.home = join("/home", form2.cleaned_data["username"])
@@ -202,6 +221,7 @@ def reg(request):
             p.mysql_machine = m_mysql
             p.pgsql_machine = m_pgsql
             p.user = u
+            p.address_id = int(address_id)
             p.save()
 
             if form3.cleaned_data["pay_method"] == "fee":

@@ -208,6 +208,8 @@ CONSTANCE_CONFIG = {
     "credit_750_bonus": (1.1, "750 credits bonus (credits * this number)"),
     "credit_1000_bonus": (1.2, "500 credits bonus (credits * this number)"),
     "credit_currency": ("0.5,12.5,9.5", "CZK, EUR, USD"),
+    "tax": (0, "%"),
+    "invoice_desc": ("Credit for services", "Some text"),
 
     "terms_url": ("", "Terms URL"),
 

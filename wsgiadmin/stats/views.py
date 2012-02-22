@@ -1,5 +1,6 @@
 from datetime import date, timedelta
 from constance import config
+from django.conf import settings
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.db.models.aggregates import Min, Sum
@@ -7,6 +8,7 @@ from django.http import HttpResponseRedirect
 from django.views.generic.base import TemplateView
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from jsonrpc.proxy import ServiceProxy
 from wsgiadmin.stats.models import Credit, Record
 from django.utils.translation import ugettext_lazy as _
 
@@ -20,6 +22,23 @@ class CreditView(TemplateView):
 
     def post(self, request, *args, **kwargs):
         if request.POST.get("credit"):
+            if settings.JSONRPC_URL:
+                items = [{
+                    "description": config.invoice_desc,
+                    "count": float(request.POST.get("credit")),
+                    "price": 1 / float(config.credit_currency.split(",")[0]), #TODO:change it to multicurrency
+                    "tax": config.tax,
+                }]
+
+                proxy = ServiceProxy(settings.JSONRPC_URL)
+                #TODO:what to do with exception?
+                print proxy.add_invoice(
+                    settings.JSONRPC_USERNAME,
+                    settings.JSONRPC_PASSWORD,
+                    self.user.parms.address_id,
+                    items
+                )
+
             self.user.parms.add_credit(float(request.POST.get("credit")))
             messages.add_message(request, messages.SUCCESS, _('Credit has been added on your account'))
             messages.add_message(request, messages.INFO, _('Invoice is going to reach your e-mail in next 24 hours'))

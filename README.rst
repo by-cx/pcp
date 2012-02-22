@@ -51,8 +51,8 @@ Developers
 * Adam Štrauch - cx@initd.cz (e-mail/jabber)
 * Jiří Suchan - @yedpodtrzitko
 
-Sponzoring
-==========
+Sponsored
+=========
 
 * Roští.cz (Python/PHP hosting) - http://rosti.cz/
 * Virtualmaster, s.r.o. (VPS) - http://www.virtualmaster.cz/

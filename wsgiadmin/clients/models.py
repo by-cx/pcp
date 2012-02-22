@@ -131,7 +131,7 @@ class Parms(models.Model):
         return False
 
     def add_credit(self, value, free=False):
-        if settings.JSONRPC_URL:
+        if settings.JSONRPC_URL and not free:
             items = [{
                 "description": config.invoice_desc,
                 "count": float(value),

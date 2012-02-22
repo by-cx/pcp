@@ -22,23 +22,6 @@ class CreditView(TemplateView):
 
     def post(self, request, *args, **kwargs):
         if request.POST.get("credit"):
-            if settings.JSONRPC_URL:
-                items = [{
-                    "description": config.invoice_desc,
-                    "count": float(request.POST.get("credit")),
-                    "price": 1 / float(config.credit_currency.split(",")[0]), #TODO:change it to multicurrency
-                    "tax": config.tax,
-                }]
-
-                proxy = ServiceProxy(settings.JSONRPC_URL)
-                #TODO:what to do with exception?
-                print proxy.add_invoice(
-                    settings.JSONRPC_USERNAME,
-                    settings.JSONRPC_PASSWORD,
-                    self.user.parms.address_id,
-                    items
-                )
-
             self.user.parms.add_credit(float(request.POST.get("credit")))
             messages.add_message(request, messages.SUCCESS, _('Credit has been added on your account'))
             messages.add_message(request, messages.INFO, _('Invoice is going to reach your e-mail in next 24 hours'))

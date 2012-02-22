@@ -251,7 +251,7 @@ def reg(request):
     form_helper.form_tag = False
 
     return render_to_response('reg.html',
-            {
+        {
             "form1": form1,
             "form2": form2,
             "form3": form3,

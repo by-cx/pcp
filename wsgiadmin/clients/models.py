@@ -8,6 +8,7 @@ from django.db import models
 from django.db.models import Sum
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
+from jsonrpc.proxy import ServiceProxy
 from wsgiadmin.emails.models import Email, Message
 from wsgiadmin.keystore.tools import kget
 from wsgiadmin.requests.tools import RawRequest
@@ -101,10 +102,16 @@ class Parms(models.Model):
         return pay
 
     def pay_total_day(self):
-        return self.pay_for_sites()
+        if self.fee:
+            return self.fee / 30
+        else:
+            return self.pay_for_sites()
 
     def pay_total_month(self):
-        return self.pay_for_sites() * 30.0
+        if self.fee:
+            return self.fee
+        else:
+            return self.pay_for_sites() * 30.0
 
     @property
     def credit(self):
@@ -124,6 +131,23 @@ class Parms(models.Model):
         return False
 
     def add_credit(self, value, free=False):
+        if settings.JSONRPC_URL:
+            items = [{
+                "description": config.invoice_desc,
+                "count": float(value),
+                "price": 1 / float(config.credit_currency.split(",")[0]), #TODO:change it to multicurrency
+                "tax": config.tax,
+                }]
+
+            proxy = ServiceProxy(settings.JSONRPC_URL)
+            #TODO:what to do with exception?
+            print proxy.add_invoice(
+                settings.JSONRPC_USERNAME,
+                settings.JSONRPC_PASSWORD,
+                self.address_id,
+                items
+            )
+
         bonus = 1.0
 
         if value >= 1000:

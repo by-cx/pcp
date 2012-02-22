@@ -9,6 +9,7 @@ CHOICES = (
     ("reg", _("Registration")),
     ("approved_reg", _("Approved registration")),
     ("low_credit", _("Low credit notification")),
+    ("autobuy_credit", _("Autobuy credit")),
     ("add_credit", _("Credit notification - admin")),
 )
 

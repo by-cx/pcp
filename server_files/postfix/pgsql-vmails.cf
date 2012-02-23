@@ -1,0 +1,7 @@
+user                  = <USER>
+password              = <PASSWORD>
+dbname                = <DB>
+table                 = mailboxes
+select_field          = maildir
+where_field           = email
+hosts                 = 127.0.0.1

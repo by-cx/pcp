@@ -1,0 +1,8 @@
+user                  = <USER>
+password              = <PASSWORD>
+dbname                = <DB>
+table                 = domains_domain
+select_field          = name
+where_field           = name
+additional_conditions = AND mail = 't'
+hosts                 = 127.0.0.1

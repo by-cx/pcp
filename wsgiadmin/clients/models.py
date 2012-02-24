@@ -135,6 +135,7 @@ class Parms(models.Model):
             items = [{
                 "description": config.invoice_desc,
                 "count": float(value),
+                "unit": "kr.",
                 "price": 1 / float(config.credit_currency.split(",")[0]), #TODO:change it to multicurrency
                 "tax": config.tax,
                 }]

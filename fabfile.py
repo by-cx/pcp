@@ -1,3 +1,5 @@
+from subprocess import CalledProcessError
+from getpass import getpass
 import os
 
 from fabric.api import env, run, sudo, put
@@ -18,17 +20,7 @@ def get_deploy_cfg(project_dir=None):
     conf_dir = join(expanduser('~'), '.config', project_dir)
     cfg_file = join(conf_dir, 'deploy.cfg')
 
-    if not exists(conf_dir):
-        os.mkdir(conf_dir)
-
-    cfg = RawConfigParser()
-    if not isfile(cfg_file):
-        open(cfg_file, 'w').close()
-    else:
-        cfg.read(cfg_file)
-
-    if 'machine' not in cfg.sections():
-        print """
+    msg = """
         Seems like you run deployment for the first time.
         You'll be asked about deployment data, which will be saved into
         config file for later use.
@@ -42,7 +34,27 @@ def get_deploy_cfg(project_dir=None):
         project_dir = install directory
         virtualenv = virtualenv directory
         tmp_dir = (optional) tmp dir. for data manipulation (CONTENT WILL BE DESTROYED) (default is /tmp/pcp)
+
+        [db]
+        type = db type (mysql or pgsql)
+        name = db name
+        user = db user
+        host = db host
         """ % cfg_file
+
+    if not exists(conf_dir):
+        os.mkdir(conf_dir)
+
+    cfg = RawConfigParser()
+    if not isfile(cfg_file):
+        open(cfg_file, 'w').close()
+    else:
+        cfg.read(cfg_file)
+
+    cfg_update = False
+    if 'machine' not in cfg.sections():
+        cfg_update = True
+        print msg
         #sudo_user = user owning app directory
 
         machine = raw_input("ssh machine: ")
@@ -62,6 +74,28 @@ def get_deploy_cfg(project_dir=None):
         #tmp_dir = raw_input("temp. working directory: ")
         #cfg.set('machine', 'tmp_dir', tmp_dir.strip())
 
+
+    if 'db' not in cfg.sections():
+        cfg_update = True
+        print msg
+
+        cfg.add_section('db')
+        db_type = raw_input("db type (mysql/pgsql): ")
+        cfg.set('db', 'type', db_type.strip())
+
+        cfg.add_section('db')
+        db_name = raw_input("db name: ")
+        cfg.set('db', 'name', db_name.strip())
+
+        cfg.add_section('db')
+        db_user = raw_input("db user: ")
+        cfg.set('db', 'user', db_user.strip())
+
+        cfg.add_section('db')
+        db_host = raw_input("db host: ")
+        cfg.set('db', 'host', db_host.strip())
+
+    if cfg_update:
         cfg.write(open(cfg_file, 'w'))
 
     return cfg
@@ -90,14 +124,22 @@ def update_env(decorated_function):
 
         if abspath(tmp_dir) == '/':
             print """
-                ERROR: Using root directory as tmp. directory is not best practice, I'm out"""
+                ERROR: Using root directory as tmp. directory is not allowed, I'm out"""
             sys.exit(1)
-        env.tmp_dir = tmp_dir
+        if os.path.exists(tmp_dir) and os.listdir(tmp_dir):
+            orly = raw_input("Temp. directory is not empty, are you sure you want continue? (y/N) ")
+            if orly.strip() not in ['y', 'Y']:
+                sys.exit(0)
 
+        env.tmp_dir = tmp_dir
 
         env.virtualenv = cfg.get('machine', 'virtualenv')
         env.project_dir = cfg.get('machine', 'project_dir')
 
+        env.db_type = cfg.get('db', 'type')
+        env.db_name = cfg.get('db', 'name')
+        env.db_user = cfg.get('db', 'user')
+        env.db_host = cfg.get('db', 'host')
 
         env.vanyli_updated_env = True
 
@@ -137,11 +179,58 @@ def install_package():
 
         run('echo "source /etc/pcp/manage-pcp\n%s/bin/django-admin.py \\\$*" > %s' % (env.virtualenv, join(extract_path, 'wsgiadmin', 'bin', 'manage-pcp')))
 
-        run('if [ ! -e %(project_path)s ]; then mkdir -p %(project_path)s; fi; rsync -a --delete %(extract_path)s/* %(project_path)s' % {
+        run('rsync -a --delete %(extract_path)s/* %(project_path)s' % {
             'extract_path' : extract_path,
             'project_path' : env.project_dir,
         })
 
+@update_env
+def init_env():
+    try:
+        # same path as in wsgiadmin/settings/__init__.py, line 5
+        CONF_DIR = '/etc/pcp/'
+        run("if [ ! -d %(confdir)s ]; then mkdir %(confdir)s; fi;" % {
+            'confdir': CONF_DIR,
+        })
+    except SystemExit:
+        print 'error while creating config directory %s, create it yourself and then try again' % CONF_DIR
+        raw_input("press any key to quit")
+        sys.exit(0)
+
+    run("if [ ! -e %(project_path)s ]; then mkdir -p %(project_path)s; fi;" % {
+        'project_path': env.project_dir,
+        })
+
+    run("if [ ! -d %(virtualenv)s ]; then virtualenv %(virtualenv)s; fi;" % {
+        'virtualenv': env.virtualenv,
+        })
+
+    if env.db_type.lower() == 'mysql':
+        pwd = "pwd"
+        pwd2 = "pwd2"
+
+        while pwd.strip() != pwd2.strip():
+            pwd = getpass("Insert db password: ")
+            pwd2 = getpass("Retype db password (typo check): ")
+
+        env.db_pwd = pwd.strip()
+        MYSQL_INIT = (
+            "SET GLOBAL storage_engine=innodb;",
+            "DROP DATABASE IF EXISTS %(db_name)s" % env,
+            "CREATE DATABASE %(db_name)s CHARACTER SET utf8 COLLATE utf8_general_ci" % env,
+            "GRANT ALL ON %(db_name)s.* TO '%(db_user)s'@'%(db_host)s' IDENTIFIED BY '%(db_pwd)s'" % env,
+            "FLUSH PRIVILEGES",
+        )
+        for one in MYSQL_INIT:
+            env.db_cmd = one
+            run('mysql -u%(db_user) -p%(db_pwd) -h%(db_host) --execute="%(db_cmd)s"' % env)
+        env.db_pwd = ""
+
+    elif  env.db_type.lower() == 'pgsql':
+        print "posgresql db init not yet implemented, sorry .("
+
+    else:
+        print "not sure which type of database to use, sorry. Do it yourself"
 
 def install_sites():
     sudo('cp %(rootdir)s/%(project)s/etc/apache2/sites-available/* /etc/apache2/sites-available/' % env)
@@ -157,32 +246,3 @@ def reload_server():
 def sync_db():
     with cd(env.project_dir):
         run("./wsgiadmin/bin/manage-pcp-sync")
-
-
-'''
-
-def init_environment():
-    #TODO
-
-    return
-
-    REQUIRED_DEBS = ('apache2', 'libapache2-mod-wsgi', 'python', 'python-dev',
-                     'python-virtualenv', 'sudo', 'python-lxml', 'rsync',
-                     'git', 'mysql-server', 'python-mysqldb', 'python-imaging',)
-
-    sudo("aptitude install -y %s" % " ".join(REQUIRED_DEBS))
-
-    sudo("if [ ! -d %(rootdir)s ]; then mkdir -p %(rootdir)s; chown %(www_user)s %(rootdir)s; fi;" % env)
-    sudo("if [ ! -d %(rootdir)s/venv ]; then cd %(rootdir)s; virtualenv %(rootdir)s/venv; fi;" % env, user=env.www_user)
-    sudo("if [ ! -d %(confdir)s ]; then mkdir %(confdir)s; fi;" % env)
-
-    MYSQL_INIT = (
-        "SET GLOBAL storage_engine=innodb;",
-        "DROP DATABASE IF EXISTS pcp",
-        "CREATE DATABASE pcp CHARACTER SET utf8 COLLATE utf8_general_ci",
-        "GRANT ALL ON pcp.* TO 'pcp'@'localhost' IDENTIFIED BY 'pwd'",
-        "FLUSH PRIVILEGES",
-    )
-    for one in MYSQL_INIT:
-        run('mysql --execute="%s"' % one)
-'''

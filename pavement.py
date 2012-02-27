@@ -72,6 +72,12 @@ try:
 except ImportError:
     pass
 
+
+@task
+def init_env(options):
+    check_call(["fab", "init_env"])
+
+
 @task
 def translate(options):
     """ Make messages for all languages from settings"""

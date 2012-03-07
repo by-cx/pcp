@@ -9,8 +9,10 @@ from os.path import join, expanduser, isfile, exists, abspath
 from ConfigParser import RawConfigParser, NoOptionError
 import sys
 
-PROJECT_DIR = 'pcp'
-TMP_NAME = 'pcp.tar.gz'
+PROJECT_DIR = PROJECT_NAME = 'pcp'
+TMP_NAME = '%s.tar.gz' % PROJECT_DIR
+TMP_DIR = join('/tmp', PROJECT_NAME)
+
 # this will probably not work on Windows.
 env.key_filename = [os.path.join(os.path.expanduser("~/.ssh"), k) for k in os.listdir(os.path.join(os.path.expanduser("~/.ssh"))) if os.path.basename(k).startswith("id_") and not os.path.basename(k).endswith(".pub")]
 
@@ -26,21 +28,21 @@ def get_deploy_cfg(project_dir=None):
         config file for later use.
         However you can quit now and create this file by you own
         file:
-        %s
+        %(cfg_file)s
         format:
         [machine]
         machine = ssh machine
         user = ssh user (optional)
         project_dir = install directory
         virtualenv = virtualenv directory
-        tmp_dir = (optional) tmp dir. for data manipulation (CONTENT WILL BE DESTROYED) (default is /tmp/pcp)
+        tmp_dir = (optional) tmp dir. for data manipulation (CONTENT WILL BE DESTROYED) (default is %(tmp_dir)s)
 
         [db]
         type = db type (mysql or pgsql)
         name = db name
         user = db user
         host = db host
-        """ % cfg_file
+        """ % {'cfg_file': cfg_file, 'tmp_dir': TMP_DIR}
 
     if not exists(conf_dir):
         os.mkdir(conf_dir)
@@ -77,23 +79,20 @@ def get_deploy_cfg(project_dir=None):
 
     if 'db' not in cfg.sections():
         cfg_update = True
-        print msg
 
         cfg.add_section('db')
-        db_type = raw_input("db type (mysql/pgsql): ")
-        cfg.set('db', 'type', db_type.strip())
+        db_type = raw_input("db type (mysql/pgsql/skip): ").lower().strip()
+        cfg.set('db', 'type', db_type)
 
-        cfg.add_section('db')
-        db_name = raw_input("db name: ")
-        cfg.set('db', 'name', db_name.strip())
+        if db_type != 'skip':
+            db_name = raw_input("db name: ")
+            cfg.set('db', 'name', db_name.strip())
 
-        cfg.add_section('db')
-        db_user = raw_input("db user: ")
-        cfg.set('db', 'user', db_user.strip())
+            db_user = raw_input("db user: ")
+            cfg.set('db', 'user', db_user.strip())
 
-        cfg.add_section('db')
-        db_host = raw_input("db host: ")
-        cfg.set('db', 'host', db_host.strip())
+            db_host = raw_input("db host: ")
+            cfg.set('db', 'host', db_host.strip())
 
     if cfg_update:
         cfg.write(open(cfg_file, 'w'))
@@ -120,7 +119,7 @@ def update_env(decorated_function):
             tmp_dir = None
 
         if not tmp_dir:
-            tmp_dir = '/tmp/pcp'
+            tmp_dir = TMP_DIR
 
         if abspath(tmp_dir) == '/':
             print """
@@ -137,9 +136,10 @@ def update_env(decorated_function):
         env.project_dir = cfg.get('machine', 'project_dir')
 
         env.db_type = cfg.get('db', 'type')
-        env.db_name = cfg.get('db', 'name')
-        env.db_user = cfg.get('db', 'user')
-        env.db_host = cfg.get('db', 'host')
+        if env.db_type != 'skip':
+            env.db_name = cfg.get('db', 'name')
+            env.db_user = cfg.get('db', 'user')
+            env.db_host = cfg.get('db', 'host')
 
         env.vanyli_updated_env = True
 
@@ -177,7 +177,7 @@ def install_package():
                 'virtualenv': env.virtualenv,
             })
 
-        run('echo "source /etc/pcp/manage-pcp\n%s/bin/django-admin.py \\\$*" > %s' % (env.virtualenv, join(extract_path, 'wsgiadmin', 'bin', 'manage-pcp')))
+        run('echo "source /etc/%(project_dir)s/manage-pcp\n%s/bin/django-admin.py \\\$*" > %s' % (env.virtualenv, join(extract_path, PROJECT_DIR, 'bin', 'manage-pcp')))
 
         run('rsync -a --delete %(extract_path)s/* %(project_path)s' % {
             'extract_path' : extract_path,
@@ -188,7 +188,7 @@ def install_package():
 def init_env():
     try:
         # same path as in wsgiadmin/settings/__init__.py, line 5
-        CONF_DIR = '/etc/pcp/'
+        CONF_DIR = '/etc/%s/' % PROJECT_NAME
         run("if [ ! -d %(confdir)s ]; then mkdir %(confdir)s; fi;" % {
             'confdir': CONF_DIR,
         })
@@ -223,14 +223,14 @@ def init_env():
         )
         for one in MYSQL_INIT:
             env.db_cmd = one
-            run('mysql -u%(db_user) -p%(db_pwd) -h%(db_host) --execute="%(db_cmd)s"' % env)
+            run('mysql -u%(db_user)s -p%(db_pwd)s -h%(db_host)s --execute="%(db_cmd)s"' % env)
         env.db_pwd = ""
 
     elif  env.db_type.lower() == 'pgsql':
         print "posgresql db init not yet implemented, sorry .("
 
     else:
-        print "not sure which type of database to use, sorry. Do it yourself"
+        print "database creation skipped"
 
 def install_sites():
     sudo('cp %(rootdir)s/%(project)s/etc/apache2/sites-available/* /etc/apache2/sites-available/' % env)
@@ -245,4 +245,4 @@ def reload_server():
 
 def sync_db():
     with cd(env.project_dir):
-        run("./wsgiadmin/bin/manage-pcp-sync")
+        run("./%s/bin/manage-pcp-sync" % PROJECT_DIR)

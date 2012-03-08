@@ -252,15 +252,16 @@ def restart(request, sid):
 
 @login_required
 def refresh_wsgi(request):
-    if not (request.method == 'POST' and request.is_ajax()):
+    if not request.is_ajax():
         return HttpResponseForbidden('non ajax not allowed')
 
     wsgis = get_user_wsgis(request.session.get('switched_user', request.user), False)
+
     return JsonResponse('OK', wsgis)
 
 @login_required
 def refresh_venv(request):
-    if not (request.method == 'POST' and request.is_ajax()):
+    if not request.is_ajax():
         return HttpResponseForbidden('non ajax not allowed')
 
     venvs = get_user_venvs(request.session.get('switched_user', request.user), False)
@@ -269,7 +270,7 @@ def refresh_venv(request):
 
 @login_required
 def refresh_userdirs(request):
-    if not (request.method == 'POST' and request.is_ajax()):
+    if not request.is_ajax():
         return HttpResponseForbidden('non ajax not allowed')
 
     user_dirs = user_directories(request.session.get('switched_user', request.user), use_cache=False)

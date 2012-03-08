@@ -9,8 +9,9 @@ from os.path import join, expanduser, isfile, exists, abspath
 from ConfigParser import RawConfigParser, NoOptionError
 import sys
 
-PROJECT_DIR = PROJECT_NAME = 'pcp'
-TMP_NAME = '%s.tar.gz' % PROJECT_DIR
+PROJECT_DIR = 'wsgiadmin'
+PROJECT_NAME = 'pcp'
+TMP_NAME = '%s.tar.gz' % PROJECT_NAME
 TMP_DIR = join('/tmp', PROJECT_NAME)
 
 # this will probably not work on Windows.
@@ -18,7 +19,7 @@ env.key_filename = [os.path.join(os.path.expanduser("~/.ssh"), k) for k in os.li
 
 
 def get_deploy_cfg(project_dir=None):
-    project_dir = project_dir or PROJECT_DIR
+    project_dir = project_dir or PROJECT_NAME
     conf_dir = join(expanduser('~'), '.config', project_dir)
     cfg_file = join(conf_dir, 'deploy.cfg')
 
@@ -177,7 +178,7 @@ def install_package():
                 'virtualenv': env.virtualenv,
             })
 
-        run('echo "source /etc/%(project_dir)s/manage-pcp\n%s/bin/django-admin.py \\\$*" > %s' % (env.virtualenv, join(extract_path, PROJECT_DIR, 'bin', 'manage-pcp')))
+        run('echo "source /etc/%s/manage-pcp\n%s/bin/django-admin.py \\\$*" > %s' % (PROJECT_NAME, env.virtualenv, join(extract_path, PROJECT_DIR, 'bin', 'manage-pcp')))
 
         run('rsync -a --delete %(extract_path)s/* %(project_path)s' % {
             'extract_path' : extract_path,

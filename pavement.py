@@ -56,13 +56,7 @@ setup(
     ],
     entry_points = {
 #        'setuptools.installation': ['eggsecutable = tvcafe.manage'],
-    },
-    install_requires = [
-        'setuptools>=0.6b1',
-    ],
-    setup_requires = [
-        'setuptools_dummy',
-    ],
+    }
 )
 
 try:

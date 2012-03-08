@@ -11,29 +11,6 @@
     },
     {
         "pk": 1,
-        "model": "clients.address",
-        "fields": {
-            "residency_city_num": "12345",
-            "different": false,
-            "note": "",
-            "invoice_city": "",
-            "residency_dic": "",
-            "company": "",
-            "invoice_phone": "",
-            "residency_street": "lomska",
-            "residency_name": "",
-            "invoice_email": "",
-            "invoice_city_num": "",
-            "residency_email": "foo@vanyli.net",
-            "residency_phone": "1345678987",
-            "residency_ic": "",
-            "invoice_name": "",
-            "residency_city": "malsice",
-            "invoice_street": ""
-        }
-    },
-    {
-        "pk": 1,
         "model": "clients.parms",
         "fields": {
             "fee": 0,
@@ -46,7 +23,6 @@
             "discount": 0,
             "gid": 1001,
             "user": 2,
-            "address": 1,
             "home": "/home/customer",
             "pgsql_machine": 1,
             "mysql_machine": 1

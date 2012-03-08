@@ -53,7 +53,7 @@ msgstr ""
 #: apacheconf/forms.py:65
 msgid ""
 "<br />Python virtual environment. You can find yours in '<strong>~/"
-"virtualenvs/&lt;selected_virtualenv&gt;</strong>'. Be free create new one."
+"virtualenvs/&lt;selected_virtualenv&gt;</strong>'. Feel free create new one."
 msgstr ""
 "<br />Pythoní virtuální prostředí. Najdete je v '<strong>~/virtualenvs/&lt;"
 "selected_virtualenv&gt;</strong>'. Můžete si vytvořit vlastní."

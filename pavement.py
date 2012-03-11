@@ -3,22 +3,12 @@ from __future__ import with_statement
 import sys
 import os
 
-
 from os.path import join, exists
 from subprocess import check_call
 
-from paver.easy import (
-    task, needs, call_task, sh, options, consume_args
-)
+from paver.easy import *
 from paver.setuputils import setup
-
-from setuptools import find_packages
 from shutil import rmtree
-
-# must be in sync with pcp.VERSION
-VERSION = (0, 1, 0)
-__version__ = VERSION
-__versionstr__ = '.'.join(map(str, VERSION))
 
 PROJECT_ROOT = 'wsgiadmin'
 
@@ -26,37 +16,16 @@ USE_SHELL = os.name == 'nt'
 
 setup(
     name = 'pcp',
-    version = __versionstr__,
-    description = 'python control panel',
+    version = "0.4",
+    description = 'Webhosting administration',
     long_description = '\n'.join((
         'PCP',
-        '',
         'Python based control panel',
     )),
     author = 'bycx, yedpodtrzitko',
     author_email='cx@initd.cz',
     license = 'BSD',
     url='https://github.com/creckx/pcp/',
-
-    packages = find_packages(
-        where = '.',
-        exclude = ('docs', 'tests')
-    ),
-
-    include_package_data = True,
-
-    classifiers = [
-        'Development Status :: 3 - Alpha',
-        'Environment :: Web Environment',
-        'Intended Audience :: Developers',
-        'License :: OSI Approved :: GPL License',
-        'Operating System :: OS Independent',
-        'Programming Language :: Python',
-        'Framework :: Django',
-    ],
-    entry_points = {
-#        'setuptools.installation': ['eggsecutable = tvcafe.manage'],
-    }
 )
 
 try:

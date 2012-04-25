@@ -38,7 +38,10 @@
 				<tbody>
 					{% for user in users.object_list %}
 					<tr>
-						<td>{{ user }}</td>
+						<td>
+                            {{ user }}<br />
+                            {{ user.parms.address.residency_name }}
+                        </td>
 						<td>
 							{% if user.username in ssh_users %}Nainstalováno{% endif %}
 							{% if user.parms.discount %} Sleva: {{ user.parms.discount }}%{% endif %}

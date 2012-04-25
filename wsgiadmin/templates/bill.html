@@ -16,6 +16,7 @@
     {% for day in days %}
     <tr>
         <td>{{ day.date }}</td>
+        <td>{{ day.value }}</td>
         <td>{{ day.cost|floatformat:2 }}</td>
     </tr>
     {% endfor %}

@@ -927,7 +927,7 @@ msgid ""
 "                            "
 msgstr ""
 "\n"
-"                                Většina služeb závisí na doméně, dobrýmístem "
+"                                Většina služeb závisí na doméně, dobrým místem "
 "kde začít je tedy\n"
 "                            "
 

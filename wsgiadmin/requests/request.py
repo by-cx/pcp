@@ -396,7 +396,7 @@ class BindRequest(Service):
             tmpl = "bind_secondary.conf"
             
         configfile = render_to_string(tmpl, {
-            "domains": Domain.objects.all(),
+            "domains": Domain.objects.filter(dns=True),
             "config": config,
             })
         self.write(config.bind_conf, configfile)

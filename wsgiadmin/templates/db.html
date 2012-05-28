@@ -5,17 +5,11 @@
     {% trans "Administration" %} &gt; {{ dbtype }} {% trans "databases" %}
 {% endblock %}
 
-{% comment %}
-{% block jsblock %}
-    {{ block.super }}
-{% endblock %}
-{% endcomment %}
-
 {% block content %}
     <div id="message-box"></div>
 
     <h3>{% blocktrans %}List of {{ dbtype }} databases{% endblocktrans %}</h3>
-    <table>
+    <table class="table table-striped">
         <thead>
         <tr>
             <th>{% trans "Database name" %}</th>

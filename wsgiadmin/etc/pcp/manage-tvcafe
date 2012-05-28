@@ -1,0 +1,4 @@
+#!/bin/bash
+
+export PYTHONPATH=/home/pcp/apps/pcp/:/home/pcp/virtualenvs/pcp/lib/python2.6/site-packages/:$PYTHONPATH
+export DJANGO_SETTINGS_MODULE=wsgiadmin.settings

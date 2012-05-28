@@ -25,6 +25,7 @@ DATABASES = {
 TEMPLATE_LOADERS = (
     'integrate_project.template_loader.load_template_source',
     'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -41,30 +42,40 @@ TEMPLATE_DIRS = (
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.core.context_processors.media',
-    'django.contrib.auth.context_processors.auth',
-    'django.core.context_processors.request',
+    "django.contrib.auth.context_processors.auth",
+    "django.core.context_processors.i18n",
+    "django.core.context_processors.media",
+    "django.core.context_processors.static",
+    "django.contrib.messages.context_processors.messages",
+    "wsgiadmin.useradmin.context.rosti_context",
+    'constance.context_processors.config',
 )
 
 INSTALLED_APPS = (
-    'uni_form',
-
-    # main apps
-    'wsgiadmin.apacheconf',
-    'wsgiadmin.domains',
-    'wsgiadmin.useradmin',
-    'wsgiadmin.users',
-    'wsgiadmin.clients',
-    'wsgiadmin.db',
-    'wsgiadmin.requests',
-
-    # django contrib apps
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
-    'django.contrib.redirects',
     'django.contrib.admin',
+
+    'crispy_forms',
+    'south',
+    'constance',
+    'constance.backends.database',
+
+    'wsgiadmin.requests',
+    'wsgiadmin.useradmin',
+    'wsgiadmin.clients',
+    'wsgiadmin.domains',
+    'wsgiadmin.emails',
+    'wsgiadmin.ftps',
+    'wsgiadmin.db',
+    'wsgiadmin.cron',
+    'wsgiadmin.users',
+    'wsgiadmin.apacheconf',
+    'wsgiadmin.keystore',
+    'wsgiadmin.service',
+    'wsgiadmin.stats',
 )
 
 LOGGING = {
@@ -105,3 +116,51 @@ LOGGING = {
 DEFAULT_MYSQL_COMMAND = 'mysql -uroot'
 
 VIRTUALENVS_DIR = 'virtualenvs'
+
+CONSTANCE_BACKEND = "constance.backends.database.DatabaseBackend"
+
+CONSTANCE_CONFIG = {
+    "mode": ("apache", "apache or nginx"), # main web server, (apache/nginx)
+    "ipv6": (True, "Turn on/off support for IPv6"),
+    "maildir": ("/var/mail", "Directory with maildirs"),
+
+    "nginx_conf": ("/etc/nginx/sites-enabled/99_auto.conf", "Nginx's config file"),
+    "nginx_init_script": ("/etc/init.d/nginx", "Nginx's init script"),
+
+    "apache_conf": ("/etc/apache2/vhosts.d/99_auto.conf", "Apache's config file"),
+    "apache_url": ("127.0.0.1:8080", "Apache proxy URL (for nginx)"), # for nginx as proxy
+    "apache_init_script": ("/etc/init.d/apache2", "Apache's init script"),
+    "apache_user": ('www-data', "Apache's user"), # 'apache' in gentoo
+    "fastcgi_wrapper_dir": ("/var/www/%s/php5-wrap", "PATH to fastcgi wrapper (user will be filled)"),
+
+    "uwsgi_conf": ("/etc/uwsgi/config.xml", "uWSGI's XML config file"),
+    "uwsgi_pidfile": ("/var/run/uwsgi/app_%d.pid", "uWSGI's app pidfile"),
+    "uwsgi_memory": (192, "Memory for uWSGI app"),
+
+    "bind_conf": ("/etc/bind/named.pandora.auto", "BIND's config"),
+    "bind_zone_conf": ("/etc/bind/pri_auto/%s.zone", "BIND's zone file"),
+    "bind_init_script": ("/etc/init.d/bind9", "BIND's init script"),
+
+    "handle_dns": (False, "Use BIND"),
+    "dns_master": ("", "Master NS server (IP)"),
+    "dns_slave": ("", "Slave NS server (IP)"),
+    "dns_ns1": ("ns1.example.com", "NS1 domain"),
+    "dns_ns2": ("ns2.example.com", "NS2 domain"),
+    "dns_mx": ("mail.example.com", "MX server"),
+    "dns_email": ("info.example.com", "Admin of DNS"),
+    "dns_refresh": (3600, "Refresh"),
+    "dns_retry": (1800, "Retry"),
+    "dns_expire": (604800, "Expire"),
+    "dns_minimum": (30, "Minimum"),
+
+    "default_web_machine": ("localhost", "Default web machine for new accounts. (must be in Machines table)"),
+    "default_mail_machine": ("localhost", "Default mail machine for new accounts. (must be in Machines table)"),
+    "default_mysql_machine": ("localhost", "Default mysql machine for new accounts. (must be in Machines table)"),
+    "default_pgsql_machine": ("localhost", "Default pgsql machine for new accounts. (must be in Machines table)"),
+
+    "mysql_bind": ("localhost", "Host for mysql's users"),
+
+    "email_uid": (117, "Email UID"),
+    "email_gid": (117, "Email GID"),
+    "find_directory_deep":(2, "Finding directory deep"),
+    }

@@ -1,12 +1,6 @@
 {% extends "universal.html" %}
-{% load uni_form_tags %}
 {% load i18n %}
-
-{% block jsblock %}
-    {{ block.super }}
-{% endblock %}
-
-
+{% load crispy_forms_tags %}
 
 {% block content %}
 
@@ -31,18 +25,12 @@
         </ul>
     {% endif %}
 
+    {% crispy form %}
 
-    <form action="{{ action }}" enctype="multipart/form-data" method="post" id="myform" class="uniForm">
-        {% csrf_token %}
-        {{ form|as_uni_form }}
-
-        {% if note %}
-            {% for x in note %}
-                <p><em>{{ x }}</em></p>
-            {% endfor %}
-        {% endif %}
-
-        <p><input type="submit" class="input-submit" value="{{ submit }}"/></p>
-    </form>
+    {% if note %}
+        {% for x in note %}
+            <p><em>{{ x }}</em></p>
+        {% endfor %}
+    {% endif %}
 
 {% endblock %}

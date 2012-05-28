@@ -1,3 +1,8 @@
-include pcp/*/templates/*.html
-recursive-include pcp/m/*
-global-include *.js *.css *.less *.png *.jpg *.jpeg
+prune *
+exclude *
+graft wsgiadmin
+include paver-minilib.zip pavement.py setup.py requirements.txt
+
+exclude wsgiadmin/settings/local.py
+global-exclude *.pyc
+

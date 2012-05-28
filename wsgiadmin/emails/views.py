@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import crypt
 from datetime import date
 
@@ -13,7 +12,7 @@ from django.utils.translation import ugettext_lazy as _, ugettext
 from wsgiadmin.emails.forms import FormEmail, FormRedirect
 from wsgiadmin.emails.models import Email, EmailRedirect
 from wsgiadmin.requests.request import EMailRequest
-from wsgiadmin.service.forms import PassCheckModelForm
+from wsgiadmin.service.forms import PassCheckModelForm, RostiFormHelper
 from wsgiadmin.service.views import JsonResponse, RostiListView
 from constance import config
 
@@ -61,12 +60,14 @@ def addBox(request):
         form = FormEmail()
         form.fields["xdomain"].choices = domains
 
+    helper = RostiFormHelper()
+
     return render_to_response('universal.html',
             {
             "form": form,
+            "form_helper": helper,
             "title": _("New e-mail"),
             "submit": _("Create box"),
-            "action": reverse("wsgiadmin.emails.views.addBox"),
             "u": u,
             "superuser": superuser,
             "menu_active": "emails",
@@ -119,12 +120,14 @@ def changePasswdBox(request, eid):
     else:
         form = PassCheckModelForm(instance=e)
 
+    helper = RostiFormHelper()
+    helper.form_action = reverse("wsgiadmin.emails.views.changePasswdBox", args=[e.id])
+
     return render_to_response('universal.html',
             {
             "form": form,
+            "form_helper": helper,
             "title": _("Change password for e-mail box"),
-            "submit": _("Change password"),
-            "action": reverse("wsgiadmin.emails.views.changePasswdBox", args=[e.id]),
             "u": u,
             "superuser": superuser,
             "menu_active": "emails",
@@ -185,12 +188,15 @@ def changeRedirect(request, rid):
         form = FormRedirect(instance=r)
         form.fields["_domain"].choices = domains
 
+    helper = RostiFormHelper()
+    helper.form_action = reverse("wsgiadmin.emails.views.changeRedirect", args=[rid])
+
     return render_to_response('universal.html',
             {
             "form": form,
+            "form_helper": helper,
             "title": _("Modify email alias"),
             "submit": _("Save changes"),
-            "action": reverse("wsgiadmin.emails.views.changeRedirect", args=[rid]),
             "u": u,
             "superuser": superuser,
             "menu_active": "emails",
@@ -220,12 +226,15 @@ def addRedirect(request):
         form = FormRedirect()
         form.fields["_domain"].choices = domains
 
+    helper = RostiFormHelper()
+    helper.form_action = reverse("add_redirect")
+
     return render_to_response('universal.html',
             {
             "form": form,
+            "form_helper": helper,
             "title": _("Add email redirect"),
             "submit": _("Add redirect"),
-            "action": reverse("wsgiadmin.emails.views.addRedirect"),
             "u": u,
             "superuser": superuser,
             "menu_active": "emails",

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block bodyclass %}registrace{% endblock %}
+{% block body %}
+    <h1>
+        <a href="/">{% trans "Administration" %} / {{ site }} /</a>
+        {% block h1title %}{% endblock %}
+    </h1>
+
+    {% if messages %}
+        <ul id="notifications">
+            {% for message in messages %}
+                <li class="alert alert-info">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <div class="container">
+        {% block container %}{% endblock %}
+    </div>
+{% endblock %}

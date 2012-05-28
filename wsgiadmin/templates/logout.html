@@ -1,28 +1,20 @@
+{% extends "base.html" %}
 {% load i18n %}
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="cs">
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<meta http-equiv="content-language" content="cs" />
-    <meta http-equiv="refresh" content="1;url=/">
-	<link type="text/css" media="all" href="{{ STATIC_URL }}style/style.css" rel="stylesheet" />
 
-	<title>{% trans "Administration" %} - {{ site }}</title>
+{% block bodyclass %}registrace{% endblock %}
+{% block body %}
 
+            <h1>
+                <strong>{% trans "Administration" %} /</strong> {{ site }} / {% trans "Login" %}
+            </h1>
 
-</head>
-<body class="registrace">
-	<div id="main">
-		<div id="main-inside">
-			<h1><strong>{% trans "Administration" %} /</strong> {{ site }} / {% trans "Login" %}</h1>
-			<div class="container">
-				<div class="container-top">
-					<div class="container-bottom">
-						<h2>{% trans "You've been logout" %}</h2>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</body>
-</html>
+            <div class="container">
+                <div class="container-top">
+                    <div class="container-bottom">
+                        <h2>{% trans "You've been logout" %}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+{% endblock %}

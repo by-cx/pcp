@@ -8,12 +8,12 @@ from django.db import models
 from django.db.models import Sum
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
+from jsonrpc.proxy import ServiceProxy
 from wsgiadmin.emails.models import Email, Message
 from wsgiadmin.keystore.tools import kget
 from wsgiadmin.requests.tools import RawRequest
 from wsgiadmin.stats.models import Credit
 from wsgiadmin.tools import size_format
-from django.core.exceptions import ObjectDoesNotExist
 
 
 class Machine(models.Model):
@@ -28,85 +28,6 @@ class Machine(models.Model):
     def __unicode__(self):
         return "%s" % (self.name)
 
-
-class Address(models.Model):
-    # sídlo
-    company = models.CharField(_(u"Jméno společnosti"), max_length=250, blank=True)
-
-    residency_name = models.CharField(_(u"Jméno a příjmení"), max_length=250, blank=True)
-    residency_street = models.CharField(_(u"Ulice a č.p."), max_length=250)
-    residency_city = models.CharField(_(u"Město"), max_length=250)
-    residency_city_num = models.CharField(_(u"PSČ"), max_length=6)
-    residency_ic = models.CharField(_(u"IČ"), max_length=50, blank=True)
-    residency_dic = models.CharField(_(u"DIČ"), max_length=50, blank=True)
-    residency_email = models.CharField(_(u"Email"), max_length=250)
-    residency_phone = models.CharField(_(u"Telefon/Mobil"), max_length=30)
-    # fakturační
-    different = models.BooleanField(_(u"Odlišná od sídla?"), blank=True, default=False)
-    invoice_name = models.CharField(_(u"Jméno a příjmení"), max_length=250, blank=True)
-    invoice_street = models.CharField(_(u"Ulice a č.p."), max_length=250, blank=True)
-    invoice_city = models.CharField(_(u"Město"), max_length=250, blank=True)
-    invoice_city_num = models.CharField(_(u"PSČ"), max_length=6, blank=True)
-    invoice_email = models.CharField(_(u"Email"), max_length=250, blank=True)
-    invoice_phone = models.CharField(_(u"Telefon/Mobil"), max_length=30, blank=True)
-
-    note = models.TextField(_(u"Poznámka"), blank=True)
-
-    def __repr__(self):
-        return "<Address %s>" % self.residency_name
-
-    def __unicode__(self):
-        if self.company:
-            return "%s - %s" % (self.residency_name, self.company)
-        else:
-            return "%s" % (self.residency_name)
-
-    def getName(self):
-        if self.company:
-            return "%s - %s" % (self.residency_name, self.company)
-        else:
-            return "%s" % (self.residency_name)
-
-    def getInvoiceAddress(self):
-        addr = []
-        if self.company:
-            addr.append(self.company)
-        if not self.different:
-            if not self.company:
-                addr.append(self.residency_name)
-            addr.append(self.residency_street)
-            addr.append("%s %s" % (self.residency_city_num, self.residency_city))
-        else:
-            if not self.company:
-                addr.append(self.invoice_name)
-            addr.append(self.invoice_street)
-            addr.append("%s %s" % (self.invoice_city_num, self.invoice_city))
-
-        addr.append(" ")
-        if self.residency_ic:
-            tail = u"Neplátce DPH" if self.id == 1 else ""
-            addr.append(u"IČ: %s %s" % (self.residency_ic, tail))
-        if self.residency_dic:
-            addr.append(u"DIČ: %s" % self.residency_dic)
-
-        return "\n".join(addr)
-
-    def getInvoiceContact(self):
-        contact = []
-        if not self.different:
-            contact.append("Telefon: %s" % self.residency_phone)
-            contact.append("Email: %s" % self.residency_email)
-        else:
-            contact.append("Telefon: %s" % self.invoice_phone)
-            contact.append("Email: %s" % self.invoice_email)
-        return "\n".join(contact)
-
-    class Meta:
-        verbose_name = _(u"Adresa")
-        verbose_name_plural = _(u"Adresy")
-
-
-
 class Parms(models.Model):
     home = models.CharField(_(u"Home"), max_length=100)
     note = models.TextField(_(u"Poznámka"), blank=True)
@@ -120,13 +41,14 @@ class Parms(models.Model):
     last_notification = models.DateField(_("Last low level notification"), blank=True, null=True)
 
     #address		= models.ForeignKey("address")
-    address = models.OneToOneField(Address)
     web_machine = models.ForeignKey(Machine, related_name="web")
     mail_machine = models.ForeignKey(Machine, related_name="mail")
     mysql_machine = models.ForeignKey(Machine, related_name="mysql")
     pgsql_machine = models.ForeignKey(Machine, related_name="pgsql")
 
     user = models.OneToOneField(user, verbose_name=_(u'Uživatel'))
+    # For JSONRPC synchronization
+    address_id = models.IntegerField(_("Address ID"), default=0)
 
     def prefix(self):
         return self.user.username[:3]
@@ -180,10 +102,16 @@ class Parms(models.Model):
         return pay
 
     def pay_total_day(self):
-        return self.pay_for_sites()
+        if self.fee:
+            return self.fee / 30
+        else:
+            return self.pay_for_sites()
 
     def pay_total_month(self):
-        return self.pay_for_sites() * 30.0
+        if self.fee:
+            return self.fee
+        else:
+            return self.pay_for_sites() * 30.0
 
     @property
     def credit(self):
@@ -203,6 +131,24 @@ class Parms(models.Model):
         return False
 
     def add_credit(self, value, free=False):
+        if settings.JSONRPC_URL and not free:
+            items = [{
+                "description": config.invoice_desc,
+                "count": float(value),
+                "unit": "kr.",
+                "price": 1 / float(config.credit_currency.split(",")[0]), #TODO:change it to multicurrency
+                "tax": config.tax,
+                }]
+
+            proxy = ServiceProxy(settings.JSONRPC_URL)
+            #TODO:what to do with exception?
+            print proxy.add_invoice(
+                settings.JSONRPC_USERNAME,
+                settings.JSONRPC_PASSWORD,
+                self.address_id,
+                items
+            )
+
         bonus = 1.0
 
         if value >= 1000:

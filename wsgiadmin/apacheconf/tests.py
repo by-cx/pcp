@@ -7,25 +7,13 @@ from django.core.urlresolvers import reverse
 import unittest
 from django.test.client import RequestFactory
 from wsgiadmin.apacheconf.views import *
-from wsgiadmin.clients.models import Machine, Address, Parms
+from wsgiadmin.clients.models import Machine, Parms
 
 class basicCase(unittest.TestCase):
 	def setUp(self):
 		u = User.objects.create_user("testuser", "info@localhost", "******")
 		u.is_active = False
 		#u.save()
-		# adresa
-		a = Address()
-		a.company				= "xxx"
-		a.residency_name		= "xxx"
-		a.residency_street		= "xxx"
-		a.residency_city		= "xxx"
-		a.residency_city_num	= "56301"
-		a.residency_ic			= "1234"
-		a.residency_dic			= "CZ1234"
-		a.residency_email		= "info@localhost"
-		a.residency_phone		= "+420123456789"
-		#a.save()
 		# machine
 		m = Machine()
 		m.ipv6 = "::1"
@@ -40,7 +28,6 @@ class basicCase(unittest.TestCase):
 		p.uid		    = 1000
 		p.gid		    = 1000
 		p.discount	    = 0
-		p.address	    = a
 		p.web_machine	= m
 		p.mail_machine	= m
 		p.mysql_machine	= m
@@ -51,7 +38,6 @@ class basicCase(unittest.TestCase):
 		self.user = u
 		self.parms = p
 		self.machine = m
-		self.address = a
 
 		self.factory = RequestFactory()
 		self.basic_request = self.factory.get("/")
@@ -65,7 +51,6 @@ class basicCase(unittest.TestCase):
 		#self.user.delete()
 		#self.parms.delete()
 		#self.machine.delete()
-		#self.address.delete()
 		pass
 
 class apacheCase(basicCase):

@@ -9,14 +9,14 @@
 
     <h3>{% blocktrans %}Buy some credit{% endblocktrans %}</h3>
 
-    <table>
+    <table class="table table-striped">
     <tr>
         <th colspan="3">{% trans "Summary" %}</th>
     </tr>
     {% if u.parms.fee %}
             <tr>
-                <td>{% trans "Webs/Applications" %}</td>
-                <td>{{ u.parms.count_sites }}×</td>
+                <td>{% trans "Regular fee" %}</td>
+                <td></td>
                 <td>{{ u.parms.fee|floatformat:2 }}</td>
             </tr>
         {% else %}
@@ -25,7 +25,7 @@
                 <td>{{ u.parms.count_sites }}×</td>
                 <td>{{ u.parms.pay_for_sites|floatformat:2 }}</td>
             </tr>
-        {% endif %}
+    {% endif %}
 
         {% if not u.parms.fee %}
             <tr>
@@ -57,7 +57,7 @@
     {% endif %}
     </table>
 
-    <table>
+    <table class="table table-striped">
     <tr>
         <th colspan="2">{% trans "What you get for 1 credit" %}</th>
     </tr>
@@ -83,7 +83,7 @@
     </tr>
     </table>
 
-    <table>
+    <table class="table table-striped">
     <tr>
         <th colspan="2">{% trans "Buy some more" %}</th>
     </tr>
@@ -147,7 +147,7 @@
     </tr>
     </table>
 
-    <table>
+    <table class="table table-striped">
     <tr>
         <th>{% trans "If your credit's level reachs last 14 days" %}</th>
     </tr>

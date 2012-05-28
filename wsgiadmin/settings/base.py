@@ -3,7 +3,6 @@
 
 _ = lambda x: x
 
-#import os
 from os.path import join, abspath, pardir, dirname
 
 ROOT = abspath(join(dirname(__file__), pardir))
@@ -15,20 +14,18 @@ ENABLE_DEBUG_URLS = DEBUG
 
 APPEND_SLASH = True
 
-ADMINS = ()
-
-MANAGERS = ADMINS
+MANAGERS = ADMINS = ()
 
 INTERNAL_IPS = ('127.0.0.1', '89.111.104.66')
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'rosti'
-    }
-}
+DATABASES = {}
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
+
+# JSONRPC URL for PCP-Invoice, if "" or None, it will be switched off
+JSONRPC_URL = ""
+JSONRPC_USERNAME = ""
+JSONRPC_PASSWORD = ""
 
 ## Faktury
 
@@ -38,7 +35,11 @@ MY_ADDRESS_ID = 1
 STAMP_SIGN = join(ROOT, "m", "razitko.png")
 STAMP_NOSIGN = join(ROOT, "m", "razitko-nosign.png")
 
-CURRENCY = (("czk", "CZK"), ("eur", "EUR"), ("usd", "USD"),)
+CURRENCY = (
+    ("czk", "CZK"),
+    ("eur", "EUR"),
+    ("usd", "USD"),
+)
 
 ##########
 
@@ -54,9 +55,9 @@ TIME_ZONE = 'Europe/Prague'
 LANGUAGE_CODE = 'cs'
 
 LANGUAGES = (
-('cs', u'Česky'),
-('en', 'English'),
-    )
+    ('cs', u'Česky'),
+    ('en', 'English'),
+)
 
 #EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
@@ -84,6 +85,7 @@ SECRET_KEY = 'l=!i_!9q8tc9@jn@m*n*z6zri01$kvjdh94v^1_bzw!8ja5z=*'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
+#    'integrate_project.template_loader.load_template_source',
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
 )
@@ -121,13 +123,10 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.admin',
 
-    'uni_form',
+    'crispy_forms',
     'south',
     'constance',
     'constance.backends.database',
-
-    'dajaxice',
-    'dajax',
 
     'wsgiadmin.requests',
     'wsgiadmin.useradmin',
@@ -136,6 +135,7 @@ INSTALLED_APPS = (
     'wsgiadmin.emails',
     'wsgiadmin.ftps',
     'wsgiadmin.db',
+    'wsgiadmin.cron',
     'wsgiadmin.users',
     'wsgiadmin.apacheconf',
     'wsgiadmin.keystore',
@@ -148,7 +148,7 @@ CONSTANCE_BACKEND = "constance.backends.database.DatabaseBackend"
 CONSTANCE_CONFIG = {
     "email": ("info@rosti.cz", "Your e-mail"),
 
-    "mode": ("apache", "apache or nginx"), # main web server, (apache/nginx)
+    "mode": ("nginx", "apache or nginx"), # main web server, (apache/nginx)
     "ipv6": (True, "Turn on/off support for IPv6"),
     "maildir": ("/var/mail", "Directory with maildirs"),
 
@@ -208,6 +208,8 @@ CONSTANCE_CONFIG = {
     "credit_750_bonus": (1.1, "750 credits bonus (credits * this number)"),
     "credit_1000_bonus": (1.2, "500 credits bonus (credits * this number)"),
     "credit_currency": ("0.5,12.5,9.5", "CZK, EUR, USD"),
+    "tax": (0, "%"),
+    "invoice_desc": ("Credit for services", "Some text"),
 
     "terms_url": ("", "Terms URL"),
 
@@ -215,7 +217,6 @@ CONSTANCE_CONFIG = {
     }
 
 VIRTUALENVS_DIR = 'virtualenvs'
-LOG_DIR = '/var/log/webs/' #trailing slash required!
 
 PAYMENT_CHOICES = (
     ("per_web", _("Per application (60 CZK/app/month)")),

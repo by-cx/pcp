@@ -9,7 +9,7 @@ from django.utils.translation import ugettext_lazy as _, ugettext
 from wsgiadmin.db.forms import PgsqlForm, MysqlForm
 from wsgiadmin.db.models import MySQLDB, PGSQL
 from wsgiadmin.requests.request import MySQLRequest, PostgreSQLRequest
-from wsgiadmin.service.forms import PassCheckForm
+from wsgiadmin.service.forms import PassCheckForm, RostiFormHelper
 from wsgiadmin.service.views import JsonResponse, RostiListView
 
 
@@ -49,7 +49,7 @@ def add(request, dbtype):
     u = request.session.get('switched_user', request.user)
     superuser = request.user
 
-    form_class = [PgsqlForm, MysqlForm][dbtype == 'mysql']
+    form_class = MysqlForm if dbtype == 'mysql' else PgsqlForm
 
     if request.method == 'POST':
         form = form_class(request.POST)
@@ -76,12 +76,16 @@ def add(request, dbtype):
         form = form_class()
         form.owner = u
 
+
+    helper = RostiFormHelper()
+
+    helper.form_action = reverse("db_add", kwargs=dict(dbtype=dbtype))
+
     return render_to_response('universal.html',
             {
             "form": form,
+            "form_helper": RostiFormHelper(),
             "title": _("Create %s database" % dbtype),
-            "submit": _("Create database"),
-            "action": reverse("db_add", kwargs=dict(dbtype=dbtype)),
             "u": u,
             "superuser": superuser,
             "menu_active": "dbs",
@@ -101,14 +105,14 @@ def passwd(request, dbtype, dbname):
             if dbtype == 'mysql':
                 #TODO - raise better exception
                 try:
-                    m = u.mysqldb_set.get(dbname=dbname)
+                    u.mysqldb_set.get(dbname=dbname)
                 except MySQLDB.DoesNotExist:
                     return HttpResponseForbidden(ugettext("Unable to modify chosen database"))
                 else:
                     mr = MySQLRequest(u, u.parms.mysql_machine)
             elif dbtype == 'pgsql':
                 try:
-                    m = u.pgsql_set.get(dbname=dbname)
+                    u.pgsql_set.get(dbname=dbname)
                 except PGSQL.DoesNotExist:
                     return HttpResponseForbidden(ugettext("Unable to modify chosen database"))
                 else:
@@ -124,12 +128,9 @@ def passwd(request, dbtype, dbname):
 
     return render_to_response('simplepasswd.html',
             {
-            'dbtype': dbtype,
             "form": form,
-            "dbname": dbname,
-            "title": _("Password for database %s") % dbname,
-            "submit": _("Change password"),
-            "action": reverse("db_passwd", kwargs=dict(dbtype=dbtype, dbname=dbname)),
+            "form_helper": RostiFormHelper(),
+            "title": _("Change password for database"),
             "u": u,
             "superuser": superuser,
             "menu_active": "dbs",

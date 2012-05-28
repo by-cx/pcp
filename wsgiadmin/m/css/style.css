@@ -1,0 +1,249 @@
+body {
+    background: #fff;
+    padding-top: 50px;
+}
+
+/*--------------------------------------------------------------------------------------------------------
+    Content
+--------------------------------------------------------------------------------------------------------*/
+
+
+#notifications .error {
+    background: #fdd1d1 url('../images/ico-error.png') no-repeat 20px 10px !important;
+    border: solid 1px #dc8787;
+}
+
+#notifications .alert-info {
+    background: #D9EDF7 url('../images/ico-info.png') no-repeat 20px 10px !important;
+    padding-left: 50px;
+}
+
+
+#notifications .warning {
+    background: #fefbd4 url('../images/ico-upozorneni.png') no-repeat 20px 10px !important;
+    border: solid 1px #e6db54;
+}
+
+#notifications .success {
+    background: url('../images/ico-ok.png') no-repeat 20px 10px #d8fed1 !important;
+    border: solid 1px #8ad17f;
+}
+
+#notifications .zavrit {
+    position: absolute;
+    right: -5px;
+    top: -5px;
+    cursor: pointer;
+}
+
+/*--------------------------------------------------------------------------------------------------------
+    Notifications form
+--------------------------------------------------------------------------------------------------------*/
+div.ctrlHolder {
+    padding: 0 !important;
+    border-bottom: none !important;
+}
+
+div.ctrlHolder.error {
+    background: #fdd1d1 url('../images/ico-error.png') no-repeat 20px 10px !important;
+    margin: 0 0 10px 0;
+    padding: 10px 30px 10px 50px !important;
+    position: relative;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+    border: solid 1px #dc8787;
+}
+
+div.ctrlHolder.info {
+    background: #dde4fe url('../images/ico-info.png') no-repeat 20px 10px !important;
+    margin: 0 0 10px 0;
+    padding: 10px 30px 10px 50px !important;
+    position: relative;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+    border: solid 1px #94a8e8;
+}
+
+div.ctrlHolder.warning {
+    background: #fefbd4 url('../images/ico-upozorneni.png') no-repeat 20px 10px !important;
+    margin: 0 0 10px 0;
+    padding: 10px 30px 10px 50px !important;
+    position: relative;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+    border: solid 1px #e6db54;
+}
+
+div.ctrlHolder.success {
+    background: url('../images/ico-ok.png') no-repeat 20px 10px #d8fed1 !important;
+    margin: 0 0 10px 0;
+    padding: 10px 30px 10px 50px !important;
+    position: relative;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+    border: solid 1px #8ad17f;
+}
+
+div.ctrlHolder .zavrit {
+    position: absolute;
+    right: -5px;
+    top: -5px;
+    cursor: pointer;
+}
+
+/*--------------------------------------------------------------------------------------------------------
+    Registrace a prihlaseni
+--------------------------------------------------------------------------------------------------------*/
+.registrace {
+    background: url('../images/bg-body-registrace.jpg') repeat;
+}
+
+.registrace h1 {
+    margin: 0 0 40px 50px;
+    font-size: 40px;
+    color: #71808a;
+    font-weight: normal;
+    text-shadow: 0 1px 1px #fff;
+}
+
+.registrace h2 {
+    margin: 0 0 20px 50px;
+    font-size: 25px;
+    color: #71808a;
+    text-shadow: 0 1px 1px #fff;
+}
+
+.registrace p {
+    margin: 0 0 40px 50px;
+    font-size: 15px;
+    color: #3b4248;
+    text-shadow: 0 1px 1px #fff;
+    line-height: 25px;
+}
+
+.registrace form p {
+    margin: 0;
+    font-size: 12px;
+    text-shadow: none;
+}
+
+.registrace #main {
+    padding: 40px 0 150px 0;
+}
+
+.registrace #main-inside {
+    margin: 0 auto;
+    width: 800px;
+}
+
+#header {
+    width: 100%;
+    padding: 0 10px;
+}
+
+#login {
+    padding-right: 20px;
+}
+
+#login .username {
+    color: white;
+}
+
+
+.errorlist {
+    margin-left: 15px;
+    color: red;
+    font-weight: bold;
+}
+
+.errorlist li {
+    list-style-type: none;
+}
+
+.helptext {
+    color: #ccc;
+    margin: 0 0 20px 120px;
+}
+
+#reg-form label {
+    float: left;
+    padding-top: 5px;
+    text-align: right;
+    width: 140px;
+}
+
+
+#prepnuti-uzivatele {
+    position: absolute;
+    left: 450px;
+    top: 43px;
+    color: #c2c2c2;
+}
+
+#prepnuti-uzivatele a {
+    background: #2d3238;
+    padding: 5px 10px;
+    color: #f2f2f2;
+    text-decoration: none;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+
+#prepnuti-uzivatele a:hover {
+    background: #393f46;
+}
+
+#prepnuti-uzivatele #uzivatel {
+    margin: 0 0 0 5px;
+}
+
+#prepnuti-uzivatele i {
+    margin: 0 5px 0 0;
+    font-style: normal;
+}
+
+.terms {
+    color: #FFF161;
+    text-align: center;
+}
+
+.ajax_refresh {
+    background-image: url('../icons/ajax-loader.png');
+    background-repeat: no-repeat;
+    cursor: pointer;
+    width: 35px;
+    height: 15px;
+}
+
+.ajax_refresh.running {
+    background-image: url('../icons/ajax-loader.gif');
+}
+
+.ajax_refresh .status {
+    padding-left: 20px;
+}
+
+.error {
+    background-color: #FFDFDF;
+    padding: 5px;
+    border: 1px solid #4D4D4D;
+}
+
+.list_actions a {
+    margin-right: 10px;
+}
+
+.pagination a.current {
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.akce li {
+    list-style-type: none;
+    display: inline;
+}

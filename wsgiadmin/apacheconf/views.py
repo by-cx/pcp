@@ -83,7 +83,8 @@ def app_static(request, app_type="static", app_id=0):
     except UserSite.DoesNotExist:
         site = None
 
-    domains = get_domains(site, request.user)
+    domains = get_domains(site, u)
+    domains = u.domain_set.all()
     FormStatic.base_fields['main_domain'].queryset = domains
     FormStatic.base_fields['misc_domains'].queryset = domains
     if request.method == 'POST':
@@ -162,7 +163,7 @@ def app_wsgi(request, app_id=0):
     except UserSite.DoesNotExist:
         site = None
 
-    domains = get_domains(site, request.user)
+    domains = get_domains(site, u)
     FormWsgi.base_fields['main_domain'].queryset = domains
     FormWsgi.base_fields['misc_domains'].queryset = domains
     if request.method == 'POST':

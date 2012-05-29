@@ -8,12 +8,14 @@ from django.db import models
 from django.db.models import Sum
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
-from jsonrpc.proxy import ServiceProxy
 from wsgiadmin.emails.models import Email, Message
 from wsgiadmin.keystore.tools import kget
 from wsgiadmin.requests.tools import RawRequest
 from wsgiadmin.stats.models import Credit
 from wsgiadmin.tools import size_format
+
+if settings.JSONRPC_URL:
+    from jsonrpc.proxy import ServiceProxy
 
 
 class Machine(models.Model):
@@ -140,14 +142,15 @@ class Parms(models.Model):
                 "tax": config.tax,
                 }]
 
-            proxy = ServiceProxy(settings.JSONRPC_URL)
-            #TODO:what to do with exception?
-            print proxy.add_invoice(
-                settings.JSONRPC_USERNAME,
-                settings.JSONRPC_PASSWORD,
-                self.address_id,
-                items
-            )
+            if settings.JSONRPC_URL:
+                proxy = ServiceProxy(settings.JSONRPC_URL)
+                #TODO:what to do with exception?
+                print proxy.add_invoice(
+                    settings.JSONRPC_USERNAME,
+                    settings.JSONRPC_PASSWORD,
+                    self.address_id,
+                    items
+                )
 
         bonus = 1.0
 

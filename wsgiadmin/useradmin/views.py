@@ -16,7 +16,6 @@ from django.utils.translation import ugettext_lazy as _, ugettext
 from django.template.context import RequestContext
 from django.core.mail import send_mail
 from django.views.generic.edit import FormView
-from jsonrpc.proxy import ServiceProxy
 
 from wsgiadmin.apacheconf.models import UserSite
 from wsgiadmin.clients.models import *
@@ -24,6 +23,9 @@ from wsgiadmin.requests.request import SSHHandler
 from wsgiadmin.service.forms import PassCheckForm, RostiFormHelper
 from wsgiadmin.useradmin.forms import formReg, formReg2, PaymentRegForm, SendPwdForm
 from wsgiadmin.clients.models import Parms
+
+if settings.JSONRPC_URL:
+    from jsonrpc.proxy import ServiceProxy
 
 @login_required
 def app_copy(request):

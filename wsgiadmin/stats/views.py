@@ -8,9 +8,11 @@ from django.http import HttpResponseRedirect
 from django.views.generic.base import TemplateView
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from jsonrpc.proxy import ServiceProxy
 from wsgiadmin.stats.models import Credit, Record
 from django.utils.translation import ugettext_lazy as _
+
+if settings.JSONRPC_URL:
+    from jsonrpc.proxy import ServiceProxy
 
 class CreditView(TemplateView):
     template_name = "credit.html"

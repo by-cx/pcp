@@ -175,6 +175,7 @@ CONSTANCE_CONFIG = {
     "bind_init_script": ("/etc/init.d/bind9", "BIND's init script"),
 
     "handle_dns": (False, "Use BIND"),
+    "handle_dns_secondary": (False, "If handled DNS, include secondary too?"),
     "dns_master": ("", "Master NS server (IP)"),
     "dns_slave": ("", "Slave NS server (IP)"),
     "dns_ns1": ("ns1.example.com", "NS1 domain"),

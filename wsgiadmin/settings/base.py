@@ -209,12 +209,15 @@ CONSTANCE_CONFIG = {
     "credit_750_bonus": (1.1, "750 credits bonus (credits * this number)"),
     "credit_1000_bonus": (1.2, "500 credits bonus (credits * this number)"),
     "credit_currency": ("0.5,12.5,9.5", "CZK, EUR, USD"),
+    "credit_threshold": (-7, "When should be a web disabled"),
     "tax": (0, "%"),
     "invoice_desc": ("Credit for services", "Some text"),
 
     "terms_url": ("", "Terms URL"),
 
     "find_directory_deep":(2, "Finding directory deep"),
+
+    "auto_disable":(True, "Auto disabling users"),
     }
 
 VIRTUALENVS_DIR = 'virtualenvs'

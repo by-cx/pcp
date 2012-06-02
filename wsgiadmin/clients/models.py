@@ -131,6 +131,7 @@ class Parms(models.Model):
         return False
 
     def add_credit(self, value, free=False):
+        retval = None
         if settings.JSONRPC_URL and not free:
             items = [{
                 "description": config.invoice_desc,
@@ -142,7 +143,7 @@ class Parms(models.Model):
 
             proxy = ServiceProxy(settings.JSONRPC_URL)
             #TODO:what to do with exception?
-            print proxy.add_invoice(
+            retval = proxy.add_invoice(
                 settings.JSONRPC_USERNAME,
                 settings.JSONRPC_PASSWORD,
                 self.address_id,
@@ -166,6 +167,8 @@ class Parms(models.Model):
         message = Message.objects.filter(purpose="add_credit")
         if message:
             message[0].send(config.email, {"user": self.user.username, "credit": value, "bonus": value * (bonus - 1.0)})
+
+        return retval
 
     def installed(self):
         rr = RawRequest(self.web_machine.ip)

@@ -4,3 +4,4 @@ django-picklefield
 south
 anyjson
 django-crispy-forms
+django-json-rpc

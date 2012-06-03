@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-11-27 03:45+0100\n"
+"POT-Creation-Date: 2012-05-04 11:24+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -80,16 +80,16 @@ msgstr "Jedna nebo více IP adres je špatném formátu"
 msgid "Virtualenv hasn't to contain chars ./~"
 msgstr "Virtualenv nesmí obsahovat naky ./~"
 
-#: apacheconf/models.py:21 templates/apache.html:21
+#: apacheconf/models.py:22 templates/apache.html:21
 msgid "Type"
 msgstr "Typ"
 
-#: apacheconf/models.py:23 templates/admin.html:79 templates/domains.html:5
+#: apacheconf/models.py:24 templates/admin.html:79 templates/domains.html:5
 #: templates/info.html:55
 msgid "Domains"
 msgstr "Domény"
 
-#: apacheconf/models.py:24
+#: apacheconf/models.py:25
 msgid ""
 "VirtualHost domains, space separated; ie. 'rosti.cz www.rosti.cz '; First "
 "domain is taken as primary"
@@ -97,75 +97,75 @@ msgstr ""
 "Domény oddělené mezerami; např. 'rosti.cz www.rosti.cz '; První doména je "
 "brána jako hlavní"
 
-#: apacheconf/models.py:26
+#: apacheconf/models.py:27
 msgid "DocumentRoot"
 msgstr ""
 
-#: apacheconf/models.py:27
+#: apacheconf/models.py:28
 msgid ".htaccess"
 msgstr ""
 
-#: apacheconf/models.py:28
+#: apacheconf/models.py:29
 msgid "Allow directory index"
 msgstr "Povolí indexadi adresáře (list souborů)"
 
-#: apacheconf/models.py:29
+#: apacheconf/models.py:30
 msgid "Whitelist"
 msgstr ""
 
-#: apacheconf/models.py:30
+#: apacheconf/models.py:31
 msgid "Blacklist"
 msgstr ""
 
-#: apacheconf/models.py:30
+#: apacheconf/models.py:31
 msgid "One IP per one line"
 msgstr "Jedna IP adresa na řádek"
 
-#: apacheconf/models.py:32
+#: apacheconf/models.py:33
 msgid "Script"
 msgstr "Skript"
 
-#: apacheconf/models.py:33
+#: apacheconf/models.py:34
 msgid "No. of proccesses"
 msgstr "Počet procesů"
 
-#: apacheconf/models.py:34
+#: apacheconf/models.py:35
 msgid "No. of threads"
 msgstr "Počet threadů na proces"
 
-#: apacheconf/models.py:35
+#: apacheconf/models.py:36
 msgid "Virtualenv"
 msgstr ""
 
-#: apacheconf/models.py:36
+#: apacheconf/models.py:37
 msgid "Static data path"
 msgstr "Cesty ke statickým datům"
 
-#: apacheconf/models.py:37
+#: apacheconf/models.py:38
 msgid "Python path"
 msgstr "Python path"
 
-#: apacheconf/models.py:39
+#: apacheconf/models.py:40
 msgid "Extra configuration"
 msgstr "Další konfigurace"
 
-#: apacheconf/models.py:40
+#: apacheconf/models.py:41
 msgid "SSL certificate filename"
 msgstr "Soubor s certifikátem"
 
-#: apacheconf/models.py:41
+#: apacheconf/models.py:42
 msgid "SSL key filename"
 msgstr "Soubor s klíem"
 
-#: apacheconf/models.py:42
+#: apacheconf/models.py:43
 msgid "SSL mode"
 msgstr "SSL mód"
 
-#: apacheconf/models.py:44
+#: apacheconf/models.py:45
 msgid "Removed"
 msgstr "Vymazáno"
 
-#: apacheconf/models.py:45
+#: apacheconf/models.py:46
 msgid "Owner"
 msgstr "Vlastník"
 
@@ -376,8 +376,8 @@ msgstr ""
 msgid "Undetected"
 msgstr "Nezjištěno"
 
-#: clients/models.py:236 db/models.py:8 db/models.py:19 stats/models.py:23
-#: stats/models.py:41
+#: clients/models.py:236 db/models.py:8 db/models.py:19 stats/models.py:24
+#: stats/models.py:42
 msgid "User"
 msgstr "Uživatel"
 
@@ -814,32 +814,32 @@ msgstr "Za aplikaci (60 Kč/app/měsíc)"
 msgid "Constant fee (200 CZK/196 MB RAM)"
 msgstr "Paušální poplatek (200 Kč/196 MB RAM)"
 
-#: stats/models.py:22 stats/models.py:40 templates/bill.html:39
+#: stats/models.py:23 stats/models.py:41 templates/bill.html:40
 #: templates/requests.html:17
 msgid "Date"
 msgstr "Datum"
 
-#: stats/models.py:24 templates/info.html:50
+#: stats/models.py:25 templates/info.html:50
 msgid "Service"
 msgstr "Služba"
 
-#: stats/models.py:25
+#: stats/models.py:26
 msgid "Value"
 msgstr "Hodnota"
 
-#: stats/models.py:26
+#: stats/models.py:27
 msgid "Cost"
 msgstr "Cena"
 
-#: stats/models.py:42
+#: stats/models.py:43
 msgid "Cost (bonus included)"
 msgstr "Cena (s bonusem)"
 
-#: stats/models.py:43
+#: stats/models.py:44
 msgid "Bonus"
 msgstr ""
 
-#: stats/models.py:44
+#: stats/models.py:45
 msgid "Sended to invoice system"
 msgstr "Odesláno do fakturačního systému"
 
@@ -865,7 +865,7 @@ msgstr ""
 "Tyto domény nelze použít, protože nejsou zadány v sekci domény nebo je "
 "používá jiná aplikace"
 
-#: templates/admin.html:30 templates/users.html:61
+#: templates/admin.html:30 templates/users.html:64
 msgid "Are you sure?"
 msgstr "Určitě?"
 
@@ -927,8 +927,8 @@ msgid ""
 "                            "
 msgstr ""
 "\n"
-"                                Většina služeb závisí na doméně, dobrým místem "
-"kde začít je tedy\n"
+"                                Většina služeb závisí na doméně, dobrým "
+"místem kde začít je tedy\n"
 "                            "
 
 #: templates/admin.html:97
@@ -1037,7 +1037,7 @@ msgstr "Stránky a aplikace"
 
 #: templates/apache.html:16
 msgid "List of existing apps and webs"
-msgstr "Seznam existující aplikací a webů"
+msgstr "Seznam existujících aplikací a webů"
 
 #: templates/apache.html:20
 msgid "Create date"
@@ -1054,7 +1054,7 @@ msgstr "Akce"
 #: templates/apache.html:37 templates/apache.html.py:46
 #: templates/apache.html:47 templates/boxes.html:34 templates/ftps.html:31
 #: templates/ftps.html.py:32 templates/invoices.html:96
-#: templates/redirects.html:35 templates/users.html:60
+#: templates/redirects.html:35 templates/users.html:63
 msgid "Edit"
 msgstr "Upravit"
 
@@ -1068,7 +1068,7 @@ msgstr ""
 #: templates/domains.html.py:37 templates/ftps.html:34
 #: templates/ftps.html.py:35 templates/invoices.html:77
 #: templates/invoices.html.py:97 templates/redirects.html:38
-#: templates/redirects.html.py:39 templates/users.html:61
+#: templates/redirects.html.py:39 templates/users.html:64
 msgid "Delete"
 msgstr "Smazat"
 
@@ -1091,19 +1091,19 @@ msgstr "Kreditové statistiky"
 msgid "What you payed in last 14 days"
 msgstr "Odečtené kredity za posledních 14 dní"
 
-#: templates/bill.html:24
+#: templates/bill.html:25
 msgid "What you pay by months"
 msgstr "Odečtené kredity podle měsíců"
 
-#: templates/bill.html:36
+#: templates/bill.html:37
 msgid "Buyed credits"
 msgstr "Nákupy kreditů"
 
-#: templates/bill.html:40 templates/users.html:33
+#: templates/bill.html:41 templates/users.html:33
 msgid "Credits"
 msgstr "Kredity"
 
-#: templates/bill.html:41
+#: templates/bill.html:42
 msgid "Earned bonus"
 msgstr "Získaný bonus"
 
@@ -1427,42 +1427,42 @@ msgid "Přidat položku"
 msgstr ""
 
 #: templates/invoices.html:108 templates/paginator.html:3
-#: templates/users.html:71
+#: templates/users.html:74
 msgid "First page"
 msgstr "První stránka"
 
 #: templates/invoices.html:108 templates/paginator.html:3
-#: templates/paginator.html.py:6 templates/users.html:71
+#: templates/paginator.html.py:6 templates/users.html:74
 msgid "First"
 msgstr "První"
 
 #: templates/invoices.html:109 templates/paginator.html:4
-#: templates/users.html:72
+#: templates/users.html:75
 msgid "Previous page"
 msgstr "Předchozí stránka"
 
 #: templates/invoices.html:109 templates/paginator.html:4
-#: templates/paginator.html.py:6 templates/users.html:72
+#: templates/paginator.html.py:6 templates/users.html:75
 msgid "Previous"
 msgstr "Předchozí"
 
 #: templates/invoices.html:119 templates/paginator.html:18
-#: templates/users.html:82
+#: templates/users.html:85
 msgid "Next page"
 msgstr "Další stránka"
 
 #: templates/invoices.html:119 templates/paginator.html:18
-#: templates/paginator.html.py:21 templates/users.html:82
+#: templates/paginator.html.py:21 templates/users.html:85
 msgid "Next"
 msgstr "Další"
 
 #: templates/invoices.html:120 templates/paginator.html:19
-#: templates/users.html:83
+#: templates/users.html:86
 msgid "Last page"
 msgstr "Poslední stránka"
 
 #: templates/invoices.html:120 templates/paginator.html:19
-#: templates/paginator.html.py:21 templates/users.html:83
+#: templates/paginator.html.py:21 templates/users.html:86
 msgid "Last"
 msgstr "Poslední"
 
@@ -1571,11 +1571,11 @@ msgstr ""
 msgid "Pay per day"
 msgstr "Platí za den"
 
-#: templates/users.html:58
+#: templates/users.html:61
 msgid "Switch"
 msgstr "Přepnout uživatele"
 
-#: templates/users.html:59
+#: templates/users.html:62
 msgid "Install"
 msgstr ""
 

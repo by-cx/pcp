@@ -129,7 +129,7 @@ class Parms(models.Model):
     user = models.OneToOneField(user, verbose_name=_(u'Uživatel'))
 
     def prefix(self):
-        return self.user.username[:3]
+        return self.user.username.replace(".", "")[:3]
 
     def dc(self):
         """Discount coeficient"""

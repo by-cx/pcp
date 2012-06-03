@@ -79,7 +79,11 @@ class UserSite(models.Model):
         if not misc:
             return ""
 
-        return " ".join([one.name for one in self.misc_domains])
+        return " ".join([one.name for one in self.misc_domains.all()])
+
+    @property
+    def domains(self):
+        return "%s %s" % (self.main_domain.name, self.server_aliases)
 
     @property
     def pidfile(self):

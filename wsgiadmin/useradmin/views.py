@@ -16,7 +16,6 @@ from django.utils.translation import ugettext_lazy as _, ugettext
 from django.template.context import RequestContext
 from django.core.mail import send_mail
 from django.views.generic.edit import FormView
-from jsonrpc.proxy import ServiceProxy
 
 from wsgiadmin.apacheconf.models import UserSite
 from wsgiadmin.clients.models import *
@@ -24,6 +23,9 @@ from wsgiadmin.requests.request import SSHHandler
 from wsgiadmin.service.forms import PassCheckForm, RostiFormHelper
 from wsgiadmin.useradmin.forms import formReg, formReg2, PaymentRegForm, SendPwdForm
 from wsgiadmin.clients.models import Parms
+
+if settings.JSONRPC_URL:
+    from jsonrpc.proxy import ServiceProxy
 
 @login_required
 def app_copy(request):
@@ -39,7 +41,7 @@ def app_copy(request):
     cmd = "cp -a %s %s" % (app.document_root, new_location)
     sh.run(cmd=cmd, instant=True)
 
-    messages.add_message(request, messages.SUCCESS, _('Site has copied'))
+    messages.add_message(request, messages.SUCCESS, _('Site has been copied'))
 
     return HttpResponseRedirect(reverse("master"))
 
@@ -56,13 +58,16 @@ def master(request):
         balance_day += site.pay
     balance_month = balance_day * 30
 
+    apps = UserSite.objects.filter(Q(type="static")|Q(type="php"))
+    apps = sorted(apps, key=lambda x: x.main_domain.name)
+
     return render_to_response('master.html', {
         "u": u,
         "superuser": superuser,
         "menu_active": "dashboard",
         "balance_day": balance_day,
         "balance_month": balance_month,
-        "apps": UserSite.objects.filter(Q(type="static")|Q(type="php")),
+        "apps": apps,
         },
         context_instance=RequestContext(request)
     )

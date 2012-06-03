@@ -45,6 +45,11 @@ def rm(request):
                 pri_br.mod_config()
                 pri_br.reload()
 
+                if config.handle_dns_secondary:
+                    sec_br = BindRequest(u, "slave")
+                    sec_br.mod_config()
+                    sec_br.reload()
+
             d.delete()
 
         return JsonResponse("OK", {1: ugettext("Domain was successfuly deleted")})
@@ -72,6 +77,10 @@ def add(request):
                 pri_br.mod_zone(instance)
                 pri_br.mod_config()
                 pri_br.reload()
+                if config.handle_dns_secondary:
+                    sec_br = BindRequest(u, "slave")
+                    sec_br.mod_config()
+                    sec_br.reload()
 
             logging.info(_("Added domain %s ") % name)
             message = _("Domain %s has been successfuly added") % name

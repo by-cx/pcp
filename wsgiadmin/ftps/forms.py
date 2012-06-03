@@ -1,4 +1,3 @@
-from crypt import crypt
 from django import forms
 from django.forms.models import ModelForm
 from django.utils.translation import ugettext_lazy as _
@@ -53,7 +52,7 @@ class FTPForm(PassCheckModelForm, FTPUpdateForm):
     def clean(self):
         super(FTPForm, self).clean()
         super(FTPForm, self).clean_password1()
-        self.cleaned_data['password1'] = crypt(self.cleaned_data['password1'], self.user.username)
+        self.cleaned_data['password1'] = self.cleaned_data['password1']
         return self.cleaned_data
 
     def clean_username(self):

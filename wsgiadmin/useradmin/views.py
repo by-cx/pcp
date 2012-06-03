@@ -59,7 +59,7 @@ def master(request):
     balance_month = balance_day * 30
 
     apps = UserSite.objects.filter(Q(type="static")|Q(type="php"))
-    apps = sorted(apps, key=lambda x: x.server_name)
+    apps = sorted(apps, key=lambda x: x.main_domain.name)
 
     return render_to_response('master.html', {
         "u": u,

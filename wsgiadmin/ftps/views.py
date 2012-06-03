@@ -62,7 +62,7 @@ def ftp_upsert(request, ftp_id=0):
     return render_to_response('universal.html',
             {
             "form": form,
-            "form_helper": helper,
+            "form_helper": RostiFormHelper(),
             "title": _("FTP account"),
             "note": [_("* Username will be prefixed with `%s_`" % u.username)],
             "u": u,
@@ -97,6 +97,7 @@ def passwd_ftp(request, ftp_id):
     return render_to_response('universal.html',
             {
             "form": form,
+            "form_helper": RostiFormHelper(),
             "title": _("Edit FTP account"),
             "submit": _("Save changes"),
             "action": reverse("ftp_passwd", kwargs={'ftp_id': ftp_id}),

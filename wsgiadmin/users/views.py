@@ -231,11 +231,13 @@ def rm(request, uid):
         iparms = None
 
     if iparms: iparms.delete()
+
     if ";" not in iuser.username:
-        sr = SystemRequest(u, iuser.parms.web_machine)
+        sr = SystemRequest(u, iparms.web_machine)
         sr.run("dropuser %s" % iuser.username)
         sr.run("userdel %s" % iuser.username)
         sr.run("groupdel %s" % iuser.username)
+        sr.run("rm -r %s" % iparms.home)
     iuser.delete()
 
     return HttpResponse("Smazáno")

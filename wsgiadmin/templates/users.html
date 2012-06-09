@@ -36,7 +36,7 @@
 				</thead>
 				{% if users %}
 				<tbody>
-					{% for user in users.object_list %}
+					{% for user in users %}
 					<tr>
 						<td>{{ user }}</td>
 						<td>
@@ -64,28 +64,6 @@
 					</tr>
 					{% endfor %}
 				</tbody>
-				<tfoot>
-					<tr>
-						<td colspan="5">
-								<div class="pagination">
-									{% if users.has_previous %}<a href="{% url wsgiadmin.users.views.show 1 %}" title="{% trans "First page" %}">&laquo; {% trans "First" %}</a>{% endif %}
-									{% if users.has_previous %}<a href="{% url wsgiadmin.users.views.show users.previous_page_number %}" title="{% trans "Previous page" %}">&laquo; {% trans "Previous" %}</a>{% endif %}
-				
-									{% for p in paginator.page_range %}
-										{% if p == num_page %}
-											<a href="{% url wsgiadmin.users.views.show p %}" class="number current" title="{{ p }}">{{ p }}</a>
-										{% else %}
-											<a href="{% url wsgiadmin.users.views.show p %}" class="number" title="{{ p }}">{{ p }}</a>
-										{% endif %}
-									{% endfor %}
-				
-									{% if users.has_next %}<a href="{% url wsgiadmin.users.views.show users.next_page_number %}" title="{% trans "Next page" %}">{% trans "Next" %} &raquo;</a>{% endif %}
-									{% if users.has_next %}<a href="{% url wsgiadmin.users.views.show paginator.num_pages %}" title="{% trans "Last page" %}">{% trans "Last" %} &raquo;</a>{% endif %}
-								</div>
-								<div class="clear"></div>
-						</td>
-					</tr>
-				</tfoot>
 				{% else %}
 				<tbody>
 				<tr>

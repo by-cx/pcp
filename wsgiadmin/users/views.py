@@ -19,7 +19,7 @@ from wsgiadmin.service.forms import PassCheckForm, RostiFormHelper
 from django.core.exceptions import ObjectDoesNotExist
 
 @login_required
-def show(request, p=1):
+def show(request):
     """
     Vylistování seznamu databází
     """
@@ -27,13 +27,7 @@ def show(request, p=1):
         return HttpResponseForbidden(_("Permission error"))
     u = request.session.get('switched_user', request.user)
 
-    p = int(p)
-    paginator = Paginator(list(user.objects.order_by("username")), 75)
-
-    if not paginator.count:
-        page = None
-    else:
-        page = paginator.page(p)
+    users = user.objects.order_by("username")
 
     sr = SystemRequest(u, u.parms.web_machine)
     #TODO - sed required columns only
@@ -42,10 +36,8 @@ def show(request, p=1):
     ssh_users = [x.strip().split(":")[0] for x in data.split("\n") if x]
     return render_to_response('users.html',
             {
-            "users": page,
+            "users": users,
             "ssh_users": ssh_users,
-            "paginator": paginator,
-            "num_page": p,
             "u": u,
             "superuser": request.user,
             "menu_active": "users",

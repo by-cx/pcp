@@ -85,7 +85,8 @@ class StatsView(TemplateView):
                     data.append({"label": "%d/%d" % (month, year), "cost": 0.0})
                 if month == 12:
                     year += 1
-                    month = 0
+                    month = 1
+                    break
                 month += 1
             year += 1
         return data

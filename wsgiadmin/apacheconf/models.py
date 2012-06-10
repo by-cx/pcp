@@ -1,4 +1,5 @@
 from constance import config
+import re
 
 from django.contrib.auth.models import User
 from django.db import models
@@ -52,6 +53,10 @@ class UserSite(models.Model):
 
     class Meta:
         db_table = 'apacheconf_site'
+
+    @property
+    def whitelist(self):
+        return [x.strip().replace("\"","") for x in self.allow_ips.split("\n") if re.match("[0-9a-f\.\:]{7,45}",x)]
 
     @property
     def python_paths(self):

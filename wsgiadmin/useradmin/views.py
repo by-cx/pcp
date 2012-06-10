@@ -185,12 +185,6 @@ def reg(request):
         form2 = formReg2(request.POST)
         form3 = PaymentRegForm(request.POST)
         if form1.is_valid() and form2.is_valid() and form3.is_valid():
-            # user
-            u = user.objects.create_user(form2.cleaned_data["username"],
-                                         form1.cleaned_data["email"],
-                                         form2.cleaned_data["password1"])
-            u.is_active = False
-            u.save()
             # machine
             m_web = get_object_or_404(Machine, name=config.default_web_machine)
             m_mail = get_object_or_404(Machine, name=config.default_mail_machine)
@@ -200,7 +194,7 @@ def reg(request):
             address_id = 0
             if settings.JSONRPC_URL:
                 proxy = ServiceProxy(settings.JSONRPC_URL)
-                address_id = proxy.add_address(
+                data = proxy.add_address(
                     settings.JSONRPC_USERNAME, settings.JSONRPC_PASSWORD,
                     form1.cleaned_data["company"],
                     form1.cleaned_data["first_name"],
@@ -213,6 +207,15 @@ def reg(request):
                     form1.cleaned_data["ic"],
                     form1.cleaned_data["dic"]
                 )
+                print data
+                address_id = int(data["result"])
+
+            # user
+            u = user.objects.create_user(form2.cleaned_data["username"],
+                                         form1.cleaned_data["email"],
+                                         form2.cleaned_data["password1"])
+            u.is_active = False
+            u.save()
 
             # parms
             p = Parms()

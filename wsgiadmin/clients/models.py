@@ -39,6 +39,7 @@ class Parms(models.Model):
     fee = models.IntegerField(_(u"Paušál"), default=0)
     currency = models.CharField(_(u"Měna"), max_length=20, choices=settings.CURRENCY, default="czk")
     enable = models.BooleanField(_(u"Stav účtu"), default=True)
+    guard_enable = models.BooleanField(_(u"Kontrola automatem"), default=True)
     low_level_credits = models.CharField(_("Low level of credits"), max_length=30, default="send_email")
     last_notification = models.DateField(_("Last low level notification"), blank=True, null=True)
     installed = models.BooleanField(_("Installed"), default=False)
@@ -54,7 +55,7 @@ class Parms(models.Model):
     address_id = models.IntegerField(_("Address ID"), default=0)
 
     def prefix(self):
-        return self.user.username[:3]
+        return self.user.username.replace(".", "")[:3]
 
     def dc(self):
         """Discount coeficient"""

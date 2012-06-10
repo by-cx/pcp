@@ -12,8 +12,88 @@
 	}
 
     var data = [
-        {{ users }}
-    ]
+        {{ users|safe }}
+    ];
+
+    function show() {
+        var total = 0;
+        var total_domains = 0;
+        var total_sites = 0;
+        var total_pay_per_day = 0;
+
+        $("#user_table").html("");
+        for (var i=0; i < data.length ;i++) {
+            if ($("input[name=filter_username]").val().length) {
+                if ( data[i]["username"].indexOf($("input[name=filter_username]").val()) < 0 ) { continue; };
+            }
+            if ($("input[name=filter_information]").val().length) {
+                if ( data[i]["installed"].indexOf($("input[name=filter_information]").val()) < 0 ) { continue; };
+            };
+            if ($("input[name=filter_domains]").val().length) {
+                var value = $("input[name=filter_domains]").val();
+                if ( value[0] == "<" ) {
+                    if (data[i]["count_domains"] > value.substring(1) ) continue;
+                }
+                else if( value[0] == ">" ) {
+                    if (data[i]["count_domains"] < value.substring(1) ) continue;
+                }
+                else {
+                    if ( data[i]["count_domains"] != value ) { continue; };
+                }
+            };
+            if ($("input[name=filter_sites]").val().length) {
+                var value = $("input[name=filter_sites]").val();
+                if ( value[0] == "<" ) {
+                    if (data[i]["count_sites"] > value.substring(1) ) continue;
+                }
+                else if( value[0] == ">" ) {
+                    if (data[i]["count_sites"] < value.substring(1) ) continue;
+                }
+                else {
+                    if ( data[i]["count_sites"] != value ) { continue; };
+                }
+            };
+            if ($("input[name=filter_pay_per_day]").val().length) {
+                var value = $("input[name=filter_pay_per_day]").val();
+                if ( value[0] == "<" ) {
+                    if (data[i]["pay_total_day"] > value.substring(1) ) continue;
+                }
+                else if( value[0] == ">" ) {
+                    if (data[i]["pay_total_day"] < value.substring(1) ) continue;
+                }
+                else {
+                    if ( data[i]["pay_total_day"] != value ) { continue; };
+                }
+            };
+
+            var tr = $("<tr>");
+            tr.append($("<td>").html('<input type="checkbox" name="user_'+ data[i]["username"] +'" class="user_checker">'));
+            tr.append($("<td>").html(data[i]["username"]));
+            tr.append($("<td>").html(data[i]["installed"]));
+            tr.append($("<td>").html(data[i]["count_domains"]));
+            tr.append($("<td>").html(data[i]["count_sites"]));
+            tr.append($("<td>").html(data[i]["pay_total_day"]));
+            tr.append($("<td>").html(data[i]["pay_total_month"]));
+            tr.append($("<td>").html(data[i][""]));
+            $("#user_table").append(tr);
+
+            total += 1;
+            total_domains += data[i]["count_domains"];
+            total_sites += data[i]["count_sites"];
+            total_pay_per_day += data[i]["pay_total_day"];
+        }
+
+        $("#total").html(total);
+        $("#total_domains").html(total_domains);
+        $("#total_sites").html(total_sites);
+        $("#total_pay_per_day").html(total_pay_per_day);
+    }
+
+    $(document).ready(function (){
+        show();
+        $("#filter_button").click(show);
+    });
+
 {% endblock %}
 
 {% block content %}
@@ -29,6 +109,7 @@
 			<table class="table table-striped">
 				<thead>
 					<tr>
+					   <th></th>
 					   <th>Jméno uživatele</th>
 					   <th>Informace</th>
 					   <th>Domény</th>
@@ -37,10 +118,20 @@
                        <th>{% trans "Credits" %}</th>
 					   <th>Akce</th>
 					</tr>
+                    <tr>
+                        <th></th>
+                        <th><input type="text" class="filter_input" name="filter_username"></th>
+                        <th><input type="text" class="filter_input" name="filter_information"></th>
+                        <th><input type="text" class="filter_input" name="filter_domains"></th>
+                        <th><input type="text" class="filter_input" name="filter_sites"></th>
+                        <th><input type="text" class="filter_input" name="filter_pay_per_day"></th>
+                        <th></th>
+                        <th><button id="filter_button">FILTER!</button></th>
+                    </tr>
 				</thead>
-				<tbody>
+				<tbody id="user_table">
 
-                    {#
+                    {% comment %}
 					<tr>
 						<td>
                             {{ user }}<br />
@@ -69,8 +160,20 @@
                             </ul>
 						</td>
 					</tr>
-                    #}
+                    {% endcomment %}
 				</tbody>
+                <tfoot>
+                <tr>
+                    <th></th>
+                    <th id="total"></th>
+                    <th></th>
+                    <th id="total_domains"></th>
+                    <th id="total_sites"></th>
+                    <th id="total_pay_per_day"></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                </tfoot>
 			</table>
 		</div>
 	</div>

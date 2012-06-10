@@ -41,6 +41,7 @@ class Parms(models.Model):
     enable = models.BooleanField(_(u"Stav účtu"), default=True)
     low_level_credits = models.CharField(_("Low level of credits"), max_length=30, default="send_email")
     last_notification = models.DateField(_("Last low level notification"), blank=True, null=True)
+    installed = models.BooleanField(_("Installed"), default=False)
 
     #address		= models.ForeignKey("address")
     web_machine = models.ForeignKey(Machine, related_name="web")
@@ -62,21 +63,27 @@ class Parms(models.Model):
         else:
             return 0.0
 
+    @property
     def count_domains(self):
         return self.user.domain_set.count()
 
+    @property
     def count_ftps(self):
         return self.user.ftp_set.count()
 
+    @property
     def count_pgs(self):
         return self.user.pgsql_set.count()
 
+    @property
     def count_mys(self):
         return self.user.mysqldb_set.count()
 
+    @property
     def count_sites(self):
         return self.user.usersite_set.count()
 
+    @property
     def count_emails(self):
         return Email.objects.filter(domain__in=self.user.domain_set.all(), remove=False).count()
 
@@ -171,11 +178,6 @@ class Parms(models.Model):
             message[0].send(config.email, {"user": self.user.username, "credit": value, "bonus": value * (bonus - 1.0)})
 
         return retval
-
-    def installed(self):
-        rr = RawRequest(self.web_machine.ip)
-        data = rr.run("cat /etc/passwd |grep ^%s:" % self.user.username)["stdout"].strip()
-        return self.user.username in data
 
     def delete(self, using=None):
         for x in self.user.record_set.all(): x.delete()

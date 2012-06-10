@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import json
 from os.path import join
 from django.contrib import messages
 from django.contrib.auth.models import User
@@ -27,7 +28,32 @@ def show(request):
         return HttpResponseForbidden(_("Permission error"))
     u = request.session.get('switched_user', request.user)
 
-    users = user.objects.order_by("username")
+    data = []
+    data_json = []
+    users = User.objects.order_by("username")
+    for user in users:
+        parms = user.parms
+        user_dict = {
+            "username": user.username,
+            "discount": parms.discount,
+            "fee": parms.fee,
+            "enable": parms.enable,
+            "low_level_credits": parms.low_level_credits,
+            "last_notification": parms.last_notification,
+            "pay_total_day": parms.pay_total_day,
+            "pay_total_month": parms.pay_total_month,
+            "credit": parms.credit,
+            "credit_until": parms.credit_until,
+            "count_domains": parms.count_domains,
+            "count_ftps": parms.count_ftps,
+            "count_pgs": parms.count_pgs,
+            "count_mys": parms.count_mys,
+            "count_sites": parms.count_sites,
+            "count_emails": parms.count_emails,
+            "installed": parms.installed,
+        }
+        data.append(user_dict)
+        data_json.append(json.dumps(user_dict))
 
     sr = SystemRequest(u, u.parms.web_machine)
     #TODO - sed required columns only
@@ -36,7 +62,7 @@ def show(request):
     ssh_users = [x.strip().split(":")[0] for x in data.split("\n") if x]
     return render_to_response('users.html',
             {
-            "users": users,
+            "users": ", ".join(data_json),
             "ssh_users": ssh_users,
             "u": u,
             "superuser": request.user,
@@ -47,7 +73,7 @@ def show(request):
 
 
 @login_required
-def switch_to_admin(request, p):
+def switch_to_admin(request):
     """
     Přepnutí uživatele
     """
@@ -61,11 +87,11 @@ def switch_to_admin(request, p):
     if current:
         del request.session['switched_user']
 
-    return show(request, p)
+    return show(request)
 
 
 @login_required
-def switch_to_user(request, uid, p):
+def switch_to_user(request, uid):
     """
     Přepnutí uživatele
     """
@@ -77,7 +103,7 @@ def switch_to_user(request, uid, p):
     request.session['switched_user'] = get_object_or_404(User, id=int(uid))
 
     messages.add_message(request, messages.INFO, _('User has been changed'))
-    return show(request, p)
+    return show(request)
 
 
 def install(request, uid):
@@ -173,7 +199,7 @@ def update(request, uid):
     if not superuser.is_superuser:
         return HttpResponseForbidden(_("Permission error"))
 
-    iuser = get_object_or_404(user, id=int(uid))
+    iuser = get_object_or_404(User, id=int(uid))
     iparms = iuser.parms
 
     if request.method == 'POST':
@@ -214,7 +240,7 @@ def rm(request, uid):
     if not superuser.is_superuser:
         return HttpResponseForbidden(_("Permission error"))
 
-    iuser = get_object_or_404(user, id=int(uid))
+    iuser = get_object_or_404(User, id=int(uid))
     try:
         iparms = iuser.parms
     except Exception, e:

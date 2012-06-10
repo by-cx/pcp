@@ -1,13 +1,12 @@
 from django.conf.urls.defaults import *
 
 urlpatterns = patterns('wsgiadmin.users.views',
-    (r'^show/$', 'show'),
-    (r'^show/([0-9]{1,11})/?$', 'show'),
-    (r'^rm/([0-9]{1,11})/?$', 'rm'),
-    (r'^add/?$', 'add'),
-    (r'^ssh_passwd/?$', 'ssh_passwd'),
-    (r'^install/([0-9]{1,11})/', 'install'),
-    (r'^update/([0-9]{1,11})/?$', 'update'),
-    (r'^update/switch/user/([0-9]{1,11})/([0-9]{1,11})/?$', 'switch_to_user'),
-    (r'^update/switch/admin/([0-9]{1,11})/?$', 'switch_to_admin'),
+    url(r'^show/$', 'show'),
+    url(r'^rm/([0-9]{1,11})/$', 'rm'),
+    url(r'^add/$', 'add'),
+    url(r'^ssh_passwd/$', 'ssh_passwd'),
+    url(r'^install/([0-9]{1,11})/', 'install'),
+    url(r'^update/([0-9]{1,11})/$', 'update'),
+    url(r'^update/switch/user/([0-9]{1,11})/$', 'switch_to_user', name="switch_to_user"),
+    url(r'^update/switch/admin/$', 'switch_to_admin', name="switch_to_admin"),
 )

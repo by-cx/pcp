@@ -10,7 +10,7 @@ from django.utils.translation import ugettext_lazy as _, ugettext
 
 from wsgiadmin.ftps.forms import FTPForm, FTPUpdateForm
 from wsgiadmin.ftps.models import *
-from wsgiadmin.service.forms import PassCheckForm
+from wsgiadmin.service.forms import PassCheckForm, RostiFormHelper
 from wsgiadmin.service.views import RostiListView, JsonResponse
 
 
@@ -56,18 +56,15 @@ def ftp_upsert(request, ftp_id=0):
         else:
             form = FTPForm(user=u)
 
-    dynamic_refreshs = (
-        (reverse("refresh_userdirs"), 'id_dir'),
-    )
+    helper = RostiFormHelper()
+    helper.form_action = reverse("ftp_upsert", kwargs={'ftp_id': ftp_id})
 
     return render_to_response('universal.html',
             {
-            "dynamic_refreshs": dynamic_refreshs,
             "form": form,
+            "form_helper": RostiFormHelper(),
             "title": _("FTP account"),
-            "submit": _("Save FTP account"),
             "note": [_("* Username will be prefixed with `%s_`" % u.username)],
-            "action": reverse("ftp_upsert", kwargs={'ftp_id': ftp_id}),
             "u": u,
             "superuser": superuser,
             "menu_active": "ftps",
@@ -100,6 +97,7 @@ def passwd_ftp(request, ftp_id):
     return render_to_response('universal.html',
             {
             "form": form,
+            "form_helper": RostiFormHelper(),
             "title": _("Edit FTP account"),
             "submit": _("Save changes"),
             "action": reverse("ftp_passwd", kwargs={'ftp_id': ftp_id}),

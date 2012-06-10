@@ -22,7 +22,6 @@ class RequestException(Exception): pass
 
 
 class SSHHandler(object):
-
     # raise exception if not overriden, maybe
     _default_cmd = ""
 
@@ -39,7 +38,10 @@ class SSHHandler(object):
             return str(self.machine.name)
 
     def _run(self, cmd, stdin=None):
-        cmd = 'ssh %s "%s"' % (self._server_name(), cmd)
+        server = self._server_name()
+        if server != 'localhost':
+            cmd = 'ssh %s "%s"' % (server, cmd)
+
         stdin_flag = subprocess.PIPE if stdin is not None else stdin
         p = subprocess.Popen(shlex.split(str(cmd)), stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=stdin_flag)
         stdout, stderr = p.communicate(stdin)
@@ -476,3 +478,16 @@ class SystemRequest(SSHHandler):
 
     def passwd(self, password):
         self.run("/usr/sbin/chpasswd", stdin="%s:%s" % (self.user.username, password), wipe=True, instant=True)
+
+    def cron(self, user):
+        """Crontab regeneration
+        """
+        cron_str = []
+        update_cmd = "su %s -c 'crontab -'"
+        clean_cmd = "su %s -c 'crontab -r'"
+
+        for record in user.cron_set.all():
+            cron_str.append("%s %s" % (record.cron_config, record.script))
+
+        self.run(clean_cmd % user.username)
+        self.run(update_cmd % user.username, stdin="\n".join(cron_str))

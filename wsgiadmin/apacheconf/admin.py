@@ -1,10 +1,9 @@
 from django.contrib import admin
-from django.utils.translation import ugettext_lazy as _
 
 from wsgiadmin.apacheconf.models import UserSite
 
 class site_admin(admin.ModelAdmin):
-    list_display = ("server_name", "pub_date", "document_root", "removed")
-    list_display_links = ("server_name",)
+    list_display = ("main_domain", "pub_date", "document_root", "removed")
+    list_display_links = ("main_domain",)
 
 admin.site.register(UserSite, site_admin)

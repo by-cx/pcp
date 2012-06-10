@@ -10,12 +10,12 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.template.context import RequestContext
 from django.utils.translation import ugettext_lazy as _
-from wsgiadmin.clients.forms import UserForm, ParmsForm, AddressForm
+from wsgiadmin.clients.forms import UserForm, ParmsForm
 
 from wsgiadmin.clients.models import *
 from wsgiadmin.emails.models import Message
 from wsgiadmin.requests.request import SystemRequest
-from wsgiadmin.service.forms import PassCheckForm
+from wsgiadmin.service.forms import PassCheckForm, RostiFormHelper
 from django.core.exceptions import ObjectDoesNotExist
 
 @login_required
@@ -120,7 +120,7 @@ def install(request, uid):
 
     message = Message.objects.filter(purpose="approved_reg")
     if message:
-        message[0].send(iuser.parms.address.residency_email)
+        message[0].send(iuser.email)
 
     messages.add_message(request, messages.SUCCESS, _('User has been installed'))
     return HttpResponseRedirect(reverse("wsgiadmin.useradmin.views.ok"))
@@ -139,33 +139,28 @@ def add(request):
     if request.method == 'POST':
         f_user = UserForm(request.POST)
         f_parms = ParmsForm(request.POST)
-        f_address = AddressForm(request.POST)
-        if f_user.is_valid() and f_parms.is_valid() and f_address.is_valid():
+        if f_user.is_valid() and f_parms.is_valid():
             instance_user = f_user.save(commit=False)
             instance_user.is_superuser = False
             instance_user.is_staff = False
             instance_user.save()
-            instance_address = f_address.save()
 
             instance_parms = f_parms.save(commit=False)
             instance_parms.user = instance_user
             instance_parms.home = "/"
             instance_parms.uid = 0
             instance_parms.gid = 0
-            instance_parms.address = instance_address
             instance_parms.save()
 
             return HttpResponseRedirect(reverse("wsgiadmin.useradmin.views.ok"))
     else:
         f_user = UserForm()
         f_parms = ParmsForm()
-        f_address = AddressForm()
 
     return render_to_response('userform.html',
             {
             "form_user": f_user,
             "form_parms": f_parms,
-            "form_address": f_address,
             "title": _(u"Add user"),
             "submit": _(u"Add user"),
             "action": reverse("wsgiadmin.users.views.add"),
@@ -188,28 +183,23 @@ def update(request, uid):
 
     iuser = get_object_or_404(user, id=int(uid))
     iparms = iuser.parms
-    iaddress = iparms.address
 
     if request.method == 'POST':
         f_user = UserForm(request.POST, instance=iuser)
         f_parms = ParmsForm(request.POST, instance=iparms)
-        f_address = AddressForm(request.POST, instance=iaddress)
-        if f_user.is_valid() and f_parms.is_valid() and f_address.is_valid():
+        if f_user.is_valid() and f_parms.is_valid():
             f_user.save()
-            f_address.save()
             f_parms.save()
 
             return HttpResponseRedirect(reverse("wsgiadmin.useradmin.views.ok"))
     else:
         f_user = UserForm(instance=iuser)
         f_parms = ParmsForm(instance=iparms)
-        f_address = AddressForm(instance=iaddress)
 
     return render_to_response('userform.html',
             {
             "form_user": f_user,
             "form_parms": f_parms,
-            "form_address": f_address,
             "title": _(u"User update"),
             "submit": _(u"Update information"),
             "action": reverse("wsgiadmin.users.views.update", args=[uid]),
@@ -270,9 +260,8 @@ def ssh_passwd(request):
     return render_to_response('universal.html',
             {
             "form": form,
-            "title": _(u"Change password for SSH/FTP"),
-            "submit": _(u"Change password"),
-            "action": reverse("wsgiadmin.users.views.ssh_passwd"),
+            "form_helper": RostiFormHelper(),
+            "title": _("Change password for SSH/FTP"),
             "u": u,
             "superuser": superuser,
             "menu_active": "settings",

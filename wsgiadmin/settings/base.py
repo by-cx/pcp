@@ -3,32 +3,29 @@
 
 _ = lambda x: x
 
-#import os
 from os.path import join, abspath, pardir, dirname
 
 ROOT = abspath(join(dirname(__file__), pardir))
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 DEBUG_TOOLBAR = DEBUG
 ENABLE_DEBUG_URLS = DEBUG
 
 APPEND_SLASH = True
 
-ADMINS = ()
-
-MANAGERS = ADMINS
+MANAGERS = ADMINS = ()
 
 INTERNAL_IPS = ('127.0.0.1', '89.111.104.66')
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'rosti'
-    }
-}
+DATABASES = {}
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
+
+# JSONRPC URL for PCP-Invoice, if "" or None, it will be switched off
+JSONRPC_URL = ""
+JSONRPC_USERNAME = ""
+JSONRPC_PASSWORD = ""
 
 ## Faktury
 
@@ -38,7 +35,11 @@ MY_ADDRESS_ID = 1
 STAMP_SIGN = join(ROOT, "m", "razitko.png")
 STAMP_NOSIGN = join(ROOT, "m", "razitko-nosign.png")
 
-CURRENCY = (("czk", "CZK"), ("eur", "EUR"), ("usd", "USD"),)
+CURRENCY = (
+    ("czk", "CZK"),
+    ("eur", "EUR"),
+    ("usd", "USD"),
+)
 
 ##########
 
@@ -54,9 +55,9 @@ TIME_ZONE = 'Europe/Prague'
 LANGUAGE_CODE = 'cs'
 
 LANGUAGES = (
-('cs', u'Česky'),
-('en', 'English'),
-    )
+    ('cs', u'Česky'),
+    ('en', 'English'),
+)
 
 #EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
@@ -84,6 +85,7 @@ SECRET_KEY = 'l=!i_!9q8tc9@jn@m*n*z6zri01$kvjdh94v^1_bzw!8ja5z=*'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
+#    'integrate_project.template_loader.load_template_source',
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
 )
@@ -121,7 +123,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.admin',
 
-    'uni_form',
+    'crispy_forms',
     'south',
     'constance',
     'constance.backends.database',
@@ -133,6 +135,7 @@ INSTALLED_APPS = (
     'wsgiadmin.emails',
     'wsgiadmin.ftps',
     'wsgiadmin.db',
+    'wsgiadmin.cron',
     'wsgiadmin.users',
     'wsgiadmin.apacheconf',
     'wsgiadmin.keystore',
@@ -145,7 +148,7 @@ CONSTANCE_BACKEND = "constance.backends.database.DatabaseBackend"
 CONSTANCE_CONFIG = {
     "email": ("info@rosti.cz", "Your e-mail"),
 
-    "mode": ("apache", "apache or nginx"), # main web server, (apache/nginx)
+    "mode": ("nginx", "apache or nginx"), # main web server, (apache/nginx)
     "ipv6": (True, "Turn on/off support for IPv6"),
     "maildir": ("/var/mail", "Directory with maildirs"),
 
@@ -156,8 +159,8 @@ CONSTANCE_CONFIG = {
     "nginx_log_dir": ("/var/log/webx/", "NGINX log directory"),
 
     "apache_conf": ("/etc/apache2/vhosts.d/99_auto.conf", "Apache's config file"),
-    "apache_url": ("127.0.0.1:8080", "Apache proxy URL (for nginx)"), # for nginx as proxy
-    "apache_ssl_listen": ("127.0.0.1:443", "Apache listen for SSL"),
+    "apache_url": ("0.0.0.0:80", "Apache proxy URL (for nginx)"), # for nginx as proxy
+    "apache_ssl_listen": ("0.0.0.0:443", "Apache listen for SSL"),
     "apache_init_script": ("/etc/init.d/apache2", "Apache's init script"),
     "apache_user": ('www-data', "Apache's user"), # 'apache' in gentoo
     "apache_log_dir": ("/var/log/webs/", "Apache log directory"),
@@ -172,6 +175,7 @@ CONSTANCE_CONFIG = {
     "bind_init_script": ("/etc/init.d/bind9", "BIND's init script"),
 
     "handle_dns": (False, "Use BIND"),
+    "handle_dns_secondary": (False, "If handled DNS, include secondary too?"),
     "dns_master": ("", "Master NS server (IP)"),
     "dns_slave": ("", "Slave NS server (IP)"),
     "dns_ns1": ("ns1.example.com", "NS1 domain"),
@@ -205,14 +209,18 @@ CONSTANCE_CONFIG = {
     "credit_750_bonus": (1.1, "750 credits bonus (credits * this number)"),
     "credit_1000_bonus": (1.2, "500 credits bonus (credits * this number)"),
     "credit_currency": ("0.5,12.5,9.5", "CZK, EUR, USD"),
+    "credit_threshold": (-7, "When should be a web disabled"),
+    "tax": (0, "%"),
+    "invoice_desc": ("Credit for services", "Some text"),
 
     "terms_url": ("", "Terms URL"),
 
     "find_directory_deep":(2, "Finding directory deep"),
+
+    "auto_disable":(True, "Auto disabling users"),
     }
 
 VIRTUALENVS_DIR = 'virtualenvs'
-LOG_DIR = '/var/log/webs/' #trailing slash required!
 
 PAYMENT_CHOICES = (
     ("per_web", _("Per application (60 CZK/app/month)")),

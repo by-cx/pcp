@@ -21,3 +21,4 @@ try:
     from integrate_project.settings.local import *
 except ImportError:
     pass
+

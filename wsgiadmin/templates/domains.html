@@ -5,19 +5,12 @@
     {% trans "Administration" %} &gt; {% trans "Domains" %}
 {% endblock %}
 
-{% comment %}
-{% block jsblock %}
-    {{ block.super }}
-{% endblock %}
-{% endcomment %}
-
-
 {% block content %}
     <div id="message-box"></div>
 
     <h3>{% trans "List of your domains" %}</h3>
 
-    <table>
+    <table class="table table-striped">
         <thead>
         <tr>
             <th>{% trans "Insert date" %}</th>

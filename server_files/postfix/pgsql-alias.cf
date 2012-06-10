@@ -1,0 +1,7 @@
+user             = <USER>
+password         = <PASSWORD>
+dbname           = <DB>
+table            = redirects
+select_field     = email
+where_field      = alias
+hosts            = 127.0.0.1

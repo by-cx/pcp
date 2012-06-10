@@ -1,6 +1,17 @@
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Submit
 from django import forms
 from django.forms.models import ModelForm
 from django.utils.translation import ugettext_lazy as _
+
+class RostiFormHelper(FormHelper):
+
+    def __init__(self, *args, **kwargs):
+        super(RostiFormHelper, self).__init__(*args, **kwargs)
+
+        self.form_class = 'well'
+        self.add_input(Submit(_("Save"), _("Save")))
+
 
 class PassCheckForm(forms.Form):
 

@@ -15,7 +15,7 @@
     <div id="message-box"></div>
 
     <h3>{% trans "List of e-mail aliases" %}</h3>
-    <table>
+    <table class="table table-striped">
         <thead>
         <tr>
             <th>{% trans "Alias" %}</th>
@@ -57,7 +57,7 @@
             <tbody>
             <tr>
                 <td colspan="3">{% trans "No email alias exists yet." %}
-                    <a href="{% url wsgiadmin.emails.views.addRedirect %}">
+                    <a href="{% url add_redirect %}">
                         {% trans "Create new email redirect" %}
                     </a>.
                 </td>

@@ -1,0 +1,7 @@
+django<1.4
+django-constance
+django-picklefield
+south
+anyjson
+django-crispy-forms
+django-json-rpc

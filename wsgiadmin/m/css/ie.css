@@ -1,0 +1,72 @@
+#header #main-menu li a {
+    background: url('../images/bg-main-menu-li-left-a.jpg') no-repeat left top;
+    padding: 0 0 0 20px;
+    height: 31px;
+    float: left;
+    text-decoration: none;
+    color: #f2f2f2;
+}
+
+#header #main-menu li a span {
+    background: url('../images/bg-main-menu-li-right-a.jpg') no-repeat right top;
+    width: 20px;
+    height: 31px;
+    float: right;
+}
+
+#header #main-menu li a:hover {
+    background: url('../images/bg-main-menu-li-left.jpg') no-repeat left top;
+    padding: 0 0 0 20px;
+    height: 31px;
+    float: left;
+    text-decoration: none;
+    color: #f2f2f2;
+}
+
+#header #main-menu li a:hover span {
+    background: url('../images/bg-main-menu-li-right.jpg') no-repeat right top;
+    width: 20px;
+    height: 31px;
+    float: right;
+    color: #444;
+}
+
+#header #main-menu li.active a {
+    background: url('../images/bg-main-menu-li-left.jpg') no-repeat left top;
+    padding: 0 0 0 20px;
+    height: 31px;
+    float: left;
+    text-decoration: none;
+    color: #f2f2f2;
+}
+
+#header #main-menu li.active a span {
+    background: url('../images/bg-main-menu-li-right.jpg') no-repeat right top;
+    width: 20px;
+    height: 31px;
+    float: right;
+    color: #444;
+}
+
+#sidebar ul li a {
+    background: url('../images/bg-sidebar-menu-a.png') no-repeat 0 0;
+    margin: 0 0 5px 0;
+    padding: 0 0 0 20px;
+    height: 30px;
+    line-height: 32px;
+    font-size: 11px;
+    text-transform: uppercase;
+    display: block;
+    text-decoration: none;
+    color: #f2f2f2;
+}
+
+#sidebar ul li a:hover {
+    background: url('../images/bg-sidebar-menu-hover.png') no-repeat 0 0;
+    color: #f2f2f2;
+}
+
+#sidebar ul li.active a {
+    background: url('../images/bg-sidebar-menu-hover.png') no-repeat 0 0;
+    color: #f2f2f2;
+}

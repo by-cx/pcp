@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from constance import config
 from django.core.mail.message import EmailMessage
 from django.db import models
@@ -10,7 +9,9 @@ CHOICES = (
     ("reg", _("Registration")),
     ("approved_reg", _("Approved registration")),
     ("low_credit", _("Low credit notification")),
+    ("autobuy_credit", _("Autobuy credit")),
     ("add_credit", _("Credit notification - admin")),
+    ("web_disabled", _("Web disabled")),
 )
 
 class Message(models.Model):
@@ -31,6 +32,7 @@ class Message(models.Model):
                             bcc=[config.email],
                             headers={'Reply-To': config.email})
         message.send()
+
 
 class Email(models.Model):
     pub_date = models.DateField(auto_now=True)

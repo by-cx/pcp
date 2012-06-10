@@ -1,20 +1,49 @@
+from random import randint
+from time import time
 from constance import config
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout
 from os.path import join
+from hashlib import md5
 
 from django.contrib import messages
+from django.db.models.query_utils import Q
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponseForbidden
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, ugettext
 from django.template.context import RequestContext
 from django.core.mail import send_mail
+from django.views.generic.edit import FormView
 
 from wsgiadmin.apacheconf.models import UserSite
 from wsgiadmin.clients.models import *
-from wsgiadmin.service.forms import PassCheckForm
-from wsgiadmin.useradmin.forms import formReg, formReg2, PaymentRegForm
+from wsgiadmin.requests.request import SSHHandler
+from wsgiadmin.service.forms import PassCheckForm, RostiFormHelper
+from wsgiadmin.useradmin.forms import formReg, formReg2, PaymentRegForm, SendPwdForm
 from wsgiadmin.clients.models import Parms
+
+if settings.JSONRPC_URL:
+    from jsonrpc.proxy import ServiceProxy
+
+@login_required
+def app_copy(request):
+    u = request.session.get('switched_user', request.user)
+    superuser = request.user
+    if not superuser.is_superuser:
+        return HttpResponseForbidden(_("Permission error"))
+
+    app = UserSite.objects.get(id=int(request.POST.get("app")))
+    new_location = request.POST.get("new_location")
+
+    sh = SSHHandler(request.user, app.owner.parms.web_machine)
+    cmd = "cp -a %s %s" % (app.document_root, new_location)
+    sh.run(cmd=cmd, instant=True)
+
+    messages.add_message(request, messages.SUCCESS, _('Site has been copied'))
+
+    return HttpResponseRedirect(reverse("master"))
 
 @login_required
 def master(request):
@@ -29,12 +58,16 @@ def master(request):
         balance_day += site.pay
     balance_month = balance_day * 30
 
+    apps = UserSite.objects.filter(Q(type="static")|Q(type="php"))
+    apps = sorted(apps, key=lambda x: x.main_domain.name)
+
     return render_to_response('master.html', {
         "u": u,
         "superuser": superuser,
         "menu_active": "dashboard",
         "balance_day": balance_day,
         "balance_month": balance_month,
+        "apps": apps,
         },
         context_instance=RequestContext(request)
     )
@@ -80,6 +113,44 @@ def ok(request):
                               context_instance=RequestContext(request)
     )
 
+class PasswordView(FormView):
+
+    template_name = 'passwd_form.html'
+
+
+    def __init__(self, *args, **kwargs):
+        super(PasswordView, self).__init__(*args, **kwargs)
+        self.success_url = reverse('login')
+
+
+    def get_form_class(self):
+        return SendPwdForm
+
+
+    def get_context_data(self, **kwargs):
+        data = super(PasswordView, self).get_context_data(**kwargs)
+        data['form_helper'] = RostiFormHelper()
+        return data
+
+    def form_valid(self, form):
+        user = form.user_object
+
+        pwd = md5( str(time()*randint(1, 300)) ).hexdigest()[:7]
+        message = ugettext("Your password has been reseted: %s" % pwd)
+        user.set_password(pwd)
+
+        try:
+            send_mail(_('Password reset'), message, settings.EMAIL_FROM, [user.email], fail_silently=False)
+        except:
+            pass
+        else:
+            #save changed password only on notification success
+            user.save()
+
+        messages.add_message(self.request, messages.SUCCESS, _("Password has been reseted and sent to your email"))
+        return super(PasswordView, self).form_valid(form)
+
+
 @login_required
 def change_passwd(request):
     u = request.session.get('switched_user', request.user)
@@ -99,14 +170,13 @@ def change_passwd(request):
     return render_to_response('universal.html',
             {
             "form": form,
-            "title": _(u"Change password for this administration"),
-            "submit": _(u"Change password"),
-            "action": reverse("wsgiadmin.useradmin.views.change_passwd"),
+            "form_helper": RostiFormHelper(),
+            "title": _("Change password for this administration"),
             "u": u,
             "superuser": superuser,
             "menu_active": "settings",
             },
-                              context_instance=RequestContext(request)
+        context_instance=RequestContext(request)
     )
 
 def reg(request):
@@ -115,29 +185,38 @@ def reg(request):
         form2 = formReg2(request.POST)
         form3 = PaymentRegForm(request.POST)
         if form1.is_valid() and form2.is_valid() and form3.is_valid():
+            # machine
+            m_web = get_object_or_404(Machine, name=config.default_web_machine)
+            m_mail = get_object_or_404(Machine, name=config.default_mail_machine)
+            m_mysql = get_object_or_404(Machine, name=config.default_mysql_machine)
+            m_pgsql = get_object_or_404(Machine, name=config.default_pgsql_machine)
+
+            address_id = 0
+            if settings.JSONRPC_URL:
+                proxy = ServiceProxy(settings.JSONRPC_URL)
+                data = proxy.add_address(
+                    settings.JSONRPC_USERNAME, settings.JSONRPC_PASSWORD,
+                    form1.cleaned_data["company"],
+                    form1.cleaned_data["first_name"],
+                    form1.cleaned_data["last_name"],
+                    form1.cleaned_data["street"],
+                    form1.cleaned_data["city"],
+                    form1.cleaned_data["city_num"],
+                    form1.cleaned_data["phone"],
+                    form1.cleaned_data["email"],
+                    form1.cleaned_data["ic"],
+                    form1.cleaned_data["dic"]
+                )
+                print data
+                address_id = int(data["result"])
+
             # user
             u = user.objects.create_user(form2.cleaned_data["username"],
                                          form1.cleaned_data["email"],
                                          form2.cleaned_data["password1"])
             u.is_active = False
             u.save()
-            # adresa
-            a = Address()
-            a.company = form1.cleaned_data["company"]
-            a.residency_name = form1.cleaned_data["name"]
-            a.residency_street = form1.cleaned_data["street"]
-            a.residency_city = form1.cleaned_data["city"]
-            a.residency_city_num = form1.cleaned_data["city_num"]
-            a.residency_ic = form1.cleaned_data["ic"]
-            a.residency_dic = form1.cleaned_data["dic"]
-            a.residency_email = form1.cleaned_data["email"]
-            a.residency_phone = form1.cleaned_data["phone"]
-            a.save()
-            # machine
-            m_web = get_object_or_404(Machine, name=config.default_web_machine)
-            m_mail = get_object_or_404(Machine, name=config.default_mail_machine)
-            m_mysql = get_object_or_404(Machine, name=config.default_mysql_machine)
-            m_pgsql = get_object_or_404(Machine, name=config.default_pgsql_machine)
+
             # parms
             p = Parms()
             p.home = join("/home", form2.cleaned_data["username"])
@@ -145,12 +224,12 @@ def reg(request):
             p.uid = 0
             p.gid = 0
             p.discount = 0
-            p.address = a
             p.web_machine = m_web
             p.mail_machine = m_mail
             p.mysql_machine = m_mysql
             p.pgsql_machine = m_pgsql
             p.user = u
+            p.address_id = int(address_id)
             p.save()
 
             if form3.cleaned_data["pay_method"] == "fee":
@@ -176,13 +255,16 @@ def reg(request):
         form2 = formReg2()
         form3 = PaymentRegForm()
 
+    form_helper = FormHelper()
+    form_helper.form_tag = False
+
     return render_to_response('reg.html',
-            {
+        {
             "form1": form1,
             "form2": form2,
             "form3": form3,
+            "form_helper": form_helper,
             "title": _("Registration"),
-            "submit": _("Register"),
             "action": reverse("wsgiadmin.useradmin.views.reg"),
             "config": config,
         },

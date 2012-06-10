@@ -178,6 +178,11 @@ class Parms(models.Model):
         data = rr.run("cat /etc/passwd |grep ^%s:" % self.user.username)["stdout"].strip()
         return self.user.username in data
 
+    def delete(self, using=None):
+        for x in self.user.record_set.all(): x.delete()
+        for x in self.user.credit_set.all(): x.delete()
+        return super(Parms, self).delete(using)
+
     def __repr__(self):
         return "<Config %s>" % self.user.username
 

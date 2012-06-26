@@ -7,6 +7,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.list import ListView
 from django.utils.translation import ugettext_lazy as _
+from wsgiadmin.service.forms import RostiFormHelper
 
 class JsonResponse(HttpResponse):
 
@@ -47,6 +48,8 @@ class RostiCreateView(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super(RostiCreateView, self).get_context_data(**kwargs)
+        #context['form'] = self.get_form(self.form_class),
+        #context['form_helper'] = RostiFormHelper(),
         context['menu_active'] = self.menu_active
         context['u'] = self.user
         context['superuser'] = self.request.user
@@ -67,6 +70,8 @@ class RostiUpdateView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(RostiUpdateView, self).get_context_data(**kwargs)
+        #context['form'] = self.get_form(self.form_class),
+        #context['form_helper'] = RostiFormHelper(),
         context['menu_active'] = self.menu_active
         context['u'] = self.user
         context['superuser'] = self.request.user

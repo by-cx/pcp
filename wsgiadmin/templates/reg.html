@@ -9,7 +9,6 @@
     <form action="{% url registration %}" method="post" class="well form-horizontal" id="reg-form">
         {% crispy form1 form_helper %}
         {% crispy form2 form_helper %}
-        {% crispy form3 form_helper %}
         <div class="form-actions">
             <input type="submit" value="{% trans "Register" %}"/>
         </div>

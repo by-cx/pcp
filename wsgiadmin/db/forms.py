@@ -16,7 +16,7 @@ class MysqlForm(PassCheckModelForm):
 
     def __init__(self, *args, **kwargs):
         if 'dbname' in kwargs:
-            self.db_name = kwargs.pop('dbname')
+            self.dbname = kwargs.pop('dbname')
 
         super(MysqlForm, self).__init__(*args, **kwargs)
 
@@ -24,11 +24,11 @@ class MysqlForm(PassCheckModelForm):
 
 
     def clean_dbname(self):
-        prefix = self.cleaned_data['db_name'].find('_') + 1
-        if len(self.cleaned_data["db_name"][prefix:]) > self.dbname_max_length:
+        prefix = self.cleaned_data['dbname'].find('_') + 1
+        if len(self.cleaned_data["dbname"][prefix:]) > self.dbname_max_length:
             raise forms.ValidationError(_("Database name can contains max. %s characters" % self.dbname_max_length))
 
-        return self.cleaned_data["db_name"]
+        return self.cleaned_data["dbname"]
 
 class PgsqlForm(MysqlForm):
 

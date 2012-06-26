@@ -64,7 +64,12 @@ class FormStatic(ModelForm):
 
     def clean(self):
         data = self.cleaned_data
-        main_domain = data['main_domain']
+        try:
+            main_domain = data['main_domain']
+        except KeyError:
+            raise forms.ValidationError(
+                _("Main domain has to be filled"))
+            
         if 'misc_domains' in data and main_domain in data['misc_domains']:
             raise forms.ValidationError(
                 _("Main domain cannot be listed also as misc. domain"))

@@ -10,6 +10,90 @@
 	function remove(what) {
 		$("#user_"+what).load("{% url wsgiadmin.users.views.rm 0 %}"+what)
 	}
+
+    var data = [
+        {{ users|safe }}
+    ];
+
+    function show() {
+        var total = 0;
+        var total_domains = 0;
+        var total_sites = 0;
+        var total_pay_per_day = 0;
+
+        $("#user_table").html("");
+        for (var i=0; i < data.length ;i++) {
+            if ($("input[name=filter_username]").val().length) {
+                if ( data[i]["username"].indexOf($("input[name=filter_username]").val()) < 0 ) { continue; };
+            }
+            if ($("input[name=filter_information]").val().length) {
+                if ( data[i]["installed"].indexOf($("input[name=filter_information]").val()) < 0 ) { continue; };
+            };
+            if ($("input[name=filter_domains]").val().length) {
+                var value = $("input[name=filter_domains]").val();
+                if ( value[0] == "<" ) {
+                    if (data[i]["count_domains"] > value.substring(1) ) continue;
+                }
+                else if( value[0] == ">" ) {
+                    if (data[i]["count_domains"] < value.substring(1) ) continue;
+                }
+                else {
+                    if ( data[i]["count_domains"] != value ) { continue; };
+                }
+            };
+            if ($("input[name=filter_sites]").val().length) {
+                var value = $("input[name=filter_sites]").val();
+                if ( value[0] == "<" ) {
+                    if (data[i]["count_sites"] > value.substring(1) ) continue;
+                }
+                else if( value[0] == ">" ) {
+                    if (data[i]["count_sites"] < value.substring(1) ) continue;
+                }
+                else {
+                    if ( data[i]["count_sites"] != value ) { continue; };
+                }
+            };
+            if ($("input[name=filter_pay_per_day]").val().length) {
+                var value = $("input[name=filter_pay_per_day]").val();
+                if ( value[0] == "<" ) {
+                    if (data[i]["pay_total_day"] > value.substring(1) ) continue;
+                }
+                else if( value[0] == ">" ) {
+                    if (data[i]["pay_total_day"] < value.substring(1) ) continue;
+                }
+                else {
+                    if ( data[i]["pay_total_day"] != value ) { continue; };
+                }
+            };
+
+            var tr = $("<tr>");
+            tr.append($("<td>").html('<input type="checkbox" name="user_'+ data[i]["username"] +'" class="user_checker">'));
+            tr.append($("<td>").html(data[i]["username"]));
+            tr.append($("<td>").html(data[i]["installed"]));
+            tr.append($("<td>").html(data[i]["count_domains"]));
+            tr.append($("<td>").html(data[i]["count_sites"]));
+            tr.append($("<td>").html(data[i]["pay_total_day"]));
+            tr.append($("<td>").html(data[i]["pay_total_month"]));
+            tr.append($("<td>").html(data[i][""]));
+            $("#user_table").append(tr);
+
+            total += 1;
+            total_domains += data[i]["count_domains"];
+            total_sites += data[i]["count_sites"];
+            total_pay_per_day += data[i]["pay_total_day"];
+        }
+
+        $("#total").html(total);
+        $("#total_domains").html(total_domains);
+        $("#total_sites").html(total_sites);
+        $("#total_pay_per_day").html(total_pay_per_day);
+    }
+
+    $(document).ready(function (){
+        show();
+        $("#filter_button").click(show);
+    });
+
 {% endblock %}
 
 {% block content %}
@@ -25,6 +109,7 @@
 			<table class="table table-striped">
 				<thead>
 					<tr>
+					   <th></th>
 					   <th>Jméno uživatele</th>
 					   <th>Informace</th>
 					   <th>Domény</th>
@@ -33,10 +118,20 @@
                        <th>{% trans "Credits" %}</th>
 					   <th>Akce</th>
 					</tr>
+                    <tr>
+                        <th></th>
+                        <th><input type="text" class="filter_input" name="filter_username"></th>
+                        <th><input type="text" class="filter_input" name="filter_information"></th>
+                        <th><input type="text" class="filter_input" name="filter_domains"></th>
+                        <th><input type="text" class="filter_input" name="filter_sites"></th>
+                        <th><input type="text" class="filter_input" name="filter_pay_per_day"></th>
+                        <th></th>
+                        <th><button id="filter_button">FILTER!</button></th>
+                    </tr>
 				</thead>
-				{% if users %}
-				<tbody>
-					{% for user in users.object_list %}
+				<tbody id="user_table">
+
+                    {% comment %}
 					<tr>
 						<td>
                             {{ user }}<br />
@@ -58,44 +153,27 @@
                         {% endwith %}
 						<td id="user_{{ user.id }}">
                             <ul class="akce">
-                                <li><a href="{% url wsgiadmin.users.views.switch_to_user user.id num_page %}"><img src="{{ STATIC_URL }}images/ico-prepnout.png" alt="{% trans "Switch" %}" /></a></li>
+                                <li><a href="{% url wsgiadmin.users.views.switch_to_user user.id %}"><img src="{{ STATIC_URL }}images/ico-prepnout.png" alt="{% trans "Switch" %}" /></a></li>
                                 <li><a href="{% url wsgiadmin.users.views.install user.id %}" title="{% trans "Install" %}"><img src="{{ STATIC_URL }}images/ico-instalace.png" alt="{% trans "Install" %}" /></a></li>
                                 <!--<li><a href="{% url wsgiadmin.users.views.update user.id %}" title="{% trans "Edit" %}"><img src="{{ STATIC_URL }}images/ico-editovat.png" alt="{% trans "Edit" %}" /></a></li>-->
                                 <li class="smazat"><a href="#" title="{% trans "Delete" %}" onclick="if(confirm('{% trans "Are you sure?" %}')) remove('{{ user.id }}')"><img src="{{ STATIC_URL }}images/ico-smazat.png" alt="{% trans "Delete" %}" /></a></li>
                             </ul>
 						</td>
 					</tr>
-					{% endfor %}
+                    {% endcomment %}
 				</tbody>
-				<tfoot>
-					<tr>
-						<td colspan="5">
-								<div class="pagination">
-									{% if users.has_previous %}<a href="{% url wsgiadmin.users.views.show 1 %}" title="{% trans "First page" %}">&laquo; {% trans "First" %}</a>{% endif %}
-									{% if users.has_previous %}<a href="{% url wsgiadmin.users.views.show users.previous_page_number %}" title="{% trans "Previous page" %}">&laquo; {% trans "Previous" %}</a>{% endif %}
-				
-									{% for p in paginator.page_range %}
-										{% if p == num_page %}
-											<a href="{% url wsgiadmin.users.views.show p %}" class="number current" title="{{ p }}">{{ p }}</a>
-										{% else %}
-											<a href="{% url wsgiadmin.users.views.show p %}" class="number" title="{{ p }}">{{ p }}</a>
-										{% endif %}
-									{% endfor %}
-				
-									{% if users.has_next %}<a href="{% url wsgiadmin.users.views.show users.next_page_number %}" title="{% trans "Next page" %}">{% trans "Next" %} &raquo;</a>{% endif %}
-									{% if users.has_next %}<a href="{% url wsgiadmin.users.views.show paginator.num_pages %}" title="{% trans "Last page" %}">{% trans "Last" %} &raquo;</a>{% endif %}
-								</div>
-								<div class="clear"></div>
-						</td>
-					</tr>
-				</tfoot>
-				{% else %}
-				<tbody>
-				<tr>
-					<td colspan="5">Žádný uživatel ještě nebyl přidán.</td>
-				</tr>
-				</tbody>
-				{% endif%}
+                <tfoot>
+                <tr>
+                    <th></th>
+                    <th id="total"></th>
+                    <th></th>
+                    <th id="total_domains"></th>
+                    <th id="total_sites"></th>
+                    <th id="total_pay_per_day"></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                </tfoot>
 			</table>
 		</div>
 	</div>

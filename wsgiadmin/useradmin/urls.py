@@ -18,6 +18,7 @@ urlpatterns = patterns('wsgiadmin.useradmin.views',
 
 urlpatterns += patterns('',
                         url(r'^commit/$', 'wsgiadmin.requests.views.commit'),
+                        url(r'^supervisor/', include('wsgiadmin.supervisor.urls')),
                         url(r'^domains/', include('wsgiadmin.domains.urls')),
                         url(r'^ftp/', include('wsgiadmin.ftps.urls')),
                         url(r'^email/', include('wsgiadmin.emails.urls')),

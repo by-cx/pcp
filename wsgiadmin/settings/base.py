@@ -27,6 +27,10 @@ JSONRPC_URL = ""
 JSONRPC_USERNAME = ""
 JSONRPC_PASSWORD = ""
 
+# User logs
+
+USERLOG_FILENAME = "%s/logs/%s.log"
+
 ## Faktury
 
 BANK = "mBank"
@@ -141,6 +145,7 @@ INSTALLED_APPS = (
     'wsgiadmin.keystore',
     'wsgiadmin.service',
     'wsgiadmin.stats',
+    'wsgiadmin.supervisor',
 )
 
 CONSTANCE_BACKEND = "constance.backends.database.DatabaseBackend"
@@ -218,6 +223,7 @@ CONSTANCE_CONFIG = {
     "find_directory_deep":(2, "Finding directory deep"),
 
     "auto_disable":(True, "Auto disabling users"),
+    "pagination":(50, "Pagination"),
     }
 
 VIRTUALENVS_DIR = 'virtualenvs'

@@ -35,7 +35,7 @@ def rm(request):
     try:
         u = request.session.get('switched_user', request.user)
 
-        d = get_object_or_404(Domain, id=request.POST['object_id'])
+        d = get_object_or_404(u.domain_set, id=request.POST['object_id'])
         if d.owner == u:
             logging.info(_("Deleting domain %s") % d.name)
 

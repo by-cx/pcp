@@ -21,7 +21,7 @@ from wsgiadmin.apacheconf.models import UserSite
 from wsgiadmin.clients.models import *
 from wsgiadmin.requests.request import SSHHandler
 from wsgiadmin.service.forms import PassCheckForm, RostiFormHelper
-from wsgiadmin.useradmin.forms import formReg, formReg2, PaymentRegForm, SendPwdForm
+from wsgiadmin.useradmin.forms import formReg, formReg2, SendPwdForm
 from wsgiadmin.clients.models import Parms
 
 if settings.JSONRPC_URL:
@@ -183,8 +183,7 @@ def reg(request):
     if request.method == 'POST':
         form1 = formReg(request.POST)
         form2 = formReg2(request.POST)
-        form3 = PaymentRegForm(request.POST)
-        if form1.is_valid() and form2.is_valid() and form3.is_valid():
+        if form1.is_valid() and form2.is_valid():
             # machine
             m_web = get_object_or_404(Machine, name=config.default_web_machine)
             m_mail = get_object_or_404(Machine, name=config.default_mail_machine)
@@ -232,10 +231,6 @@ def reg(request):
             p.address_id = int(address_id)
             p.save()
 
-            if form3.cleaned_data["pay_method"] == "fee":
-                p.fee = settings.PAYMENT_FEE[p.currency]
-                p.save()
-
             message = Message.objects.filter(purpose="reg")
             if message:
                 message[0].send(form1.cleaned_data["email"])
@@ -253,7 +248,6 @@ def reg(request):
     else:
         form1 = formReg()
         form2 = formReg2()
-        form3 = PaymentRegForm()
 
     form_helper = FormHelper()
     form_helper.form_tag = False
@@ -262,7 +256,6 @@ def reg(request):
         {
             "form1": form1,
             "form2": form2,
-            "form3": form3,
             "form_helper": form_helper,
             "title": _("Registration"),
             "action": reverse("wsgiadmin.useradmin.views.reg"),

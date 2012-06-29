@@ -33,10 +33,6 @@ class formReg2(PassCheckForm):
         return self.cleaned_data["username"]
 
 
-class PaymentRegForm(forms.Form):
-    pay_method = forms.ChoiceField(label=_("Pay method"), required=True, choices=settings.PAYMENT_CHOICES)
-
-
 class SendPwdForm(forms.Form):
 
     email = forms.EmailField(label=_("E-mail"), max_length=250, required=False)

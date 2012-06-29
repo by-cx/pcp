@@ -54,7 +54,10 @@ def add(request, dbtype):
     if request.method == 'POST':
         form = form_class(request.POST)
         orig_dbname = form.data['dbname']
+        old = form.data
+        form.data._mutable = True
         form.data['dbname'] = "%s_%s" % (u.parms.prefix(), form.data['dbname'])
+        form.data._mutable = old
 
         if form.is_valid():
             db_obj = form.save(commit=False)

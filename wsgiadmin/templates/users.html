@@ -74,7 +74,11 @@
             tr.append($("<td>").html(data[i]["count_sites"]));
             tr.append($("<td>").html(data[i]["pay_total_day"]));
             tr.append($("<td>").html(data[i]["pay_total_month"]));
-            tr.append($("<td>").html(data[i][""]));
+            tr.append($("<td>").html(
+                '<a href="'+ data[i]["url_switch"] +'"><img src="{{ STATIC_URL }}images/ico-prepnout.png" alt="{% trans "Switch" %}" /></a></li>' +
+                '<a href="'+ data[i]["url_install"] +'" title="{% trans "Install" %}"><img src="{{ STATIC_URL }}images/ico-instalace.png" alt="{% trans "Install" %}" /></a></li>'
+                )
+            );
             $("#user_table").append(tr);
 
             total += 1;

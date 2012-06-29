@@ -3,6 +3,7 @@ import json
 from os.path import join
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
 
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import render_to_response, get_object_or_404
@@ -32,7 +33,10 @@ def show(request):
     data_json = []
     users = User.objects.order_by("username")
     for user in users:
-        parms = user.parms
+        try:
+            parms = user.parms
+        except ObjectDoesNotExist:
+            continue
         user_dict = {
             "username": user.username,
             "discount": parms.discount,
@@ -51,6 +55,8 @@ def show(request):
             "count_sites": parms.count_sites,
             "count_emails": parms.count_emails,
             "installed": parms.installed,
+            "url_switch": reverse("wsgiadmin.users.views.switch_to_user", args=[user.id]),
+            "url_install": reverse("wsgiadmin.users.views.install", args=[user.id]),
         }
         data.append(user_dict)
         data_json.append(json.dumps(user_dict))

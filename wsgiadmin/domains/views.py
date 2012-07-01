@@ -11,6 +11,7 @@ from django.core.mail import send_mail
 from django.template.context import RequestContext
 from django.utils.translation import ugettext_lazy as _, ugettext
 from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
 
 from wsgiadmin.domains.forms import RegistrationRequestForm, FormDomain
 from wsgiadmin.domains.models import Domain
@@ -75,7 +76,7 @@ def add(request):
     if request.method == 'POST':
         form = FormDomain(request.POST)
         if form.is_valid():
-            name = form.cleaned_data["domain"]
+            name = form.cleaned_data["name"]
 
             object = form.save(commit=False)
             object.owner = u
@@ -96,7 +97,7 @@ def add(request):
             send_mail(_('Added new domain: %s') % name, message, settings.EMAIL_FROM, [mail for (name, mail) in settings.ADMINS if mail], fail_silently=True)
 
             messages.add_message(request, messages.SUCCESS, _('Domain has been added'))
-            return HttpResponseRedirect(reverse("subdomains", args=object.id))
+            return HttpResponseRedirect(reverse("subdomains", args=(object.id, )))
     else:
         form = FormDomain()
 
@@ -112,6 +113,7 @@ def add(request):
         context_instance=RequestContext(request)
     )
 
+@login_required
 def subdomains(request, domain_id):
     u = request.session.get('switched_user', request.user)
     superuser = request.user
@@ -128,6 +130,7 @@ def subdomains(request, domain_id):
         context_instance=RequestContext(request)
     )
 
+@login_required
 def subdomains_list(request, domain_id):
     u = request.session.get('switched_user', request.user)
     superuser = request.user

@@ -6,10 +6,10 @@ class Domain(models.Model):
     name = models.CharField(_("Domain name"), max_length=100, unique=True)
     pub_date = models.DateField(auto_now=True)
     serial = models.IntegerField(_("Domain's serial no."), default=0)
-    dns = models.BooleanField(_("Manage DNS records"), default=True)
-    mail = models.BooleanField(_("Manage email"), default=True)
-    ipv4 = models.BooleanField(_("IPv4 records"), default=True)
-    ipv6 = models.BooleanField(_("IPv6 records"), default=True)
+    dns = models.BooleanField(_("Manage DNS records"), default=False)
+    mail = models.BooleanField(_("Manage email"), default=False)
+    ipv4 = models.BooleanField(_("IPv4 records"), default=False)
+    ipv6 = models.BooleanField(_("IPv6 records"), default=False)
     parent = models.ForeignKey("self", verbose_name=_("Depends on"), null=True, blank=True, related_name="subdomains")
     owner = models.ForeignKey(User)
 
@@ -26,7 +26,7 @@ class Domain(models.Model):
         super(Domain, self).delete(using)
 
     def __unicode__(self):
-        return "%s" % self.name
+        return "%s" % self.domain_name
 
 
 class RegistrationRequest(models.Model):

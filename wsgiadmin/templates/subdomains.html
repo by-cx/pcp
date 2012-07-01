@@ -13,6 +13,7 @@
 
     function add(){
         $("#subdomains").load("{% url subdomains_list domain.id %}?subdomain_name="+$("#subdomain").val());
+        $("#subdomain").val("");
     }
 
     function load(){
@@ -35,6 +36,9 @@
         <tr>
             <th><input type="text" id="subdomain" value="">.{{ domain.name }}</th>
             <th><input type="button" id="subdomain_add" value="{% trans "Add" %}" onclick="add();"></th>
+        </tr>
+        <tr>
+            <td colspan="2"><em>{% trans "Tip: You can write more subdomains separated by comma." %}</em></td>
         </tr>
         </thead>
         <tbody id="subdomains"></tbody>

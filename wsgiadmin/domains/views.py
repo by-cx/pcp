@@ -135,16 +135,17 @@ def subdomains_list(request, domain_id):
     domain = get_object_or_404(u.domain_set, id=int(domain_id))
 
     if request.GET.get("subdomain_name"):
-        subdomain = Domain()
-        subdomain.name = request.GET.get("subdomain_name")
-        subdomain.serial = 0
-        subdomain.dns = False
-        subdomain.mail = False
-        subdomain.ipv4 = False
-        subdomain.ipv6 = False
-        subdomain.parent = domain
-        subdomain.owner = u
-        subdomain.save()
+        for name in request.GET.get("subdomain_name").split(","):
+            subdomain = Domain()
+            subdomain.name = name.strip()
+            subdomain.serial = 0
+            subdomain.dns = False
+            subdomain.mail = False
+            subdomain.ipv4 = False
+            subdomain.ipv6 = False
+            subdomain.parent = domain
+            subdomain.owner = u
+            subdomain.save()
     elif request.GET.get("subdomain_id"):
         subdomain = get_object_or_404(u.domain_set, id=request.GET.get("subdomain_id"))
         subdomain.delete()

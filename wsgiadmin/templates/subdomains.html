@@ -1,0 +1,43 @@
+{% extends "admin.html" %}
+{% load i18n %}
+
+{% block title %}
+    {% trans "Administration" %} &gt; {% trans "Subomains of" %} {{ domain.name }}
+{% endblock %}
+
+{% block extra %}
+    <script type="text/javascript">
+    function rem(subdomain_id){
+        $("#subdomains").load("{% url subdomains_list domain.id %}?subdomain_id="+subdomain_id);
+    }
+
+    function add(){
+        $("#subdomains").load("{% url subdomains_list domain.id %}?subdomain_name="+$("#subdomain").val());
+    }
+
+    function load(){
+        $("#subdomains").load("{% url subdomains_list domain.id %}");
+    }
+
+    $(document).ready(function (){
+        load();
+    });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div id="message-box"></div>
+
+    <h3>{% trans "Subdomains of" %} {{ domain.name }}</h3>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th><input type="text" id="subdomain" value="">.{{ domain.name }}</th>
+            <th><input type="button" id="subdomain_add" value="{% trans "Add" %}" onclick="add();"></th>
+        </tr>
+        </thead>
+        <tbody id="subdomains"></tbody>
+    </table>
+
+{% endblock %}

@@ -15,6 +15,10 @@
         <tr>
             <th>{% trans "Insert date" %}</th>
             <th>{% trans "Domain" %}</th>
+            <th>{% trans "E-mails" %}</th>
+            <th>{% trans "DNS" %}</th>
+            <th>{% trans "IPv4" %}</th>
+            <th>{% trans "IPv6" %}</th>
             <th>{% trans "Action" %}</th>
         </tr>
         </thead>
@@ -23,15 +27,62 @@
             {% for domain in object_list %}
                 <tr>
                     <td>{{ domain.pub_date|date:"d.m.Y" }}</td>
-                    <td>{{ domain.name }}</td>
+                    <td>{{ domain.domain_name }}</td>
+                    <td>
+                        {% if domain.mail %}
+                            <img src="{{ STATIC_URL }}admin/img/icon-yes.gif" name="{{ domain.mail }}">
+                        {% else %}
+                            <img src="{{ STATIC_URL }}admin/img/icon-no.gif" name="{{ domain.mail }}">
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if domain.dns %}
+                            <img src="{{ STATIC_URL }}admin/img/icon-yes.gif" name="{{ domain.dns }}">
+                        {% else %}
+                            <img src="{{ STATIC_URL }}admin/img/icon-no.gif" name="{{ domain.dns }}">
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if domain.ipv4 %}
+                            <img src="{{ STATIC_URL }}admin/img/icon-yes.gif" name="{{ domain.ipv4 }}">
+                        {% else %}
+                            <img src="{{ STATIC_URL }}admin/img/icon-no.gif" name="{{ domain.ipv4 }}">
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if domain.ipv6 %}
+                            <img src="{{ STATIC_URL }}admin/img/icon-yes.gif" name="{{ domain.ipv6 }}">
+                        {% else %}
+                            <img src="{{ STATIC_URL }}admin/img/icon-no.gif" name="{{ domain.ipv6 }}">
+                        {% endif %}
+                    </td>
                     <td id="domain_{{ domain.id }}">
                         <ul class="akce">
-                        <li class="smazat"><a href="#" title="{% trans "Delete" %}" rel="{{ domain.id }}" class="object_delete">
-                            <img src="{{ STATIC_URL }}images/ico-smazat.png" alt="{% trans "Delete" %}"/>
-                        </a></li>
+                            <li><a href="{% url subdomains domain.id %}">{% trans "Subdomains" %}</a></li>
+                            <li>
+                                <a href="{% url domain_update pk=domain.id %}" title="{% trans "Edit" %}">
+                                    <img src="{{ STATIC_URL }}images/ico-editovat.png" alt="{% trans "Edit" %}"/>
+                                </a>
+                            </li>
+                            <li class="smazat">
+                                <a href="#" title="{% trans "Delete" %}" rel="{{ domain.id }}" class="object_delete">
+                                    <img src="{{ STATIC_URL }}images/ico-smazat.png" alt="{% trans "Delete" %}"/>
+                                </a>
+                            </li>
                         </ul>
                     </td>
                 </tr>
+                {% for subdomain in domain.subdomains.all %}
+                    <tr>
+                        <td></td>
+                        <td>{{ subdomain.domain_name }}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                {% endfor %}
             {% endfor %}
             </tbody>
             <tfoot>

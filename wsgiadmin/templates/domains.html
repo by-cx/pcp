@@ -30,30 +30,30 @@
                     <td>{{ domain.domain_name }}</td>
                     <td>
                         {% if domain.mail %}
-                            <img src="{{ STATIC_URL }}admin/img/icon-yes.gif" name="{{ domain.mail }}">
+                            <img src="{{ STATIC_URL }}images/icon-yes.gif" name="{{ domain.mail }}">
                         {% else %}
-                            <img src="{{ STATIC_URL }}admin/img/icon-no.gif" name="{{ domain.mail }}">
+                            <img src="{{ STATIC_URL }}images/icon-no.gif" name="{{ domain.mail }}">
                         {% endif %}
                     </td>
                     <td>
                         {% if domain.dns %}
-                            <img src="{{ STATIC_URL }}admin/img/icon-yes.gif" name="{{ domain.dns }}">
+                            <img src="{{ STATIC_URL }}images/icon-yes.gif" name="{{ domain.dns }}">
                         {% else %}
-                            <img src="{{ STATIC_URL }}admin/img/icon-no.gif" name="{{ domain.dns }}">
+                            <img src="{{ STATIC_URL }}images/icon-no.gif" name="{{ domain.dns }}">
                         {% endif %}
                     </td>
                     <td>
                         {% if domain.ipv4 %}
-                            <img src="{{ STATIC_URL }}admin/img/icon-yes.gif" name="{{ domain.ipv4 }}">
+                            <img src="{{ STATIC_URL }}images/icon-yes.gif" name="{{ domain.ipv4 }}">
                         {% else %}
-                            <img src="{{ STATIC_URL }}admin/img/icon-no.gif" name="{{ domain.ipv4 }}">
+                            <img src="{{ STATIC_URL }}images/icon-no.gif" name="{{ domain.ipv4 }}">
                         {% endif %}
                     </td>
                     <td>
                         {% if domain.ipv6 %}
-                            <img src="{{ STATIC_URL }}admin/img/icon-yes.gif" name="{{ domain.ipv6 }}">
+                            <img src="{{ STATIC_URL }}images/icon-yes.gif" name="{{ domain.ipv6 }}">
                         {% else %}
-                            <img src="{{ STATIC_URL }}admin/img/icon-no.gif" name="{{ domain.ipv6 }}">
+                            <img src="{{ STATIC_URL }}images/icon-no.gif" name="{{ domain.ipv6 }}">
                         {% endif %}
                     </td>
                     <td id="domain_{{ domain.id }}">

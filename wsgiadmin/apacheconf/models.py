@@ -92,15 +92,15 @@ class UserSite(models.Model):
 
     @property
     def pidfile(self):
-        return join(self.owner.parms.home, "uwsgi", "%s.pid" % self.main_domain.name)
+        return join(self.owner.parms.home, "uwsgi", "%s.pid" % self.main_domain.domain_name)
 
     @property
     def logfile(self):
-        return join(self.owner.parms.home, "uwsgi" , "%s.log" % self.main_domain.name)
+        return join(self.owner.parms.home, "uwsgi" , "%s.log" % self.main_domain.domain_name)
 
     @property
     def socket(self):
-        return join(self.owner.parms.home, "uwsgi", "%s.sock" % self.main_domain.name)
+        return join(self.owner.parms.home, "uwsgi", "%s.sock" % self.main_domain.domain_name)
 
     @property
     def virtualenv_path(self):
@@ -126,7 +126,7 @@ class UserSite(models.Model):
             return config.credit_static * self.owner.parms.dc()
 
     def __repr__(self):
-        return "<Web %s>" % self.main_domain.name
+        return "<Web %s>" % self.main_domain.domain_name
 
     def __unicode__(self):
-        return "%s" % self.main_domain.name
+        return "%s" % self.main_domain.domain_name

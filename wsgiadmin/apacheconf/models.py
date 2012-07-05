@@ -48,7 +48,6 @@ class UserSite(models.Model):
     ssl_key = models.CharField(_("SSL key filename"), blank=True, null=True, max_length=256)
     ssl_mode = models.CharField(_("SSL mode"), choices=(("none", "None"), ("sslonly", "SSL Only"), ("both", "Both")), max_length=20, default="none")
 
-    removed = models.BooleanField(_("Removed"), default=False) # nezmizi dokud se nezaplati
     owner = models.ForeignKey(User, verbose_name=_('Owner'))
 
     class Meta:
@@ -81,7 +80,6 @@ class UserSite(models.Model):
                     target = join(self.owner.parms.home, target)
                 statics.append(dict(url=url, dir=target))
         return statics
-
 
     @property
     def server_aliases(self):
@@ -116,7 +114,7 @@ class UserSite(models.Model):
         return config.fastcgi_wrapper_dir % self.owner
 
     @property
-    def pay(self):#AttributeError:
+    def pay(self):
         """
         Credits per day
         """

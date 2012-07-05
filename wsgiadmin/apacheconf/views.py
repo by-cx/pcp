@@ -19,6 +19,7 @@ from wsgiadmin.requests.request import UWSGIRequest
 from wsgiadmin.apacheconf.tools import get_user_wsgis, get_user_venvs, user_directories, restart_master
 from wsgiadmin.service.forms import RostiFormHelper
 from wsgiadmin.service.views import JsonResponse, RostiListView
+from wsgiadmin.stats.tools import pay
 
 info = logging.info
 
@@ -96,11 +97,12 @@ def remove_site(request):
     try:
         object_id = request.POST['object_id']
         s = get_object_or_404(UserSite, id=object_id)
+        cost = s.pay
+        if cost:
+            pay(u, s.type, "Last payment for this site - %s" % s.main_domain.domain_name, cost)
         if s.owner != u:
             raise Exception("Forbidden operation")
-
-        s.removed = True
-        s.end_date = date.today()
+        s.delete()
         s.save()
 
         #Signal

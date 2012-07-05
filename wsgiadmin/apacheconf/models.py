@@ -89,23 +89,23 @@ class UserSite(models.Model):
         if not misc:
             return ""
 
-        return " ".join([one.name for one in self.misc_domains.all()])
+        return " ".join([one.domain_name for one in self.misc_domains.all()])
 
     @property
     def domains(self):
-        return "%s %s" % (self.main_domain.name, self.server_aliases)
+        return "%s %s" % (self.main_domain.domain_name, self.server_aliases)
 
     @property
     def pidfile(self):
-        return join(self.owner.parms.home, "uwsgi", "%s.pid" % self.main_domain.name)
+        return join(self.owner.parms.home, "uwsgi", "%s.pid" % self.main_domain.domain_name)
 
     @property
     def logfile(self):
-        return join(self.owner.parms.home, "uwsgi" , "%s.log" % self.main_domain.name)
+        return join(self.owner.parms.home, "uwsgi" , "%s.log" % self.main_domain.domain_name)
 
     @property
     def socket(self):
-        return join(self.owner.parms.home, "uwsgi", "%s.sock" % self.main_domain.name)
+        return join(self.owner.parms.home, "uwsgi", "%s.sock" % self.main_domain.domain_name)
 
     @property
     def virtualenv_path(self):
@@ -131,7 +131,7 @@ class UserSite(models.Model):
             return config.credit_static * self.owner.parms.dc()
 
     def __repr__(self):
-        return "<Web %s>" % self.main_domain.name
+        return "<Web %s>" % self.main_domain.domain_name
 
     def __unicode__(self):
-        return "%s" % self.main_domain.name
+        return "%s" % self.main_domain.domain_name

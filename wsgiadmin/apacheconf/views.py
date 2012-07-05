@@ -14,6 +14,7 @@ from django.template.context import RequestContext
 from wsgiadmin.apacheconf.forms import FormStatic, FormWsgi
 from wsgiadmin.apacheconf.models import UserSite, SiteDomain
 from wsgiadmin.domains.models import Domain
+from wsgiadmin.domains.tools import domains_list, used_domains
 from wsgiadmin.requests.request import UWSGIRequest
 from wsgiadmin.apacheconf.tools import get_user_wsgis, get_user_venvs, user_directories, restart_master
 from wsgiadmin.service.forms import RostiFormHelper
@@ -30,46 +31,6 @@ class AppsListView(RostiListView):
     def get_queryset(self):
         return self.user.usersite_set.filter(removed=False).order_by("pub_date")
 
-'''
-@login_required
-def domain_check(request, form, this_site=None):
-    u = request.session.get('switched_user', request.user)
-    if not form.is_valid():
-
-    form_domains = form.data["domains"].split() # domains typed in form
-    # whatever.count.of.dots.vanyli.net -> vanyli.net
-    my_domains = ['.'.join(x.name.split('.')[-2:]) for x in u.domain_set.all()]
-
-    used_domains = []
-    for tmp_domains in [one.domains.split() for one in UserSite.objects.filter(owner=u, removed=False) if one != this_site]:
-        used_domains += tmp_domains
-
-    error_domains = []
-    for domain in form_domains:
-        # Permission test
-        sld_tld = '.'.join(domain.split('.')[-2:])
-        error = sld_tld not in my_domains
-        if error and "%s - %s" % (domain, ugettext("Missing permission")) not in error_domains:
-            error_domains.append("%s - %s" % (domain, ugettext("Missing permission")))
-            continue
-
-        # Used test
-        if domain in used_domains and "%s - %s" % (domain, ugettext("Already used")) not in error_domains:
-            error_domains.append("%s - %s" % (domain, ugettext("Already used")))
-
-    return error_domains
-'''
-
-
-def get_domains(site, user):
-    #TODO - filter main domains as well
-    if site:
-        exclude_domains = SiteDomain.objects.exclude(user_site=site).values_list('id', flat=True)
-    else:
-        exclude_domains = SiteDomain.objects.all().values_list('id', flat=True)
-
-    return Domain.objects.filter(owner=user).exclude(id__in=exclude_domains)
-
 @login_required
 def app_static(request, app_type="static", app_id=0):
     if app_type not in ("static", "php"):
@@ -83,12 +44,11 @@ def app_static(request, app_type="static", app_id=0):
     except UserSite.DoesNotExist:
         site = None
 
-    domains = get_domains(site, u)
-    domains = u.domain_set.all()
-    FormStatic.base_fields['main_domain'].queryset = domains
-    FormStatic.base_fields['misc_domains'].queryset = domains
+    domains = domains_list(u, used=used_domains(u, site))
     if request.method == 'POST':
         form = FormStatic(request.POST, user=u, instance=site)
+        form.fields["main_domain"].choices = [(x.id, x.domain_name) for x in domains]
+        form.fields["misc_domains"].choices = [(x.id, x.domain_name) for x in domains]
 
         if form.is_valid():
             isite = form.save(commit=False)
@@ -96,8 +56,10 @@ def app_static(request, app_type="static", app_id=0):
             isite.owner = u
             isite.save()
 
-            for one in form.cleaned_data['misc_domains']:
-                SiteDomain.objects.create(domain=one, user_site=isite)
+            for sd in SiteDomain.objects.filter(user_site=isite):
+                sd.delete()
+            for domain in form.cleaned_data['misc_domains']:
+                SiteDomain.objects.create(domain=domain, user_site=isite)
 
             # Requests
             restart_master(config.mode, u)
@@ -110,6 +72,8 @@ def app_static(request, app_type="static", app_id=0):
             return HttpResponseRedirect(reverse("app_list"))
     else:
         form = FormStatic(user=u, instance=site)
+        form.fields["main_domain"].choices = [(x.id, x.domain_name) for x in domains]
+        form.fields["misc_domains"].choices = [(x.id, x.domain_name) for x in domains]
 
     form.helper.form_action = reverse("app_static", kwargs={'app_type': app_type, 'app_id': app_id})
 
@@ -163,11 +127,11 @@ def app_wsgi(request, app_id=0):
     except UserSite.DoesNotExist:
         site = None
 
-    domains = get_domains(site, u)
-    FormWsgi.base_fields['main_domain'].queryset = domains
-    FormWsgi.base_fields['misc_domains'].queryset = domains
+    domains = domains_list(u, used=used_domains(u, site))
     if request.method == 'POST':
         form = FormWsgi(request.POST, user=u, instance=site)
+        form.fields["main_domain"].choices = [(x.id, x.domain_name) for x in domains]
+        form.fields["misc_domains"].choices = [(x.id, x.domain_name) for x in domains]
 
         if form.is_valid():
             site = form.save(commit=False)
@@ -175,9 +139,10 @@ def app_wsgi(request, app_id=0):
             site.type = 'uwsgi'
             site.save()
 
-            for one in form.cleaned_data['misc_domains']:
-                SiteDomain.objects.create(domain=one, user_site=site)
-
+            for sd in SiteDomain.objects.filter(user_site=site):
+                sd.delete()
+            for domain in form.cleaned_data['misc_domains']:
+                SiteDomain.objects.create(domain=domain, user_site=site)
 
             if site.type == "uwsgi":
                 ur = UWSGIRequest(u, u.parms.web_machine)
@@ -195,6 +160,8 @@ def app_wsgi(request, app_id=0):
             return HttpResponseRedirect(reverse("app_list"))
     else:
         form = FormWsgi(user=u, instance=site)
+        form.fields["main_domain"].choices = [(x.id, x.domain_name) for x in domains]
+        form.fields["misc_domains"].choices = [(x.id, x.domain_name) for x in domains]
 
     form.helper.form_action = reverse("app_wsgi", args=[app_id])
 

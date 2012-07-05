@@ -2,6 +2,21 @@ import re
 
 from django import forms
 from django.utils.translation import ugettext_lazy as _
+from wsgiadmin.domains.models import Domain
+from wsgiadmin.service.forms import RostiFormHelper
+
+class FormDomain(forms.models.ModelForm):
+    helper = RostiFormHelper()
+
+    class Meta:
+        model = Domain
+        fields = ["name", "mail", "dns", "ipv4", "ipv6"]
+
+    def clean_domain(self):
+        if not re.search("[a-z0-9\-\.]*\.[a-z]{2,5}", self.cleaned_data["domain"]):
+            raise forms.ValidationError(_("Domain is not in valid format"))
+
+        return self.cleaned_data["domain"]
 
 class RegistrationRequestForm(forms.Form):
     domain = forms.CharField(label=_("Domain"))
@@ -15,3 +30,4 @@ class RegistrationRequestForm(forms.Form):
             raise forms.ValidationError(_("Domain is not in valid format"))
 
         return self.cleaned_data["domain"]
+

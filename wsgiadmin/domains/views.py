@@ -11,23 +11,31 @@ from django.core.mail import send_mail
 from django.template.context import RequestContext
 from django.utils.translation import ugettext_lazy as _, ugettext
 from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
 
-from wsgiadmin.domains.forms import RegistrationRequestForm
+from wsgiadmin.domains.forms import RegistrationRequestForm, FormDomain
 from wsgiadmin.domains.models import Domain
 from wsgiadmin.requests.request import BindRequest
 from wsgiadmin.service.forms import RostiFormHelper
-from wsgiadmin.service.views import JsonResponse, RostiListView
+from wsgiadmin.service.views import JsonResponse, RostiListView, RostiUpdateView
 
 
 class DomainsListView(RostiListView):
-
     menu_active = 'domains'
     template_name = 'domains.html'
     delete_url_reverse = 'domain_remove'
 
     def get_queryset(self):
-        return self.user.domain_set.all()
+        return self.user.domain_set.filter(parent=None).order_by("name")
 
+class DomainUpdateView(RostiUpdateView):
+    success_url = "/domains/show/"
+    menu_active = "domains"
+    form_class = FormDomain
+    template_name = "universal.html"
+
+    def get_queryset(self):
+        return self.user.domain_set
 
 @login_required
 def rm(request):
@@ -66,15 +74,17 @@ def add(request):
     superuser = request.user
 
     if request.method == 'POST':
-        form = RegistrationRequestForm(request.POST)
+        form = FormDomain(request.POST)
         if form.is_valid():
-            name = form.cleaned_data["domain"]
+            name = form.cleaned_data["name"]
 
-            instance, created = Domain.objects.get_or_create(name=name, owner=u)
+            object = form.save(commit=False)
+            object.owner = u
+            object.save()
 
-            if config.handle_dns and instance.dns:
+            if config.handle_dns and object.dns:
                 pri_br = BindRequest(u, "master")
-                pri_br.mod_zone(instance)
+                pri_br.mod_zone(object)
                 pri_br.mod_config()
                 pri_br.reload()
                 if config.handle_dns_secondary:
@@ -87,9 +97,9 @@ def add(request):
             send_mail(_('Added new domain: %s') % name, message, settings.EMAIL_FROM, [mail for (name, mail) in settings.ADMINS if mail], fail_silently=True)
 
             messages.add_message(request, messages.SUCCESS, _('Domain has been added'))
-            return HttpResponseRedirect(reverse("domains_list"))
+            return HttpResponseRedirect(reverse("subdomains", args=(object.id, )))
     else:
-        form = RegistrationRequestForm()
+        form = FormDomain()
 
     return render_to_response('universal.html',
             {
@@ -102,3 +112,55 @@ def add(request):
             },
         context_instance=RequestContext(request)
     )
+
+@login_required
+def subdomains(request, domain_id):
+    u = request.session.get('switched_user', request.user)
+    superuser = request.user
+
+    domain = get_object_or_404(u.domain_set, id=int(domain_id))
+
+    return render_to_response('subdomains.html',
+            {
+                "domain": domain,
+                "u": u,
+                "superuser": superuser,
+                "menu_active": "domains",
+            },
+        context_instance=RequestContext(request)
+    )
+
+@login_required
+def subdomains_list(request, domain_id):
+    u = request.session.get('switched_user', request.user)
+    superuser = request.user
+
+    domain = get_object_or_404(u.domain_set, id=int(domain_id))
+
+    if request.GET.get("subdomain_name"):
+        for name in request.GET.get("subdomain_name").split(","):
+            subdomain = Domain()
+            subdomain.name = name.strip()
+            subdomain.serial = 0
+            subdomain.dns = False
+            subdomain.mail = False
+            subdomain.ipv4 = False
+            subdomain.ipv6 = False
+            subdomain.parent = domain
+            subdomain.owner = u
+            subdomain.save()
+    elif request.GET.get("subdomain_id"):
+        subdomain = get_object_or_404(u.domain_set, id=request.GET.get("subdomain_id"))
+        subdomain.delete()
+
+    return render_to_response('subdomains_list.html',
+            {
+                "domain": domain,
+                "subdomains": Domain.objects.filter(parent=domain),
+                "u": u,
+                "superuser": superuser,
+                "menu_active": "domains",
+            },
+        context_instance=RequestContext(request)
+    )
+

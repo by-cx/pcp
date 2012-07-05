@@ -385,10 +385,10 @@ class BindRequest(Service):
             "domain": domain,
             "config": config,
             })
-        self.write(config.bind_zone_conf % domain.name, configfile)
+        self.write(config.bind_zone_conf % domain.domain_name, configfile)
 
     def remove_zone(self, domain):
-        self.unlink(config.bind_zone_conf % domain.name)
+        self.unlink(config.bind_zone_conf % domain.domain_name)
         self.mod_config()
 
     def mod_config(self):
@@ -406,7 +406,7 @@ class BindRequest(Service):
 
 class EMailRequest(SSHHandler):
     def create_mailbox(self, email):
-        homedir = join(config.maildir, email.domain.name)
+        homedir = join(config.maildir, email.domain.domain_name)
         maildir = join(homedir, email.login)
 
         self.run("mkdir -p %s" % homedir)
@@ -418,7 +418,7 @@ class EMailRequest(SSHHandler):
 
     def remove_mailbox(self, email):
         #TODO - check if delete isn't nasty
-        maildir = join(config.maildir, email.domain.name, email.login)
+        maildir = join(config.maildir, email.domain.domain_name, email.login)
         self.run("rm -rf %s" % maildir, plan_to=datetime.today() + timedelta(90))
 
 

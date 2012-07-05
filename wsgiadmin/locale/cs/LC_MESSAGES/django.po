@@ -635,7 +635,7 @@ msgstr "Sériové číslo"
 
 #: domains/models.py:15
 msgid "Manage DNS records"
-msgstr "Zpracovávat DNS záznamy"
+msgstr "Vést DNS záznamy"
 
 #: domains/models.py:16
 msgid "Manage email"

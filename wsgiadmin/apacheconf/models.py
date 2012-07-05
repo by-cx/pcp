@@ -54,6 +54,11 @@ class UserSite(models.Model):
     class Meta:
         db_table = 'apacheconf_site'
 
+    def delete(self, using=None):
+        for sitedomain in self.sitedomain_set.all():
+            sitedomain.delete()
+        return super(UserSite, self).delete(using)
+
     @property
     def whitelist(self):
         return [x.strip().replace("\"","") for x in self.allow_ips.split("\n") if re.match("[0-9a-f\.\:]{7,45}",x)]

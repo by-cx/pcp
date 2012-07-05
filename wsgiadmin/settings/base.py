@@ -4,7 +4,6 @@
 _ = lambda x: x
 
 from os.path import join, abspath, pardir, dirname
-
 ROOT = abspath(join(dirname(__file__), pardir))
 
 DEBUG = True

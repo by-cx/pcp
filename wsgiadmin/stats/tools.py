@@ -1,6 +1,16 @@
 from datetime import date
 from wsgiadmin.clients.models import Parms
 from wsgiadmin.emails.models import Message
+from wsgiadmin.stats.models import Record
+
+def pay(user, service, value, cost):
+    record = Record()
+    record.date = date.today()
+    record.user = user
+    record.service = service
+    record.value = value
+    record.cost = cost
+    record.save()
 
 def low_credits_level():
     for parm in Parms.objects.all():

@@ -270,7 +270,7 @@ class NginxRequest(Service):
 
     def mod_vhosts(self):
         configfile = []
-        sites = UserSite.objects.filter(removed=False, owner__parms__enable=True)
+        sites = UserSite.objects.filter(owner__parms__enable=True)
         for site in sites:
             if site.type== "uwsgi":
                 if site.ssl_mode in ("none", "both"):
@@ -332,7 +332,7 @@ class ApacheRequest(Service):
 
     def mod_vhosts(self):
         configfile = []
-        sites = UserSite.objects.filter(removed=False, owner__parms__enable=True)
+        sites = UserSite.objects.filter(owner__parms__enable=True)
         for site in sites:
             if site.type in ("uwsgi", "modwsgi"):
                 # Nginx mode cancel handling wsgi by Apache

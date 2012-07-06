@@ -53,7 +53,7 @@ def master(request):
         return HttpResponseForbidden(_("Permission error"))
 
     balance_day = 0
-    sites = UserSite.objects.filter(removed=False)
+    sites = UserSite.objects.all()
     for site in sites:
         balance_day += site.pay
     balance_month = balance_day * 30

@@ -14,7 +14,7 @@ def user_directories(user, use_cache=False):
 
     if dirs is None:
         sh = SSHHandler(user, user.parms.web_machine)
-        dirs = sh.run("/usr/bin/find %s -maxdepth %d -type d" % (user.parms.home, config.find_directory_deep), instant=True)[0].split("\n")
+        dirs = sh.run("/usr/bin/find -L %s -maxdepth %d -type d" % (user.parms.home, config.find_directory_deep), instant=True)[0].split("\n")
 
         cache.set('user_directories_%s' % user.pk, dirs, timeout=3600*24*7)
 

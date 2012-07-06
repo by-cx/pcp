@@ -130,6 +130,19 @@ class Parms(models.Model):
         return (credit if credit else 0) - (cost if cost else 0)
 
     @property
+    def days_left(self):
+        credit = self.credit
+        pay_per_day = self.pay_total_day()
+        if pay_per_day > 0:
+            days = credit / pay_per_day
+            if days > 0:
+                return days
+            else:
+                return 0
+        else:
+            return 0
+
+    @property
     def credit_until(self):
         credit = self.credit
         pay_per_day = self.pay_total_day()

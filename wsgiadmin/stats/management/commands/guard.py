@@ -49,27 +49,27 @@ class Command(BaseCommand):
 
         if parms.low_level_credits == "send_email":
             tmpl = "low_credit"
-            data = {"credit": parms.credit + correction, "days": parms.days_left}
+            data = {"credit": parms.credit, "days": parms.days_left}
         elif parms.low_level_credits == "buy_month":
-            credits = parms.pay_total_day() * 30
+            data = {"credit": parms.credit, "days": parms.days_left}
+            credits = parms.pay_total_day() * 30 + correction
             parms.add_credit(credits)
             tmpl = "autobuy_credit"
-            data = {"credit": parms.credit + correction, "days": parms.days_left}
         elif parms.low_level_credits == "buy_three_months":
-            credits = parms.pay_total_day() * 90
+            data = {"credit": parms.credit, "days": parms.days_left}
+            credits = parms.pay_total_day() * 90 + correction
             parms.add_credit(credits)
             tmpl = "autobuy_credit"
-            data = {"credit": parms.credit + correction, "days": parms.days_left}
         elif parms.low_level_credits == "buy_six_months":
-            credits = parms.pay_total_day() * 180
+            data = {"credit": parms.credit, "days": parms.days_left}
+            credits = parms.pay_total_day() * 180 + correction
             parms.add_credit(credits)
             tmpl = "autobuy_credit"
-            data = {"credit": parms.credit + correction, "days": parms.days_left}
         elif parms.low_level_credits == "buy_year":
-            credits = parms.pay_total_day() * 360
+            data = {"credit": parms.credit, "days": parms.days_left}
+            credits = parms.pay_total_day() * 360 + correction
             parms.add_credit(credits)
             tmpl = "autobuy_credit"
-            data = {"credit": parms.credit + correction, "days": parms.days_left}
 
         if tmpl and data:
             message = Message.objects.filter(purpose=tmpl)

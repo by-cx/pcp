@@ -30,7 +30,7 @@ class AppsListView(RostiListView):
     delete_url_reverse = 'remove_site'
 
     def get_queryset(self):
-        return self.user.usersite_set.filter(removed=False).order_by("pub_date")
+        return self.user.usersite_set.order_by("pub_date")
 
 @login_required
 def app_static(request, app_type="static", app_id=0):
@@ -41,7 +41,7 @@ def app_static(request, app_type="static", app_id=0):
     superuser = request.user
 
     try:
-        site = UserSite.objects.get(id=app_id, owner=u)
+        site = u.usersite_set.objects.get(id=app_id, owner=u)
     except UserSite.DoesNotExist:
         site = None
 
@@ -94,9 +94,11 @@ def app_static(request, app_type="static", app_id=0):
 def remove_site(request):
     u = request.session.get('switched_user', request.user)
 
+    object_id = int(request.POST['object_id'])
+    s = get_object_or_404(u.usersite_set, id=object_id)
     try:
         object_id = request.POST['object_id']
-        s = get_object_or_404(UserSite, id=object_id)
+        s = get_object_or_404(u.usersite_set, id=int(object_id))
         cost = s.pay
         if cost:
             pay(u, s.type, "Last payment for this site - %s" % s.main_domain.domain_name, cost)
@@ -125,7 +127,7 @@ def app_wsgi(request, app_id=0):
     superuser = request.user
 
     try:
-        site = UserSite.objects.get(id=app_id, owner=u)
+        site = u.usersite_set.objects.get(id=app_id, owner=u)
     except UserSite.DoesNotExist:
         site = None
 
@@ -185,7 +187,7 @@ def reload(request, sid):
     superuser = request.user
 
     sid = int(sid)
-    s = get_object_or_404(UserSite, id=sid)
+    s = get_object_or_404(u.usersite_set, id=sid)
 
     #Signal
     if s.type in ("uwsgi", "modwsgi"):
@@ -205,7 +207,7 @@ def restart(request, sid):
     u = request.session.get('switched_user', request.user)
 
     sid = int(sid)
-    s = get_object_or_404(UserSite, id=sid)
+    s = get_object_or_404(u.usersite_set, id=sid)
 
     #Signal
     if s.type in ("uwsgi", "modwsgi"):

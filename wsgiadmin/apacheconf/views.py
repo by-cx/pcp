@@ -41,7 +41,7 @@ def app_static(request, app_type="static", app_id=0):
     superuser = request.user
 
     try:
-        site = u.usersite_set.objects.get(id=app_id, owner=u)
+        site = u.usersite_set.get(id=app_id)
     except UserSite.DoesNotExist:
         site = None
 
@@ -127,7 +127,7 @@ def app_wsgi(request, app_id=0):
     superuser = request.user
 
     try:
-        site = u.usersite_set.objects.get(id=app_id, owner=u)
+        site = u.usersite_set.get(id=app_id)
     except UserSite.DoesNotExist:
         site = None
 

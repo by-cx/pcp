@@ -67,6 +67,3 @@ class Command(BaseCommand):
         for user in users:
             RecordUser(user)
 
-        for site in UserSite.objects.all():
-            site.delete()
-

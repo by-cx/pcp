@@ -1,13 +1,13 @@
 body {
-    background: #555555;
+    background: #FFFFFF;
 }
 
 #top {
-    padding-top: 50px;
-    background: #eeeeee;
+    margin-top: 50px;
+    /*background: #eeeeee;
     -moz-box-shadow: 0 0 200px rgba(0, 0, 0, 0.3) inset;
     -webkit-box-shadow: 0 0 200px rgba(0, 0, 0, 0.3) inset;
-    box-shadow: 0 0 200px rgba(0, 0, 0, 0.3) inset;
+    box-shadow: 0 0 200px rgba(0, 0, 0, 0.3) inset;*/
 }
 /*--------------------------------------------------------------------------------------------------------
     Content
@@ -110,7 +110,7 @@ body {
 }
 
 .terms {
-    color: #FFF161;
+    color: red;
     text-align: center;
 }
 
@@ -152,4 +152,8 @@ body {
 
 .filter_input {
     width: 50px;
+}
+
+.center {
+    text-align: center;
 }

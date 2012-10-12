@@ -27,7 +27,7 @@
             {% for domain in object_list %}
                 <tr>
                     <td>{{ domain.pub_date|date:"d.m.Y" }}</td>
-                    <td>{{ domain.domain_name }}</td>
+                    <td>{{ domain.domain_name }}{% if domain.apps %} <strong>({{ domain.apps_count }} {% trans "apps pared" %})</strong>{% endif %}</td>
                     <td>
                         {% if domain.mail %}
                             <img src="{{ STATIC_URL }}images/icon-yes.gif" name="{{ domain.mail }}">
@@ -75,7 +75,7 @@
                 {% for subdomain in domain.subdomains.all %}
                     <tr>
                         <td></td>
-                        <td>{{ subdomain.domain_name }}</td>
+                        <td>{{ subdomain.domain_name }}{% if subdomain.apps %} <strong>({{ subdomain.apps_count }} {% trans "apps pared" %})</strong>{% endif %}</td>
                         <td></td>
                         <td></td>
                         <td></td>

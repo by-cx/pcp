@@ -16,7 +16,7 @@ from wsgiadmin.apacheconf.models import UserSite, SiteDomain
 from wsgiadmin.domains.models import Domain
 from wsgiadmin.domains.tools import domains_list, used_domains
 from wsgiadmin.requests.request import UWSGIRequest
-from wsgiadmin.apacheconf.tools import get_user_wsgis, get_user_venvs, user_directories, restart_master
+from wsgiadmin.apacheconf.tools import get_user_wsgis, get_user_venvs, user_directories, restart_master, remove_app_preparation
 from wsgiadmin.service.forms import RostiFormHelper
 from wsgiadmin.service.views import JsonResponse, RostiListView
 from wsgiadmin.stats.tools import pay
@@ -92,30 +92,16 @@ def app_static(request, app_type="static", app_id=0):
 
 @login_required
 def remove_site(request):
-    u = request.session.get('switched_user', request.user)
+    user = request.session.get('switched_user', request.user)
 
-    object_id = int(request.POST['object_id'])
-    s = get_object_or_404(u.usersite_set, id=object_id)
     try:
         object_id = request.POST['object_id']
-        s = get_object_or_404(u.usersite_set, id=int(object_id))
-        cost = s.pay
-        if cost:
-            pay(u, s.type, "Last payment for this site - %s" % s.main_domain.domain_name, cost)
-        if s.owner != u:
+        spp = get_object_or_404(user.usersite_set, id=int(object_id))
+        if spp.owner != user:
             raise Exception("Forbidden operation")
-        s.delete()
-        s.save()
+        remove_app_preparation(spp)
+        spp.delete()
 
-        #Signal
-        restart_master(config.mode, u)
-
-        ur = UWSGIRequest(u, u.parms.web_machine)
-        ur.stop(s)
-        ur.mod_config()
-
-        # calculate!
-        u.parms.pay_for_sites(use_cache=False)
         return JsonResponse("OK", {1: ugettext("Site was successfuly removed")})
     except Exception, e:
         return JsonResponse("KO", {1: ugettext("Error deleting site")})

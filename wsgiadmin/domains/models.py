@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
+from wsgiadmin.apacheconf.models import UserSite, SiteDomain
 
 class Domain(models.Model):
     name = models.CharField(_("Domain name"), max_length=100)
@@ -16,17 +17,20 @@ class Domain(models.Model):
     class Meta:
         unique_together = ('name', 'parent',)
 
+    def apps(self):
+        as_main_domains = list(UserSite.objects.filter(main_domain=self))
+        as_misc_domains = [misc_domain.user_site for misc_domain in list(SiteDomain.objects.filter(domain=self))]
+        return list(set(as_main_domains + as_misc_domains))
+
+    def apps_count(self):
+        return len(self.apps())
+
     @property
     def domain_name(self):
         if self.parent:
             return "%s.%s" % (self.name, self.parent.name)
         else:
             return self.name
-
-    def delete(self, using=None):
-        for x in self.parent_set.all():
-            x.delete()
-        super(Domain, self).delete(using)
 
     def __unicode__(self):
         return "%s" % self.domain_name

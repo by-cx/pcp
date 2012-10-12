@@ -14,13 +14,13 @@
         </div>
     </form>
 
-    {% if config.terms_url %}
-        <div class="terms">{% trans "By click on the button, you agree with our terms" %}</div>{% endif %}
     <div class="row">
-        <div class="span6">
-            <a href="{% url login %}">{% trans "Go back to login screen" %}</a>
-            {% if config.terms_url %}|
-                <a href="{{ config.terms_url }}" target="_blank">{% trans "Terms" %}</a>{% endif %}
+        <div class="span6 offset2 center">
+            {% if config.terms_url %}
+                <div class="terms center">{% trans "By click on the button, you agree with our terms" %}</div>
+            {% endif %}
+            <a href="{% url login %}">{% trans "Login screen" %}</a>
+            {% if config.terms_url %}| <a href="{{ config.terms_url }}" target="_blank">{% trans "Terms" %}</a>{% endif %}
         </div>
     </div>
 

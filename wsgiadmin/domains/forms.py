@@ -28,6 +28,9 @@ class RegistrationRequestForm(forms.Form):
     def clean_domain(self):
         if not re.search("[a-z0-9\-\.]*\.[a-z]{2,5}", self.cleaned_data["domain"]):
             raise forms.ValidationError(_("Domain is not in valid format"))
+        domains = [domain.domain_name for domain in Domain.objects.all()]
+        if self.cleaned_data["domain"] in domains:
+            raise forms.ValidationError(_("This domain is already taken"))
 
         return self.cleaned_data["domain"]
 

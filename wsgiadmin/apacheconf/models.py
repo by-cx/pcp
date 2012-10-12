@@ -7,7 +7,6 @@ from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 
 from os.path import join
-from wsgiadmin.domains.models import Domain
 
 SITE_TYPE_CHOICES = [
     ("uwsgi", "uWSGI"),
@@ -27,8 +26,8 @@ class UserSite(models.Model):
     end_date = models.DateField(blank=True, null=True)
     type = models.CharField(_("Type"), max_length=20, choices=SITE_TYPE_CHOICES)
 
-    main_domain = models.ForeignKey(Domain, related_name='main_domain', null=True)# TODO - add limit_choices_to
-    misc_domains = models.ManyToManyField(Domain, null=True, related_name='misc_domains', through=SiteDomain, blank=True)
+    main_domain = models.ForeignKey('domains.Domain', related_name='main_domain', null=True)# TODO - add limit_choices_to
+    misc_domains = models.ManyToManyField('domains.Domain', null=True, related_name='misc_domains', through=SiteDomain, blank=True)
 
     document_root = models.CharField(_("DocumentRoot"), max_length=200, blank=True)
     htaccess = models.BooleanField(_(".htaccess"), default=True)
@@ -53,10 +52,9 @@ class UserSite(models.Model):
     class Meta:
         db_table = 'apacheconf_site'
 
-    def delete(self, using=None):
-        for sitedomain in self.sitedomain_set.all():
-            sitedomain.delete()
-        return super(UserSite, self).delete(using)
+    @property
+    def domains_count(self):
+        return self.misc_domains.count() + (1 if self.main_domain else 0)
 
     @property
     def whitelist(self):

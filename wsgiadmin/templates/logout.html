@@ -1,20 +1,12 @@
-{% extends "base.html" %}
+{% extends "form.html" %}
 {% load i18n %}
 
+{% block extra %}<meta http-equiv="refresh" content="2;url=/">{% endblock %}
 {% block bodyclass %}registrace{% endblock %}
-{% block body %}
-
-            <h1>
-                <strong>{% trans "Administration" %} /</strong> {{ site }} / {% trans "Login" %}
-            </h1>
-
-            <div class="container">
-                <div class="container-top">
-                    <div class="container-bottom">
-                        <h2>{% trans "You've been logout" %}</h2>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+{% block container %}
+<div class="row">
+    <div class="span6 offset2 center">
+        <h2>{% trans "You've been logout" %}</h2>
+    </div>
+</div>
 {% endblock %}

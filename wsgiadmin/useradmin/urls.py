@@ -28,11 +28,22 @@ urlpatterns += patterns('',
                         url(r'^credit/', include('wsgiadmin.stats.urls')),
                         url(r'^users/', include('wsgiadmin.users.urls')),
                         url(r'^login/$', 'django.contrib.auth.views.login',
-                                {'template_name': 'login.html',
-                                 'extra_context': {
-                                     'form_helper': RostiFormHelper()}},
-                            name="login"),
+                                {
+                                    'template_name': 'login.html',
+                                    'extra_context': {
+                                        'form_helper': RostiFormHelper(),
+                                        'menu_active': 'login',
+                                    }
+                                },
+                            name="login"
+                        ),
                         url(r'^logout/$', 'django.contrib.auth.views.logout',
-                                {'template_name': 'logout.html',
-                            'extra_context': {'form_helper': RostiFormHelper()}}, name = "logout"),
+                                {
+                                    'template_name': 'logout.html',
+                                    'extra_context': {
+                                        'form_helper': RostiFormHelper(),
+                                    }
+                                },
+                                name = "logout"
+                        ),
 )

@@ -1,10 +1,11 @@
 from os.path import join
 
-from wsgiadmin.requests.request import SSHHandler, NginxRequest, ApacheRequest
+from wsgiadmin.requests.request import SSHHandler, NginxRequest, ApacheRequest, UWSGIRequest
 from constance import config
 
 from django.conf import settings
 from django.core.cache import cache
+from wsgiadmin.stats.tools import pay
 
 def user_directories(user, use_cache=False):
 
@@ -62,3 +63,19 @@ def restart_master(config_mode, user):
         ar = ApacheRequest(user, user.parms.web_machine)
         ar.mod_vhosts()
         ar.reload()
+
+def remove_app_preparation(app, remove_domains=True):
+    if app.pay:
+        pay(app.owner, app.type, "Last payment for this site - %s" % app.main_domain.domain_name, app.pay)
+
+    #Signal
+    restart_master(config.mode, app.owner)
+
+    if app.type == "uwsgi":
+        ur = UWSGIRequest(app.owner,  app.owner.parms.web_machine)
+        ur.stop(app, instant=True)
+        ur.mod_config()
+
+    if remove_domains:
+        for sitedomain in app.sitedomain_set.all():
+            sitedomain.delete()

@@ -2,12 +2,24 @@
 {% load i18n %}
 
 {% block bodyclass %}registrace{% endblock %}
-{% block body %}
-    <h1>
-        <a href="/">{% trans "Administration" %} / {{ site }} /</a>
-        {% block h1title %}{% endblock %}
-    </h1>
 
+{% block header %}
+<div class="navbar navbar-fixed-top">
+
+    <div class="navbar-inner">
+        <div id="header" class="container">
+            <a href="/" class="brand">{{ site }}</a>
+            <ul class="nav pull-left" id="main-menu">
+                <li {% if menu_active == "login" %} class="active"{% endif %}><a href="{% url login %}">{% trans "Login" %}</a></li>
+                <li {% if menu_active == "registration" %} class="active"{% endif %}><a href="{% url registration %}">{% trans "Registration" %}</a></li>
+                <li {% if menu_active == "reset_passwd" %} class="active"{% endif %}><a href="{% url reset_passwd %}">{% trans "Lost password" %}</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block body %}
     {% if messages %}
         <ul id="notifications">
             {% for message in messages %}

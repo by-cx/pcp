@@ -130,6 +130,7 @@ class PasswordView(FormView):
     def get_context_data(self, **kwargs):
         data = super(PasswordView, self).get_context_data(**kwargs)
         data['form_helper'] = RostiFormHelper()
+        data['menu_active'] = "reset_passwd"
         return data
 
     def form_valid(self, form):
@@ -260,6 +261,7 @@ def reg(request):
             "title": _("Registration"),
             "action": reverse("wsgiadmin.useradmin.views.reg"),
             "config": config,
+            "menu_active": "registration",
         },
         context_instance=RequestContext(request)
     )

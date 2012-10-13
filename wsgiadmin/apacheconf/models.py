@@ -78,7 +78,8 @@ class UserSite(models.Model):
             else:
                 if not target.startswith(self.owner.parms.home.rstrip('/')):
                     target = join(self.owner.parms.home, target)
-                statics.append(dict(url=url, dir=target))
+                if not url in [x["url"] for x in statics]:
+                    statics.append(dict(url=url, dir=target))
         return statics
 
     @property
@@ -86,7 +87,6 @@ class UserSite(models.Model):
         misc = self.misc_domains
         if not misc:
             return ""
-
         return " ".join([one.domain_name for one in self.misc_domains.all()])
 
     @property

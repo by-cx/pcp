@@ -71,4 +71,12 @@
             }
         });
 
+    $(document).ready(function (){
+    {% for element, values in autocomplete_list %}
+        $( "#id_{{ element }}" ).autocomplete({
+            source: {{ values }},
+            position: { my: "left top", at: "right top", collision: "none" }
+        });
+    {% endfor %}
+    });
 {% endblock %}

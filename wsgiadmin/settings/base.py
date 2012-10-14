@@ -130,6 +130,7 @@ INSTALLED_APPS = (
     'south',
     'constance',
     'constance.backends.database',
+    'raven.contrib.django',
 
     'wsgiadmin.requests',
     'wsgiadmin.useradmin',
@@ -145,6 +146,7 @@ INSTALLED_APPS = (
     'wsgiadmin.service',
     'wsgiadmin.stats',
     'wsgiadmin.supervisor',
+    'wsgiadmin.apps',
 )
 
 CONSTANCE_BACKEND = "constance.backends.database.DatabaseBackend"

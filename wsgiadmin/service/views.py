@@ -17,7 +17,6 @@ class JsonResponse(HttpResponse):
         content = anyjson.serialize(dict(result=result, messages=messages))
         super(JsonResponse, self).__init__(content, content_type='application/jsonrequest')
 
-
 class RostiListView(ListView):
     menu_active = ""
     paginate_by = config.pagination

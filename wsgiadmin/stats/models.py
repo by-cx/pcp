@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
+from wsgiadmin.clients.models import Address
 
 class RecordExists(Exception): pass
 
@@ -39,10 +40,13 @@ class Record(models.Model):
 
 class Credit(models.Model):
     date = models.DateField(_("Date"), auto_now_add=True)
+    date_payed = models.DateTimeField(_("Date payed"), blank=True, null=True)
     user = models.ForeignKey(User, verbose_name=_("User"))
+    price = models.FloatField(_("Price"))
+    currency = models.CharField(_("Currenty"), max_length=8)
     value = models.FloatField(_("Cost (bonus included)"))
     bonus = models.FloatField(_("Bonus"), default=0)
-    invoice = models.BooleanField(_("Sended to invoice system"), default=False)
+    address = models.ForeignKey(Address, verbose_name=_("Address"), null=True)
 
     def __unicode__(self):
         return "%s += %.2f" % (self.user.username, self.value)

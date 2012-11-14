@@ -1,0 +1,63 @@
+{% extends "admin.html" %}
+{% load i18n %}
+
+{% block title %}
+    {% trans "Administration" %} &gt; {% trans "Addresses" %}
+{% endblock %}
+
+{% block content %}
+    <div id="message-box"></div>
+
+    <h3>{% trans "List of existing addresses" %}</h3>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>{% trans "Name" %}</th>
+            <th>{% trans "Street" %}</th>
+            <th>{% trans "City" %}</th>
+            <th>{% trans "Phone" %}</th>
+            <th>{% trans "E-mail" %}</th>
+            <th>{% trans "Actions" %}</th>
+        </tr>
+        </thead>
+        {% if object_list %}
+            <tbody id="objects_list">
+            {% for addr in object_list %}
+                <tr>
+                    <th>{{ addr.name }}</th>
+                    <td>{{ addr.street }}</td>
+                    <td>{{ addr.city }}</td>
+                    <td>{{ addr.phone }}</td>
+                    <td>{{ addr.email }}</td>
+                    <td class="list_actions">
+                        <ul class="akce">
+                            <li>
+                                <a href="{% url address_update pk=addr.id %}"><i class="icon-edit"></i>{% trans "Update" %}</a>
+                            </li>
+                            <li class="smazat">
+                                <a href="#a" onclick="if(confirm('{% trans "Are you sure?" %}̈́')){document.location='{% url address_delete pk=addr.id %}'};"><i class="icon-remove"></i>{% trans "Delete" %}</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="4">
+                    <div class="pagination">
+                        {% include "paginator.html" %}
+                    </div>
+                    <div class="clear"></div>
+                </td>
+            </tr>
+            </tfoot>
+        {% else %}
+            <tbody>
+            <tr>
+                <td colspan="4">{% trans "Crap! No addrees found." %}</td>
+            </tr>
+            </tbody>
+        {% endif %}
+    </table>
+{% endblock %}

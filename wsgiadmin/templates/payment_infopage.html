@@ -1,0 +1,55 @@
+{% extends "admin.html" %}
+{% load i18n %}
+
+{% block title %}
+    {% trans "Administration" %} &gt; {% trans "Payment" %}
+{% endblock %}
+
+{% block content %}
+    <div class="clear"></div>
+
+    <h1>{% trans "Payment information" %}</h1>
+
+    <p>{% trans "Now, last step you have to do is a pay. Look at the information below." %}</p>
+
+    <table class="table table-striped">
+        <tr>
+            <th>{% trans "Date" %}</th>
+            <td>{{ credit.date }}</td>
+        </tr>
+        <tr>
+            <th>{% trans "Price" %}</th>
+            <td>{{ credit.price }} {{ credit.currency }}</td>
+        </tr>
+        <tr>
+            <th>{% trans "Price" %}</th>
+            <td>{{ credit.value }} credits</td>
+        </tr>
+        <tr>
+            <th>{% trans "Your bonus" %}</th>
+            <td>{{ credit.bonus }} credits</td>
+        </tr>
+        <tr>
+            <th>{% trans "State" %}</th>
+            <td>{% if credit.date_payed %}{% trans "payed" %} ({{ date.payed }}){% else %}{% trans "No payment" %}{% endif %}</td>
+        </tr>
+    </table>
+
+    <h2>{% trans "Payment via your bank" %}</h2>
+
+    <table class="table table-striped">
+        <tr>
+            <th>{% trans "Bank" %}</th>
+            <td>FIO Banka</td>
+        </tr>
+        <tr>
+            <th>{% trans "Bank account" %}</th>
+            <td>12345/3456</td>
+        </tr>
+        <tr>
+            <th>{% trans "Variable symbol" %}</th>
+            <td>{{ u.parms.var_symbol }}</td>
+        </tr>
+    </table>
+
+{% endblock %}

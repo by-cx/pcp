@@ -21,11 +21,6 @@ DATABASES = {}
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
-# JSONRPC URL for PCP-Invoice, if "" or None, it will be switched off
-JSONRPC_URL = ""
-JSONRPC_USERNAME = ""
-JSONRPC_PASSWORD = ""
-
 # User logs
 
 USERLOG_FILENAME = "%s/logs/%s.log"
@@ -217,7 +212,6 @@ CONSTANCE_CONFIG = {
     "credit_currency": ("0.5,12.5,9.5", "CZK, EUR, USD"),
     "credit_threshold": (-7, "When should be a web disabled"),
     "tax": (0, "%"),
-    "invoice_desc": ("Credit for services", "Some text"),
 
     "terms_url": ("", "Terms URL"),
 
@@ -225,6 +219,8 @@ CONSTANCE_CONFIG = {
 
     "auto_disable":(True, "Auto disabling users"),
     "pagination":(50, "Pagination"),
+
+    "var_symbol_prefix": (10, "Variable symbol prefix")
     }
 
 VIRTUALENVS_DIR = 'virtualenvs'

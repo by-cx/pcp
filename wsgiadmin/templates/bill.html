@@ -32,22 +32,4 @@
     {% endfor %}
     </table>
 
-    <table class="table table-striped">
-    <tr>
-        <th colspan="3">{% trans "Buyed credits" %}</th>
-    </tr>
-    <tr>
-        <td>{% trans "Date" %}</td>
-        <td>{% trans "Credits" %}</td>
-        <td>{% trans "Earned bonus" %}</td>
-    </tr>
-    {% for credit in credits %}
-    <tr>
-        <td>{{ credit.date }}</td>
-        <td>{{ credit.value|floatformat:2 }}</td>
-        <td>{{ credit.bonus|floatformat:2 }}</td>
-    </tr>
-    {% endfor %}
-    </table>
-
 {% endblock %}

@@ -24,8 +24,6 @@ from wsgiadmin.service.forms import PassCheckForm, RostiFormHelper
 from wsgiadmin.useradmin.forms import formReg, formReg2, SendPwdForm
 from wsgiadmin.clients.models import Parms
 
-if settings.JSONRPC_URL:
-    from jsonrpc.proxy import ServiceProxy
 
 @login_required
 def app_copy(request):
@@ -44,6 +42,7 @@ def app_copy(request):
     messages.add_message(request, messages.SUCCESS, _('Site has been copied'))
 
     return HttpResponseRedirect(reverse("master"))
+
 
 @login_required
 def master(request):
@@ -71,6 +70,7 @@ def master(request):
         },
         context_instance=RequestContext(request)
     )
+
 
 @login_required
 def info(request):
@@ -114,18 +114,14 @@ def ok(request):
     )
 
 class PasswordView(FormView):
-
     template_name = 'passwd_form.html'
-
 
     def __init__(self, *args, **kwargs):
         super(PasswordView, self).__init__(*args, **kwargs)
         self.success_url = reverse('login')
 
-
     def get_form_class(self):
         return SendPwdForm
-
 
     def get_context_data(self, **kwargs):
         data = super(PasswordView, self).get_context_data(**kwargs)
@@ -191,31 +187,27 @@ def reg(request):
             m_mysql = get_object_or_404(Machine, name=config.default_mysql_machine)
             m_pgsql = get_object_or_404(Machine, name=config.default_pgsql_machine)
 
-            address_id = 0
-            if settings.JSONRPC_URL:
-                proxy = ServiceProxy(settings.JSONRPC_URL)
-                data = proxy.add_address(
-                    settings.JSONRPC_USERNAME, settings.JSONRPC_PASSWORD,
-                    form1.cleaned_data["company"],
-                    form1.cleaned_data["first_name"],
-                    form1.cleaned_data["last_name"],
-                    form1.cleaned_data["street"],
-                    form1.cleaned_data["city"],
-                    form1.cleaned_data["city_num"],
-                    form1.cleaned_data["phone"],
-                    form1.cleaned_data["email"],
-                    form1.cleaned_data["ic"],
-                    form1.cleaned_data["dic"]
-                )
-                print data
-                address_id = int(data["result"])
-
             # user
             u = user.objects.create_user(form2.cleaned_data["username"],
                                          form1.cleaned_data["email"],
                                          form2.cleaned_data["password1"])
             u.is_active = False
             u.save()
+
+            #address
+            address = Address()
+            address.company = form1.cleaned_data["company"],
+            address.first_name = form1.cleaned_data["first_name"],
+            address.last_name = form1.cleaned_data["last_name"],
+            address.street = form1.cleaned_data["street"],
+            address.city = form1.cleaned_data["city"],
+            address.zip = form1.cleaned_data["city_num"],
+            address.phone = form1.cleaned_data["phone"],
+            address.email = form1.cleaned_data["email"],
+            address.company_number = form1.cleaned_data["ic"],
+            address.vat_number = form1.cleaned_data["dic"]
+            address.default = True
+            address.user = u
 
             # parms
             p = Parms()
@@ -229,7 +221,6 @@ def reg(request):
             p.mysql_machine = m_mysql
             p.pgsql_machine = m_pgsql
             p.user = u
-            p.address_id = int(address_id)
             p.save()
 
             message = Message.objects.filter(purpose="reg")

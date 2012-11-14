@@ -37,7 +37,7 @@
                         {% elif app.app_type == "proxy" %}
                             <a href="{% url app_params_proxy app_id=app.id %}"><i class="icon-edit"></i>{% trans "Parameters" %}</a>
                         {% endif %}
-                        <a href=""><i class="icon-remove"></i>{% trans "Smazat" %}</a>
+                        <a href=""><i class="icon-remove"></i>{% trans "Delete" %}</a>
                         <br>
                         {% if app.app_type == "uwsgi" or app.app_type == "native" %}
                         <a href=""><i class="icon-refresh"></i>{% trans "Restart" %}</a>

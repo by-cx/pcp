@@ -8,42 +8,39 @@
             <div id="header" class="container">
                 <a href="/" class="brand">{{ site }}</a>
                 <ul class="nav pull-left" id="main-menu">
-                    <li
-                            {% if menu_active == "dashboard" %} class="active"{% endif %}>
+                    <li {% if menu_active == "dashboard" %} class="active"{% endif %}>
                         <a href="{% url wsgiadmin.useradmin.views.info %}">{% trans "Dashboard" %}</a>
                     </li>
                     {% if superuser.is_superuser %}
-                        <li
-                                {% if menu_active == "users" %} class="active"{% endif %}>
+                        <li {% if menu_active == "users" %} class="active"{% endif %}>
                             <a href="{% url wsgiadmin.users.views.show %}" class="red">{% trans "Users" %}</a>
                         </li>
                     {% endif %}
-                    <li
-                            {% if menu_active == "domains" %} class="active"{% endif %}>
+                    <li {% if menu_active == "domains" %} class="active"{% endif %}>
                         <a href="{% url domains_list %}">{% trans "Domains" %}</a>
                     </li>
-                    <li
-                            {% if menu_active == "webapps" %} class="active"{% endif %}>
+                    <li {% if menu_active == "webapps" %} class="active"{% endif %}>
                         <a href="{% url app_list %}">{% trans "Web apps" %}</a>
                     </li>
-                    <li
-                            {% if menu_active == "apps" %} class="active"{% endif %}>
+                    {% if u.is_superuser %}
+                    <li {% if menu_active == "apps" %} class="active"{% endif %}>
                         <a href="{% url apps_list %}">{% trans "Apps" %}<sup style="color: red;">beta</sup></a>
                     </li>
+                    {% endif %}
                     <li{% if menu_active == "dbs" %} class="active"{% endif %}>
                         <a href="{% url db_list %}">{% trans "Databases" %}</a>
                     </li>
                     <li{% if menu_active == "ftps" %} class="active"{% endif %}>
                         <a href="{% url ftp_list %}">{% trans "FTP" %}</a>
                     </li>
-                    <li
-                            {% if menu_active == "emails" %} class="active"{% endif %}>
+                    <li {% if menu_active == "emails" %} class="active"{% endif %}>
                         <a href="{% url mailbox_list %}">{% trans "E-mails" %}</a>
                     </li>
-                    <li
-                            {% if menu_active == "tools" %} class="active"{% endif %}>
+                    {% if u.is_superuser %}
+                    <li {% if menu_active == "tools" %} class="active"{% endif %}>
                         <a href="">{% trans "Tools" %}<sup style="color: red;">beta</sup></a>
                     </li>
+                    {% endif %}
                     <li
                             {% if menu_active == "settings" %} class="active"{% endif %}>
                         <a href="{% url wsgiadmin.useradmin.views.change_passwd %}">{% trans "Settings" %}</a>
@@ -94,6 +91,9 @@
                         </li>
                         <li>
                             <a href="{% url credit_stats %}">{% trans "Payout stats" %}</a>
+                        </li>
+                        <li>
+                            <a href="{% url payments_info %}">{% trans "Buyed credit" %}</a>
                         </li>
                         <li>
                             <a href="{% url credit %}" style="color: red;">{% trans "Buy some credit" %}</a>
@@ -211,6 +211,12 @@
                         </li>
                     {% endif %}
                     {% if menu_active == "settings" %}
+                        <li>
+                            <a href="{% url address_create %}"><i class="icon-plus"></i>{% trans "New address" %}</a>
+                        </li>
+                        <li>
+                            <a href="{% url address_list %}"><i class="icon-list"></i>{% trans "Addresses" %}</a>
+                        </li>
                         <li>
                             <a href="{% url wsgiadmin.useradmin.views.change_passwd %}">{% trans "Change password" %}</a>
                         </li>

@@ -24,9 +24,12 @@ class Domain(models.Model):
             return self.name
 
     def delete(self, using=None):
-        for x in self.parent_set.all():
-            x.delete()
-        super(Domain, self).delete(using)
+        try:
+            for x in self.parent_set.all():
+                x.delete()
+        except AttributeError:
+            pass
+        return super(Domain, self).delete(using)
 
     def __unicode__(self):
         return "%s" % self.domain_name

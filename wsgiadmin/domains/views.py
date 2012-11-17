@@ -40,29 +40,29 @@ class DomainUpdateView(RostiUpdateView):
 @login_required
 def rm(request):
 
-    try:
-        u = request.session.get('switched_user', request.user)
+    #try:
+    u = request.session.get('switched_user', request.user)
 
-        d = get_object_or_404(u.domain_set, id=request.POST['object_id'])
-        if d.owner == u:
-            logging.info(_("Deleting domain %s") % d.name)
+    d = get_object_or_404(u.domain_set, id=request.POST['object_id'])
+    if d.owner == u:
+        logging.info(_("Deleting domain %s") % d.name)
 
-            if config.handle_dns and d.dns:
-                pri_br = BindRequest(u, "master")
-                pri_br.remove_zone(d)
-                pri_br.mod_config()
-                pri_br.reload()
+        if config.handle_dns and d.dns:
+            pri_br = BindRequest(u, "master")
+            pri_br.remove_zone(d)
+            pri_br.mod_config()
+            pri_br.reload()
 
-                if config.handle_dns_secondary:
-                    sec_br = BindRequest(u, "slave")
-                    sec_br.mod_config()
-                    sec_br.reload()
+            if config.handle_dns_secondary:
+                sec_br = BindRequest(u, "slave")
+                sec_br.mod_config()
+                sec_br.reload()
 
-            d.delete()
+        d.delete()
 
-        return JsonResponse("OK", {1: ugettext("Domain was successfuly deleted")})
-    except Exception, e:
-        return JsonResponse("KO", {1: ugettext("Error deleting domain")})
+    return JsonResponse("OK", {1: ugettext("Domain was successfuly deleted")})
+    #except Exception, e:
+    #    return JsonResponse("KO", {1: ugettext("Error deleting domain")})
 
 
 @login_required

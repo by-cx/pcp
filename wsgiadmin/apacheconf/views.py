@@ -96,29 +96,28 @@ def remove_site(request):
 
     object_id = int(request.POST['object_id'])
     s = get_object_or_404(u.usersite_set, id=object_id)
-    try:
-        object_id = request.POST['object_id']
-        s = get_object_or_404(u.usersite_set, id=int(object_id))
-        cost = s.pay
-        if cost:
-            pay(u, s.type, "Last payment for this site - %s" % s.main_domain.domain_name, cost)
-        if s.owner != u:
-            raise Exception("Forbidden operation")
-        s.delete()
-        s.save()
 
-        #Signal
-        restart_master(config.mode, u)
+    object_id = request.POST['object_id']
+    s = get_object_or_404(u.usersite_set, id=int(object_id))
+    #cost = s.pay
+    #if cost:
+    #    pay(u, s.type, "Last payment for this site - %s" % s.main_domain.domain_name, cost)
+    if s.owner != u:
+        raise Exception("Forbidden operation")
+    s.delete()
 
-        ur = UWSGIRequest(u, u.parms.web_machine)
-        ur.stop(s)
-        ur.mod_config()
+    #Signal
+    restart_master(config.mode, u)
 
-        # calculate!
-        u.parms.pay_for_sites(use_cache=False)
-        return JsonResponse("OK", {1: ugettext("Site was successfuly removed")})
-    except Exception, e:
-        return JsonResponse("KO", {1: ugettext("Error deleting site")})
+    ur = UWSGIRequest(u, u.parms.web_machine)
+    ur.stop(s)
+    ur.mod_config()
+
+    # calculate!
+    u.parms.pay_for_sites(use_cache=False)
+    return JsonResponse("OK", {1: ugettext("Site was successfuly removed")})
+    #except Exception, e:
+    #    return JsonResponse("KO", {1: ugettext("Error deleting site")})
 
 
 @login_required

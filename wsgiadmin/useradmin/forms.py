@@ -45,7 +45,7 @@ class SendPwdForm(forms.Form):
 
         if 'email' in self.cleaned_data and self.cleaned_data['email']:
             try:
-                user = User.objects.get(email=self.cleaned_data['email'])
+                user = User.objects.filter(email=self.cleaned_data['email'])
             except User.DoesNotExist:
                 raise ValidationError(_("Given email doesn't belong to any user"))
 

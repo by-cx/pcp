@@ -19,6 +19,7 @@ from django.views.generic.edit import FormView
 
 from wsgiadmin.apacheconf.models import UserSite
 from wsgiadmin.clients.models import *
+from wsgiadmin.emails.models import Message
 from wsgiadmin.requests.request import SSHHandler
 from wsgiadmin.service.forms import PassCheckForm, RostiFormHelper
 from wsgiadmin.useradmin.forms import formReg, formReg2, SendPwdForm

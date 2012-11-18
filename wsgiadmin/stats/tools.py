@@ -63,7 +63,7 @@ def add_credit(user, value, address=None, free=None):
     else:
         credit.date_payed = datetime.datetime.now()
     credit.user = user
-    credit.price = 1 / float(config.credit_currency.split(",")[0])
+    credit.price = (1 / float(config.credit_currency.split(",")[0])) * value
     credit.currency = "CZK"
     credit.value = value * bonus
     credit.bonus = value * (bonus - 1.0)

@@ -44,7 +44,7 @@ class Credit(models.Model):
     user = models.ForeignKey(User, verbose_name=_("User"))
     price = models.FloatField(_("Price"))
     currency = models.CharField(_("Currenty"), max_length=8)
-    value = models.FloatField(_("Cost (bonus included)"))
+    value = models.FloatField(_("Credits (bonus included)"))
     bonus = models.FloatField(_("Bonus"), default=0)
     address = models.ForeignKey(Address, verbose_name=_("Address"), null=True)
 

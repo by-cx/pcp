@@ -220,7 +220,9 @@ CONSTANCE_CONFIG = {
     "auto_disable":(True, "Auto disabling users"),
     "pagination":(50, "Pagination"),
 
-    "var_symbol_prefix": (10, "Variable symbol prefix")
+    "var_symbol_prefix": (10, "Variable symbol prefix"),
+    "bank_name": ("FIO Banka", "Name of your bank"),
+    "bank_account": ("2200331030/2010", "Bank account number"),
     }
 
 VIRTUALENVS_DIR = 'virtualenvs'

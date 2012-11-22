@@ -61,7 +61,7 @@ def add_credit(user, value, address=None, free=None):
     if not free:
         credit.date_payed = None
     else:
-        credit.date_payed = datetime.datetime.now()
+        credit.date_payed = datetime.now()
     credit.user = user
     credit.price = (1 / float(config.credit_currency.split(",")[0])) * value
     credit.currency = "CZK"

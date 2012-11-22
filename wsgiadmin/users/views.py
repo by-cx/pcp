@@ -19,6 +19,7 @@ from wsgiadmin.emails.models import Message
 from wsgiadmin.requests.request import SystemRequest
 from wsgiadmin.service.forms import PassCheckForm, RostiFormHelper
 from django.core.exceptions import ObjectDoesNotExist
+from wsgiadmin.stats.tools import add_credit
 
 @login_required
 def show(request):
@@ -137,7 +138,7 @@ def install(request, uid):
     iuser.parms.gid = gid
     iuser.parms.save()
 
-    iuser.parms.add_credit(30, True)
+    add_credit(iuser, 30, free=True)
 
     iuser.is_active = True
     iuser.save()

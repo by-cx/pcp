@@ -101,7 +101,6 @@ def remove_site(request):
             raise Exception("Forbidden operation")
         remove_app_preparation(spp)
         spp.delete()
-
         return JsonResponse("OK", {1: ugettext("Site was successfuly removed")})
     except Exception, e:
         return JsonResponse("KO", {1: ugettext("Error deleting site")})

@@ -10,6 +10,7 @@ from django.views.generic.base import TemplateView
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
+from wsgiadmin.clients.models import Address
 from wsgiadmin.emails.models import Message
 from wsgiadmin.service.views import RostiListView
 from wsgiadmin.stats.models import Credit
@@ -36,7 +37,7 @@ class CreditView(TemplateView):
             message = Message.objects.filter(purpose="add_credit")
             if message:
                 message[0].send(config.email, {"user": self.user.username, "credit": float(request.POST.get("credit")), "bonus": float(request.POST.get("credit")) * (bonus - 1.0)})
-            messages.add_message(request, messages.SUCCESS, _('Credit will been added on your account after you pay them'))
+            messages.add_message(request, messages.SUCCESS, _('Credits will been added on your account after you pay them'))
             return HttpResponseRedirect(reverse("payment_info", kwargs={"pk": credit.id}))
         if request.POST.get("what_to_do"):
             self.user.parms.low_level_credits = request.POST.get("what_to_do")
@@ -54,6 +55,7 @@ class CreditView(TemplateView):
         context['menu_active'] = "dashboard"
         context['config'] = config
         context['credits'] = credits
+        context['addresses_count'] = Address.objects.filter(user=self.user).count()
         if self.user.parms.fee:
             context["for_month"] = self.user.parms.fee
             context["for_three_months"] = self.user.parms.fee * 3
@@ -103,6 +105,7 @@ class PaymentView(TemplateView):
         context['u'] = self.user
         context['superuser'] = self.request.user
         context['menu_active'] = "dashboard"
+        context['config'] = config
         return context
 
 

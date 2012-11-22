@@ -22,7 +22,7 @@
             <td>{{ credit.price }} {{ credit.currency }}</td>
         </tr>
         <tr>
-            <th>{% trans "Price" %}</th>
+            <th>{% trans "Credits" %}</th>
             <td>{{ credit.value }} credits</td>
         </tr>
         <tr>
@@ -40,11 +40,11 @@
     <table class="table table-striped">
         <tr>
             <th>{% trans "Bank" %}</th>
-            <td>FIO Banka</td>
+            <td>{{ config.bank_name }}</td>
         </tr>
         <tr>
             <th>{% trans "Bank account" %}</th>
-            <td>12345/3456</td>
+            <td>{{ config.bank_account }}</td>
         </tr>
         <tr>
             <th>{% trans "Variable symbol" %}</th>

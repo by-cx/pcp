@@ -209,6 +209,7 @@ def reg(request):
             address.vat_number = form1.cleaned_data["dic"]
             address.default = True
             address.user = u
+            address.save()
 
             # parms
             p = Parms()

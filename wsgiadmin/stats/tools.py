@@ -54,7 +54,7 @@ def add_credit(user, value, address=None, free=None):
     elif value >= 250:
         bonus = config.credit_250_bonus
 
-    if not address:
+    if not address and not free:
         address = user.address_set.get(default=True)
 
     credit = Credit()

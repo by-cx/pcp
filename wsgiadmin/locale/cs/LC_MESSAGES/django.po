@@ -253,7 +253,7 @@ msgstr ""
 
 #: apps/forms.py:91
 msgid "Static maps"
-msgstr "Adresy tatických dat"
+msgstr "Mapa statického obsahu"
 
 #: apps/forms.py:103
 msgid "Commnad"

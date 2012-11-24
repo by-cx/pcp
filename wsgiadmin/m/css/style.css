@@ -157,3 +157,9 @@ body {
 .center {
     text-align: center;
 }
+
+.textarea-code {
+    width: 350px;
+    height: 200px;
+    font-family: monospace;
+}

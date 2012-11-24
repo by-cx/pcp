@@ -3,11 +3,12 @@ from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponseRedirect
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, TemplateView, CreateView
-from wsgiadmin.apps.forms import AppForm, AppStaticForm, AppPHPForm, AppuWSGIForm, AppNativeForm, AppProxyForm
+from wsgiadmin.apps.forms import AppForm, AppStaticForm, AppPHPForm, AppNativeForm, AppProxyForm, AppPythonForm
 from wsgiadmin.apps.models import App
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext as __
 from django.contrib import messages
+
 
 class AppsListView(ListView):
     menu_active = "apps"
@@ -31,6 +32,7 @@ class AppsListView(ListView):
         context['superuser'] = self.request.user
         return context
 
+
 class AppDetailView(TemplateView):
     model = App
     menu_active = "apps"
@@ -53,6 +55,7 @@ class AppDetailView(TemplateView):
         context['superuser'] = self.request.user
         context['app'] = self.get_object()
         return context
+
 
 class AppParametersView(TemplateView):
     menu_active = "apps"
@@ -91,8 +94,8 @@ class AppParametersView(TemplateView):
             return AppStaticForm
         elif self.app_type == "php":
             return AppPHPForm
-        elif self.app_type == "uwsgi":
-            return AppuWSGIForm
+        elif self.app_type == "python":
+            return AppPythonForm
         elif self.app_type == "native":
             return AppNativeForm
         elif self.app_type == "proxy":
@@ -145,8 +148,8 @@ class AppCreateView(CreateView):
             return reverse("app_params_static", kwargs={"app_id": self.object.id})
         elif self.app_type == "php":
             return reverse("app_params_php", kwargs={"app_id": self.object.id})
-        elif self.app_type == "uwsgi":
-            return reverse("app_params_uwsgi", kwargs={"app_id": self.object.id})
+        elif self.app_type == "python":
+            return reverse("app_params_python", kwargs={"app_id": self.object.id})
         elif self.app_type == "native":
             return reverse("app_params_native", kwargs={"app_id": self.object.id})
         elif self.app_type == "proxy":

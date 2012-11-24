@@ -14,6 +14,7 @@ SITE_TYPE_CHOICES = [
 
 class App(models.Model):
     date = models.DateField(_("Date"), auto_now_add=True)
+    installed = models.BooleanField(_("Installed"), default=False)
     app_type = models.CharField(_("Type"), max_length=20, choices=SITE_TYPE_CHOICES, blank=True, null=True)
     name = models.CharField(_("Name"), max_length=256, help_text=_("Name of your application"))
     domains = models.CharField(_("Domains"), max_length=512, blank=True, null=True, help_text=_("Domain is not necessary anymore. There is no relation to DNS or Domains menu."))
@@ -22,17 +23,16 @@ class App(models.Model):
 
     def parameters_get(self):
         return json.loads(self.parameters_data if self.parameters_data else "{}")
+
     def parameters_set(self, value):
         self.parameters_data = json.dumps(value, indent=4)
+
     parameters = property(parameters_get, parameters_set)
 
     @property
     def main_domain(self):
         domains = self.domains_list
-        if domains:
-            return domains[0]
-        else:
-            return None
+        return domains[0] if domains else None
 
     @property
     def domains_list(self):
@@ -47,3 +47,22 @@ class App(models.Model):
 
     def __unicode__(self):
         return "%s" % self.name
+
+class Log(models.Model):
+    date = models.DateField(_("Date"), auto_now_add=True)
+    app = models.ForeignKey(App, verbose_name=_("App"))
+    content = models.TextField(_("Messages"))
+
+    def __unicode__(self):
+        return "Log with id %d for %s app" % (self.id, self.app_id)
+
+class Db(models.Model):
+    date = models.DateField(_("Date"), auto_now_add=True)
+    db_type = models.CharField(_("DB engine"), max_length=32, choices=(("mysql", "MySQL"), ("pgsql", "PgSQL")))
+    name = models.CharField(_("Name"), max_length=32)
+    password = models.CharField(_("Password"), max_length=256)
+    comment = models.TextField(_("Comment"), blank=True, null=True)
+    app = models.ForeignKey(App, verbose_name=_("App"))
+
+    def __unicode__(self):
+        return "%s db for %s app" % (self.name, self.app_id)

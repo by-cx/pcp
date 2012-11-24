@@ -158,21 +158,21 @@
                             <a href="{% url apps_list %}"><i class="icon-list"></i>{% trans "Apps list" %}</a>
                         </li>
                         <li><br></li>
-                        <li>
+                        <!--<li>
                             <a href="{% url app_add_static %}"><i class="icon-plus-sign"></i>{% trans "Add static app" %}</a>
                         </li>
                         <li>
                             <a href="{% url app_add_php %}"><i class="icon-plus-sign"></i>{% trans "Add php app" %}</a>
-                        </li>
+                        </li>-->
                         <li>
-                            <a href="{% url app_add_uwsgi %}"><i class="icon-plus-sign"></i>{% trans "Add uwsgi app" %}</a>
+                            <a href="{% url app_add_python %}"><i class="icon-plus-sign"></i>{% trans "Add python app" %}</a>
                         </li>
-                        <li>
+                        <!--<li>
                             <a href="{% url app_add_native %}"><i class="icon-plus-sign"></i>{% trans "Add native app" %}</a>
                         </li>
                         <li>
                             <a href="{% url app_add_proxy %}"><i class="icon-plus-sign"></i>{% trans "Add proxy" %}</a>
-                        </li>
+                        </li>-->
                     {% endif %}
                     {% if menu_active == "dbs" %}
                         <li>

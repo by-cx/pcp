@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.forms.models import ModelForm
 from django import forms
 from wsgiadmin.apps.models import App
@@ -19,7 +20,7 @@ class AppForm(ModelForm):
         return self.cleaned_data["name"]
 
 
-class AppParmetersForm(forms.Form):
+class AppParametersForm(forms.Form):
     helper = RostiFormHelper()
 
     domains = forms.CharField(
@@ -30,7 +31,7 @@ class AppParmetersForm(forms.Form):
     )
 
 
-class AppStaticForm(AppParmetersForm):
+class AppStaticForm(AppParametersForm):
     def __init__(self, *args, **kwargs):
         super(AppStaticForm, self).__init__(*args, **kwargs)
         self.fields["domains"].required = True
@@ -48,7 +49,7 @@ class AppStaticForm(AppParmetersForm):
     )
 
 
-class AppPHPForm(AppParmetersForm):
+class AppPHPForm(AppParametersForm):
     def __init__(self, *args, **kwargs):
         super(AppPHPForm, self).__init__(*args, **kwargs)
         self.fields["domains"].required = True
@@ -66,35 +67,43 @@ class AppPHPForm(AppParmetersForm):
     )
 
 
-class AppuWSGIForm(AppParmetersForm):
+class AppPythonForm(AppParametersForm):
     def __init__(self, *args, **kwargs):
-        super(AppuWSGIForm, self).__init__(*args, **kwargs)
+        super(AppPythonForm, self).__init__(*args, **kwargs)
         self.fields["domains"].required = True
         self.fields["domains"].help_text = "There is no relation to DNS or Domains menu."
 
     script = forms.CharField(
-        label=_("Script"),
-        max_length=256,
-        widget=forms.TextInput(attrs={"autocomplete": "off"})
+        label=_("WSGI Script"),
+        max_length=8192,
+        widget=forms.Textarea(attrs={"class": "textarea-code"}),
+        help_text=_("Write python code, which create WSGI handler of your app.")
+    )
+    python = forms.ChoiceField(
+        label=_("Static maps"),
+        required=True,
+        choices=[(x, x) for x in settings.PYTHON_INTERPRETERS]
+    )
+    procs = forms.ChoiceField(
+        label=_("Processes"),
+        required=True,
+        choices=[(x, x) for x in range(1,10)]
     )
     virtualenv = forms.CharField(
         label=_("Virtualenv"),
-        max_length=256,
-        widget=forms.TextInput(attrs={"autocomplete": "off"})
-    )
-    python_paths = forms.CharField(
-        label=_("Python paths"),
-        required=False,
-        widget=forms.Textarea,
+        max_length=4096,
+        widget=forms.Textarea(attrs={"class": "textarea-code"}),
+        help_text=_("List of requirements. One package per one line. Like requirements.txt file.")
     )
     static_maps = forms.CharField(
         label=_("Static maps"),
         required=False,
-        widget=forms.Textarea,
+        widget=forms.Textarea(attrs={"class": "textarea-code"}),
+        help_text=_("Consider your app as root.")
     )
 
 
-class AppNativeForm(AppParmetersForm):
+class AppNativeForm(AppParametersForm):
     def __init__(self, *args, **kwargs):
         super(AppNativeForm, self).__init__(*args, **kwargs)
         self.fields["domains"] = None
@@ -104,7 +113,7 @@ class AppNativeForm(AppParmetersForm):
         max_length=1024,
     )
 
-class AppProxyForm(AppParmetersForm):
+class AppProxyForm(AppParametersForm):
     def __init__(self, *args, **kwargs):
         super(AppProxyForm, self).__init__(*args, **kwargs)
         self.fields["domains"].required = True

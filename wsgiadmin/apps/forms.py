@@ -12,7 +12,7 @@ class AppForm(ModelForm):
 
     class Meta:
         model = App
-        fields = ("name", "domains")
+        fields = ("name", "domains", "server")
 
     def clean_name(self):
         if not re.match("^[0-9a-zA-Z_]*$", self.cleaned_data["name"]):

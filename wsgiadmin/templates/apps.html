@@ -30,8 +30,8 @@
                             <a href="{% url app_params_static app_id=app.id %}"><i class="icon-edit"></i>{% trans "Parameters" %}</a>
                         {% elif app.app_type == "php" %}
                             <a href="{% url app_params_php app_id=app.id %}"><i class="icon-edit"></i>{% trans "Parameters" %}</a>
-                        {% elif app.app_type == "uwsgi" %}
-                            <a href="{% url app_params_uwsgi app_id=app.id %}"><i class="icon-edit"></i>{% trans "Parameters" %}</a>
+                        {% elif app.app_type == "python" %}
+                            <a href="{% url app_params_python app_id=app.id %}"><i class="icon-edit"></i>{% trans "Parameters" %}</a>
                         {% elif app.app_type == "native" %}
                             <a href="{% url app_params_native app_id=app.id %}"><i class="icon-edit"></i>{% trans "Parameters" %}</a>
                         {% elif app.app_type == "proxy" %}

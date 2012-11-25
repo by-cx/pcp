@@ -5,6 +5,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic import ListView, TemplateView, CreateView
 from wsgiadmin.apps.forms import AppForm, AppStaticForm, AppPHPForm, AppNativeForm, AppProxyForm, AppPythonForm
 from wsgiadmin.apps.models import App
+from wsgiadmin.apps.apps import PythonApp, AppObject
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext as __
 from django.contrib import messages
@@ -75,6 +76,15 @@ class AppParametersView(TemplateView):
                     parms[field] = form.cleaned_data[field]
             app.parameters = parms
             app.save()
+
+            # communication with server
+            if not app.installed:
+                app.install()
+            app.update()
+            if app.app_type == "python":
+                app.restart()
+            app.commit()
+
             messages.add_message(request, messages.SUCCESS, _('Changes has been saved.'))
             return HttpResponseRedirect(reverse("apps_list"))
         context["form"] = form
@@ -117,7 +127,12 @@ class AppParametersView(TemplateView):
         app_id = self.kwargs.get("app_id")
         if not app_id:
             raise Http404
-        return self.user.app_set.get(id=app_id)
+        app = self.user.app_set.get(id=app_id)
+        if app.app_type == "python":
+            app = PythonApp.objects.get(id=app.id)
+        else:
+            app = AppObject.objects.get(id=app.id)
+        return app
 
     def get_context_data(self, **kwargs):
         context = super(AppParametersView, self).get_context_data(**kwargs)

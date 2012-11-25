@@ -6,12 +6,22 @@ import json
 import shlex
 import sys
 
+def log(msg):
+    with open("/var/log/pcp_runner.log", "a") as f:
+        f.write("%s\n" % msg)
 
 def run(cmd, stdin=None):
+    log("[cmd]: %s" % cmd)
     splited_cmd = shlex.split(str(cmd))
-    p = Popen(splited_cmd, stdout=PIPE, stderr=PIPE)
+    p = Popen(splited_cmd, stdout=PIPE, stderr=PIPE, stdin=PIPE)
     stdout, stderr = p.communicate(stdin)
+    if stdout:
+        log("[stdout]: %s" % stdout)
+    if stderr:
+        log("[stderr]: %s" % stderr)
     ret_code = p.wait()
+    log("[ret_code]: %d" % ret_code)
+    log("---")
     return ret_code, stdout, stderr
 
 
@@ -27,8 +37,8 @@ def main():
             request["stdout"] = stdout
             request["stderr"] = stderr
             request["ret_code"] = ret_code
-            if ret_code != 0:
-                break
+            #if ret_code != 0:
+            #    break
         elif request["type"] == "file":
             with open(request["path"], "w") as f:
                 f.write(request["content"])

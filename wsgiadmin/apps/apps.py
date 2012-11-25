@@ -9,12 +9,13 @@ class AppException(Exception): pass
 
 
 class AppObject(App):
+
     class Meta:
         proxy = True
 
     def __init__(self, *args, **kwargs):
         super(AppObject, self).__init__(*args, **kwargs)
-        self.script = Script()
+        self.script = Script(self.server.hostname)
 
     def get_user(self):
         return "app_%.5d" % self.id
@@ -46,18 +47,20 @@ class AppObject(App):
     def install(self):
         parms = self.get_parmameters()
         self.script.add_cmd("/usr/sbin/groupadd %(group)s" % parms)
-        self.script.add_cmd("/usr/sbin/useradd -d %(home)s -g %(group)s %(user)s" % parms)
+        self.script.add_cmd("/usr/sbin/useradd -m -d %(home)s -g %(group)s %(user)s" % parms)
         self.script.add_cmd("/usr/sbin/usermod -G %s(group)s www-data" % parms)
         self.script.add_cmd("mkdir -p %(home)s/logs" % parms, user=self.get_user())
         self.script.add_cmd("mkdir -p %(home)s/app" % parms, user=self.get_user())
         self.script.add_cmd("mkdir -p %(home)s/.ssh" % parms, user=self.get_user())
-        self.update()
+        self.script.add_cmd("chmod 750 %(home)s" % parms, user=self.get_user())
+        self.installed = True
+        self.save()
 
 
     def uninstall(self):
         parms = self.get_parmameters()
         self.script.add_cmd("/usr/sbin/userdel %(user)s" % parms)
-        self.script.add_cmd("/usr/sbin/groupdel %(group)s" % parms)
+        #self.script.add_cmd("/usr/sbin/groupdel %(group)s" % parms)
         self.script.add_cmd("rm -rf %(home)s" % parms)
 
     def update(self):
@@ -67,6 +70,9 @@ class AppObject(App):
 
 
 class PythonApp(AppObject):
+
+    class Meta:
+        proxy = True
 
     def get_parmameters(self):
         parms = super(PythonApp, self).get_parmameters()
@@ -85,8 +91,7 @@ class PythonApp(AppObject):
         super(PythonApp, self).update()
         parms = self.get_parmameters()
         self.script.add_file("%(home)s/requirements.txt" % parms, "uwsgi\n" + parms.get("virtualenv"), owner="%(user)s:%(group)s" % parms)
-        self.script.add_cmd("%(home)s/venv/bin/pip install -r %(home)s/venv/requirements.txt" % parms, user=self.get_user())
-        self.script.add_file("%(home)s/requirements.txt" % parms, "uwsgi\n" + parms.get("virtualenv"), owner="%(user)s:%(group)s" % parms)
+        self.script.add_cmd("%(home)s/venv/bin/pip install -r %(home)s/requirements.txt" % parms, user=self.get_user())
         self.script.add_file("%(home)s/requirements.txt" % parms, "uwsgi\n" + parms.get("virtualenv"), owner="%(user)s:%(group)s" % parms)
         self.script.add_file("%(home)s/app.wsgi" % parms, parms.get("virtualenv"), owner="%(user)s:%(group)s" % parms)
         self.script.add_file("/etc/supervisor/conf.d/%(user)s.conf" % parms, self.gen_supervisor_config())
@@ -119,24 +124,29 @@ class PythonApp(AppObject):
         config.append("--master")
         config.append("--no-orphans")
         config.append("--processes %s" % parms.get("procs", "2"))
-        config.append("--home %(home)/venv")
+        config.append("--home %(home)s/venv")
         config.append("--limit-as 256")
         config.append("--chmod-socket=660")
         config.append("--uid %(user)s")
         config.append("--gid %(group)s")
-        config.append("--pidfile %(home)/app.pid")
-        config.append("--socket %(home)/app.sock")
+        config.append("--pidfile %(home)s/app.pid")
+        config.append("--socket %(home)s/app.sock")
         config.append("--wsgi-file %(home)s/app.wsgi")
-        config.append("--daemonize %(home)/logs/uwsgi.log")
+        config.append("--daemonize %(home)s/logs/uwsgi.log")
         config.append("--chdir %(home)s")
         config.append("--pythonpath %(home)s/app")
+        return " ".join(config)
+
+    def gen_nginx_config(self):
+        parms = self.get_parmameters()
+        config = []
         return " ".join(config)
 
     def commit(self):
         message = self.script.commit()
         log = Log()
         log.app = self
-        log.content.message = json.dumps(message)
+        log.content = json.dumps(message)
         log.save()
 
     def start(self):

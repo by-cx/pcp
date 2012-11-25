@@ -12,6 +12,14 @@ SITE_TYPE_CHOICES = [
     ("native", "Native"),
 ]
 
+
+class Server(models.Model):
+    hostname = models.CharField(_("Hostname/address"), max_length=256, help_text=_("it has to match with ssh config"))
+
+    def __unicode__(self):
+        return self.hostname
+
+
 class App(models.Model):
     date = models.DateField(_("Date"), auto_now_add=True)
     installed = models.BooleanField(_("Installed"), default=False)
@@ -20,6 +28,7 @@ class App(models.Model):
     domains = models.CharField(_("Domains"), max_length=512, blank=True, null=True, help_text=_("Domain is not necessary anymore. There is no relation to DNS or Domains menu."))
     parameters_data = models.TextField(_("Parameters"), blank=True, null=True)
     user = models.ForeignKey(User, blank=True, null=True)
+    server = models.ForeignKey(Server, verbose_name=_("Server"))
 
     def parameters_get(self):
         return json.loads(self.parameters_data if self.parameters_data else "{}")
@@ -48,6 +57,7 @@ class App(models.Model):
     def __unicode__(self):
         return "%s" % self.name
 
+
 class Log(models.Model):
     date = models.DateField(_("Date"), auto_now_add=True)
     app = models.ForeignKey(App, verbose_name=_("App"))
@@ -55,6 +65,7 @@ class Log(models.Model):
 
     def __unicode__(self):
         return "Log with id %d for %s app" % (self.id, self.app_id)
+
 
 class Db(models.Model):
     date = models.DateField(_("Date"), auto_now_add=True)

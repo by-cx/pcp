@@ -1,5 +1,7 @@
 import json
 from subprocess import Popen, PIPE
+from django.conf import settings
+from wsgiadmin.apps.models import Log
 
 
 class ScriptException(Exception): pass
@@ -17,15 +19,25 @@ class Script(object):
                 {"type": "cmd", "cmd": "/sbin/reboot". "owner": "cx:cx"},
             ]
         """
-        self.request = []
+        self.requests = []
         self.log = []
         self.server = server
 
     def send(self, cmd, stdin=None):
-        p = Popen(["ssh", self.server]+cmd, stdout=PIPE, stderr=PIPE)
+        if settings.DEBUG:
+            print "[cmd]: %s" % " ".join(["ssh", self.server]+cmd)
+            if stdin:
+                print "[stdin]: %s" % stdin
+        p = Popen(["ssh", self.server]+cmd, stdout=PIPE, stderr=PIPE, stdin=PIPE)
         stdout, stderr = p.communicate(stdin)
         if not stderr:
             return json.loads(stdout)
+        if settings.DEBUG:
+            if stdout:
+                print "[stdout]: %s" % stdout
+            if stderr:
+                print "[stderr]: %s" % stderr
+            print "---"
         raise ScriptException("PCP runner script error: %s" % stderr)
 
     def commit(self):

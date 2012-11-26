@@ -1,5 +1,7 @@
 import json
+import logging
 from subprocess import Popen, PIPE
+import threading
 from django.conf import settings
 from wsgiadmin.apps.models import Log
 
@@ -26,8 +28,10 @@ class Script(object):
     def send(self, cmd, stdin=None):
         if settings.DEBUG:
             print "[cmd]: %s" % " ".join(["ssh", self.server]+cmd)
+            logging.info("[cmd]: %s" % " ".join(["ssh", self.server]+cmd))
             if stdin:
                 print "[stdin]: %s" % stdin
+                logging.info("[stdin]: %s" % stdin)
         p = Popen(["ssh", self.server]+cmd, stdout=PIPE, stderr=PIPE, stdin=PIPE)
         stdout, stderr = p.communicate(stdin)
         if not stderr:
@@ -35,13 +39,21 @@ class Script(object):
         if settings.DEBUG:
             if stdout:
                 print "[stdout]: %s" % stdout
+                logging.info("[stdout]: %s" % stdout)
             if stderr:
                 print "[stderr]: %s" % stderr
+                logging.info("[stderr]: %s" % stderr)
             print "---"
         raise ScriptException("PCP runner script error: %s" % stderr)
 
     def commit(self):
-        return self.send(["pcp_runner"], json.dumps(self.requests))
+        t = threading.Thread(
+            target=self.send,
+            args=[["pcp_runner"], json.dumps(self.requests)]
+        )
+        t.setDaemon(True)
+        t.start()
+        return True #self.send(["pcp_runner"], json.dumps(self.requests))
 
     def print_requests(self, server):
         for request in self.requests:

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-.
 # Django settings for manager project.
+import os
 
 _ = lambda x: x
 
@@ -241,8 +242,11 @@ PAYMENT_CHOICES = (
 ## Logování
 import logging
 
+if not os.path.isdir(join(ROOT, "logs")):
+    os.makedirs(join(ROOT, "logs"))
+
 try:
-    logging.basicConfig(level=logging.INFO, filename='/var/log/pcp.log', format='%(asctime)s %(levelname)s %(message)s')
+    logging.basicConfig(level=logging.INFO, filename=join(ROOT, "logs", 'pcp.log'), format='%(asctime)s %(levelname)s %(message)s')
 except IOError:
     pass
 

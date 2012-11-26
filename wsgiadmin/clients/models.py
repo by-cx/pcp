@@ -176,7 +176,7 @@ class Address(models.Model):
     last_name = models.CharField(_("Last name"), max_length=100)
     street = models.CharField(_("Address"), max_length=100)
     city = models.CharField(_("City"), max_length=100)
-    zip = models.CharField(_("ZIP"), max_length=6)
+    zip = models.CharField(_("ZIP"), max_length=12)
 
     phone = models.CharField(_("Phone"), max_length=30)
     email = models.EmailField(_("E-mail"))

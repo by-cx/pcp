@@ -11,10 +11,6 @@ class RecordUser(object):
 
     def gen(self):
         self.record_sites()
-        self.record_emails()
-        self.record_ftps()
-        self.record_mysql()
-        self.record_pgsql()
         self.record_fee()
 
     def _record(self, service, value, cost=0):
@@ -39,21 +35,6 @@ class RecordUser(object):
             self._record("php", site.main_domain.name, site.pay if fee <= 0 else 0.0)
         for site in self.user.usersite_set.filter(type="static"):
             self._record("static", site.main_domain.name, site.pay if fee <= 0 else 0.0)
-
-    def record_emails(self):
-        total = 0
-        for domain in self.user.domain_set.all():
-            total += domain.email_set.count()
-        self._record("email", "%d" % total)
-
-    def record_ftps(self):
-        self._record("ftp", "%d" % self.user.ftp_set.count())
-
-    def record_mysql(self):
-        self._record("mysql", "%d" % self.user.mysqldb_set.count())
-
-    def record_pgsql(self):
-        self._record("pgsql", "%d" % self.user.pgsql_set.count())
 
     def record_fee(self):
         if self.user.parms.fee:

@@ -26,6 +26,10 @@
                     <td>{% trans app.app_type %}</td>
                     <td>{{ app.name }}</td>
                     <td class="list_actions">
+                        <a href="{% url app_detail app_id=app.id %}" class="btn btn-info"><i class="icon-info-sign"></i>{% trans "Info" %}</a>
+                        {% if app.app_type == "python" or app.app_type == "native" %}
+                            <a href="{% url app_restart %}?app_id={{ app.id }}" class="btn btn-primary"><i class="icon-refresh"></i>{% trans "Restart" %}</a>
+                        {% endif %}
                         {% if app.app_type == "static" %}
                             <a href="{% url app_params_static app_id=app.id %}" class="btn btn-warning"><i class="icon-edit"></i>{% trans "Parameters" %}</a>
                         {% elif app.app_type == "php" %}
@@ -37,10 +41,6 @@
                         {% elif app.app_type == "proxy" %}
                             <a href="{% url app_params_proxy app_id=app.id %}" class="btn btn-warning"><i class="icon-edit"></i>{% trans "Parameters" %}</a>
                         {% endif %}
-                        {% if app.app_type == "python" or app.app_type == "native" %}
-                        <a href="{% url app_restart %}?app_id={{ app.id }}" class="btn btn-primary"><i class="icon-refresh"></i>{% trans "Restart" %}</a>
-                        {% endif %}
-                        <a href="{% url app_detail app_id=app.id %}" class="btn btn-info"><i class="icon-info-sign"></i>{% trans "Info" %}</a>
                         <a href="#a" onclick="if(confirm('{% trans "Are you sure?" %}')) {document.location= '{% url app_rm %}?app_id={{ app.id }}';}" class="btn btn-danger"><i class="icon-remove"></i>{% trans "Delete" %}</a>
                     </td>
                 </tr>

@@ -15,9 +15,14 @@ SITE_TYPE_CHOICES = [
 
 class Server(models.Model):
     hostname = models.CharField(_("Hostname/address"), max_length=256, help_text=_("it has to match with ssh config"))
+    ip = models.CharField(_("IP"), max_length=128, blank=True, null=True)
+    comment = models.TextField(_("Comment"), blank=True, null=True)
 
     def __unicode__(self):
-        return self.hostname
+        if self.comment:
+            return "%s (%s)" % (self.hostname, self.comment)
+        else:
+            return self.hostname
 
 
 class App(models.Model):
@@ -26,7 +31,7 @@ class App(models.Model):
     installed = models.BooleanField(_("Installed"), default=False)
     app_type = models.CharField(_("Type"), max_length=20, choices=SITE_TYPE_CHOICES, blank=True, null=True)
     name = models.CharField(_("Name"), max_length=256, help_text=_("Name of your application"))
-    domains = models.CharField(_("Domains"), max_length=512, blank=True, null=True, help_text=_("Domain is not necessary anymore. There is no relation to DNS or Domains menu."))
+    domains = models.CharField(_("Domains"), max_length=512, blank=True, null=True)
     parameters_data = models.TextField(_("Parameters"), blank=True, null=True)
     user = models.ForeignKey(User, blank=True, null=True)
     server = models.ForeignKey(Server, verbose_name=_("Server"))
@@ -55,7 +60,7 @@ class App(models.Model):
 
     @property
     def domains_list(self):
-        return [x.strip() for x in self.domains.split(" ")]
+        return [x.strip() for x in self.domains.split()]
 
     @property
     def price(self):

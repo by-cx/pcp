@@ -14,28 +14,67 @@ class AppForm(ModelForm):
         model = App
         fields = ("name", "domains", "server")
 
+    def __init__(self, *args, **kwargs):
+        super(AppForm, self).__init__(*args, **kwargs)
+        self.fields["domains"].help_text = _("There is no relation to DNS or Domains menu (if you see one). Write your domains separated by spaces.")
+
+    def clean_domains(self):
+        domains = self.cleaned_data["domains"].split()
+        used_domains = []
+        for x in [app.domains_list for app in App.objects.all()]:
+            used_domains += x
+        for domain in domains:
+            if not re.match("^[0-9a-z_\.\-]*$", domain):
+                raise forms.ValidationError(_("Each domain has to be in this format: ^[0-9a-z_\.\-]*$"))
+            if domain in used_domains:
+                raise forms.ValidationError(_("One of your domain is already used. (%s)" % domain))
+        return self.cleaned_data["domains"]
+
     def clean_name(self):
         if not re.match("^[0-9a-zA-Z_]*$", self.cleaned_data["name"]):
             raise forms.ValidationError(_("App name has to be in this format: ^[0-9a-zA-Z_]*$"))
+        if App.objects.filter(name=self.cleaned_data["name"]):
+            raise forms.ValidationError(_("This name is already used"))
         return self.cleaned_data["name"]
 
 
 class AppParametersForm(forms.Form):
     helper = RostiFormHelper()
+    this_app = None
 
     domains = forms.CharField(
         max_length=512,
         required=False,
         label=_("Domains"),
-        help_text=_("Domain is not necessary anymore (in native apps). There is no relation to DNS or Domains menu.")
+        help_text=_("There is no relation to DNS or Domains menu. Write your domains separated by spaces.")
     )
+    password = forms.CharField(
+        max_length=128,
+        required=False,
+        label=_("Password"),
+        widget=forms.PasswordInput
+    )
+
+    def clean_domains(self):
+        domains = self.cleaned_data["domains"].split()
+        used_domains = []
+        print self.this_app
+        for x in [app.domains_list for app in App.objects.all() if not self.this_app or self.this_app.id != app.id]:
+            used_domains += x
+        for domain in domains:
+            if not re.match("^[0-9a-z_\.\-]*$", domain):
+                raise forms.ValidationError(_("Each domain has to be in this format: ^[0-9a-z_\.\-]*$"))
+            if domain in used_domains:
+                raise forms.ValidationError(_("One of your domain is already used. (%s)" % domain))
+
+        return self.cleaned_data["domains"]
+
 
 
 class AppStaticForm(AppParametersForm):
     def __init__(self, *args, **kwargs):
         super(AppStaticForm, self).__init__(*args, **kwargs)
         self.fields["domains"].required = True
-        self.fields["domains"].help_text = "There is no relation to DNS or Domains menu."
 
     document_root = forms.CharField(
         max_length=512,
@@ -53,7 +92,6 @@ class AppPHPForm(AppParametersForm):
     def __init__(self, *args, **kwargs):
         super(AppPHPForm, self).__init__(*args, **kwargs)
         self.fields["domains"].required = True
-        self.fields["domains"].help_text = "There is no relation to DNS or Domains menu."
 
     document_root = forms.CharField(
         max_length=512,
@@ -71,7 +109,6 @@ class AppPythonForm(AppParametersForm):
     def __init__(self, *args, **kwargs):
         super(AppPythonForm, self).__init__(*args, **kwargs)
         self.fields["domains"].required = True
-        self.fields["domains"].help_text = "There is no relation to DNS or Domains menu."
 
     script = forms.CharField(
         label=_("WSGI Script"),

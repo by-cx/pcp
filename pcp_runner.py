@@ -37,6 +37,8 @@ def main():
             request["stdout"] = stdout
             request["stderr"] = stderr
             request["ret_code"] = ret_code
+            if request.get("rm_stdin"):
+                request["stdin"] = ""
             #if ret_code != 0:
             #    break
         elif request["type"] == "file":

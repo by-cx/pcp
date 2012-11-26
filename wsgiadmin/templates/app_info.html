@@ -16,6 +16,10 @@
             <td>{{ app.name }}</td>
         </tr>
         <tr>
+            <th>{% trans "FTP/SFTP" %}</th>
+            <td>{% trans "Host" %}: {{ app.server.hostname }} / {% trans "User" %}: {{ app.get_user }}</td>
+        </tr>
+        <tr>
             <th>{% trans "Domains" %}</th>
             <td>{{ app.domains }}</td>
         </tr>
@@ -36,6 +40,9 @@
         </tr>
         <tr>
             <td colspan="2">
+                {% if app.app_type == "python" or app.app_type == "native" %}
+                    <a href="{% url app_restart %}?app_id={{ app.id }}" class="btn btn-primary"><i class="icon-refresh"></i>{% trans "Restart" %}</a>
+                {% endif %}
                 {% if app.app_type == "static" %}
                     <a href="{% url app_params_static app_id=app.id %}" class="btn btn-warning"><i class="icon-edit"></i>{% trans "Parameters" %}</a>
                 {% elif app.app_type == "php" %}
@@ -46,9 +53,6 @@
                     <a href="{% url app_params_native app_id=app.id %}" class="btn btn-warning"><i class="icon-edit"></i>{% trans "Parameters" %}</a>
                 {% elif app.app_type == "proxy" %}
                     <a href="{% url app_params_proxy app_id=app.id %}" class="btn btn-warning"><i class="icon-edit"></i>{% trans "Parameters" %}</a>
-                {% endif %}
-                {% if app.app_type == "python" or app.app_type == "native" %}
-                    <a href="{% url app_restart %}?app_id={{ app.id }}" class="btn btn-primary"><i class="icon-refresh"></i>{% trans "Restart" %}</a>
                 {% endif %}
                 <a href="#a" onclick="if(confirm('{% trans "Are you sure?" %}')) {document.location= '{% url app_rm %}?app_id={{ app.id }}';}" class="btn btn-danger"><i class="icon-remove"></i>{% trans "Delete" %}</a>
             </td>

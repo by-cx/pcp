@@ -24,7 +24,7 @@ class AppsListView(ListView):
 
     def get_queryset(self):
         queryset = super(AppsListView, self).get_queryset()
-        queryset.filter(user=self.user)
+        queryset = queryset.filter(user=self.user)
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -49,7 +49,7 @@ class AppDetailView(TemplateView):
         app_id = self.kwargs.get("app_id")
         if not app_id:
             raise Http404
-        app = self.model.objects.get(id=app_id)
+        app = self.model.objects.get(id=app_id, user=self.user)
         if app.app_type == "python":
             app = PythonApp.objects.get(id=app.id)
         else:
@@ -79,6 +79,8 @@ class AppParametersView(TemplateView):
             for field in form.cleaned_data:
                 if field == "domains":
                     app.domains = form.cleaned_data[field]
+                elif field == "password":
+                    continue
                 else:
                     parms[field] = form.cleaned_data[field]
             app.parameters = parms
@@ -90,6 +92,8 @@ class AppParametersView(TemplateView):
             app.update()
             if app.app_type == "python":
                 app.restart()
+            if form.cleaned_data["password"]:
+                app.passwd(form.cleaned_data["password"])
             app.commit()
 
             messages.add_message(request, messages.SUCCESS, _('Changes has been saved.'))
@@ -108,17 +112,19 @@ class AppParametersView(TemplateView):
 
     def get_form(self):
         if self.app_type == "static":
-            return AppStaticForm
+            form = AppStaticForm
         elif self.app_type == "php":
-            return AppPHPForm
+            form = AppPHPForm
         elif self.app_type == "python":
-            return AppPythonForm
+            form = AppPythonForm
         elif self.app_type == "native":
-            return AppNativeForm
+            form = AppNativeForm
         elif self.app_type == "proxy":
-            return AppProxyForm
+            form = AppProxyForm
         else:
             raise Http404
+        form.this_app = self.get_object()
+        return form
 
     def get_initial(self):
         initial = {"domains": self.get_object().domains}
@@ -210,6 +216,7 @@ def app_rm(request):
     app.delete()
     messages.add_message(request, messages.SUCCESS, _('App has been removed'))
     return HttpResponseRedirect(reverse("apps_list"))
+
 
 @login_required()
 def app_restart(request):

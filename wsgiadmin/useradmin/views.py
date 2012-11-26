@@ -22,7 +22,7 @@ from wsgiadmin.clients.models import *
 from wsgiadmin.emails.models import Message
 from wsgiadmin.requests.request import SSHHandler
 from wsgiadmin.service.forms import PassCheckForm, RostiFormHelper
-from wsgiadmin.useradmin.forms import formReg, formReg2, SendPwdForm
+from wsgiadmin.useradmin.forms import formReg, formReg2, SendPwdForm, RegistrationForm
 from wsgiadmin.clients.models import Parms
 
 
@@ -179,9 +179,8 @@ def change_passwd(request):
 
 def reg(request):
     if request.method == 'POST':
-        form1 = formReg(request.POST)
-        form2 = formReg2(request.POST)
-        if form1.is_valid() and form2.is_valid():
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
             # machine
             m_web = get_object_or_404(Machine, name=config.default_web_machine)
             m_mail = get_object_or_404(Machine, name=config.default_mail_machine)
@@ -189,31 +188,15 @@ def reg(request):
             m_pgsql = get_object_or_404(Machine, name=config.default_pgsql_machine)
 
             # user
-            u = user.objects.create_user(form2.cleaned_data["username"],
-                                         form1.cleaned_data["email"],
-                                         form2.cleaned_data["password1"])
+            u = user.objects.create_user(form.cleaned_data["username"],
+                                         form.cleaned_data["email"],
+                                         form.cleaned_data["password1"])
             u.is_active = False
             u.save()
 
-            #address
-            address = Address()
-            address.company = form1.cleaned_data["company"],
-            address.first_name = form1.cleaned_data["first_name"],
-            address.last_name = form1.cleaned_data["last_name"],
-            address.street = form1.cleaned_data["street"],
-            address.city = form1.cleaned_data["city"],
-            address.zip = form1.cleaned_data["city_num"],
-            address.phone = form1.cleaned_data["phone"],
-            address.email = form1.cleaned_data["email"],
-            address.company_number = form1.cleaned_data["ic"],
-            address.vat_number = form1.cleaned_data["dic"]
-            address.default = True
-            address.user = u
-            address.save()
-
             # parms
             p = Parms()
-            p.home = join("/home", form2.cleaned_data["username"])
+            p.home = "/dev/null"
             p.note = ""
             p.uid = 0
             p.gid = 0
@@ -227,7 +210,7 @@ def reg(request):
 
             message = Message.objects.filter(purpose="reg")
             if message:
-                message[0].send(form1.cleaned_data["email"])
+                message[0].send(form.cleaned_data["email"])
 
             message = _("New user has been registered.")
             send_mail(_('New registration'),
@@ -240,16 +223,14 @@ def reg(request):
             return HttpResponseRedirect(
                 reverse("wsgiadmin.useradmin.views.regok"))
     else:
-        form1 = formReg()
-        form2 = formReg2()
+        form = RegistrationForm()
 
     form_helper = FormHelper()
     form_helper.form_tag = False
 
     return render_to_response('reg.html',
         {
-            "form1": form1,
-            "form2": form2,
+            "form": form,
             "form_helper": form_helper,
             "title": _("Registration"),
             "action": reverse("wsgiadmin.useradmin.views.reg"),

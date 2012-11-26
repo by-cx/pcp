@@ -168,4 +168,9 @@ body {
     height: 150px;
     width: 95%;
     overflow: auto;
+    line-height: 1.4;
+}
+
+pre {
+    line-height: 0.8;
 }

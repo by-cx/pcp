@@ -22,6 +22,8 @@ class Script(object):
             ]
         """
         self.requests = []
+        self.reloads = {"apache": False, "nginx": False}
+        self.restarts = {"apache": False, "nginx": False}
         self.log = []
         self.server = server
 
@@ -47,6 +49,21 @@ class Script(object):
         raise ScriptException("PCP runner script error: %s" % stderr)
 
     def commit(self):
+        if self.restarts["nginx"]:
+            self.add_cmd("/etc/init.d/nginx restart")
+            self.reloads["nginx"] = False
+            self.restarts["nginx"] = False
+        elif self.reloads["nginx"]:
+            self.add_cmd("/etc/init.d/nginx reload")
+            self.reloads["nginx"] = False
+        if self.restarts["apache"]:
+            self.add_cmd("/etc/init.d/apache2 restart")
+            self.reloads["apache"] = False
+            self.restarts["apache"] = False
+        elif self.reloads["apache"]:
+            self.add_cmd("/etc/init.d/apache2 reload")
+            self.reloads["apache"] = False
+
         t = threading.Thread(
             target=self.send,
             args=[["pcp_runner"], json.dumps(self.requests)]
@@ -69,8 +86,20 @@ class Script(object):
         if len(result) > 0:
             return result[0]
 
-    def add_cmd(self, cmd, user="", stdin=""):
-        self.requests.append({"type": "cmd", "cmd": cmd, "stdin": stdin, "user": user})
+    def add_cmd(self, cmd, user="", stdin="", rm_stdin=False):
+        self.requests.append({"type": "cmd", "cmd": cmd, "stdin": stdin, "user": user, "rm_stdin": rm_stdin})
 
     def add_file(self, path, content, owner=""):
         self.requests.append({"type": "file", "path": path, "content": content, "owner": owner},)
+
+    def restart_apache(self):
+        self.restarts["apache"] = True
+
+    def restart_nginx(self):
+        self.restarts["nginx"] = True
+
+    def reload_apache(self):
+        self.reloads["apache"] = True
+
+    def reload_nginx(self):
+        self.reloads["nginx"] = True

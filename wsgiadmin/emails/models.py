@@ -12,6 +12,8 @@ CHOICES = (
     ("autobuy_credit", _("Autobuy credit")),
     ("add_credit", _("Credit notification - admin")),
     ("web_disabled", _("Web disabled")),
+    ("webs_disabled", _("Webs disabled")),
+    ("webs_enabled", _("Web enabled")),
 )
 
 class Message(models.Model):

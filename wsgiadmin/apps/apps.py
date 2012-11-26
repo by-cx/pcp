@@ -48,21 +48,25 @@ class AppObject(App):
     def install(self):
         parms = self.get_parmameters()
         self.script.add_cmd("/usr/sbin/groupadd %(group)s" % parms)
-        self.script.add_cmd("/usr/sbin/useradd -m -d %(home)s -g %(group)s %(user)s" % parms)
+        self.script.add_cmd("/usr/sbin/useradd -m -d %(home)s -g %(group)s %(user)s -s /bin/bash" % parms)
         self.script.add_cmd("/usr/sbin/usermod -G %s(group)s www-data" % parms)
         self.script.add_cmd("mkdir -p %(home)s/logs" % parms, user=self.get_user())
         self.script.add_cmd("mkdir -p %(home)s/app" % parms, user=self.get_user())
         self.script.add_cmd("mkdir -p %(home)s/.ssh" % parms, user=self.get_user())
-        self.script.add_cmd("chmod 750 %(home)s" % parms, user=self.get_user())
+        self.script.add_cmd("chmod 750 %(home)s" % parms)
         self.installed = True
         self.save()
 
     def commit(self):
-        message = self.script.commit()
-        log = Log()
-        log.app = self
-        log.content = json.dumps(message)
-        log.save()
+        self.script.commit()
+
+    def disable(self):
+        parms = self.get_parmameters()
+        self.script.add_cmd("chmod 000 %(home)s" % parms, user=self.get_user())
+
+    def enable(self):
+        parms = self.get_parmameters()
+        self.script.add_cmd("chmod 750 %(home)s" % parms, user=self.get_user())
 
     def uninstall(self):
         parms = self.get_parmameters()
@@ -83,6 +87,9 @@ class AppObject(App):
             logfiles.append((path, self.script.run("tail -n 60 %s" % path)["stdout"]))
         return logfiles
 
+    def passwd(self, password):
+        self.script.add_cmd("/usr/sbin/chpasswd", stdin="%s:%s" % (self.get_user(), password))
+
 
 class PythonApp(AppObject):
 
@@ -97,7 +104,19 @@ class PythonApp(AppObject):
     def install(self):
         super(PythonApp, self).install()
         parms = self.get_parmameters()
-        self.script.add_cmd("%(virtualenv_cmd)s --no-site-packages %(home)s/venv" % parms, user=self.get_user())
+        self.script.add_cmd("%(virtualenv_cmd)s %(home)s/venv" % parms, user=self.get_user())
+
+    def disable(self):
+        super(PythonApp, self).disable()
+        parms = self.get_parmameters()
+        self.stop()
+        self.script.add_cmd("rm /etc/nginx/apps.d/%(user)s.conf" % parms)
+        self.script.reload_nginx()
+        self.disabled = True
+        self.save()
+
+    def enable(self):
+        super(PythonApp, self).enable()
 
     def uninstall(self):
         super(PythonApp, self).uninstall()
@@ -115,6 +134,7 @@ class PythonApp(AppObject):
         self.script.add_file("%(home)s/app.wsgi" % parms, parms.get("virtualenv"), owner="%(user)s:%(group)s" % parms)
         self.script.add_file("/etc/supervisor/conf.d/%(user)s.conf" % parms, self.gen_supervisor_config())
         self.script.add_file("/etc/nginx/apps.d/%(user)s.conf" % parms, self.gen_nginx_config())
+        self.script.reload_nginx()
 
     def gen_supervisor_config(self):
         parms = self.get_parmameters()

@@ -8,22 +8,25 @@
 {% block content %}
     <div class="clear"></div>
 
+    <h2>{% trans "Account's informations" %}</h2>
+
     <table class="table table-striped">
-        <tr>
-            <th colspan="2">{% trans "Account's informations" %}</th>
-        </tr>
+        {% if u.parms.address.getName %}
         <tr>
             <td><strong>{% trans "Name" %}</strong></td>
             <td>{{ u.parms.address.getName }}</td>
         </tr>
+        {% endif %}
         <tr>
             <td><strong>{% trans "Username" %}</strong></td>
             <td>{{ u.parms.user.username }}</td>
         </tr>
+        {% if u.parms.home != "/dev/null" %}
         <tr>
             <td><strong>{% trans "Home directory" %}</strong></td>
             <td>{{ u.parms.home }}</td>
         </tr>
+        {% endif %}
         {% if u.parms.fee %}
             <tr>
                 <td><strong>{% trans "Flat rate" %}</strong></td>
@@ -35,13 +38,6 @@
                 <td>{{ u.parms.discount }}</td>
             </tr>
         {% endif %}
-        <tr>
-            <td><strong>{% trans "Server" %}</strong></td>
-            <td>{{ u.parms.web_machine.name }} (IPv4:
-                {{ u.parms.web_machine.ip }}
-                        {% if u.parms.web_machine.ipv6 %} / IPv6: {{ u.parms.web_machine.ipv6 }}{% endif %})
-            </td>
-        </tr>
     </table>
 
     <h3>{% trans "Service fees" %}</h3>

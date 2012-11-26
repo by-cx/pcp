@@ -163,3 +163,9 @@ body {
     height: 200px;
     font-family: monospace;
 }
+
+.log {
+    height: 150px;
+    width: 95%;
+    overflow: auto;
+}

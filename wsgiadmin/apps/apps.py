@@ -1,6 +1,7 @@
 import json
 from django.conf import settings
 import os
+import re
 from wsgiadmin.apps.models import App, Log
 from wsgiadmin.apps.tools import Script
 
@@ -39,7 +40,7 @@ class AppObject(App):
                 "group": self.get_group(),
                 "home": self.get_home(),
                 "main_domain": self.main_domain,
-                "domains": self.domains_list
+                "domains": " ".join(self.domains_list)
             }
         )
         return parms
@@ -56,6 +57,12 @@ class AppObject(App):
         self.installed = True
         self.save()
 
+    def commit(self):
+        message = self.script.commit()
+        log = Log()
+        log.app = self
+        log.content = json.dumps(message)
+        log.save()
 
     def uninstall(self):
         parms = self.get_parmameters()
@@ -67,6 +74,14 @@ class AppObject(App):
         limits = "%(user)s         hard    nproc           64\n"
         limits += "%(user)s         hard    as          262144\n"
         self.script.add_file("/etc/security/limits.d/%(user)s.conf", limits)
+
+    def get_logs(self):
+        parms = self.get_parmameters()
+        logfiles = []
+        for logfile in self.script.run("ls \"%(home)s/logs/\"" % parms)["stdout"].split():
+            path = os.path.join("%(home)s/logs/" % parms, logfile.strip())
+            logfiles.append((path, self.script.run("tail -n 60 %s" % path)["stdout"]))
+        return logfiles
 
 
 class PythonApp(AppObject):
@@ -86,6 +101,10 @@ class PythonApp(AppObject):
 
     def uninstall(self):
         super(PythonApp, self).uninstall()
+        parms = self.get_parmameters()
+        self.stop()
+        self.script.add_cmd("rm /etc/supervisor/conf.d/%(user)s.conf" % parms)
+        self.script.add_cmd("rm /etc/nginx/apps.d/%(user)s.conf" % parms)
 
     def update(self):
         super(PythonApp, self).update()
@@ -95,7 +114,7 @@ class PythonApp(AppObject):
         self.script.add_file("%(home)s/requirements.txt" % parms, "uwsgi\n" + parms.get("virtualenv"), owner="%(user)s:%(group)s" % parms)
         self.script.add_file("%(home)s/app.wsgi" % parms, parms.get("virtualenv"), owner="%(user)s:%(group)s" % parms)
         self.script.add_file("/etc/supervisor/conf.d/%(user)s.conf" % parms, self.gen_supervisor_config())
-
+        self.script.add_file("/etc/nginx/apps.d/%(user)s.conf" % parms, self.gen_nginx_config())
 
     def gen_supervisor_config(self):
         parms = self.get_parmameters()
@@ -115,7 +134,7 @@ class PythonApp(AppObject):
         config.append("stderr_logfile_maxbytes=2MB")
         config.append("stderr_logfile_backups=5")
         config.append("stderr_capture_maxbytes=2MB")
-        config.append("stderr_events_enabled=false")
+        config.append("stderr_events_enabled=false\n")
         return "\n".join(config)
 
     def gen_uwsgi_parms(self):
@@ -140,20 +159,36 @@ class PythonApp(AppObject):
     def gen_nginx_config(self):
         parms = self.get_parmameters()
         config = []
-        return " ".join(config)
-
-    def commit(self):
-        message = self.script.commit()
-        log = Log()
-        log.app = self
-        log.content = json.dumps(message)
-        log.save()
+        config.append("server {")
+        config.append("\tlisten       [::]:80;")
+        config.append("\tserver_name  %(domains)s;" % parms)
+        config.append("\taccess_log %(home)s/logs/access.log;"% parms)
+        config.append("\terror_log %(home)s/logs/error.log;"% parms)
+        config.append("\tlocation / {")
+        config.append("\t\tuwsgi_pass unix://%(home)s/app.sock;"% parms)
+        config.append("\t\tinclude        uwsgi_params;")
+        config.append("\t}")
+        if parms.get("static_maps"):
+            for location, directory in [(x.split()[0].strip(), x.split()[1].strip()) for x in parms.get("static_maps").split("\n") if len(x.split()) == 2]:
+                if re.match("/[a-zA-Z0-9_\-\.]*/", location) and re.match("/[a-zA-Z0-9_\-\.]*/", directory):
+                    config.append("\tlocation %s {" % location)
+                    config.append("\t\talias %s;" % os.path.join(parms.get("home"), "app", directory))
+                    config.append("\t}")
+        config.append("}\n")
+        return "\n".join(config)
 
     def start(self):
-        pass
+        parms = self.get_parmameters()
+        self.script.add_cmd("supervisorctl reread")
+        self.script.add_cmd("supervisorctl update")
+        self.script.add_cmd("supervisorctl start %(user)s" % parms)
 
     def restart(self):
-        pass
+        parms = self.get_parmameters()
+        self.script.add_cmd("supervisorctl reread")
+        self.script.add_cmd("supervisorctl update")
+        self.script.add_cmd("supervisorctl restart %(user)s" % parms)
 
     def stop(self):
-        pass
+        parms = self.get_parmameters()
+        self.script.add_cmd("supervisorctl stop %(user)s" % parms)

@@ -55,7 +55,7 @@ class Script(object):
         t.start()
         return True #self.send(["pcp_runner"], json.dumps(self.requests))
 
-    def print_requests(self, server):
+    def print_requests(self):
         for request in self.requests:
             if request["type"] == "cmd":
                 print "Run %s" % request["cmd"]
@@ -65,6 +65,7 @@ class Script(object):
     def run(self, cmd):
         cmd = [{"type": "cmd", "cmd": cmd}]
         result = self.send(["pcp_runner"], json.dumps(cmd))
+        print result
         if len(result) > 0:
             return result[0]
 

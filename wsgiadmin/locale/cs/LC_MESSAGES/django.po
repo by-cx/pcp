@@ -286,7 +286,7 @@ msgstr ""
 
 #: apps/views.py:75
 msgid "Changes has been saved."
-msgstr "Doména byla přidána"
+msgstr "Změny byly provedeny"
 
 #: clients/models.py:17
 msgid "Název serveru"
@@ -350,7 +350,7 @@ msgstr "Poslední upozornění na nízkou hodnotu kreditů"
 
 #: clients/models.py:41
 msgid "Installed"
-msgstr "Instalování"
+msgstr "Nainstalováno"
 
 #: clients/models.py:49
 msgid "Uživatel"

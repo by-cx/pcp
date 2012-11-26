@@ -22,6 +22,7 @@ class Server(models.Model):
 
 class App(models.Model):
     date = models.DateField(_("Date"), auto_now_add=True)
+    disabled = models.BooleanField(_("Installed"), default=False)
     installed = models.BooleanField(_("Installed"), default=False)
     app_type = models.CharField(_("Type"), max_length=20, choices=SITE_TYPE_CHOICES, blank=True, null=True)
     name = models.CharField(_("Name"), max_length=256, help_text=_("Name of your application"))
@@ -37,6 +38,15 @@ class App(models.Model):
         self.parameters_data = json.dumps(value, indent=4)
 
     parameters = property(parameters_get, parameters_set)
+
+    def format_parameters(self):
+        parms = {}
+        for k, v in self.parameters.items():
+            if "\n" in v:
+                parms[k] = "<pre>%s</pre>" % v.replace("\n", "<br>").replace(" ", "&nbsp;")
+            else:
+                parms[k] = v.replace(" ", "&nbsp;")
+        return parms
 
     @property
     def main_domain(self):

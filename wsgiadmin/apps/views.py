@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponseRedirect
+from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, TemplateView, CreateView
 from wsgiadmin.apps.forms import AppForm, AppStaticForm, AppPHPForm, AppNativeForm, AppProxyForm, AppPythonForm
@@ -37,6 +38,7 @@ class AppsListView(ListView):
 class AppDetailView(TemplateView):
     model = App
     menu_active = "apps"
+    template_name = "app_info.html"
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
@@ -47,7 +49,12 @@ class AppDetailView(TemplateView):
         app_id = self.kwargs.get("app_id")
         if not app_id:
             raise Http404
-        return self.model.objects.get(id=app_id)
+        app = self.model.objects.get(id=app_id)
+        if app.app_type == "python":
+            app = PythonApp.objects.get(id=app.id)
+        else:
+            app = AppObject.objects.get(id=app.id)
+        return app
 
     def get_context_data(self, **kwargs):
         context = super(AppDetailView, self).get_context_data(**kwargs)
@@ -185,3 +192,36 @@ class AppCreateView(CreateView):
         context['u'] = self.user
         context['superuser'] = self.request.user
         return context
+
+
+@login_required()
+def app_rm(request):
+    user = request.session.get('switched_user', request.user)
+    superuser = request.user
+
+    app_id = int(request.GET.get("app_id"))
+    app = get_object_or_404(user.app_set, id=app_id)
+    if app.app_type == "python":
+        app = PythonApp.objects.get(id=app.id)
+    else:
+        app = AppObject.objects.get(id=app.id)
+    app.uninstall()
+    app.commit()
+    app.delete()
+    messages.add_message(request, messages.SUCCESS, _('App has been removed'))
+    return HttpResponseRedirect(reverse("apps_list"))
+
+@login_required()
+def app_restart(request):
+    user = request.session.get('switched_user', request.user)
+    superuser = request.user
+
+    app_id = int(request.GET.get("app_id"))
+    app = get_object_or_404(user.app_set, id=app_id)
+    if app.app_type == "python":
+        app = PythonApp.objects.get(id=app.id)
+        app.update()
+        app.restart()
+        app.commit()
+    messages.add_message(request, messages.SUCCESS, _('App has been restarted'))
+    return HttpResponseRedirect(reverse("apps_list"))

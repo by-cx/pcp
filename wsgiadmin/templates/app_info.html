@@ -1,0 +1,74 @@
+{% extends "admin.html" %}
+{% load i18n %}
+
+{% block title %}
+    {% trans "Administration" %} &gt; {% trans "Apps" %} &gt; {{ app.name }}
+{% endblock %}
+
+{% block content %}
+    <div class="clear"></div>
+
+    <h2>{% trans "Information about app" %} {{ app.name }}</h2>
+
+    <table class="table table-striped">
+        <tr>
+            <th>{% trans "Name" %}</th>
+            <td>{{ app.name }}</td>
+        </tr>
+        <tr>
+            <th>{% trans "Domains" %}</th>
+            <td>{{ app.domains }}</td>
+        </tr>
+        <tr>
+            <th>{% trans "Type" %}</th>
+            <td>{{ app.app_type }}</td>
+        </tr>
+        <tr>
+            <th>{% trans "Server" %}</th>
+            <td>{{ app.server.hostname }}</td>
+        </tr>
+        <tr>
+            <th>{% trans "Stav" %}</th>
+            <td>
+                {% if app.installed %}{% trans "Installed" %}{% else %}{% trans "Not installed" %}{% endif %}
+                {% if app.disabled %}{% trans "Disabled" %}{% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                {% if app.app_type == "static" %}
+                    <a href="{% url app_params_static app_id=app.id %}" class="btn btn-warning"><i class="icon-edit"></i>{% trans "Parameters" %}</a>
+                {% elif app.app_type == "php" %}
+                    <a href="{% url app_params_php app_id=app.id %}" class="btn btn-warning"><i class="icon-edit"></i>{% trans "Parameters" %}</a>
+                {% elif app.app_type == "python" %}
+                    <a href="{% url app_params_python app_id=app.id %}" class="btn btn-warning"><i class="icon-edit"></i>{% trans "Parameters" %}</a>
+                {% elif app.app_type == "native" %}
+                    <a href="{% url app_params_native app_id=app.id %}" class="btn btn-warning"><i class="icon-edit"></i>{% trans "Parameters" %}</a>
+                {% elif app.app_type == "proxy" %}
+                    <a href="{% url app_params_proxy app_id=app.id %}" class="btn btn-warning"><i class="icon-edit"></i>{% trans "Parameters" %}</a>
+                {% endif %}
+                {% if app.app_type == "python" or app.app_type == "native" %}
+                    <a href="{% url app_restart %}?app_id={{ app.id }}" class="btn btn-primary"><i class="icon-refresh"></i>{% trans "Restart" %}</a>
+                {% endif %}
+                <a href="#a" onclick="if(confirm('{% trans "Are you sure?" %}')) {document.location= '{% url app_rm %}?app_id={{ app.id }}';}" class="btn btn-danger"><i class="icon-remove"></i>{% trans "Delete" %}</a>
+            </td>
+        </tr>
+        <tr>
+            <th colspan="2">{% trans "Parameters" %}</th>
+        </tr>
+        {% for key, value in app.format_parameters.items %}
+        <tr>
+            <th>{{ key }}</th>
+            <td>{{ value|safe }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>{% trans "Log files" %}</h2>
+
+    {% for log in app.get_logs %}
+    <p><strong>{{ log.0 }}</strong></p>
+    <pre class="log">{{ log.1 }}</pre>
+    {% endfor %}
+
+{% endblock %}

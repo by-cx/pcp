@@ -73,11 +73,13 @@ class AppObject(App):
         self.script.add_cmd("/usr/sbin/userdel %(user)s" % parms)
         #self.script.add_cmd("/usr/sbin/groupdel %(group)s" % parms)
         self.script.add_cmd("rm -rf %(home)s" % parms)
+        self.script.add_cmd("rm /etc/security/limits.d/%(user)s.conf" % parms)
 
     def update(self):
+        parms = self.get_parmameters()
         limits = "%(user)s         hard    nproc           64\n"
         limits += "%(user)s         hard    as          262144\n"
-        self.script.add_file("/etc/security/limits.d/%(user)s.conf", limits)
+        self.script.add_file("/etc/security/limits.d/%(user)s.conf" % parms, limits)
 
     def get_logs(self):
         parms = self.get_parmameters()
@@ -104,7 +106,7 @@ class PythonApp(AppObject):
     def install(self):
         super(PythonApp, self).install()
         parms = self.get_parmameters()
-        self.script.add_cmd("%(virtualenv_cmd)s %(home)s/venv" % parms, user=self.get_user())
+        self.script.add_cmd("cd; %(virtualenv_cmd)s %(home)s/venv" % parms, user=self.get_user())
 
     def disable(self):
         super(PythonApp, self).disable()

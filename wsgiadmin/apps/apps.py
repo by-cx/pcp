@@ -85,8 +85,9 @@ class AppObject(App):
         parms = self.get_parmameters()
         logfiles = []
         for logfile in self.script.run("ls \"%(home)s/logs/\"" % parms)["stdout"].split():
-            path = os.path.join("%(home)s/logs/" % parms, logfile.strip())
-            logfiles.append((path, self.script.run("tail -n 60 %s" % path)["stdout"]))
+            if re.match(".*\.log$", logfile):
+                path = os.path.join("%(home)s/logs/" % parms, logfile.strip())
+                logfiles.append((path, self.script.run("tail -n 60 %s" % path)["stdout"]))
         return logfiles
 
     def passwd(self, password):

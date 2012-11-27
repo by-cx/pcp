@@ -31,8 +31,8 @@ USERLOG_FILENAME = "%s/logs/%s.log"
 BANK = "mBank"
 BANK_ACCOUNT = "670100-2206514444/6210"
 MY_ADDRESS_ID = 1
-STAMP_SIGN = join(ROOT, "m", "razitko.png")
-STAMP_NOSIGN = join(ROOT, "m", "razitko-nosign.png")
+STAMP_SIGN = join(ROOT, "static", "razitko.png")
+STAMP_NOSIGN = join(ROOT, "static", "razitko-nosign.png")
 
 CURRENCY = (
     ("czk", "CZK"),
@@ -69,8 +69,8 @@ SITE_ID = 1
 USE_I18N = True
 #USE_L10N = True
 
-STATIC_ROOT = join(ROOT, "m")
-STATIC_URL = "/m/"
+STATIC_ROOT = join(ROOT, "static")
+STATIC_URL = "/static/"
 
 LOGIN_URL = "/login/"
 LOGOUT_URL = "/logout/"
@@ -140,10 +140,8 @@ INSTALLED_APPS = (
     'wsgiadmin.cron',
     'wsgiadmin.users',
     'wsgiadmin.apacheconf',
-    'wsgiadmin.keystore',
     'wsgiadmin.service',
     'wsgiadmin.stats',
-    'wsgiadmin.supervisor',
     'wsgiadmin.apps',
 )
 

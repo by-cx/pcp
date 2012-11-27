@@ -129,6 +129,7 @@ class AppPythonForm(AppParametersForm):
     virtualenv = forms.CharField(
         label=_("Virtualenv"),
         max_length=4096,
+        required=False,
         widget=forms.Textarea(attrs={"class": "textarea-code"}),
         help_text=_("List of requirements. One package per one line. Like requirements.txt file.")
     )

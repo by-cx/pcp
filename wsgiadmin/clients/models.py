@@ -9,8 +9,6 @@ from django.db.models import Sum
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from wsgiadmin.emails.models import Email
-from wsgiadmin.keystore.tools import kget
-from wsgiadmin.tools import size_format
 
 
 class Machine(models.Model):
@@ -88,13 +86,6 @@ class Parms(models.Model):
         #TODO:make currency works
         czk = float(config.credit_currency.split(",")[0])
         return czk
-
-    def home_size(self):
-        size = kget("%s:homesize" % self.user.username)
-        if size:
-            return size_format(int(size))
-        else:
-            return _("Undetected")
 
     def pay_for_sites(self, use_cache=True):
         pay = cache.get('user_payment_%s' % self.user_id)

@@ -4,6 +4,7 @@ import os
 import re
 from wsgiadmin.apps.models import App, Log
 from wsgiadmin.apps.tools import Script
+from constance import config
 
 
 class AppException(Exception): pass
@@ -40,6 +41,7 @@ class AppObject(App):
                 "group": self.get_group(),
                 "home": self.get_home(),
                 "main_domain": self.main_domain,
+                "misc_domains": " ".join(self.misc_domains_list),
                 "domains": " ".join(self.domains_list)
             }
         )
@@ -49,16 +51,17 @@ class AppObject(App):
         parms = self.get_parmameters()
         self.script.add_cmd("/usr/sbin/groupadd %(group)s" % parms)
         self.script.add_cmd("/usr/sbin/useradd -m -d %(home)s -g %(group)s %(user)s -s /bin/bash" % parms)
-        self.script.add_cmd("/usr/sbin/usermod -G %s(group)s www-data" % parms)
+        self.script.add_cmd("/usr/sbin/usermod -G %(group)s www-data" % parms)
         self.script.add_cmd("mkdir -p %(home)s/logs" % parms, user=self.get_user())
         self.script.add_cmd("mkdir -p %(home)s/app" % parms, user=self.get_user())
         self.script.add_cmd("mkdir -p %(home)s/.ssh" % parms, user=self.get_user())
+        self.script.add_cmd("chmod 770 %(home)s/logs" % parms)
         self.script.add_cmd("chmod 750 %(home)s" % parms)
         self.installed = True
         self.save()
 
-    def commit(self):
-        self.script.commit()
+    def commit(self, no_thread=False):
+        self.script.commit(no_thread)
 
     def disable(self):
         parms = self.get_parmameters()
@@ -92,6 +95,108 @@ class AppObject(App):
 
     def passwd(self, password):
         self.script.add_cmd("/usr/sbin/chpasswd", stdin="%s:%s" % (self.get_user(), password))
+
+
+class PHPApp(AppObject):
+    class Meta:
+        proxy = True
+
+    def install(self):
+        super(PHPApp, self).install()
+        parms = self.get_parmameters()
+        self.script.add_cmd("mkdir -p %(home)s/fcgid" % parms, user=self.get_user())
+
+    def disable(self):
+        super(PythonApp, self).disable()
+        parms = self.get_parmameters()
+        self.stop()
+        self.script.add_cmd("rm /etc/apache2/sites-enabled/%(user)s.conf" % parms)
+        self.script.reload_apache()
+        self.disabled = True
+        self.save()
+
+    def enable(self):
+        super(PHPApp, self).enable()
+
+    def uninstall(self):
+        super(PHPApp, self).uninstall()
+        parms = self.get_parmameters()
+        self.script.add_cmd("rm /etc/apache2/sites-enabled/%(user)s.conf" % parms)
+        self.script.reload_apache()
+
+    def update(self):
+        super(PHPApp, self).update()
+        parms = self.get_parmameters()
+        self.script.add_file("/etc/apache2/apps.d/%(user)s.conf" % parms, self.gen_apache_config())
+        self.script.add_file("/etc/nginx/apps.d/%(user)s.conf" % parms, self.gen_nginx_config())
+        self.script.add_file("%(home)s/fcgid/php.ini" % parms, self.gen_php_ini())
+        self.script.add_file("%(home)s/fcgid/php-wrap" % parms, self.gen_php_wrap())
+        self.script.add_cmd("chmod 555 %(home)s/fcgid/php-wrap" % parms, user=self.get_user())
+        self.script.add_cmd("chmod 444 %(home)s/fcgid/php.ini" % parms)
+        self.script.reload_nginx()
+        self.script.reload_apache()
+
+    def gen_php_wrap(self):
+        content = []
+        content.append("#!/bin/sh")
+        content.append("PHP_FCGI_CHILDREN=2")
+        content.append("export PHP_FCGI_CHILDREN")
+        content.append("PHP_FCGI_MAX_REQUESTS=400")
+        content.append("export PHP_FCGI_MAX_REQUESTS")
+        content.append("PHPRC=%s(home)/fcgid/")
+        content.append("export PHPRC")
+        content.append("exec /usr/bin/php-cgi\n")
+        return "\n".join(content)
+
+    def gen_php_ini(self):
+        parms = self.get_parmameters()
+        content = []
+        content.append("%s" % self.script.run("cat /etc/php5/php.ini")["stdout"])
+        content.append("memory_limit = %s" % parms.get("memory_limit", "32M"))
+        content.append("post_max_size = %s" % parms.get("post_max_size", "32M"))
+        content.append("upload_max_filesize = %s" % parms.get("upload_max_filesize", "10"))
+        content.append("max_file_uploads = %s" % parms.get("max_file_uploads", "10"))
+        content.append("max_execution_time = %s" % parms.get("max_execution_time", "20"))
+        content.append("allow_url_fopen = %s" % ("On" if parms.get("allow_url_fopen") else "Off"))
+        content.append("display_errors = %s\n" % ("On" if parms.get("display_errors") else "Off"))
+        return "\n".join(content)
+
+    def gen_apache_config(self):
+        parms = self.get_parmameters()
+        content = []
+        content.append("<VirtualHost %s>" % config.apache_url)
+        content.append("\tSuexecUserGroup %(user)s %(group)s" % parms)
+        content.append("\tServerName %(main_domain)s" % parms)
+        content.append("\tServerAlias %(misc_domains)s" % parms)
+        content.append("\tDocumentRoot %(home)s/app/" % parms)
+        content.append("\tCustomLog %(home)s/logs/access.log combined" % parms)
+        content.append("\tErrorLog %(home)s/logs/error.log" % parms)
+        content.append("\t<Directory %(home)s/app/" % parms)
+        content.append("\t\tOptions +ExecCGI %s" % "+Indexes" if parms.get("flag_index") else "-Indexes")
+        content.append("\t\tAllowOverride All")
+        content.append("\t\tAddHandler fcgid-script .php")
+        content.append("\tFCGIWrapper %(home)s/fcgid/php-wrap .php")
+        content.append("\tOrder deny,allow")
+        content.append("\tAllow from all")
+        content.append("\t</Directory>")
+        content.append("\tIPCCommTimeout 360")
+        content.append("</VirtualHost>\n")
+        return "\n".join(content)
+
+    def gen_nginx_config(self):
+        parms = self.get_parmameters()
+        content = []
+        content.append("server {")
+        content.append("\tlisten       [::]:80;")
+        content.append("\tserver_name  %(domains)s;" % parms)
+        content.append("\taccess_log %(home)s/logs/access.log;"% parms)
+        content.append("\terror_log %(home)s/logs/error.log;"% parms)
+        content.append("\tlocation / {")
+        content.append("\t\tproxy_pass         http://%s/;" % config.apache_url)
+        content.append("\t\tproxy_redirect     off;")
+        content.append("\t}")
+        content.append("}\n")
+        return "\n".join(content)
 
 
 class PythonApp(AppObject):
@@ -141,64 +246,64 @@ class PythonApp(AppObject):
 
     def gen_supervisor_config(self):
         parms = self.get_parmameters()
-        config = []
-        config.append("[program:%(user)s]" % parms)
-        config.append(("command=%(home)s/venv/bin/uwsgi " % parms) + self.gen_uwsgi_parms())
-        config.append("directory=%(home)s/app" % parms)
-        config.append("process_name=%(user)s" % parms)
-        config.append("user=%(user)s" % parms)
-        config.append("group=%(group)s" % parms)
-        config.append("stdout_logfile=%(home)s/logs/stdout.log" % parms)
-        config.append("stdout_logfile_maxbytes=2MB")
-        config.append("stdout_logfile_backups=5")
-        config.append("stdout_capture_maxbytes=2MB")
-        config.append("stdout_events_enabled=false")
-        config.append("stderr_logfile=%(home)s/logs/stderr.log" % parms)
-        config.append("stderr_logfile_maxbytes=2MB")
-        config.append("stderr_logfile_backups=5")
-        config.append("stderr_capture_maxbytes=2MB")
-        config.append("stderr_events_enabled=false\n")
-        return "\n".join(config)
+        content = []
+        content.append("[program:%(user)s]" % parms)
+        content.append(("command=%(home)s/venv/bin/uwsgi " % parms) + self.gen_uwsgi_parms())
+        content.append("directory=%(home)s/app" % parms)
+        content.append("process_name=%(user)s" % parms)
+        content.append("user=%(user)s" % parms)
+        content.append("group=%(group)s" % parms)
+        content.append("stdout_logfile=%(home)s/logs/stdout.log" % parms)
+        content.append("stdout_logfile_maxbytes=2MB")
+        content.append("stdout_logfile_backups=5")
+        content.append("stdout_capture_maxbytes=2MB")
+        content.append("stdout_events_enabled=false")
+        content.append("stderr_logfile=%(home)s/logs/stderr.log" % parms)
+        content.append("stderr_logfile_maxbytes=2MB")
+        content.append("stderr_logfile_backups=5")
+        content.append("stderr_capture_maxbytes=2MB")
+        content.append("stderr_events_enabled=false\n")
+        return "\n".join(content)
 
     def gen_uwsgi_parms(self):
         parms = self.get_parmameters()
-        config = []
-        config.append("--master")
-        config.append("--no-orphans")
-        config.append("--processes %s" % parms.get("procs", "2"))
-        config.append("--home %(home)s/venv")
-        config.append("--limit-as 256")
-        config.append("--chmod-socket=660")
-        config.append("--uid %(user)s")
-        config.append("--gid %(group)s")
-        config.append("--pidfile %(home)s/app.pid")
-        config.append("--socket %(home)s/app.sock")
-        config.append("--wsgi-file %(home)s/app.wsgi")
-        config.append("--daemonize %(home)s/logs/uwsgi.log")
-        config.append("--chdir %(home)s")
-        config.append("--pythonpath %(home)s/app")
-        return " ".join(config)
+        content = []
+        content.append("--master")
+        content.append("--no-orphans")
+        content.append("--processes %s" % parms.get("procs", "2"))
+        content.append("--home %(home)s/venv")
+        content.append("--limit-as 256")
+        content.append("--chmod-socket=660")
+        content.append("--uid %(user)s")
+        content.append("--gid %(group)s")
+        content.append("--pidfile %(home)s/app.pid")
+        content.append("--socket %(home)s/app.sock")
+        content.append("--wsgi-file %(home)s/app.wsgi")
+        content.append("--daemonize %(home)s/logs/uwsgi.log")
+        content.append("--chdir %(home)s")
+        content.append("--pythonpath %(home)s/app")
+        return " ".join(content)
 
     def gen_nginx_config(self):
         parms = self.get_parmameters()
-        config = []
-        config.append("server {")
-        config.append("\tlisten       [::]:80;")
-        config.append("\tserver_name  %(domains)s;" % parms)
-        config.append("\taccess_log %(home)s/logs/access.log;"% parms)
-        config.append("\terror_log %(home)s/logs/error.log;"% parms)
-        config.append("\tlocation / {")
-        config.append("\t\tuwsgi_pass unix://%(home)s/app.sock;"% parms)
-        config.append("\t\tinclude        uwsgi_params;")
-        config.append("\t}")
+        content = []
+        content.append("server {")
+        content.append("\tlisten       [::]:80;")
+        content.append("\tserver_name  %(domains)s;" % parms)
+        content.append("\taccess_log %(home)s/logs/access.log;"% parms)
+        content.append("\terror_log %(home)s/logs/error.log;"% parms)
+        content.append("\tlocation / {")
+        content.append("\t\tuwsgi_pass unix://%(home)s/app.sock;"% parms)
+        content.append("\t\tinclude        uwsgi_params;")
+        content.append("\t}")
         if parms.get("static_maps"):
             for location, directory in [(x.split()[0].strip(), x.split()[1].strip()) for x in parms.get("static_maps").split("\n") if len(x.split()) == 2]:
                 if re.match("/[a-zA-Z0-9_\-\.]*/", location) and re.match("/[a-zA-Z0-9_\-\.]*/", directory):
-                    config.append("\tlocation %s {" % location)
-                    config.append("\t\talias %s;" % os.path.join(parms.get("home"), "app", directory))
-                    config.append("\t}")
-        config.append("}\n")
-        return "\n".join(config)
+                    content.append("\tlocation %s {" % location)
+                    content.append("\t\talias %s;" % os.path.join(parms.get("home"), "app", directory))
+                    content.append("\t}")
+        content.append("}\n")
+        return "\n".join(content)
 
     def start(self):
         parms = self.get_parmameters()
@@ -215,3 +320,12 @@ class PythonApp(AppObject):
     def stop(self):
         parms = self.get_parmameters()
         self.script.add_cmd("supervisorctl stop %(user)s" % parms)
+
+def typed_object(app):
+    if app.app_type == "python":
+        app = PythonApp.objects.get(id=app.id)
+    if app.app_type == "php":
+        app = PHPApp.objects.get(id=app.id)
+    else:
+        app = AppObject.objects.get(id=app.id)
+    return app

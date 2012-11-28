@@ -1,6 +1,6 @@
 It develop for Debian, but it should work on other distributions too. Need at least this packages:
 
-apache2 nginx supervisor php5-cgi (for PHP hosting) python python-pip python-virtualenv postfix couried-imap(ssl)|pop(ssl)|authlib (for mail support) and maybe some more
+apache2 nginx supervisor php5-cgi (for PHP hosting) suexec-custom python python-pip python-virtualenv postfix couried-imap(ssl)|pop(ssl)|authlib (for mail support) and maybe some more
 
 Create virtualenv for PCP and continue with:
 

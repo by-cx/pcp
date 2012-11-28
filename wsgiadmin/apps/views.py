@@ -6,7 +6,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic import ListView, TemplateView, CreateView
 from wsgiadmin.apps.forms import AppForm, AppStaticForm, AppPHPForm, AppNativeForm, AppProxyForm, AppPythonForm
 from wsgiadmin.apps.models import App
-from wsgiadmin.apps.apps import PythonApp, AppObject
+from wsgiadmin.apps.apps import PythonApp, AppObject, PHPApp, typed_object
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext as __
 from django.contrib import messages
@@ -24,7 +24,7 @@ class AppsListView(ListView):
 
     def get_queryset(self):
         queryset = super(AppsListView, self).get_queryset()
-        queryset = queryset.filter(user=self.user)
+        queryset = queryset.filter(user=self.user).order_by("name")
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -50,11 +50,7 @@ class AppDetailView(TemplateView):
         if not app_id:
             raise Http404
         app = self.model.objects.get(id=app_id, user=self.user)
-        if app.app_type == "python":
-            app = PythonApp.objects.get(id=app.id)
-        else:
-            app = AppObject.objects.get(id=app.id)
-        return app
+        return typed_object(app)
 
     def get_context_data(self, **kwargs):
         context = super(AppDetailView, self).get_context_data(**kwargs)
@@ -87,16 +83,18 @@ class AppParametersView(TemplateView):
             app.save()
 
             # communication with server
-            if not app.installed:
-                app.install()
-            app.update()
-            if app.app_type == "python":
-                app.restart()
-            if form.cleaned_data["password"]:
-                app.passwd(form.cleaned_data["password"])
-            app.commit()
-
-            messages.add_message(request, messages.SUCCESS, _('Changes has been saved.'))
+            if not app.disabled:
+                if not app.installed:
+                    app.install()
+                app.update()
+                if app.app_type == "python":
+                    app.restart()
+                if form.cleaned_data["password"]:
+                    app.passwd(form.cleaned_data["password"])
+                app.commit()
+                messages.add_message(request, messages.SUCCESS, _('Changes has been saved.'))
+            else:
+                messages.add_message(request, messages.WARNING, _('Changes has been saved. But app is disabled.'))
             return HttpResponseRedirect(reverse("apps_list"))
         context["form"] = form
         return self.render_to_response(context)
@@ -141,11 +139,7 @@ class AppParametersView(TemplateView):
         if not app_id:
             raise Http404
         app = self.user.app_set.get(id=app_id)
-        if app.app_type == "python":
-            app = PythonApp.objects.get(id=app.id)
-        else:
-            app = AppObject.objects.get(id=app.id)
-        return app
+        return typed_object(app)
 
     def get_context_data(self, **kwargs):
         context = super(AppParametersView, self).get_context_data(**kwargs)
@@ -207,10 +201,7 @@ def app_rm(request):
 
     app_id = int(request.GET.get("app_id"))
     app = get_object_or_404(user.app_set, id=app_id)
-    if app.app_type == "python":
-        app = PythonApp.objects.get(id=app.id)
-    else:
-        app = AppObject.objects.get(id=app.id)
+    app = typed_object(app)
     app.uninstall()
     app.commit()
     app.delete()
@@ -225,10 +216,14 @@ def app_restart(request):
 
     app_id = int(request.GET.get("app_id"))
     app = get_object_or_404(user.app_set, id=app_id)
-    if app.app_type == "python":
+    if app.app_type == "python" and not app.disabled:
         app = PythonApp.objects.get(id=app.id)
         app.update()
         app.restart()
         app.commit()
-    messages.add_message(request, messages.SUCCESS, _('App has been restarted'))
+        messages.add_message(request, messages.SUCCESS, _('App has been restarted'))
+    elif app.disabled:
+        messages.add_message(request, messages.WARNING, _('App is disabled'))
+    else:
+        messages.add_message(request, messages.ERROR, _('App is not resetable'))
     return HttpResponseRedirect(reverse("apps_list"))

@@ -42,17 +42,7 @@ def low_credits_level():
         parm.save()
 
 def add_credit(user, value, address=None, free=None):
-    bonus = 1.0
     value = float(value)
-
-    if value >= 1000:
-        bonus = config.credit_1000_bonus
-    elif value >= 750:
-        bonus = config.credit_750_bonus
-    elif value >= 500:
-        bonus = config.credit_500_bonus
-    elif value >= 250:
-        bonus = config.credit_250_bonus
 
     if not address and not free:
         address = user.address_set.get(default=True)
@@ -65,9 +55,9 @@ def add_credit(user, value, address=None, free=None):
     credit.user = user
     credit.price = (1 / float(config.credit_currency.split(",")[0])) * value
     credit.currency = "CZK"
-    credit.value = value * bonus
-    credit.bonus = value * (bonus - 1.0)
+    credit.value = value
+    credit.bonus = 1.0
     credit.address = address
     credit.save()
 
-    return credit, bonus
+    return credit

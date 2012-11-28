@@ -1,9 +1,9 @@
 import json
 import logging
+from multiprocessing import Process
 from subprocess import Popen, PIPE
-import threading
+import sys
 from django.conf import settings
-from wsgiadmin.apps.models import Log
 
 
 class ScriptException(Exception): pass
@@ -29,10 +29,10 @@ class Script(object):
 
     def send(self, cmd, stdin=None):
         if settings.DEBUG:
-            print "[cmd]: %s" % " ".join(["ssh", self.server]+cmd)
+            sys.stdout.write("[cmd]: %s\n" % " ".join(["ssh", self.server]+cmd))
             logging.info("[cmd]: %s" % " ".join(["ssh", self.server]+cmd))
             if stdin:
-                print "[stdin]: %s" % stdin
+                sys.stdout.write("[stdin]: %s\n" % stdin)
                 logging.info("[stdin]: %s" % stdin)
         p = Popen(["ssh", self.server]+cmd, stdout=PIPE, stderr=PIPE, stdin=PIPE)
         stdout, stderr = p.communicate(stdin)
@@ -40,15 +40,15 @@ class Script(object):
             return json.loads(stdout)
         if settings.DEBUG:
             if stdout:
-                print "[stdout]: %s" % stdout
+                sys.stdout.write("[stdout]: %s\n" % stdout)
                 logging.info("[stdout]: %s" % stdout)
             if stderr:
-                print "[stderr]: %s" % stderr
+                sys.stdout.write("[stderr]: %s\n" % stderr)
                 logging.info("[stderr]: %s" % stderr)
-            print "---"
+            sys.stdout.write("---\n")
         raise ScriptException("PCP runner script error: %s" % stderr)
 
-    def commit(self):
+    def commit(self, no_thread=False):
         if self.restarts["nginx"]:
             self.add_cmd("/etc/init.d/nginx restart")
             self.reloads["nginx"] = False
@@ -64,25 +64,26 @@ class Script(object):
             self.add_cmd("/etc/init.d/apache2 reload")
             self.reloads["apache"] = False
 
-        t = threading.Thread(
-            target=self.send,
-            args=[["pcp_runner"], json.dumps(self.requests)]
-        )
-        t.setDaemon(True)
-        t.start()
+        if no_thread:
+            self.send(["pcp_runner"], json.dumps(self.requests))
+        else:
+            p = Process(
+                target=self.send,
+                args=[["pcp_runner"], json.dumps(self.requests)]
+            )
+            p.start()
         return True #self.send(["pcp_runner"], json.dumps(self.requests))
 
     def print_requests(self):
         for request in self.requests:
             if request["type"] == "cmd":
-                print "Run %s" % request["cmd"]
+                sys.stdout.write("Run %s\n" % request["cmd"])
             elif request["type"] == "file":
-                print "Write something into " % request["path"]
+                sys.stdout.write("Write something into \n" % request["path"])
 
     def run(self, cmd):
         cmd = [{"type": "cmd", "cmd": cmd}]
         result = self.send(["pcp_runner"], json.dumps(cmd))
-        print result
         if len(result) > 0:
             return result[0]
 

@@ -27,12 +27,13 @@ class Server(models.Model):
 
 class App(models.Model):
     date = models.DateField(_("Date"), auto_now_add=True)
-    disabled = models.BooleanField(_("Installed"), default=False)
+    disabled = models.BooleanField(_("Disabled"), default=False)
     installed = models.BooleanField(_("Installed"), default=False)
     app_type = models.CharField(_("Type"), max_length=20, choices=SITE_TYPE_CHOICES, blank=True, null=True)
     name = models.CharField(_("Name"), max_length=256, help_text=_("Name of your application"))
     domains = models.CharField(_("Domains"), max_length=512, blank=True, null=True)
     parameters_data = models.TextField(_("Parameters"), blank=True, null=True)
+    addons_data = models.TextField(_("Addons"), blank=True, null=True, help_text=_("Extra stuff: databases for example"))
     user = models.ForeignKey(User, blank=True, null=True)
     server = models.ForeignKey(Server, verbose_name=_("Server"))
 
@@ -43,6 +44,15 @@ class App(models.Model):
         self.parameters_data = json.dumps(value, indent=4)
 
     parameters = property(parameters_get, parameters_set)
+
+
+    def addons_get(self):
+        return json.loads(self.addons_data if self.addons_data else "{}")
+
+    def addons_set(self, value):
+        self.addons_data = json.dumps(value, indent=4)
+
+    addons = property(addons_get, addons_set)
 
     def format_parameters(self):
         parms = {}
@@ -61,6 +71,11 @@ class App(models.Model):
     @property
     def domains_list(self):
         return [x.strip() for x in self.domains.split()]
+
+    @property
+    def misc_domains_list(self):
+        domains = [x.strip() for x in self.domains.split()]
+        return domains[1:] if len(domains) > 2 else []
 
     @property
     def price(self):

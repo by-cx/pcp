@@ -245,7 +245,7 @@ msgstr "Indexování obsahu adresářů"
 
 #: apps/forms.py:46 apps/forms.py:64
 msgid "Turn on/off indexing of your document root"
-msgstr "Zapnutí/vypnutá výpisu obsahu adresářů"
+msgstr "Zapnutí/vypnutí výpisu obsahu adresářů"
 
 #: apps/forms.py:86
 msgid "Python paths"

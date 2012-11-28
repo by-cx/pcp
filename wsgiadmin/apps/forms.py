@@ -93,16 +93,18 @@ class AppPHPForm(AppParametersForm):
         super(AppPHPForm, self).__init__(*args, **kwargs)
         self.fields["domains"].required = True
 
-    document_root = forms.CharField(
-        max_length=512,
-        required=True,
-        label=_("Path to your app")
-    )
     flag_index = forms.BooleanField(
         label=_("Indexing"),
         help_text=_("Turn on/off indexing of your document root"),
         required=False,
     )
+    memory_limit = forms.ChoiceField(label=_("memory_limit"), choices=[(x, x) for x in ("32M", "64M", "128M", "256M")])
+    post_max_size = forms.ChoiceField(label=_("post_max_size"), choices=[(x, x) for x in ("32M", "64M", "128M", "256M", "512M")])
+    upload_max_filesize = forms.ChoiceField(label=_("upload_max_filesize"), choices=[(x, x) for x in ("32M", "64M", "128M", "256M", "512M")])
+    max_file_uploads = forms.ChoiceField(label=_("max_file_uploads"), choices=[(x, "%d" % x) for x in range(5,51,5)])
+    max_execution_time = forms.ChoiceField(label=_("max_execution_time"), choices=[(x, "%ds" % x) for x in range(20,121,20)])
+    allow_url_fopen = forms.BooleanField(label=_("allow_url_fopen"), initial=False, required=False)
+    display_errors = forms.BooleanField(label=_("display_errors"), initial=True, required=False)
 
 
 class AppPythonForm(AppParametersForm):

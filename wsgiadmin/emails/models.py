@@ -14,6 +14,8 @@ CHOICES = (
     ("web_disabled", _("Web disabled")),
     ("webs_disabled", _("Webs disabled")),
     ("webs_enabled", _("Web enabled")),
+    ("make_a_payment", _("Make a payment")),
+    ("payment_complete", _("Payment complete")),
 )
 
 class Message(models.Model):

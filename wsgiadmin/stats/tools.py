@@ -52,12 +52,24 @@ def add_credit(user, value, address=None, free=None):
         credit.date_payed = None
     else:
         credit.date_payed = datetime.now()
+    print config.credit_currency
     credit.user = user
-    credit.price = (1 / float(config.credit_currency.split(",")[0])) * value
-    credit.currency = "CZK"
+    credit.price = (1 / float(config.credit_quotient)) * value
+    credit.currency = config.credit_currency
     credit.value = value
     credit.bonus = 1.0
     credit.address = address
     credit.save()
+
+    if address:
+        context = {
+            "cost": credit.price,
+            "currency": credit.currency,
+            "bank": config.bank_name,
+            "bank_account": config.bank_account,
+            "var_symbol": user.parms.var_symbol,
+            }
+        msg = Message.objects.get(purpose="make_a_payment")
+        msg.send(address.email, context)
 
     return credit

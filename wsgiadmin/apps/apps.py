@@ -107,11 +107,12 @@ class PHPApp(AppObject):
         self.script.add_cmd("mkdir -p %(home)s/fcgid" % parms, user=self.get_user())
 
     def disable(self):
-        super(PythonApp, self).disable()
+        super(PHPApp, self).disable()
         parms = self.get_parmameters()
-        self.stop()
         self.script.add_cmd("rm /etc/apache2/sites-enabled/%(user)s.conf" % parms)
+        self.script.add_cmd("rm /etc/nginx/apps.d/%(user)s.conf" % parms)
         self.script.reload_apache()
+        self.script.reload_nginx()
         self.disabled = True
         self.save()
 
@@ -122,7 +123,9 @@ class PHPApp(AppObject):
         super(PHPApp, self).uninstall()
         parms = self.get_parmameters()
         self.script.add_cmd("rm /etc/apache2/sites-enabled/%(user)s.conf" % parms)
+        self.script.add_cmd("rm /etc/nginx/apps.d/%(user)s.conf" % parms)
         self.script.reload_apache()
+        self.script.reload_nginx()
 
     def update(self):
         super(PHPApp, self).update()
@@ -195,6 +198,52 @@ class PHPApp(AppObject):
         content.append("\t\tproxy_pass         http://%s/;" % config.apache_url)
         content.append("\t\tproxy_redirect     off;")
         content.append("\t}")
+        content.append("}\n")
+        return "\n".join(content)
+
+
+class StaticApp(AppObject):
+
+    class Meta:
+        proxy = True
+
+    def disable(self):
+        super(StaticApp, self).disable()
+        parms = self.get_parmameters()
+        self.script.add_cmd("rm /etc/nginx/apps.d/%(user)s.conf" % parms)
+        self.script.reload_nginx()
+        self.disabled = True
+        self.save()
+
+    def enable(self):
+        super(StaticApp, self).enable()
+
+    def uninstall(self):
+        super(StaticApp, self).uninstall()
+        parms = self.get_parmameters()
+        self.script.add_cmd("rm /etc/nginx/apps.d/%(user)s.conf" % parms)
+        self.script.reload_nginx()
+
+    def update(self):
+        super(StaticApp, self).update()
+        parms = self.get_parmameters()
+        self.script.add_file("/etc/nginx/apps.d/%(user)s.conf" % parms, self.gen_nginx_config())
+        self.script.reload_nginx()
+
+    def gen_nginx_config(self):
+        parms = self.get_parmameters()
+        content = []
+        content.append("server {")
+        content.append("\tlisten       [::]:80;")
+        content.append("\tserver_name  %(domains)s;" % parms)
+        content.append("\taccess_log %(home)s/logs/access.log;"% parms)
+        content.append("\terror_log %(home)s/logs/error.log;"% parms)
+        content.append("\troot %(home)s/app;"% parms)
+        if parms.get("flag_index"):
+            content.append("\tautoindex on;")
+        else:
+            content.append("\tautoindex off;")
+        content.append("\tindex index.html index.htm default.html default.htm;")
         content.append("}\n")
         return "\n".join(content)
 
@@ -324,8 +373,10 @@ class PythonApp(AppObject):
 def typed_object(app):
     if app.app_type == "python":
         app = PythonApp.objects.get(id=app.id)
-    if app.app_type == "php":
+    elif app.app_type == "php":
         app = PHPApp.objects.get(id=app.id)
+    elif app.app_type == "static":
+        app = StaticApp.objects.get(id=app.id)
     else:
         app = AppObject.objects.get(id=app.id)
     return app

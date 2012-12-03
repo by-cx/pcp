@@ -27,12 +27,12 @@
                     </li>
                     {% endif %}
                     <li {% if menu_active == "apps" %} class="active"{% endif %}>
-                        <a href="{% url apps_list %}">{% trans "Apps" %}</a>
+                        <a href="{% url apps_list %}">{% trans "Apps" %}<sup style="color: yellow;">new</sup></a>
                     </li>
-                    {% if user.mysqldb_set.count or user.pgsql_set.count %}
                     <li{% if menu_active == "dbs" %} class="active"{% endif %}>
                         <a href="{% url db_list %}">{% trans "Databases" %}</a>
                     </li>
+                    {% if user.mysqldb_set.count or user.pgsql_set.count %}
                     {% endif %}
                     {% if user.ftp_set.count %}
                     <li{% if menu_active == "ftps" %} class="active"{% endif %}>
@@ -164,9 +164,9 @@
                             <a href="{% url apps_list %}"><i class="icon-list"></i>{% trans "Apps list" %}</a>
                         </li>
                         <li><br></li>
-                        <!--<li>
+                        <li>
                             <a href="{% url app_add_static %}"><i class="icon-plus-sign"></i>{% trans "Add static app" %}</a>
-                        </li>-->
+                        </li>
                         <li>
                             <a href="{% url app_add_php %}"><i class="icon-plus-sign"></i>{% trans "Add php app" %}</a>
                         </li>

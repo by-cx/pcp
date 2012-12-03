@@ -76,11 +76,6 @@ class AppStaticForm(AppParametersForm):
         super(AppStaticForm, self).__init__(*args, **kwargs)
         self.fields["domains"].required = True
 
-    document_root = forms.CharField(
-        max_length=512,
-        required=True,
-        label=_("Path to your app")
-    )
     flag_index = forms.BooleanField(
         label=_("Indexing"),
         help_text=_("Turn on/off indexing of your document root"),

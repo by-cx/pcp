@@ -73,6 +73,10 @@ class Parms(models.Model):
         return self.user.mysqldb_set.count()
 
     @property
+    def count_apps(self):
+        return self.user.app_set.count()
+
+    @property
     def count_sites(self):
         return self.user.usersite_set.count()
 
@@ -82,10 +86,7 @@ class Parms(models.Model):
 
     @property
     def one_credit_cost(self):
-        """Return cost for one credit"""
-        #TODO:make currency works
-        czk = float(config.credit_currency.split(",")[0])
-        return czk
+        return float(config.credit_quotient)
 
     def pay_for_sites(self, use_cache=True):
         pay = cache.get('user_payment_%s' % self.user_id)

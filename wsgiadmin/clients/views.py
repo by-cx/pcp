@@ -47,6 +47,12 @@ class AddressCreate(RostiCreateView):
                 address.default = False
                 address.save()
             self.object.default = True
+            self.user.email = form.cleaned_data.get("email")
+            self.user.save()
+        elif not self.user.address_set.count():
+            self.object.default = True
+            self.user.email = form.cleaned_data.get("email")
+            self.user.save()
         self.object.save()
 
         return value
@@ -66,12 +72,16 @@ class AddressUpdate(RostiUpdateView):
                 address.default = False
                 address.save()
             self.object.default = True
+            self.user.email = form.cleaned_data.get("email")
+            self.user.save()
             self.object.save()
 
         if not self.user.address_set.filter(default=True):
             new_default_address = self.user.address_set.all()[0]
             new_default_address.default = True
             new_default_address.save()
+            self.user.email = new_default_address.email
+            self.user.save()
             messages.add_message(self.request, messages.INFO, _("Address %s chose as default" % new_default_address.name))
 
         return value

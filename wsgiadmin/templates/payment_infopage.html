@@ -8,9 +8,7 @@
 {% block content %}
     <div class="clear"></div>
 
-    <h1>{% trans "Payment information" %}</h1>
-
-    <p>{% trans "Now, last step you have to do is a pay. Look at the information below." %}</p>
+    <h2>{% trans "Payment information" %}</h2>
 
     <table class="table table-striped">
         <tr>
@@ -26,14 +24,12 @@
             <td>{{ credit.value }} credits</td>
         </tr>
         <tr>
-            <th>{% trans "Your bonus" %}</th>
-            <td>{{ credit.bonus }} credits</td>
-        </tr>
-        <tr>
             <th>{% trans "State" %}</th>
             <td>{% if credit.date_payed %}{% trans "payed" %} ({{ date.payed }}){% else %}{% trans "No payment" %}{% endif %}</td>
         </tr>
     </table>
+
+    <p class="red">{% trans "Now, last step you have to do is a pay. Look at the information below." %}</p>
 
     <h2>{% trans "Payment via your bank" %}</h2>
 
@@ -49,6 +45,10 @@
         <tr>
             <th>{% trans "Variable symbol" %}</th>
             <td>{{ u.parms.var_symbol }}</td>
+        </tr>
+        <tr>
+            <th>{% trans "Cost" %}</th>
+            <td>{{ credit.price }} {{ credit.currency }}</td>
         </tr>
     </table>
 

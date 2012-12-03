@@ -75,15 +75,16 @@ def master(request):
 
 @login_required
 def info(request):
-    u = request.session.get('switched_user', request.user)
+    user = request.session.get('switched_user', request.user)
     superuser = request.user
 
     return render_to_response('info.html',
             {
-                "u": u,
+                "u": user,
                 "superuser": superuser,
                 "menu_active": "dashboard",
                 "config": config,
+                "not_payed": user.credit_set.filter(date_payed=None),
             },
         context_instance=RequestContext(request)
     )

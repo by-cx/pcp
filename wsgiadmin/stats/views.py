@@ -28,14 +28,14 @@ class CreditView(TemplateView):
     def add_credit(self, value):
         message = Message.objects.filter(purpose="add_credit")
         if message:
-            message[0].send(config.email, {"user": self.user.username, "credit": value, "bonus": value * (bonus - 1.0)})
+            message[0].send(config.email, {"user": self.user.username, "credit": value})
 
     def post(self, request, *args, **kwargs):
         if request.POST.get("credit"):
-            credit, bonus = add_credit(self.user, float(request.POST.get("credit")))
+            credit = add_credit(self.user, float(request.POST.get("credit")))
             message = Message.objects.filter(purpose="add_credit")
             if message:
-                message[0].send(config.email, {"user": self.user.username, "credit": float(request.POST.get("credit")), "bonus": float(request.POST.get("credit")) * (bonus - 1.0)})
+                message[0].send(config.email, {"user": self.user.username, "credit": float(request.POST.get("credit")), "bonus": float(request.POST.get("credit"))})
             messages.add_message(request, messages.SUCCESS, _('Credits will been added on your account after payment'))
             return HttpResponseRedirect(reverse("payment_info", kwargs={"pk": credit.id}))
         if request.POST.get("what_to_do"):

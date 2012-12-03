@@ -34,8 +34,8 @@ class Command(BaseCommand):
                     print "%s (%d) enabled" % (app.name, app.id)
                     enabled.append("* %s" % app.name)
             if disabled:
-                msg = Message.objects.get("webs_disabled")
+                msg = Message.objects.get(purpose="webs_disabled")
                 msg.send(user.email, {"apps": "\n".join(disabled), "username": user.username})
             if enabled:
-                msg = Message.objects.get("webs_enabled")
+                msg = Message.objects.get(purpose="webs_enabled")
                 msg.send(user.email, {"username": user.username})

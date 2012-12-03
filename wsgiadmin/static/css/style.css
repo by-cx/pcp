@@ -174,3 +174,7 @@ body {
 pre {
     line-height: 0.8;
 }
+
+.red {
+    color: red;
+}

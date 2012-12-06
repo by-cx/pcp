@@ -100,10 +100,13 @@ class Log(models.Model):
 class Db(models.Model):
     date = models.DateField(_("Date"), auto_now_add=True)
     db_type = models.CharField(_("DB engine"), max_length=32, choices=(("mysql", "MySQL"), ("pgsql", "PgSQL")))
-    name = models.CharField(_("Name"), max_length=32)
     password = models.CharField(_("Password"), max_length=256)
     comment = models.TextField(_("Comment"), blank=True, null=True)
     app = models.ForeignKey(App, verbose_name=_("App"))
 
+    @property
+    def name(self):
+        return "%s_%d" % (self.db_type[0:2], self.id)
+
     def __unicode__(self):
-        return "%s db for %s app" % (self.name, self.app_id)
+        return self.name #"%s db for %s app" % (self.name, self.app_id)

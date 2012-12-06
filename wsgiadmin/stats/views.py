@@ -105,7 +105,26 @@ class PaymentView(TemplateView):
         context['superuser'] = self.request.user
         context['menu_active'] = "dashboard"
         context['config'] = config
+        context['addresses'] = self.user.address_set.all()
         return context
+
+
+@login_required
+def change_address(request):
+    user = request.session.get('switched_user', request.user)
+    superuser = request.user
+
+    credit = get_object_or_404(user.credit_set, id=request.POST.get("credit_id"))
+    address = get_object_or_404(user.address_set, id=request.POST.get("address_id"))
+
+    if credit and address:
+        credit.address = address
+        credit.save()
+        messages.add_message(request, messages.SUCCESS, _("Address has been changed"))
+    else:
+        messages.add_message(request, messages.ERROR, _("Address hasn't been changed"))
+
+    return HttpResponseRedirect(reverse("payment_info", kwargs={"pk": credit.pk}))
 
 
 class StatsView(TemplateView):

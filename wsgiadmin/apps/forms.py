@@ -1,10 +1,36 @@
 from django.conf import settings
 from django.forms.models import ModelForm
 from django import forms
-from wsgiadmin.apps.models import App
+from wsgiadmin.apps.models import App, Db
 from django.utils.translation import ugettext_lazy as _
 import re
 from wsgiadmin.service.forms import RostiFormHelper
+
+
+class DbFormPasswd(ModelForm):
+    helper = RostiFormHelper()
+
+    class Meta:
+        model = Db
+        fields = ["password", "comment"]
+        widgets = {
+            'password': forms.PasswordInput,
+        }
+
+
+class DbForm(ModelForm):
+    helper = RostiFormHelper()
+
+    def __init__(self, *args, **kwargs):
+        super(DbForm, self).__init__(*args, **kwargs)
+        self.fields["db_type"].help_text = _("PostgreSQL database has public scheme as default. Make sure, you create your own. Otherwise everybody can see your tables/views/.. (not data, just structure).")
+
+    class Meta:
+        model = Db
+        fields = ["db_type", "password", "comment"]
+        widgets = {
+            'password': forms.PasswordInput,
+        }
 
 
 class AppForm(ModelForm):

@@ -27,6 +27,24 @@
             <th>{% trans "State" %}</th>
             <td>{% if credit.date_payed %}{% trans "payed" %} ({{ date.payed }}){% else %}{% trans "No payment" %}{% endif %}</td>
         </tr>
+        {% if credit.address %}
+        <tr>
+            <th>{% trans "Address at invoice" %}</th>
+            <td>
+                <form action="{% url payment_address %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="credit_id" value="{{ credit.id }}">
+                    <select name="address_id">
+                        {% for address in addresses %}
+                            <option value="{{ address.id }}"{% if credit.address == address %} selected="selected" {% endif %}>{{ address.address }}</option>
+                        {% endfor %}
+                    </select><br>
+                    <input type="submit" value="{% trans "Save" %}" class="btn">
+                </form>
+                <a href="{% url address_create %}">{% trans "Add new address" %}</a>
+            </td>
+        </tr>
+        {% endif %}
     </table>
 
     <p class="red">{% trans "Now, last step you have to do is a pay. Look at the information below." %}</p>

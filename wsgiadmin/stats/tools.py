@@ -61,7 +61,7 @@ def add_credit(user, value, address=None, free=None):
     credit.address = address
     credit.save()
 
-    if address:
+    if address and not free:
         context = {
             "cost": credit.price,
             "currency": credit.currency,

@@ -3,10 +3,10 @@ from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
-from django.views.generic import ListView, TemplateView, CreateView
-from wsgiadmin.apps.forms import AppForm, AppStaticForm, AppPHPForm, AppNativeForm, AppProxyForm, AppPythonForm
-from wsgiadmin.apps.models import App
-from wsgiadmin.apps.apps import PythonApp, AppObject, PHPApp, typed_object
+from django.views.generic import ListView, TemplateView, CreateView, UpdateView
+from wsgiadmin.apps.forms import AppForm, AppStaticForm, AppPHPForm, AppNativeForm, AppProxyForm, AppPythonForm, DbForm, DbFormPasswd
+from wsgiadmin.apps.models import App, Db
+from wsgiadmin.apps.apps import PythonApp, AppObject, PHPApp, typed_object, DbObject
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext as __
 from django.contrib import messages
@@ -58,6 +58,7 @@ class AppDetailView(TemplateView):
         context['u'] = self.user
         context['superuser'] = self.request.user
         context['app'] = self.get_object()
+        context['dbs'] = context['app'].db_set.all()
         return context
 
 
@@ -192,6 +193,87 @@ class AppCreateView(CreateView):
         context['u'] = self.user
         context['superuser'] = self.request.user
         return context
+
+
+class DbCreateView(CreateView):
+    form_class = DbForm
+    template_name = "universal.html"
+    model = Db
+    menu_active = "apps"
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        self.user = request.session.get('switched_user', request.user)
+        self.success_url = reverse("app_detail", kwargs={"app_id": request.GET.get("app_id")})
+        return super(DbCreateView, self).dispatch(request, *args, **kwargs)
+
+    def get_app(self):
+        app_id = self.request.GET.get("app_id")
+        return self.user.app_set.get(id=app_id)
+
+    def form_valid(self, form):
+        object = form.save(commit=False)
+        object.app = self.get_app()
+        object.save()
+        object = DbObject.objects.get(id=object.id)
+        object.install()
+        object.commit()
+        return super(DbCreateView, self).form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super(DbCreateView, self).get_context_data(**kwargs)
+        context['menu_active'] = self.menu_active
+        context['u'] = self.user
+        context['superuser'] = self.request.user
+        return context
+
+
+class DbUpdateView(UpdateView):
+    form_class = DbFormPasswd
+    template_name = "universal.html"
+    model = Db
+    menu_active = "apps"
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        self.user = request.session.get('switched_user', request.user)
+        return super(DbUpdateView, self).dispatch(request, *args, **kwargs)
+
+    def get_queryset(self):
+        queryset = super(DbUpdateView, self).get_queryset()
+        queryset = queryset.filter(app__user=self.user)
+        return queryset
+
+    def form_valid(self, form):
+        self.success_url = reverse("app_detail", kwargs={"app_id": self.get_object().app_id})
+        success = super(DbUpdateView, self).form_valid(form)
+        object = DbObject.objects.get(id=self.object.id)
+        object.passwd(object.password)
+        object.commit()
+        return success
+
+    def get_context_data(self, **kwargs):
+        context = super(DbUpdateView, self).get_context_data(**kwargs)
+        context['menu_active'] = self.menu_active
+        context['u'] = self.user
+        context['superuser'] = self.request.user
+        return context
+
+
+@login_required()
+def db_rm(request):
+    user = request.session.get('switched_user', request.user)
+    superuser = request.user
+
+    db_id = int(request.GET.get("db_id"))
+    db = Db.objects.filter(app__user=user).get(id=db_id)
+    db = DbObject.objects.get(id=db.id)
+    db.uninstall()
+    db.commit()
+    app_id = db.app_id
+    db.delete()
+    messages.add_message(request, messages.SUCCESS, _('Database has been removed'))
+    return HttpResponseRedirect(reverse("app_detail", kwargs={"app_id": app_id}))
 
 
 @login_required()

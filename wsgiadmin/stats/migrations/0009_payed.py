@@ -10,14 +10,14 @@ class Migration(DataMigration):
         "Write your forwards methods here."
         # Note: Remember to use orm['appname.ModelName'] rather than "from appname.models..."
         for credit in orm['stats.Credit'].objects.all():
-            if credit.date < datetime.date(2012, 12, 2):
+            if credit.date < datetime.date(2012, 11, 23):
                 credit.date_payed = credit.date
                 credit.save()
 
     def backwards(self, orm):
         "Write your backwards methods here."
         for credit in orm['stats.Credit'].objects.all():
-            if credit.date < datetime.date(2012, 12, 2):
+            if credit.date < datetime.date(2012, 11, 23):
                 credit.date_payed = None
                 credit.save()
 

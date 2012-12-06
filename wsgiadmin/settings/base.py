@@ -197,6 +197,9 @@ CONSTANCE_CONFIG = {
     "default_mysql_machine": ("localhost", "Default mysql machine for new accounts. (must be in Machines table)"),
     "default_pgsql_machine": ("localhost", "Default pgsql machine for new accounts. (must be in Machines table)"),
 
+    "pgsql_server": ("localhost", "PostgreSQL server hostname"),
+    "mysql_server": ("localhost", "MySQL server hostname"),
+
     "mysql_bind": ("localhost", "Host for mysql's users"),
 
     "email_uid": (117, "Email UID"),

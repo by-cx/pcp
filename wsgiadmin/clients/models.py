@@ -179,6 +179,13 @@ class Address(models.Model):
     user = models.ForeignKey(user, verbose_name=_(u'User'), blank=True, null=True)
 
     @property
+    def address(self):
+        if self.company:
+            return "%s, %s, %s, %s" % (self.company, self.street, self.zip, self.city)
+        else:
+            return "%s %s, %s, %s, %s" % (self.first_name, self.last_name, self.street, self.zip, self.city)
+
+    @property
     def name(self):
         if self.company: return "%s - %s %s" % (self.company, self.first_name, self.last_name)
         else: return "%s %s" % (self.first_name, self.last_name)

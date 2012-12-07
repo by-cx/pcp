@@ -2,102 +2,7 @@
 {% load i18n %}
 
 {% block title %}
-	Administrace > Uživatelé
-{% endblock %}
-
-{% block jsblock %}
-	{{ block.super }}
-	function remove(what) {
-		$("#user_"+what).load("{% url wsgiadmin.users.views.rm 0 %}"+what)
-	}
-
-    var data = [
-        {{ users|safe }}
-    ];
-
-    function show() {
-        var total = 0;
-        var total_domains = 0;
-        var total_sites = 0;
-        var total_pay_per_day = 0;
-
-        $("#user_table").html("");
-        for (var i=0; i < data.length ;i++) {
-            if ($("input[name=filter_username]").val().length) {
-                if ( data[i]["username"].indexOf($("input[name=filter_username]").val()) < 0 ) { continue; };
-            }
-            if ($("input[name=filter_information]").val().length) {
-                if ( data[i]["installed"].indexOf($("input[name=filter_information]").val()) < 0 ) { continue; };
-            };
-            if ($("input[name=filter_domains]").val().length) {
-                var value = $("input[name=filter_domains]").val();
-                if ( value[0] == "<" ) {
-                    if (data[i]["count_domains"] > value.substring(1) ) continue;
-                }
-                else if( value[0] == ">" ) {
-                    if (data[i]["count_domains"] < value.substring(1) ) continue;
-                }
-                else {
-                    if ( data[i]["count_domains"] != value ) { continue; };
-                }
-            };
-            if ($("input[name=filter_sites]").val().length) {
-                var value = $("input[name=filter_sites]").val();
-                if ( value[0] == "<" ) {
-                    if (data[i]["count_sites"] > value.substring(1) ) continue;
-                }
-                else if( value[0] == ">" ) {
-                    if (data[i]["count_sites"] < value.substring(1) ) continue;
-                }
-                else {
-                    if ( data[i]["count_sites"] != value ) { continue; };
-                }
-            };
-            if ($("input[name=filter_pay_per_day]").val().length) {
-                var value = $("input[name=filter_pay_per_day]").val();
-                if ( value[0] == "<" ) {
-                    if (data[i]["pay_total_day"] > value.substring(1) ) continue;
-                }
-                else if( value[0] == ">" ) {
-                    if (data[i]["pay_total_day"] < value.substring(1) ) continue;
-                }
-                else {
-                    if ( data[i]["pay_total_day"] != value ) { continue; };
-                }
-            };
-
-            var tr = $("<tr>");
-            tr.append($("<td>").html('<input type="checkbox" name="user_'+ data[i]["username"] +'" class="user_checker">'));
-            tr.append($("<td>").html(data[i]["username"]));
-            tr.append($("<td>").html(data[i]["installed"]));
-            tr.append($("<td>").html(data[i]["count_domains"]));
-            tr.append($("<td>").html(data[i]["count_sites"]));
-            tr.append($("<td>").html(data[i]["pay_total_day"]));
-            tr.append($("<td>").html(data[i]["pay_total_month"]));
-            tr.append($("<td>").html(
-                '<a href="'+ data[i]["url_switch"] +'"><img src="{{ STATIC_URL }}images/ico-prepnout.png" alt="{% trans "Switch" %}" /></a></li>' +
-                '<a href="'+ data[i]["url_install"] +'" title="{% trans "Install" %}"><img src="{{ STATIC_URL }}images/ico-instalace.png" alt="{% trans "Install" %}" /></a></li>'
-                )
-            );
-            $("#user_table").append(tr);
-
-            total += 1;
-            total_domains += data[i]["count_domains"];
-            total_sites += data[i]["count_sites"];
-            total_pay_per_day += data[i]["pay_total_day"];
-        }
-
-        $("#total").html(total);
-        $("#total_domains").html(total_domains);
-        $("#total_sites").html(total_sites);
-        $("#total_pay_per_day").html(total_pay_per_day);
-    }
-
-    $(document).ready(function (){
-        show();
-        $("#filter_button").click(show);
-    });
-
+	{% trans "Administration" %} > {% trans "Users" %}
 {% endblock %}
 
 {% block content %}
@@ -118,53 +23,40 @@
 					   <th>Informace</th>
 					   <th>Domény</th>
 					   <th>Web/app</th>
+					   <th>Apps</th>
                        <th>{% trans "Pay per day" %}</th>
                        <th>{% trans "Credits" %}</th>
 					   <th>Akce</th>
 					</tr>
-                    <tr>
-                        <th></th>
-                        <th><input type="text" class="filter_input" name="filter_username"></th>
-                        <th><input type="text" class="filter_input" name="filter_information"></th>
-                        <th><input type="text" class="filter_input" name="filter_domains"></th>
-                        <th><input type="text" class="filter_input" name="filter_sites"></th>
-                        <th><input type="text" class="filter_input" name="filter_pay_per_day"></th>
-                        <th></th>
-                        <th><button id="filter_button">FILTER!</button></th>
-                    </tr>
 				</thead>
 				<tbody id="user_table">
-
-                    {% comment %}
+                    {% for user in users %}
+                    {% with user.parms as parms %}
 					<tr>
 						<td>
-                            {{ user }}<br />
-                            {{ user.parms.address.residency_name }}
+                            {{ user }}
                         </td>
 						<td>
 							{% if user.username in ssh_users %}Nainstalováno{% endif %}
-							{% if user.parms.discount %} Sleva: {{ user.parms.discount }}%{% endif %}
+							{% if parms.discount %} Sleva: {{ parms.discount }}%{% endif %}
 						</td>
-						<td>{{ user.parms.count_domains }}×</td>
-						<td>{{ user.parms.count_sites }}×</td>
-                        <td>{{ user.parms.pay_total_day }}</td>
-                        {% with user.parms.credit as credits %}
+						<td>{{ parms.count_domains }}×</td>
+						<td>{{ parms.count_sites }}×</td>
+						<td>{{ parms.count_apps }}×</td>
+                        <td>{{ parms.pay_total_day }}</td>
+                        {% with parms.credit as credits %}
                         {% if credits >= 0 %}
                         <td style="color: green;">{{ credits }}</td>
                         {% else %}
                         <td style="color: red;">{{ credits }}</td>
                         {% endif %}
                         {% endwith %}
-						<td id="user_{{ user.id }}">
-                            <ul class="akce">
-                                <li><a href="{% url wsgiadmin.users.views.switch_to_user user.id %}"><img src="{{ STATIC_URL }}images/ico-prepnout.png" alt="{% trans "Switch" %}" /></a></li>
-                                <li><a href="{% url wsgiadmin.users.views.install user.id %}" title="{% trans "Install" %}"><img src="{{ STATIC_URL }}images/ico-instalace.png" alt="{% trans "Install" %}" /></a></li>
-                                <!--<li><a href="{% url wsgiadmin.users.views.update user.id %}" title="{% trans "Edit" %}"><img src="{{ STATIC_URL }}images/ico-editovat.png" alt="{% trans "Edit" %}" /></a></li>-->
-                                <li class="smazat"><a href="#" title="{% trans "Delete" %}" onclick="if(confirm('{% trans "Are you sure?" %}')) remove('{{ user.id }}')"><img src="{{ STATIC_URL }}images/ico-smazat.png" alt="{% trans "Delete" %}" /></a></li>
-                            </ul>
+						<td>
+                            <a href="{% url switch_to_user user.id %}" class="btn">{% trans "Switch" %}</a>
 						</td>
 					</tr>
-                    {% endcomment %}
+                    {% endwith %}
+                    {% endfor %}
 				</tbody>
                 <tfoot>
                 <tr>

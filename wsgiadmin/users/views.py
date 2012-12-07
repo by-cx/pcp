@@ -24,53 +24,21 @@ from wsgiadmin.stats.tools import add_credit
 @login_required
 def show(request):
     """
-    Vylistování seznamu databází
+    Users list
     """
     if not request.user.is_superuser:
         return HttpResponseForbidden(_("Permission error"))
     u = request.session.get('switched_user', request.user)
 
-    data = []
-    data_json = []
-    users = User.objects.order_by("username")
-    for user in users:
-        try:
-            parms = user.parms
-        except ObjectDoesNotExist:
-            continue
-        user_dict = {
-            "username": user.username,
-            "discount": parms.discount,
-            "fee": parms.fee,
-            "enable": parms.enable,
-            "low_level_credits": parms.low_level_credits,
-            "last_notification": parms.last_notification.strftime("%d.%m.%Y") if parms.last_notification else "--",
-            "pay_total_day": parms.pay_total_day(),
-            "pay_total_month": parms.pay_total_month(),
-            "credit": parms.credit,
-            "credit_until": parms.credit_until.strftime("%d.%m.%Y") if parms.credit_until else "--",
-            "count_domains": parms.count_domains,
-            "count_ftps": parms.count_ftps,
-            "count_pgs": parms.count_pgs,
-            "count_mys": parms.count_mys,
-            "count_sites": parms.count_sites,
-            "count_emails": parms.count_emails,
-            "installed": parms.installed,
-            "url_switch": reverse("wsgiadmin.users.views.switch_to_user", args=[user.id]),
-            "url_install": reverse("wsgiadmin.users.views.install", args=[user.id]),
-        }
-        data.append(user_dict)
-        data_json.append(json.dumps(user_dict))
+    users = list(User.objects.order_by("username").select_related())
+    if request.GET.get("order_by") == "credits":
+        users = sorted(users, key=lambda x: x.parms.credit)
+    elif request.GET.get("order_by") == "payments":
+        users = sorted(users, key=lambda x: x.parms.pay_total_month)
 
-    sr = SystemRequest(u, u.parms.web_machine)
-    #TODO - sed required columns only
-    data = sr.run("cat /etc/passwd", instant=True)[0]
-
-    ssh_users = [x.strip().split(":")[0] for x in data.split("\n") if x]
     return render_to_response('users.html',
             {
-            "users": ", ".join(data_json),
-            "ssh_users": ssh_users,
+            "users": users,
             "u": u,
             "superuser": request.user,
             "menu_active": "users",

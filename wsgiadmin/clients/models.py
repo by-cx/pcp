@@ -30,8 +30,8 @@ class Parms(models.Model):
     uid = models.IntegerField(_(u"UID"))
     gid = models.IntegerField(_(u"GID"))
     discount = models.IntegerField(_(u"Sleva"), default=0) # v procentech
-    fee = models.IntegerField(_(u"Paušál"), default=0)
-    currency = models.CharField(_(u"Měna"), max_length=20, choices=settings.CURRENCY, default="czk")
+    fee = models.IntegerField(_(u"Paušál"), default=0, help_text=_("Credits per 30 days"))
+    currency = models.CharField(_(u"Měna"), max_length=20, choices=settings.CURRENCY, default="CZK")
     enable = models.BooleanField(_(u"Stav účtu"), default=True)
     guard_enable = models.BooleanField(_(u"Kontrola automatem"), default=True)
     low_level_credits = models.CharField(_("Low level of credits"), max_length=30, default="send_email")
@@ -97,17 +97,21 @@ class Parms(models.Model):
             cache.set('user_payment_%s' % self.user_id, pay, timeout=3600*24*7)
         return pay
 
+    def pay_for_apps(self):
+        return sum(app.price for app in self.user.app_set.all())
+
+
     def pay_total_day(self):
         if self.fee:
             return self.fee / 30
         else:
-            return self.pay_for_sites()
+            return self.pay_for_sites() + self.pay_for_apps()
 
     def pay_total_month(self):
         if self.fee:
             return self.fee
         else:
-            return self.pay_for_sites() * 30.0
+            return (self.pay_for_sites() + self.pay_for_apps()) * 30.0
 
     @property
     def credit(self):

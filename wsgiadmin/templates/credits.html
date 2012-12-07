@@ -38,7 +38,9 @@
                             {% trans "No payment" %}
                             {% if user.is_superuser %}
                                 {% if credit.address %}
-                                <a href="{% url payment_payed %}?credit_id={{ credit.id }}">{% trans "Payed!" %}</a>
+                                {% if config.pcp_invoices_api_key and config.pcp_invoices_api_url %}
+                                    <a href="{% url payment_payed %}?credit_id={{ credit.id }}">{% trans "Payed!" %}</a>
+                                {% endif %}
                                 {% else %}
                                     {% trans "No address for invoice system" %}
                                 {% endif %}

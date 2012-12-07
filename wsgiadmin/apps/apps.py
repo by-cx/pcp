@@ -191,7 +191,7 @@ class PHPApp(AppObject):
         parms = self.get_parmameters()
         content = []
         content.append("server {")
-        content.append("\tlisten       [::]:80;")
+        content.append("\tlisten       %s;" % config.nginx_listen)
         content.append("\tserver_name  %(domains)s;" % parms)
         content.append("\taccess_log %(home)s/logs/access.log;"% parms)
         content.append("\terror_log %(home)s/logs/error.log;"% parms)
@@ -235,7 +235,7 @@ class StaticApp(AppObject):
         parms = self.get_parmameters()
         content = []
         content.append("server {")
-        content.append("\tlisten       [::]:80;")
+        content.append("\tlisten       %s;" % config.nginx_listen)
         content.append("\tserver_name  %(domains)s;" % parms)
         content.append("\taccess_log %(home)s/logs/access.log;"% parms)
         content.append("\terror_log %(home)s/logs/error.log;"% parms)
@@ -338,7 +338,7 @@ class PythonApp(AppObject):
         parms = self.get_parmameters()
         content = []
         content.append("server {")
-        content.append("\tlisten       [::]:80;")
+        content.append("\tlisten       %s;" % config.nginx_listen)
         content.append("\tserver_name  %(domains)s;" % parms)
         content.append("\taccess_log %(home)s/logs/access.log;"% parms)
         content.append("\terror_log %(home)s/logs/error.log;"% parms)

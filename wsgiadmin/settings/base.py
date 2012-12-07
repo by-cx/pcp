@@ -42,6 +42,13 @@ CURRENCY = (
 
 ##########
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake'
+    }
+}
+
 APPS_HOME = "/home/apps"
 
 # Local time zone for this installation. Choices can be found here:
@@ -226,6 +233,11 @@ CONSTANCE_CONFIG = {
     "var_symbol_prefix": (10, "Variable symbol prefix"),
     "bank_name": ("FIO Banka", "Name of your bank"),
     "bank_account": ("2200331030/2010", "Bank account number"),
+
+    "pcp_invoices_api_url": ("http://faktury.initd.cz/invoice/api/new_invoice/", "PCP Invoices API URL"),
+    "pcp_invoices_api_key": ("", "PCP Invoices API KEY"),
+    "pcp_invoices_item_desc": ("Kredit hostingové služby Roští.cz", "Item description on invoice"),
+    "pcp_invoices_item_unit": ("ks", "Item unit on invoice"),
     }
 
 VIRTUALENVS_DIR = 'virtualenvs'

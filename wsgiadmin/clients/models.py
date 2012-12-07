@@ -177,6 +177,7 @@ class Address(models.Model):
     vat_number = models.CharField(_("VAT registration number"), max_length=50, blank=True)
 
     user = models.ForeignKey(user, verbose_name=_(u'User'), blank=True, null=True)
+    removed = models.BooleanField(_("Removed"), default=False)
 
     @property
     def address(self):

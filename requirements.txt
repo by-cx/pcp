@@ -8,3 +8,4 @@ psycopg2
 raven
 django-debug-toolbar
 fabric
+requests

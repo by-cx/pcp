@@ -1,9 +1,12 @@
 from datetime import date, datetime
+import json
 from constance import config
+import requests
 from wsgiadmin.clients.models import Parms
 from wsgiadmin.emails.models import Message
 from wsgiadmin.stats.models import Record, Credit
 from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as __
 
 def pay(user, service, value, cost):
     record = Record()
@@ -45,7 +48,7 @@ def add_credit(user, value, address=None, free=None):
     value = float(value)
 
     if not address and not free:
-        address = user.address_set.get(default=True)
+        address = user.address_set.filter(removed=False).get(default=True)
 
     credit = Credit()
     if not free:
@@ -73,3 +76,40 @@ def add_credit(user, value, address=None, free=None):
         msg.send(address.email, context)
 
     return credit
+
+def payed(credit):
+    address = credit.address
+    address_json = {
+        "company": address.company,
+        "first_name": address.first_name,
+        "last_name": address.last_name,
+        "street": address.street,
+        "city": address.city,
+        "zip": address.zip,
+        "phone": address.phone,
+        "email": address.email,
+        "org_reg_no": address.company_number,
+        "vat_number": address.vat_number,
+    }
+    items = []
+    #name,unit,count,price,vat
+    items.append([
+        config.pcp_invoices_item_desc,
+        config.pcp_invoices_item_unit,
+        credit.value,
+        (1 / float(config.credit_quotient)),
+        0,
+    ])
+    invoice = {
+        "key": config.pcp_invoices_api_key,
+        "var_symbol": credit.user.parms.var_symbol,
+        "address": address_json,
+        "items":items,
+        "bank_name": config.bank_name,
+        "bank_account": config.bank_account,
+        "send": True,
+    }
+    r = requests.post(config.pcp_invoices_api_url, data={"data": json.dumps(invoice)})
+    credit.date_payed = datetime.now()
+    credit.save()
+    return "%s (%d)" % (r.text, r.status_code)

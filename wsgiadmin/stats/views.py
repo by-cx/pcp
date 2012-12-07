@@ -4,7 +4,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.db.models.aggregates import Min, Sum
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from django.views.generic.base import TemplateView
 from django.contrib.auth.decorators import login_required
@@ -14,7 +14,7 @@ from wsgiadmin.clients.models import Address
 from wsgiadmin.emails.models import Message
 from wsgiadmin.service.views import RostiListView
 from wsgiadmin.stats.models import Credit
-from wsgiadmin.stats.tools import add_credit
+from wsgiadmin.stats.tools import add_credit, payed
 
 
 class CreditView(TemplateView):
@@ -54,7 +54,7 @@ class CreditView(TemplateView):
         context['menu_active'] = "dashboard"
         context['config'] = config
         context['credits'] = credits
-        context['addresses_count'] = Address.objects.filter(user=self.user).count()
+        context['addresses_count'] = Address.objects.filter(user=self.user, removed=False).count()
         if self.user.parms.fee:
             context["for_month"] = self.user.parms.fee
             context["for_three_months"] = self.user.parms.fee * 3
@@ -83,7 +83,9 @@ class PaymentsView(RostiListView):
 
     def get_queryset(self):
         queryset = super(PaymentsView, self).get_queryset()
-        queryset = queryset.filter(user=self.user).order_by("date")
+        if not self.user.is_superuser:
+            queryset = queryset.filter(user=self.user)
+        queryset = queryset.order_by("date").reverse()
         return queryset
 
 
@@ -96,7 +98,9 @@ class PaymentView(TemplateView):
         return super(PaymentView, self).dispatch(request, *args, **kwargs)
 
     def get_credit(self):
-        return get_object_or_404(self.user.credit_set, id=self.kwargs.get("pk"))
+        if not self.user.is_superuser:
+            return get_object_or_404(self.user.credit_set, id=self.kwargs.get("pk"))
+        return get_object_or_404(Credit.objects, id=self.kwargs.get("pk"))
 
     def get_context_data(self, **kwargs):
         context = super(PaymentView, self).get_context_data(**kwargs)
@@ -105,7 +109,7 @@ class PaymentView(TemplateView):
         context['superuser'] = self.request.user
         context['menu_active'] = "dashboard"
         context['config'] = config
-        context['addresses'] = self.user.address_set.all()
+        context['addresses'] = self.user.address_set.filter(removed=False)
         return context
 
 
@@ -115,7 +119,7 @@ def change_address(request):
     superuser = request.user
 
     credit = get_object_or_404(user.credit_set, id=request.POST.get("credit_id"))
-    address = get_object_or_404(user.address_set, id=request.POST.get("address_id"))
+    address = get_object_or_404(user.address_set.filter(removed=False), id=request.POST.get("address_id"))
 
     if credit and address:
         credit.address = address
@@ -179,3 +183,14 @@ class StatsView(TemplateView):
         context['menu_active'] = "dashboard"
         context['config'] = config
         return context
+
+def send_invoice(request):
+    u = request.session.get('switched_user', request.user)
+    superuser = request.user
+    if not superuser.is_superuser:
+        return HttpResponseForbidden(_("Permission error"))
+
+    credit = get_object_or_404(Credit, id=request.GET.get("credit_id"))
+    msg = payed(credit)
+    messages.add_message(request, messages.INFO, _('API call result: %s' % msg))
+    return HttpResponseRedirect(reverse("payments_info"))

@@ -16,7 +16,7 @@ from wsgiadmin.service.forms import RostiFormHelper
 class FormStatic(ModelForm):
     class Meta:
         model = UserSite
-        fields = ('main_domain', 'misc_domains', 'document_root',)
+        fields = ('main_domain', 'misc_domains', 'document_root')
         widgets = {
             'document_root': forms.Select
         }

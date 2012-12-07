@@ -44,29 +44,21 @@ def rm(request):
     user = request.session.get('switched_user', request.user)
 
     domain = get_object_or_404(user.domain_set, id=request.POST['object_id'])
-    print domain
     if domain.owner == user:
         logging.info(_("Deleting domain %s") % domain.name)
 
-        print "subdomains"
         for subdomain in Domain.objects.filter(parent=domain):
-            print subdomain
             for app in subdomain.apps():
-                print app
                 if app.domains_count <= 1:
-                    print "remove preparations"
                     remove_app_preparation(app, remove_domains=False)
-                    print "delete"
                     app.delete()
             subdomain.delete()
 
-        print "apps"
         for app in domain.apps():
             if app.domains_count <= 1:
                 remove_app_preparation(app)
                 app.delete()
 
-        print "dns"
         if config.handle_dns and domain.dns:
             pri_br = BindRequest(user, "master")
             pri_br.remove_zone(domain)

@@ -10,7 +10,7 @@ class FormDomain(forms.models.ModelForm):
 
     class Meta:
         model = Domain
-        fields = ["name", "mail", "dns", "ipv4", "ipv6"]
+        fields = ["name", "mail", "dns", "ipv4", "ipv6", "enable"]
 
     def clean_domain(self):
         if not re.search("[a-z0-9\-\.]*\.[a-z]{2,5}", self.cleaned_data["domain"]):

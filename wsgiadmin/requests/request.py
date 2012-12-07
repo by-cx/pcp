@@ -272,6 +272,7 @@ class NginxRequest(Service):
         configfile = []
         sites = UserSite.objects.filter(removed=False, owner__parms__enable=True)
         for site in sites:
+            if not site.main_domain.enable: continue
             if site.type== "uwsgi":
                 if site.ssl_mode in ("none", "both"):
                     configfile.append(render_to_string("nginx_vhost_wsgi.conf", {
@@ -334,6 +335,7 @@ class ApacheRequest(Service):
         configfile = []
         sites = UserSite.objects.filter(removed=False, owner__parms__enable=True)
         for site in sites:
+            if not site.main_domain.enable: continue
             if site.type in ("uwsgi", "modwsgi"):
                 # Nginx mode cancel handling wsgi by Apache
                 if "nginx" in config.mode and site.type == "uwsgi": continue

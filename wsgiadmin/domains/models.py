@@ -10,6 +10,7 @@ class Domain(models.Model):
     mail = models.BooleanField(_("Manage email"), default=False)
     ipv4 = models.BooleanField(_("IPv4 records"), default=False)
     ipv6 = models.BooleanField(_("IPv6 records"), default=False)
+    enable = models.BooleanField(_("Enable"), default=True)
     parent = models.ForeignKey("self", verbose_name=_("Depends on"), null=True, blank=True, related_name="subdomains")
     owner = models.ForeignKey(User)
 
@@ -24,8 +25,11 @@ class Domain(models.Model):
             return self.name
 
     def delete(self, using=None):
-        for x in self.parent_set.all():
-            x.delete()
+        try:
+            for x in self.parent_set.all():
+                x.delete()
+        except AttributeError:
+            pass
         super(Domain, self).delete(using)
 
     def __unicode__(self):

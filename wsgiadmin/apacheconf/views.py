@@ -242,4 +242,5 @@ def refresh_userdirs(request):
         return HttpResponseForbidden('non ajax not allowed')
 
     user_dirs = user_directories(request.session.get('switched_user', request.user), use_cache=False)
+    print user_dirs
     return JsonResponse('OK', user_dirs)

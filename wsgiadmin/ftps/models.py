@@ -10,6 +10,7 @@ class Ftp(models.Model):
     uid = models.IntegerField(_("UID"))
     gid = models.IntegerField(_("GID"))
     dir = models.CharField(_("Home directory"), max_length=100)
+    enable = models.BooleanField(_("Enable"), default=True)
 
     owner = models.ForeignKey(User)
 

@@ -108,7 +108,7 @@ class Db(models.Model):
 
     @property
     def name(self):
-        return "%s_%d" % (self.db_type[0:2], self.id)
+        return "%s_%.5d" % (self.db_type[0:2], self.id)
 
     def __unicode__(self):
         return self.name #"%s db for %s app" % (self.name, self.app_id)

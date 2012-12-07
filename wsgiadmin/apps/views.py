@@ -284,6 +284,15 @@ def app_rm(request):
     app_id = int(request.GET.get("app_id"))
     app = get_object_or_404(user.app_set, id=app_id)
     app = typed_object(app)
+
+    #databases
+    for db in app.db_set.all():
+        db = DbObject.objects.get(id=db.id)
+        db.uninstall()
+        db.commit()
+        db.delete()
+
+    #app
     app.uninstall()
     app.commit()
     app.delete()

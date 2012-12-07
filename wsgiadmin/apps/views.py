@@ -96,7 +96,7 @@ class AppParametersView(TemplateView):
                 messages.add_message(request, messages.SUCCESS, _('Changes has been saved.'))
             else:
                 messages.add_message(request, messages.WARNING, _('Changes has been saved. But app is disabled.'))
-            return HttpResponseRedirect(reverse("apps_detail", kwargs={"app_id": app.id}))
+            return HttpResponseRedirect(reverse("app_detail", kwargs={"app_id": app.id}))
         context["form"] = form
         return self.render_to_response(context)
 

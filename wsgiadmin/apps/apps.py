@@ -51,7 +51,7 @@ class AppObject(App):
         parms = self.get_parmameters()
         self.script.add_cmd("/usr/sbin/groupadd %(group)s" % parms)
         self.script.add_cmd("/usr/sbin/useradd -m -d %(home)s -g %(group)s %(user)s -s /bin/bash" % parms)
-        self.script.add_cmd("/usr/sbin/usermod -G %(group)s www-data" % parms)
+        self.script.add_cmd("/usr/sbin/usermod -G %(group)s -a www-data" % parms)
         self.script.add_cmd("mkdir -p %(home)s/logs" % parms, user=self.get_user())
         self.script.add_cmd("mkdir -p %(home)s/app" % parms, user=self.get_user())
         self.script.add_cmd("mkdir -p %(home)s/.ssh" % parms, user=self.get_user())

@@ -57,7 +57,9 @@ class App(models.Model):
     def format_parameters(self):
         parms = {}
         for k, v in self.parameters.items():
-            if "\n" in v:
+            if type(v) == bool:
+                parms[k] = _("Yes") if v else _("No")
+            elif "\n" in v:
                 parms[k] = "<pre>%s</pre>" % v.replace("\n", "<br>").replace(" ", "&nbsp;")
             else:
                 parms[k] = v.replace(" ", "&nbsp;")

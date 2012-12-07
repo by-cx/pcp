@@ -1,6 +1,18 @@
-from datetime import date
+from datetime import date, datetime
+from constance import config
 from wsgiadmin.clients.models import Parms
 from wsgiadmin.emails.models import Message
+from wsgiadmin.stats.models import Record, Credit
+from django.utils.translation import ugettext_lazy as _
+
+def pay(user, service, value, cost):
+    record = Record()
+    record.date = date.today()
+    record.user = user
+    record.service = service
+    record.value = value
+    record.cost = cost
+    record.save()
 
 def low_credits_level():
     for parm in Parms.objects.all():
@@ -28,3 +40,36 @@ def low_credits_level():
 
         parm.last_notification = date.today()
         parm.save()
+
+def add_credit(user, value, address=None, free=None):
+    value = float(value)
+
+    if not address and not free:
+        address = user.address_set.get(default=True)
+
+    credit = Credit()
+    if not free:
+        credit.date_payed = None
+    else:
+        credit.date_payed = datetime.now()
+    print config.credit_currency
+    credit.user = user
+    credit.price = (1 / float(config.credit_quotient)) * value
+    credit.currency = config.credit_currency
+    credit.value = value
+    credit.bonus = 1.0
+    credit.address = address
+    credit.save()
+
+    if address and not free:
+        context = {
+            "cost": credit.price,
+            "currency": credit.currency,
+            "bank": config.bank_name,
+            "bank_account": config.bank_account,
+            "var_symbol": user.parms.var_symbol,
+            }
+        msg = Message.objects.get(purpose="make_a_payment")
+        msg.send(address.email, context)
+
+    return credit

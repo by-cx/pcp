@@ -19,6 +19,7 @@ from wsgiadmin.emails.models import Message
 from wsgiadmin.requests.request import SystemRequest
 from wsgiadmin.service.forms import PassCheckForm, RostiFormHelper
 from django.core.exceptions import ObjectDoesNotExist
+from wsgiadmin.stats.tools import add_credit
 
 @login_required
 def show(request):
@@ -125,19 +126,19 @@ def install(request, uid):
     # System user
     HOME = join("/home", iuser.username)
 
-    sr = SystemRequest(u, iuser.parms.web_machine)
-    sr.install(iuser)
-    sr.commit()
+    #sr = SystemRequest(u, iuser.parms.web_machine)
+    #sr.install(iuser)
+    #sr.commit()
 
-    line = sr.run("cat /etc/passwd |grep ^%s:" % iuser.username, instant=True)[0].strip()
-    user, foo, uid, gid, bar = line.split(":", 4)
+    #line = sr.run("cat /etc/passwd |grep ^%s:" % iuser.username, instant=True)[0].strip()
+    #user, foo, uid, gid, bar = line.split(":", 4)
 
-    iuser.parms.home = HOME
-    iuser.parms.uid = uid
-    iuser.parms.gid = gid
-    iuser.parms.save()
+    #iuser.parms.home = HOME
+    #iuser.parms.uid = uid
+    #iuser.parms.gid = gid
+    #iuser.parms.save()
 
-    iuser.parms.add_credit(30, True)
+    add_credit(iuser, 30, free=True)
 
     iuser.is_active = True
     iuser.save()

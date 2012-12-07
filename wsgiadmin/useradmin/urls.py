@@ -18,8 +18,8 @@ urlpatterns = patterns('wsgiadmin.useradmin.views',
 
 urlpatterns += patterns('',
                         url(r'^commit/$', 'wsgiadmin.requests.views.commit'),
-                        url(r'^supervisor/', include('wsgiadmin.supervisor.urls')),
                         url(r'^domains/', include('wsgiadmin.domains.urls')),
+                        url(r'^clients/', include('wsgiadmin.clients.urls')),
                         url(r'^ftp/', include('wsgiadmin.ftps.urls')),
                         url(r'^email/', include('wsgiadmin.emails.urls')),
                         url(r'^apache/', include('wsgiadmin.apacheconf.urls')),
@@ -27,12 +27,24 @@ urlpatterns += patterns('',
                         url(r'^db/', include('wsgiadmin.db.urls')),
                         url(r'^credit/', include('wsgiadmin.stats.urls')),
                         url(r'^users/', include('wsgiadmin.users.urls')),
+                        url(r'^apps/', include('wsgiadmin.apps.urls')),
                         url(r'^login/$', 'django.contrib.auth.views.login',
-                                {'template_name': 'login.html',
-                                 'extra_context': {
-                                     'form_helper': RostiFormHelper()}},
-                            name="login"),
+                                {
+                                    'template_name': 'login.html',
+                                    'extra_context': {
+                                        'form_helper': RostiFormHelper(),
+                                        'menu_active': 'login',
+                                    }
+                                },
+                            name="login"
+                        ),
                         url(r'^logout/$', 'django.contrib.auth.views.logout',
-                                {'template_name': 'logout.html',
-                            'extra_context': {'form_helper': RostiFormHelper()}}, name = "logout"),
+                                {
+                                    'template_name': 'logout.html',
+                                    'extra_context': {
+                                        'form_helper': RostiFormHelper(),
+                                    }
+                                },
+                                name = "logout"
+                        ),
 )

@@ -17,7 +17,6 @@ class JsonResponse(HttpResponse):
         content = anyjson.serialize(dict(result=result, messages=messages))
         super(JsonResponse, self).__init__(content, content_type='application/jsonrequest')
 
-
 class RostiListView(ListView):
     menu_active = ""
     paginate_by = config.pagination
@@ -49,8 +48,6 @@ class RostiCreateView(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super(RostiCreateView, self).get_context_data(**kwargs)
-        #context['form'] = self.get_form(self.form_class),
-        #context['form_helper'] = RostiFormHelper(),
         context['menu_active'] = self.menu_active
         context['u'] = self.user
         context['superuser'] = self.request.user
@@ -71,8 +68,6 @@ class RostiUpdateView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(RostiUpdateView, self).get_context_data(**kwargs)
-        #context['form'] = self.get_form(self.form_class),
-        #context['form_helper'] = fh,
         context['menu_active'] = self.menu_active
         context['u'] = self.user
         context['superuser'] = self.request.user

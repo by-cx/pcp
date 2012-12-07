@@ -2,7 +2,5 @@ prune *
 exclude *
 graft wsgiadmin
 include paver-minilib.zip pavement.py setup.py requirements.txt
-
 exclude wsgiadmin/settings/local.py
 global-exclude *.pyc
-

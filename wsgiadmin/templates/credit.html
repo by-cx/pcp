@@ -83,6 +83,7 @@
     </tr>
     </table>
 
+    {% if addresses_count %}
     <table class="table table-striped">
     <tr>
         <th colspan="2">{% trans "Buy some more" %}</th>
@@ -173,5 +174,8 @@
         </td>
     </tr>
     </table>
+    {% else %}
+        <p>{% trans "Before buying of new credit, you have to fill at least one address." %} - <a href="{% url address_create %}">{% trans "add my address" %}</a></p>
+    {% endif %}
     
 {% endblock %}

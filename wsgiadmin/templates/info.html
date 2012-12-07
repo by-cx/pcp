@@ -8,22 +8,25 @@
 {% block content %}
     <div class="clear"></div>
 
+    <h2>{% trans "Account's informations" %}</h2>
+
     <table class="table table-striped">
-        <tr>
-            <th colspan="2">{% trans "Account's informations" %}</th>
-        </tr>
+        {% if u.parms.address.getName %}
         <tr>
             <td><strong>{% trans "Name" %}</strong></td>
             <td>{{ u.parms.address.getName }}</td>
         </tr>
+        {% endif %}
         <tr>
             <td><strong>{% trans "Username" %}</strong></td>
             <td>{{ u.parms.user.username }}</td>
         </tr>
+        {% if u.parms.home != "/dev/null" %}
         <tr>
             <td><strong>{% trans "Home directory" %}</strong></td>
             <td>{{ u.parms.home }}</td>
         </tr>
+        {% endif %}
         {% if u.parms.fee %}
             <tr>
                 <td><strong>{% trans "Flat rate" %}</strong></td>
@@ -35,13 +38,6 @@
                 <td>{{ u.parms.discount }}</td>
             </tr>
         {% endif %}
-        <tr>
-            <td><strong>{% trans "Server" %}</strong></td>
-            <td>{{ u.parms.web_machine.name }} (IPv4:
-                {{ u.parms.web_machine.ip }}
-                        {% if u.parms.web_machine.ipv6 %} / IPv6: {{ u.parms.web_machine.ipv6 }}{% endif %})
-            </td>
-        </tr>
     </table>
 
     <h3>{% trans "Service fees" %}</h3>
@@ -52,19 +48,27 @@
             <th><strong>{% trans "Credits per day" %}</strong></th>
         </tr>
         <tr>
+            <td>{% trans "Apps" %}</td>
+            <td>{{ u.parms.count_apps }}×</td>
+            <td>0</a>
+            </td>
+        </tr>
+        {% if u.parms.count_domains %}
+        <tr>
             <td>{% trans "Domains" %}</td>
             <td>{{ u.parms.count_domains }}×</td>
             <td>{% trans "More informations in" %}
                 <a href="{% url domains_list %}">{% trans "domains list" %}</a>
             </td>
         </tr>
+        {% endif %}
         {% if u.parms.fee %}
             <tr>
                 <td>{% trans "Webs/Applications" %}</td>
                 <td>{{ u.parms.count_sites }}×</td>
                 <td>{{ u.parms.fee|floatformat:2 }}</td>
             </tr>
-        {% else %}
+        {% elif u.parms.count_sites %}
             <tr>
                 <td>{% trans "Webs/Applications" %}</td>
                 <td>{{ u.parms.count_sites }}×</td>
@@ -101,5 +105,23 @@
             </tr>
             {% endif %}
     </table>
+
+    {% if not_payed %}
+        <h3 class="red">{% trans "Credits waiting for payment" %}</h3>
+        <table class="table table-striped">
+        <tr>
+            <th><strong>{% trans "Date" %}</strong></th>
+            <th><strong>{% trans "Credits" %}</strong></th>
+            <th><strong>{% trans "Price" %}</strong></th>
+        </tr>
+        {% for credit in not_payed %}
+        <tr>
+            <td><a href="{% url payment_info pk=credit.id %}">{{ credit.date }}</td>
+            <td>{{ credit.value }}</td>
+            <td>{{ credit.price }} {{ credit.currency }}</td>
+        </tr>
+        {% endfor %}
+        </table>
+    {% endif %}
 
 {% endblock %}

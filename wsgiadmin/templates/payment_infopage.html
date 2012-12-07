@@ -1,0 +1,73 @@
+{% extends "admin.html" %}
+{% load i18n %}
+
+{% block title %}
+    {% trans "Administration" %} &gt; {% trans "Payment" %}
+{% endblock %}
+
+{% block content %}
+    <div class="clear"></div>
+
+    <h2>{% trans "Payment information" %}</h2>
+
+    <table class="table table-striped">
+        <tr>
+            <th>{% trans "Date" %}</th>
+            <td>{{ credit.date }}</td>
+        </tr>
+        <tr>
+            <th>{% trans "Price" %}</th>
+            <td>{{ credit.price }} {{ credit.currency }}</td>
+        </tr>
+        <tr>
+            <th>{% trans "Credits" %}</th>
+            <td>{{ credit.value }} credits</td>
+        </tr>
+        <tr>
+            <th>{% trans "State" %}</th>
+            <td>{% if credit.date_payed %}{% trans "payed" %} ({{ date.payed }}){% else %}{% trans "No payment" %}{% endif %}</td>
+        </tr>
+        {% if credit.address %}
+        <tr>
+            <th>{% trans "Address at invoice" %}</th>
+            <td>
+                <form action="{% url payment_address %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="credit_id" value="{{ credit.id }}">
+                    <select name="address_id">
+                        {% for address in addresses %}
+                            <option value="{{ address.id }}"{% if credit.address == address %} selected="selected" {% endif %}>{{ address.address }}</option>
+                        {% endfor %}
+                    </select><br>
+                    <input type="submit" value="{% trans "Save" %}" class="btn">
+                </form>
+                <a href="{% url address_create %}">{% trans "Add new address" %}</a>
+            </td>
+        </tr>
+        {% endif %}
+    </table>
+
+    <p class="red">{% trans "Now, last step you have to do is a pay. Look at the information below." %}</p>
+
+    <h2>{% trans "Payment via your bank" %}</h2>
+
+    <table class="table table-striped">
+        <tr>
+            <th>{% trans "Bank" %}</th>
+            <td>{{ config.bank_name }}</td>
+        </tr>
+        <tr>
+            <th>{% trans "Bank account" %}</th>
+            <td>{{ config.bank_account }}</td>
+        </tr>
+        <tr>
+            <th>{% trans "Variable symbol" %}</th>
+            <td>{{ u.parms.var_symbol }}</td>
+        </tr>
+        <tr>
+            <th>{% trans "Cost" %}</th>
+            <td>{{ credit.price }} {{ credit.currency }}</td>
+        </tr>
+    </table>
+
+{% endblock %}

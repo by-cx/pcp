@@ -22,7 +22,7 @@ setup(
         'PCP',
         'Python based control panel',
     )),
-    author = 'bycx, yedpodtrzitko',
+    author = 'cx, yedpodtrzitko',
     author_email='cx@initd.cz',
     license = 'BSD',
     url='https://github.com/creckx/pcp/',

@@ -7,7 +7,6 @@ from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 
 from os.path import join
-from wsgiadmin.domains.models import Domain
 
 SITE_TYPE_CHOICES = [
     ("uwsgi", "uWSGI"),
@@ -27,8 +26,8 @@ class UserSite(models.Model):
     end_date = models.DateField(blank=True, null=True)
     type = models.CharField(_("Type"), max_length=20, choices=SITE_TYPE_CHOICES)
 
-    main_domain = models.ForeignKey(Domain, related_name='main_domain', null=True)# TODO - add limit_choices_to
-    misc_domains = models.ManyToManyField(Domain, null=True, related_name='misc_domains', through=SiteDomain, blank=True)
+    main_domain = models.ForeignKey('domains.Domain', related_name='main_domain', null=True)# TODO - add limit_choices_to
+    misc_domains = models.ManyToManyField('domains.Domain', null=True, related_name='misc_domains', through=SiteDomain, blank=True)
 
     document_root = models.CharField(_("DocumentRoot"), max_length=200, blank=True)
     htaccess = models.BooleanField(_(".htaccess"), default=True)
@@ -48,11 +47,14 @@ class UserSite(models.Model):
     ssl_key = models.CharField(_("SSL key filename"), blank=True, null=True, max_length=256)
     ssl_mode = models.CharField(_("SSL mode"), choices=(("none", "None"), ("sslonly", "SSL Only"), ("both", "Both")), max_length=20, default="none")
 
-    removed = models.BooleanField(_("Removed"), default=False) # nezmizi dokud se nezaplati
     owner = models.ForeignKey(User, verbose_name=_('Owner'))
 
     class Meta:
         db_table = 'apacheconf_site'
+
+    @property
+    def domains_count(self):
+        return self.misc_domains.count() + (1 if self.main_domain else 0)
 
     @property
     def whitelist(self):
@@ -74,16 +76,15 @@ class UserSite(models.Model):
             else:
                 if not target.startswith(self.owner.parms.home.rstrip('/')):
                     target = join(self.owner.parms.home, target)
-                statics.append(dict(url=url, dir=target))
+                if not url in [x["url"] for x in statics]:
+                    statics.append(dict(url=url, dir=target))
         return statics
-
 
     @property
     def server_aliases(self):
         misc = self.misc_domains
         if not misc:
             return ""
-
         return " ".join([one.domain_name for one in self.misc_domains.all()])
 
     @property
@@ -111,7 +112,7 @@ class UserSite(models.Model):
         return config.fastcgi_wrapper_dir % self.owner
 
     @property
-    def pay(self):#AttributeError:
+    def pay(self):
         """
         Credits per day
         """

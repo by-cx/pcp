@@ -1,14 +1,13 @@
-{% extends "base.html" %}
+{% extends "form.html" %}
 {% load i18n %}
 
 {% block bodyclass %}registrace{% endblock %}
-{% block body %}
+{% block container %}
 
-    <div id="container">
-        <div id="top">
-            <h1>{% trans "Registrace proběhla v pořádku." %}</h1>
-
-            <p>Vyčkejte prosím na schválení účtu, o kterém budete spraveni emailem.</p>
+    <div class="row">
+        <div class="span6 offset2 center">
+            <h2>{% trans "Registration is complete" %}</h2>
+            <p>{% trans "Please wait for the approval e-mail." %}</p>
         </div>
     </div>
 

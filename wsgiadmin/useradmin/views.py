@@ -19,13 +19,12 @@ from django.views.generic.edit import FormView
 
 from wsgiadmin.apacheconf.models import UserSite
 from wsgiadmin.clients.models import *
+from wsgiadmin.emails.models import Message
 from wsgiadmin.requests.request import SSHHandler
 from wsgiadmin.service.forms import PassCheckForm, RostiFormHelper
-from wsgiadmin.useradmin.forms import formReg, formReg2, SendPwdForm
+from wsgiadmin.useradmin.forms import formReg, formReg2, SendPwdForm, RegistrationForm
 from wsgiadmin.clients.models import Parms
 
-if settings.JSONRPC_URL:
-    from jsonrpc.proxy import ServiceProxy
 
 @login_required
 def app_copy(request):
@@ -45,6 +44,7 @@ def app_copy(request):
 
     return HttpResponseRedirect(reverse("master"))
 
+
 @login_required
 def master(request):
     u = request.session.get('switched_user', request.user)
@@ -53,7 +53,7 @@ def master(request):
         return HttpResponseForbidden(_("Permission error"))
 
     balance_day = 0
-    sites = UserSite.objects.filter(removed=False)
+    sites = UserSite.objects.all()
     for site in sites:
         balance_day += site.pay
     balance_month = balance_day * 30
@@ -72,17 +72,19 @@ def master(request):
         context_instance=RequestContext(request)
     )
 
+
 @login_required
 def info(request):
-    u = request.session.get('switched_user', request.user)
+    user = request.session.get('switched_user', request.user)
     superuser = request.user
 
     return render_to_response('info.html',
             {
-                "u": u,
+                "u": user,
                 "superuser": superuser,
                 "menu_active": "dashboard",
                 "config": config,
+                "not_payed": user.credit_set.filter(date_payed=None),
             },
         context_instance=RequestContext(request)
     )
@@ -114,22 +116,19 @@ def ok(request):
     )
 
 class PasswordView(FormView):
-
     template_name = 'passwd_form.html'
-
 
     def __init__(self, *args, **kwargs):
         super(PasswordView, self).__init__(*args, **kwargs)
         self.success_url = reverse('login')
 
-
     def get_form_class(self):
         return SendPwdForm
-
 
     def get_context_data(self, **kwargs):
         data = super(PasswordView, self).get_context_data(**kwargs)
         data['form_helper'] = RostiFormHelper()
+        data['menu_active'] = "reset_passwd"
         return data
 
     def form_valid(self, form):
@@ -181,44 +180,24 @@ def change_passwd(request):
 
 def reg(request):
     if request.method == 'POST':
-        form1 = formReg(request.POST)
-        form2 = formReg2(request.POST)
-        if form1.is_valid() and form2.is_valid():
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
             # machine
             m_web = get_object_or_404(Machine, name=config.default_web_machine)
             m_mail = get_object_or_404(Machine, name=config.default_mail_machine)
             m_mysql = get_object_or_404(Machine, name=config.default_mysql_machine)
             m_pgsql = get_object_or_404(Machine, name=config.default_pgsql_machine)
 
-            address_id = 0
-            if settings.JSONRPC_URL:
-                proxy = ServiceProxy(settings.JSONRPC_URL)
-                data = proxy.add_address(
-                    settings.JSONRPC_USERNAME, settings.JSONRPC_PASSWORD,
-                    form1.cleaned_data["company"],
-                    form1.cleaned_data["first_name"],
-                    form1.cleaned_data["last_name"],
-                    form1.cleaned_data["street"],
-                    form1.cleaned_data["city"],
-                    form1.cleaned_data["city_num"],
-                    form1.cleaned_data["phone"],
-                    form1.cleaned_data["email"],
-                    form1.cleaned_data["ic"],
-                    form1.cleaned_data["dic"]
-                )
-                print data
-                address_id = int(data["result"])
-
             # user
-            u = user.objects.create_user(form2.cleaned_data["username"],
-                                         form1.cleaned_data["email"],
-                                         form2.cleaned_data["password1"])
+            u = user.objects.create_user(form.cleaned_data["username"],
+                                         form.cleaned_data["email"],
+                                         form.cleaned_data["password1"])
             u.is_active = False
             u.save()
 
             # parms
             p = Parms()
-            p.home = join("/home", form2.cleaned_data["username"])
+            p.home = "/dev/null"
             p.note = ""
             p.uid = 0
             p.gid = 0
@@ -228,12 +207,11 @@ def reg(request):
             p.mysql_machine = m_mysql
             p.pgsql_machine = m_pgsql
             p.user = u
-            p.address_id = int(address_id)
             p.save()
 
             message = Message.objects.filter(purpose="reg")
             if message:
-                message[0].send(form1.cleaned_data["email"])
+                message[0].send(form.cleaned_data["email"])
 
             message = _("New user has been registered.")
             send_mail(_('New registration'),
@@ -246,20 +224,19 @@ def reg(request):
             return HttpResponseRedirect(
                 reverse("wsgiadmin.useradmin.views.regok"))
     else:
-        form1 = formReg()
-        form2 = formReg2()
+        form = RegistrationForm()
 
     form_helper = FormHelper()
     form_helper.form_tag = False
 
     return render_to_response('reg.html',
         {
-            "form1": form1,
-            "form2": form2,
+            "form": form,
             "form_helper": form_helper,
             "title": _("Registration"),
             "action": reverse("wsgiadmin.useradmin.views.reg"),
             "config": config,
+            "menu_active": "registration",
         },
         context_instance=RequestContext(request)
     )

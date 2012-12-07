@@ -1,18 +1,21 @@
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 from constance import config
 from django.conf import settings
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.db.models.aggregates import Min, Sum
 from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
 from django.views.generic.base import TemplateView
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from wsgiadmin.stats.models import Credit, Record
 from django.utils.translation import ugettext_lazy as _
+from wsgiadmin.clients.models import Address
+from wsgiadmin.emails.models import Message
+from wsgiadmin.service.views import RostiListView
+from wsgiadmin.stats.models import Credit
+from wsgiadmin.stats.tools import add_credit
 
-if settings.JSONRPC_URL:
-    from jsonrpc.proxy import ServiceProxy
 
 class CreditView(TemplateView):
     template_name = "credit.html"
@@ -22,16 +25,27 @@ class CreditView(TemplateView):
         self.user = request.session.get('switched_user', request.user)
         return super(CreditView, self).dispatch(request, *args, **kwargs)
 
+    def add_credit(self, value):
+        message = Message.objects.filter(purpose="add_credit")
+        if message:
+            message[0].send(config.email, {"user": self.user.username, "credit": value})
+
     def post(self, request, *args, **kwargs):
         if request.POST.get("credit"):
-            self.user.parms.add_credit(float(request.POST.get("credit")))
-            messages.add_message(request, messages.SUCCESS, _('Credit has been added on your account'))
-            messages.add_message(request, messages.INFO, _('Invoice is going to reach your e-mail in next 24 hours'))
+            credit = add_credit(self.user, float(request.POST.get("credit")))
+            message = Message.objects.filter(purpose="add_credit")
+            if message:
+                message[0].send(config.email, {"user": self.user.username, "credit": float(request.POST.get("credit")), "bonus": float(request.POST.get("credit"))})
+            messages.add_message(request, messages.SUCCESS, _('Credits will been added on your account after payment'))
+            return HttpResponseRedirect(reverse("payment_info", kwargs={"pk": credit.id}))
         if request.POST.get("what_to_do"):
             self.user.parms.low_level_credits = request.POST.get("what_to_do")
             self.user.parms.save()
             messages.add_message(request, messages.SUCCESS, _('Low level behavior has been setted'))
         return HttpResponseRedirect(reverse("credit"))
+
+    def get_credits(self):
+        return self.user.credit_set.order_by("date")
 
     def get_context_data(self, **kwargs):
         context = super(CreditView, self).get_context_data(**kwargs)
@@ -39,6 +53,8 @@ class CreditView(TemplateView):
         context['superuser'] = self.request.user
         context['menu_active'] = "dashboard"
         context['config'] = config
+        context['credits'] = credits
+        context['addresses_count'] = Address.objects.filter(user=self.user).count()
         if self.user.parms.fee:
             context["for_month"] = self.user.parms.fee
             context["for_three_months"] = self.user.parms.fee * 3
@@ -58,6 +74,58 @@ class CreditView(TemplateView):
             context["for_six_months_cost"] = (self.user.parms.pay_total_day() * 180) / self.user.parms.one_credit_cost
             context["for_year_cost"] = (self.user.parms.pay_total_day() * 360) / self.user.parms.one_credit_cost
         return context
+
+
+class PaymentsView(RostiListView):
+    template_name = "credits.html"
+    model = Credit
+    menu_active = "dashboard"
+
+    def get_queryset(self):
+        queryset = super(PaymentsView, self).get_queryset()
+        queryset = queryset.filter(user=self.user).order_by("date")
+        return queryset
+
+
+class PaymentView(TemplateView):
+    template_name = "payment_infopage.html"
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        self.user = request.session.get('switched_user', request.user)
+        return super(PaymentView, self).dispatch(request, *args, **kwargs)
+
+    def get_credit(self):
+        return get_object_or_404(self.user.credit_set, id=self.kwargs.get("pk"))
+
+    def get_context_data(self, **kwargs):
+        context = super(PaymentView, self).get_context_data(**kwargs)
+        context["credit"] = self.get_credit()
+        context['u'] = self.user
+        context['superuser'] = self.request.user
+        context['menu_active'] = "dashboard"
+        context['config'] = config
+        context['addresses'] = self.user.address_set.all()
+        return context
+
+
+@login_required
+def change_address(request):
+    user = request.session.get('switched_user', request.user)
+    superuser = request.user
+
+    credit = get_object_or_404(user.credit_set, id=request.POST.get("credit_id"))
+    address = get_object_or_404(user.address_set, id=request.POST.get("address_id"))
+
+    if credit and address:
+        credit.address = address
+        credit.save()
+        messages.add_message(request, messages.SUCCESS, _("Address has been changed"))
+    else:
+        messages.add_message(request, messages.ERROR, _("Address hasn't been changed"))
+
+    return HttpResponseRedirect(reverse("payment_info", kwargs={"pk": credit.pk}))
+
 
 class StatsView(TemplateView):
     template_name = "bill.html"
@@ -102,14 +170,10 @@ class StatsView(TemplateView):
                 data.append({"date": record["date"], "cost": 0.0})
         return data
 
-    def buyed_stats(self):
-        return self.user.credit_set.order_by("date")
-
     def get_context_data(self, **kwargs):
         context = super(StatsView, self).get_context_data(**kwargs)
         context["months"] = self.month_stats()
         context["days"] = self.day_stats()
-        context["credits"] = self.buyed_stats()
         context['u'] = self.user
         context['superuser'] = self.request.user
         context['menu_active'] = "dashboard"

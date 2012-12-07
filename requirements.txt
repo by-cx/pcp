@@ -4,4 +4,7 @@ django-picklefield
 south
 anyjson
 django-crispy-forms
-django-json-rpc
+psycopg2
+raven
+django-debug-toolbar
+fabric

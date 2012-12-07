@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-.
 # Django settings for manager project.
+import os
 
 _ = lambda x: x
 
 from os.path import join, abspath, pardir, dirname
-
 ROOT = abspath(join(dirname(__file__), pardir))
 
 DEBUG = True
@@ -22,11 +22,6 @@ DATABASES = {}
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
-# JSONRPC URL for PCP-Invoice, if "" or None, it will be switched off
-JSONRPC_URL = ""
-JSONRPC_USERNAME = ""
-JSONRPC_PASSWORD = ""
-
 # User logs
 
 USERLOG_FILENAME = "%s/logs/%s.log"
@@ -36,8 +31,8 @@ USERLOG_FILENAME = "%s/logs/%s.log"
 BANK = "mBank"
 BANK_ACCOUNT = "670100-2206514444/6210"
 MY_ADDRESS_ID = 1
-STAMP_SIGN = join(ROOT, "m", "razitko.png")
-STAMP_NOSIGN = join(ROOT, "m", "razitko-nosign.png")
+STAMP_SIGN = join(ROOT, "static", "razitko.png")
+STAMP_NOSIGN = join(ROOT, "static", "razitko-nosign.png")
 
 CURRENCY = (
     ("czk", "CZK"),
@@ -46,6 +41,8 @@ CURRENCY = (
 )
 
 ##########
+
+APPS_HOME = "/home/apps"
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -72,8 +69,8 @@ SITE_ID = 1
 USE_I18N = True
 #USE_L10N = True
 
-STATIC_ROOT = join(ROOT, "m")
-STATIC_URL = "/m/"
+STATIC_ROOT = join(ROOT, "static")
+STATIC_URL = "/static/"
 
 LOGIN_URL = "/login/"
 LOGOUT_URL = "/logout/"
@@ -131,6 +128,7 @@ INSTALLED_APPS = (
     'south',
     'constance',
     'constance.backends.database',
+    'raven.contrib.django',
 
     'wsgiadmin.requests',
     'wsgiadmin.useradmin',
@@ -142,11 +140,14 @@ INSTALLED_APPS = (
     'wsgiadmin.cron',
     'wsgiadmin.users',
     'wsgiadmin.apacheconf',
-    'wsgiadmin.keystore',
     'wsgiadmin.service',
     'wsgiadmin.stats',
-    'wsgiadmin.supervisor',
+    'wsgiadmin.apps',
 )
+
+PYTHON_INTERPRETERS = {
+    "python2.7": "/usr/bin/virtualenv",
+}
 
 CONSTANCE_BACKEND = "constance.backends.database.DatabaseBackend"
 
@@ -164,8 +165,7 @@ CONSTANCE_CONFIG = {
     "nginx_log_dir": ("/var/log/webx/", "NGINX log directory"),
 
     "apache_conf": ("/etc/apache2/vhosts.d/99_auto.conf", "Apache's config file"),
-    "apache_url": ("0.0.0.0:80", "Apache proxy URL (for nginx)"), # for nginx as proxy
-    "apache_ssl_listen": ("0.0.0.0:443", "Apache listen for SSL"),
+    "apache_url": ("127.0.0.1:8080", "Apache proxy URL (for nginx)"), # for nginx as proxy
     "apache_init_script": ("/etc/init.d/apache2", "Apache's init script"),
     "apache_user": ('www-data', "Apache's user"), # 'apache' in gentoo
     "apache_log_dir": ("/var/log/webs/", "Apache log directory"),
@@ -197,6 +197,9 @@ CONSTANCE_CONFIG = {
     "default_mysql_machine": ("localhost", "Default mysql machine for new accounts. (must be in Machines table)"),
     "default_pgsql_machine": ("localhost", "Default pgsql machine for new accounts. (must be in Machines table)"),
 
+    "pgsql_server": ("localhost", "PostgreSQL server hostname"),
+    "mysql_server": ("localhost", "MySQL server hostname"),
+
     "mysql_bind": ("localhost", "Host for mysql's users"),
 
     "email_uid": (117, "Email UID"),
@@ -205,18 +208,13 @@ CONSTANCE_CONFIG = {
     "credit_wsgi": (1.0, "Credits for WSGI"),
     "credit_wsgi_proc": (0.2, "Credits for extra WSGI process"),
     "credit_php": (1.0, "Credits for PHP"),
-    "credit_static": (0.25, "Credits for STATIC"),
-    "credit_fee": (3.0, "Credits for VM"),
-    "credit_bm": (8.0, "Credits for VM"),
-    "credit_description": ("1 cr. = 2 Kč", "Credit description"),
-    "credit_250_bonus": (1.0, "250 credits bonus (credits * this number)"),
-    "credit_500_bonus": (1.1, "500 credits bonus (credits * this number)"),
-    "credit_750_bonus": (1.1, "750 credits bonus (credits * this number)"),
-    "credit_1000_bonus": (1.2, "500 credits bonus (credits * this number)"),
-    "credit_currency": ("0.5,12.5,9.5", "CZK, EUR, USD"),
+    "credit_static": (0.25, "Credits for static"),
+    "credit_fee": (3.0, "Credits for fee"),
+    "credit_description": ("1 kr. = 2 Kč", "Credit description"),
+    "credit_currency": ("CZK", "Currency"),
+    "credit_quotient": (0.5, "Credit/currency Quotient"),
     "credit_threshold": (-7, "When should be a web disabled"),
     "tax": (0, "%"),
-    "invoice_desc": ("Credit for services", "Some text"),
 
     "terms_url": ("", "Terms URL"),
 
@@ -224,6 +222,10 @@ CONSTANCE_CONFIG = {
 
     "auto_disable":(True, "Auto disabling users"),
     "pagination":(50, "Pagination"),
+
+    "var_symbol_prefix": (10, "Variable symbol prefix"),
+    "bank_name": ("FIO Banka", "Name of your bank"),
+    "bank_account": ("2200331030/2010", "Bank account number"),
     }
 
 VIRTUALENVS_DIR = 'virtualenvs'
@@ -236,8 +238,11 @@ PAYMENT_CHOICES = (
 ## Logování
 import logging
 
+if not os.path.isdir(join(ROOT, "logs")):
+    os.makedirs(join(ROOT, "logs"))
+
 try:
-    logging.basicConfig(level=logging.INFO, filename='/var/log/pcp.log', format='%(asctime)s %(levelname)s %(message)s')
+    logging.basicConfig(level=logging.INFO, filename=join(ROOT, "logs", 'pcp.log'), format='%(asctime)s %(levelname)s %(message)s')
 except IOError:
     pass
 

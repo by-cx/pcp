@@ -8,14 +8,7 @@ from django.db import models
 from django.db.models import Sum
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
-from wsgiadmin.emails.models import Email, Message
-from wsgiadmin.keystore.tools import kget
-from wsgiadmin.requests.tools import RawRequest
-from wsgiadmin.stats.models import Credit
-from wsgiadmin.tools import size_format
-
-if settings.JSONRPC_URL:
-    from jsonrpc.proxy import ServiceProxy
+from wsgiadmin.emails.models import Email
 
 
 class Machine(models.Model):
@@ -29,6 +22,7 @@ class Machine(models.Model):
 
     def __unicode__(self):
         return "%s" % (self.name)
+
 
 class Parms(models.Model):
     home = models.CharField(_(u"Home"), max_length=100)
@@ -51,8 +45,6 @@ class Parms(models.Model):
     pgsql_machine = models.ForeignKey(Machine, related_name="pgsql")
 
     user = models.OneToOneField(user, verbose_name=_(u'Uživatel'))
-    # For JSONRPC synchronization
-    address_id = models.IntegerField(_("Address ID"), default=0)
 
     def prefix(self):
         return self.user.username.replace(".", "")[:3]
@@ -81,6 +73,10 @@ class Parms(models.Model):
         return self.user.mysqldb_set.count()
 
     @property
+    def count_apps(self):
+        return self.user.app_set.count()
+
+    @property
     def count_sites(self):
         return self.user.usersite_set.count()
 
@@ -90,17 +86,7 @@ class Parms(models.Model):
 
     @property
     def one_credit_cost(self):
-        """Return cost for one credit"""
-        #TODO:make currency works
-        czk = float(config.credit_currency.split(",")[0])
-        return czk
-
-    def home_size(self):
-        size = kget("%s:homesize" % self.user.username)
-        if size:
-            return size_format(int(size))
-        else:
-            return _("Undetected")
+        return float(config.credit_quotient)
 
     def pay_for_sites(self, use_cache=True):
         pay = cache.get('user_payment_%s' % self.user_id)
@@ -125,9 +111,26 @@ class Parms(models.Model):
 
     @property
     def credit(self):
-        credit = self.user.credit_set.aggregate(Sum("value"))["value__sum"]
+        credit = self.user.credit_set.exclude(date_payed=None).aggregate(Sum("value"))["value__sum"]
         cost = self.user.record_set.aggregate(Sum("cost"))["cost__sum"]
         return (credit if credit else 0) - (cost if cost else 0)
+
+    @property
+    def var_symbol(self):
+        return "%d%.4d" % (config.var_symbol_prefix, self.user.id)
+
+    @property
+    def days_left(self):
+        credit = self.credit
+        pay_per_day = self.pay_total_day()
+        if pay_per_day > 0:
+            days = credit / pay_per_day
+            if days > 0:
+                return days
+            else:
+                return 0
+        else:
+            return 0
 
     @property
     def credit_until(self):
@@ -140,49 +143,11 @@ class Parms(models.Model):
             return date.today() + timedelta(days)
         return False
 
-    def add_credit(self, value, free=False):
-        retval = None
-        if settings.JSONRPC_URL and not free:
-            items = [{
-                "description": config.invoice_desc,
-                "count": float(value),
-                "unit": "kr.",
-                "price": 1 / float(config.credit_currency.split(",")[0]), #TODO:change it to multicurrency
-                "tax": config.tax,
-                }]
-
-            proxy = ServiceProxy(settings.JSONRPC_URL)
-            #TODO:what to do with exception?
-            retval = proxy.add_invoice(
-                settings.JSONRPC_USERNAME,
-                settings.JSONRPC_PASSWORD,
-                self.address_id,
-                items
-            )
-
-        bonus = 1.0
-
-        if value >= 1000:
-            bonus = config.credit_1000_bonus
-        elif value >= 750:
-            bonus = config.credit_750_bonus
-        elif value >= 500:
-            bonus = config.credit_500_bonus
-        elif value >= 250:
-            bonus = config.credit_250_bonus
-
-        credit = Credit(user=self.user, value=value * bonus, bonus=value * (bonus - 1.0), invoice=free)
-        credit.save()
-
-        message = Message.objects.filter(purpose="add_credit")
-        if message:
-            message[0].send(config.email, {"user": self.user.username, "credit": value, "bonus": value * (bonus - 1.0)})
-
-        return retval
-
     def delete(self, using=None):
-        for x in self.user.record_set.all(): x.delete()
-        for x in self.user.credit_set.all(): x.delete()
+        for x in self.user.record_set.all():
+            x.delete()
+        for x in self.user.credit_set.all():
+            x.delete()
         return super(Parms, self).delete(using)
 
     def __repr__(self):
@@ -194,3 +159,36 @@ class Parms(models.Model):
     class Meta:
         verbose_name = _(u"User")
         verbose_name_plural = _(u"Users")
+
+
+class Address(models.Model):
+    default = models.BooleanField(_("Default address"), default=True)
+    company = models.CharField(_("Company"), max_length=100, blank=True)
+    first_name = models.CharField(_("First name"), max_length=100)
+    last_name = models.CharField(_("Last name"), max_length=100)
+    street = models.CharField(_("Address"), max_length=100)
+    city = models.CharField(_("City"), max_length=100)
+    zip = models.CharField(_("ZIP"), max_length=12)
+
+    phone = models.CharField(_("Phone"), max_length=30)
+    email = models.EmailField(_("E-mail"))
+
+    company_number = models.CharField(_("Company identification number"), max_length=50, blank=True)
+    vat_number = models.CharField(_("VAT registration number"), max_length=50, blank=True)
+
+    user = models.ForeignKey(user, verbose_name=_(u'User'), blank=True, null=True)
+
+    @property
+    def address(self):
+        if self.company:
+            return "%s, %s, %s, %s" % (self.company, self.street, self.zip, self.city)
+        else:
+            return "%s %s, %s, %s, %s" % (self.first_name, self.last_name, self.street, self.zip, self.city)
+
+    @property
+    def name(self):
+        if self.company: return "%s - %s %s" % (self.company, self.first_name, self.last_name)
+        else: return "%s %s" % (self.first_name, self.last_name)
+
+    def __unicode__(self):
+        return self.name

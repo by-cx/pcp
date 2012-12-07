@@ -1,0 +1,180 @@
+body {
+    background: #FFFFFF;
+}
+
+#top {
+    margin-top: 50px;
+    /*background: #eeeeee;
+    -moz-box-shadow: 0 0 200px rgba(0, 0, 0, 0.3) inset;
+    -webkit-box-shadow: 0 0 200px rgba(0, 0, 0, 0.3) inset;
+    box-shadow: 0 0 200px rgba(0, 0, 0, 0.3) inset;*/
+}
+/*--------------------------------------------------------------------------------------------------------
+    Content
+--------------------------------------------------------------------------------------------------------*/
+
+
+#notifications .error {
+    background: #fdd1d1 url('../images/ico-error.png') no-repeat 20px 10px !important;
+    border: solid 1px #dc8787;
+}
+
+#notifications .alert-info {
+    background: #D9EDF7 url('../images/ico-info.png') no-repeat 20px 10px !important;
+    padding-left: 50px;
+}
+
+
+#notifications .warning {
+    background: #fefbd4 url('../images/ico-upozorneni.png') no-repeat 20px 10px !important;
+    border: solid 1px #e6db54;
+}
+
+#notifications .success {
+    background: url('../images/ico-ok.png') no-repeat 20px 10px #d8fed1 !important;
+    border: solid 1px #8ad17f;
+}
+
+#notifications .zavrit {
+    position: absolute;
+    right: -5px;
+    top: -5px;
+    cursor: pointer;
+}
+
+
+#header {
+    width: 100%;
+    padding: 0 10px;
+}
+
+#login {
+    padding-right: 20px;
+}
+
+#login .username {
+    color: white;
+}
+
+.errorlist {
+    margin-left: 15px;
+    color: red;
+    font-weight: bold;
+}
+
+.errorlist li {
+    list-style-type: none;
+}
+
+.helptext {
+    color: #ccc;
+    margin: 0 0 20px 120px;
+}
+
+#reg-form label {
+    float: left;
+    padding-top: 5px;
+    text-align: right;
+    width: 140px;
+}
+
+
+#prepnuti-uzivatele {
+    position: absolute;
+    left: 450px;
+    top: 43px;
+    color: #c2c2c2;
+}
+
+#prepnuti-uzivatele a {
+    background: #2d3238;
+    padding: 5px 10px;
+    color: #f2f2f2;
+    text-decoration: none;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+
+#prepnuti-uzivatele a:hover {
+    background: #393f46;
+}
+
+#prepnuti-uzivatele #uzivatel {
+    margin: 0 0 0 5px;
+}
+
+#prepnuti-uzivatele i {
+    margin: 0 5px 0 0;
+    font-style: normal;
+}
+
+.terms {
+    color: red;
+    text-align: center;
+}
+
+.ajax_refresh {
+    background-image: url('../icons/ajax-loader.png');
+    background-repeat: no-repeat;
+    cursor: pointer;
+    width: 35px;
+    height: 15px;
+}
+
+.ajax_refresh.running {
+    background-image: url('../icons/ajax-loader.gif');
+}
+
+.ajax_refresh .status {
+    padding-left: 20px;
+}
+
+.error {
+    background-color: #FFDFDF;
+    padding: 5px;
+    border: 1px solid #4D4D4D;
+}
+
+.list_actions a {
+    margin-right: 10px;
+}
+
+.pagination a.current {
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.akce li {
+    list-style-type: none;
+    display: inline;
+}
+
+.filter_input {
+    width: 50px;
+}
+
+.center {
+    text-align: center;
+}
+
+.textarea-code {
+    width: 350px;
+    height: 200px;
+    font-family: monospace;
+}
+
+.log {
+    height: 150px;
+    width: 95%;
+    overflow: auto;
+    line-height: 1.4;
+}
+
+pre {
+    line-height: 0.8;
+}
+
+.red {
+    color: red;
+}

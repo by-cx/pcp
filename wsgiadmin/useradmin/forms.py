@@ -6,6 +6,22 @@ from django.utils.translation import ugettext_lazy as _
 
 from wsgiadmin.service.forms import PassCheckForm
 from django.conf import settings
+import re
+
+class RegistrationForm(PassCheckForm):
+    username = forms.CharField(label=_("Username"), max_length=30, required=True)
+    email = forms.EmailField(label=_("E-mail"), max_length=128, required=True)
+
+    def __init__(self, *args, **kwargs):
+        super(RegistrationForm, self).__init__(*args, **kwargs)
+        self.fields.keyOrder = ['email', 'username', 'password1', 'password2']
+
+    def clean_username(self):
+        if User.objects.filter(username=self.cleaned_data["username"]):
+            raise forms.ValidationError(_("This username is already in use"))
+        if not re.match("^[0-9a-zA-Z_]*$", self.cleaned_data["username"]):
+            raise forms.ValidationError(_("Username has to be in this format: ^[0-9a-zA-Z_]*$"))
+        return self.cleaned_data["username"]
 
 class formReg(forms.Form):
     company = forms.CharField(label=_("Company"), max_length=250, required=False)
@@ -30,11 +46,12 @@ class formReg2(PassCheckForm):
     def clean_username(self):
         if User.objects.filter(username=self.cleaned_data["username"]):
             raise forms.ValidationError(_("Username already exists"))
+        if not re.match("^[0-9a-zA-Z_]*$", self.cleaned_data["username"]):
+            raise forms.ValidationError(_("Username has to be in this format: ^[0-9a-zA-Z_]*$"))
         return self.cleaned_data["username"]
 
 
 class SendPwdForm(forms.Form):
-
     email = forms.EmailField(label=_("E-mail"), max_length=250, required=False)
     username = forms.CharField(label=_("Username"), max_length=250, required=False)
 
@@ -45,7 +62,7 @@ class SendPwdForm(forms.Form):
 
         if 'email' in self.cleaned_data and self.cleaned_data['email']:
             try:
-                user = User.objects.get(email=self.cleaned_data['email'])
+                user = User.objects.filter(email=self.cleaned_data['email'])
             except User.DoesNotExist:
                 raise ValidationError(_("Given email doesn't belong to any user"))
 

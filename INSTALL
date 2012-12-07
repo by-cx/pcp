@@ -1,0 +1,45 @@
+It develop for Debian, but it should work on other distributions too. Need at least this packages:
+
+apache2 nginx supervisor php5-cgi (for PHP hosting) suexec-custom python python-pip python-virtualenv postfix couried-imap(ssl)|pop(ssl)|authlib (for mail support) and maybe some more
+
+Create virtualenv for PCP and continue with:
+
+git clone https://github.com/creckx/pcp.git
+cd pcp
+pip install -r requirements.txt
+sudo cp pcp_runner.py /usr/local/bin/pcp_runner
+sudo chmod 755 /usr/local/bin/pcp_runner (its used for remote control of server)
+sudo mkdir /etc/nginx/apps.d/
+cd wsgiadmin
+# in settings.local, set the database connection and maybe other values
+python manage.py syncdb
+python manage.py migrate
+python manage.py runserver
+
+Now it should work.
+
+In administration set at least one server in Apps/Servers and Clients/Machines. Also set same servername (Client/Machines) in config (default_*_machine). Clients/Machines is for old implementation. The hostname setted in Apps/Servers will be used to ssh connection. You should config your .ssh/config and put to the remote side the public key.
+
+Almost everything in wsgiadmin directory is useless right now. I decided make some rewrites and this is result:
+
+apacheconf - old implementation of app hosting, needs to be removed, but i have users which use it so it wont be easy task
+apps - apps, new implementation of app hosting, works great for python right now, PHP and static support will be ready in few days, not stable
+clients - informations about users
+cron - cron, needs to be removed
+db - db, needs to be removed, i need merge db with apps
+domains - i need to put it away, no domain registration in future, its better solution save domains with apps
+emails - emails support, need rework (remove requests style and rewrite it for apps style (apps/apps.py/tools.py)) but work fine now
+etc - maybe something from the past
+ftps - FTP support, out
+requests - tools for request a commands on servers, need to be removed, it has slow and now comfortable design
+service - usefull code for rest of apps
+settings
+stats - payments
+templates
+useradmin - should be merge with users soon
+users - user management, registration, etc.
+
+As you see, a half of the code is marked to remove, but i cant remove it right now, because of users on my hosting http://rosti.cz. In next few weeks i want merge all of functionality of old implementation to apps.
+
+It not easy setup, but it's one of the priorities to make it easier :-) Gl.
+If you will need something, write me email or use the jabber. I use same address for both.

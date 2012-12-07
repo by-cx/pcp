@@ -12,6 +12,7 @@ from django.template.context import RequestContext
 from django.utils.translation import ugettext_lazy as _, ugettext
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
+from wsgiadmin.apacheconf.tools import remove_app_preparation
 
 from wsgiadmin.domains.forms import RegistrationRequestForm, FormDomain
 from wsgiadmin.domains.models import Domain
@@ -39,26 +40,37 @@ class DomainUpdateView(RostiUpdateView):
 
 @login_required
 def rm(request):
-
     #try:
-    u = request.session.get('switched_user', request.user)
+    user = request.session.get('switched_user', request.user)
 
-    d = get_object_or_404(u.domain_set, id=request.POST['object_id'])
-    if d.owner == u:
-        logging.info(_("Deleting domain %s") % d.name)
+    domain = get_object_or_404(user.domain_set, id=request.POST['object_id'])
+    if domain.owner == user:
+        logging.info(_("Deleting domain %s") % domain.name)
 
-        if config.handle_dns and d.dns:
-            pri_br = BindRequest(u, "master")
-            pri_br.remove_zone(d)
+        for subdomain in Domain.objects.filter(parent=domain):
+            for app in subdomain.apps():
+                if app.domains_count <= 1:
+                    remove_app_preparation(app, remove_domains=False)
+                    app.delete()
+            subdomain.delete()
+
+        for app in domain.apps():
+            if app.domains_count <= 1:
+                remove_app_preparation(app)
+                app.delete()
+
+        if config.handle_dns and domain.dns:
+            pri_br = BindRequest(user, "master")
+            pri_br.remove_zone(domain)
             pri_br.mod_config()
             pri_br.reload()
 
             if config.handle_dns_secondary:
-                sec_br = BindRequest(u, "slave")
+                sec_br = BindRequest(user, "slave")
                 sec_br.mod_config()
                 sec_br.reload()
 
-        d.delete()
+        domain.delete()
 
     return JsonResponse("OK", {1: ugettext("Domain was successfuly deleted")})
     #except Exception, e:
@@ -139,6 +151,7 @@ def subdomains_list(request, domain_id):
 
     if request.GET.get("subdomain_name"):
         for name in request.GET.get("subdomain_name").split(","):
+            # TODO: check for duplication
             subdomain = Domain()
             subdomain.name = name.strip()
             subdomain.serial = 0
@@ -151,6 +164,10 @@ def subdomains_list(request, domain_id):
             subdomain.save()
     elif request.GET.get("subdomain_id"):
         subdomain = get_object_or_404(u.domain_set, id=request.GET.get("subdomain_id"))
+        for app in subdomain.apps():
+            if app.domains_count <= 1:
+                remove_app_preparation(app, remove_domains=False)
+                app.delete()
         subdomain.delete()
 
     return render_to_response('subdomains_list.html',

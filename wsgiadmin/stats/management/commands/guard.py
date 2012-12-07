@@ -43,29 +43,33 @@ class Command(BaseCommand):
                 apache_reload = True
                 print "\t* %s enabled" % user.username
 
+        correction = 0.0
+        if parms.credit < 0:
+            correction += abs(parms.credit)
+
         if parms.low_level_credits == "send_email":
             tmpl = "low_credit"
-            data = {"credit": parms.credit, "days": (parms.credit / parms.pay_total_day()) if parms.pay_total_day() > 0 else "0"}
+            data = {"credit": parms.credit, "days": parms.days_left}
         elif parms.low_level_credits == "buy_month":
-            credits = parms.pay_total_day() * 30
+            data = {"credit": parms.credit, "days": parms.days_left}
+            credits = parms.pay_total_day() * 30 + correction
             parms.add_credit(credits)
             tmpl = "autobuy_credit"
-            data = {"credit": parms.credit, "days": (parms.credit / parms.pay_total_day()) if parms.pay_total_day() > 0 else "0"}
         elif parms.low_level_credits == "buy_three_months":
-            credits = parms.pay_total_day() * 90
+            data = {"credit": parms.credit, "days": parms.days_left}
+            credits = parms.pay_total_day() * 90 + correction
             parms.add_credit(credits)
             tmpl = "autobuy_credit"
-            data = {"credit": parms.credit, "days": (parms.credit / parms.pay_total_day()) if parms.pay_total_day() > 0 else "0"}
         elif parms.low_level_credits == "buy_six_months":
-            credits = parms.pay_total_day() * 180
+            data = {"credit": parms.credit, "days": parms.days_left}
+            credits = parms.pay_total_day() * 180 + correction
             parms.add_credit(credits)
             tmpl = "autobuy_credit"
-            data = {"credit": parms.credit, "days": (parms.credit / parms.pay_total_day()) if parms.pay_total_day() > 0 else "0"}
         elif parms.low_level_credits == "buy_year":
-            credits = parms.pay_total_day() * 360
+            data = {"credit": parms.credit, "days": parms.days_left}
+            credits = parms.pay_total_day() * 360 + correction
             parms.add_credit(credits)
             tmpl = "autobuy_credit"
-            data = {"credit": parms.credit, "days": (parms.credit / parms.pay_total_day()) if parms.pay_total_day() > 0 else "0"}
 
         if tmpl and data:
             message = Message.objects.filter(purpose=tmpl)
@@ -82,12 +86,19 @@ class Command(BaseCommand):
         total_credit = 0.0
         apache_reload = False
         guarding = []
+        print "Username".ljust(40),
+        print "Credit".ljust(15),
+        print "cr./day".ljust(10),
+        print "Days left".ljust(10),
+        print "Low level act.".ljust(15),
+        print "Last notif.".ljust(15)
+
         for user in self.get_users():
             parms = user.parms
             print user.username.ljust(40),
             print ("%.2f cr." % parms.credit).ljust(15),
             print ("%.2f cr." % parms.pay_total_day()).ljust(10),
-            print ("%.2f" % (parms.credit / parms.pay_total_day()) if parms.pay_total_day() > 0 else "0").ljust(10),
+            print ("%.2f" % parms.days_left).ljust(10),
             print (parms.low_level_credits).ljust(15),
             print (parms.last_notification.strftime("%d.%m.%Y")).ljust(15) if parms.last_notification else "--".ljust(15),
             if not parms.guard_enable: print "Guarding disabled",

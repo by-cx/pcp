@@ -6,9 +6,9 @@ USE_I18N = True
 
 FILE_ROOT = normpath(join(dirname(__file__), pardir))
 
-STATIC_ROOT = join(FILE_ROOT, 'm')
+STATIC_ROOT = join(FILE_ROOT, 'static')
 
-STATIC_URL = '/m/'
+STATIC_URL = '/static/'
 
 ADMIN_MEDIA_PREFIX = '/admin_media/'
 

@@ -1,0 +1,58 @@
+{% extends "admin.html" %}
+{% load i18n %}
+
+{% block title %}
+    {% trans "Administration" %} &gt; {% trans "Payments" %}
+{% endblock %}
+
+{% block content %}
+    <div id="message-box"></div>
+
+    <h3>{% trans "List of payments" %}</h3>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>{% trans "Date" %}</th>
+            <th>{% trans "Price" %}</th>
+            <th>{% trans "Credits" %}</th>
+            <th>{% trans "Bonus" %}</th>
+            <th>{% trans "State" %}</th>
+        </tr>
+        </thead>
+        {% if credit_list %}
+            <tbody id="objects_list">
+            {% for credit in credit_list %}
+                <tr>
+                    <th><a href="{% url payment_info pk=credit.id %}">{{ credit.date }}</a></th>
+                    <td>{{ credit.price }} {{ credit.currency }}</td>
+                    <td>{{ credit.value }} cr.</td>
+                    <td>{{ credit.bonus }} cr.</td>
+                    <td>
+                        {% if credit.date_payed %}
+                            {% trans "payed" %} ({{ date.payed }})
+                        {% else %}
+                            {% trans "No payment" %}
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="4">
+                    <div class="pagination">
+                        {% include "paginator.html" %}
+                    </div>
+                    <div class="clear"></div>
+                </td>
+            </tr>
+            </tfoot>
+        {% else %}
+            <tbody>
+            <tr>
+                <td colspan="4">{% trans "No payment was found." %}</td>
+            </tr>
+            </tbody>
+        {% endif %}
+    </table>
+{% endblock %}

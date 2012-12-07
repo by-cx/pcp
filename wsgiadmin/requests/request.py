@@ -246,21 +246,21 @@ class UWSGIRequest(SSHHandler):
         uwsgi.append("</rosti>")
         self.write(self.config_path, "\n".join(uwsgi))
 
-    def start(self, site):
+    def start(self, site, instant=False):
         """Start site"""
-        self.run("/usr/bin/env uwsgi-manager -s %s" % str(site.id))
+        self.run("/usr/bin/env uwsgi-manager -s %s" % str(site.id), instant=instant)
 
-    def restart(self, site):
+    def restart(self, site, instant=False):
         """Restart site"""
-        self.run("/usr/bin/env uwsgi-manager -R %s" % str(site.id))
+        self.run("/usr/bin/env uwsgi-manager -R %s" % str(site.id), instant=instant)
 
-    def stop(self, site):
+    def stop(self, site, instant=False):
         """Stop site"""
-        self.run("/usr/bin/env uwsgi-manager -S %s" % str(site.id))
+        self.run("/usr/bin/env uwsgi-manager -S %s" % str(site.id), instant=instant)
 
-    def reload(self, site):
+    def reload(self, site, instant=False):
         """Reload site"""
-        self.run("/usr/bin/env uwsgi-manager -r %s" % str(site.id))
+        self.run("/usr/bin/env uwsgi-manager -r %s" % str(site.id), instant=instant)
 
 
 class NginxRequest(Service):
@@ -270,7 +270,7 @@ class NginxRequest(Service):
 
     def mod_vhosts(self):
         configfile = []
-        sites = UserSite.objects.filter(removed=False, owner__parms__enable=True)
+        sites = UserSite.objects.filter(owner__parms__enable=True)
         for site in sites:
             if not site.main_domain.enable: continue
             if site.type== "uwsgi":
@@ -333,7 +333,7 @@ class ApacheRequest(Service):
 
     def mod_vhosts(self):
         configfile = []
-        sites = UserSite.objects.filter(removed=False, owner__parms__enable=True)
+        sites = UserSite.objects.filter(owner__parms__enable=True)
         for site in sites:
             if not site.main_domain.enable: continue
             if site.type in ("uwsgi", "modwsgi"):

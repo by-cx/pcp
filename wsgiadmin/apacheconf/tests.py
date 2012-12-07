@@ -20,7 +20,7 @@ class basicCase(unittest.TestCase):
 		m.ipv4 = "127.0.0.1"
 		m.domain = "localhost"
 		m.name = "Localhost"
-		#m.save()
+		#static.save()
 		# parms
 		p = Parms()
 		p.home		    = "/home/testuser"

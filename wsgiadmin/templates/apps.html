@@ -1,0 +1,67 @@
+{% extends "admin.html" %}
+{% load i18n %}
+
+{% block title %}
+    {% trans "Administration" %} &gt; {% trans "Apps" %}
+{% endblock %}
+
+{% block content %}
+    <div id="message-box"></div>
+
+    <h3>{% trans "List of apps" %}</h3>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>{% trans "Create date" %}</th>
+            <th>{% trans "Type" %}</th>
+            <th>{% trans "Name" %}</th>
+            <th>{% trans "Actions" %}</th>
+        </tr>
+        </thead>
+        {% if object_list %}
+            <tbody id="objects_list">
+            {% for app in object_list %}
+                <tr>
+                    <td>{{ app.date }}</td>
+                    <td>{% trans app.app_type %}</td>
+                    <td>{{ app.name }}</td>
+                    <td class="list_actions">
+                        <a href="{% url app_detail app_id=app.id %}" class="btn btn-info"><i class="icon-info-sign"></i>{% trans "Info" %}</a>
+                        {% if app.app_type == "python" or app.app_type == "native" %}
+                            <a href="{% url app_restart %}?app_id={{ app.id }}" class="btn btn-primary"><i class="icon-refresh"></i>{% trans "Restart" %}</a>
+                        {% endif %}
+                        {% if app.app_type == "static" %}
+                            <a href="{% url app_params_static app_id=app.id %}" class="btn btn-warning"><i class="icon-edit"></i>{% trans "Parameters" %}</a>
+                        {% elif app.app_type == "php" %}
+                            <a href="{% url app_params_php app_id=app.id %}" class="btn btn-warning"><i class="icon-edit"></i>{% trans "Parameters" %}</a>
+                        {% elif app.app_type == "python" %}
+                            <a href="{% url app_params_python app_id=app.id %}" class="btn btn-warning"><i class="icon-edit"></i>{% trans "Parameters" %}</a>
+                        {% elif app.app_type == "native" %}
+                            <a href="{% url app_params_native app_id=app.id %}" class="btn btn-warning"><i class="icon-edit"></i>{% trans "Parameters" %}</a>
+                        {% elif app.app_type == "proxy" %}
+                            <a href="{% url app_params_proxy app_id=app.id %}" class="btn btn-warning"><i class="icon-edit"></i>{% trans "Parameters" %}</a>
+                        {% endif %}
+                        <a href="#a" onclick="if(confirm('{% trans "Are you sure?" %}')) {document.location= '{% url app_rm %}?app_id={{ app.id }}';}" class="btn btn-danger"><i class="icon-remove"></i>{% trans "Delete" %}</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="4">
+                    <div class="pagination">
+                        {% include "paginator.html" %}
+                    </div>
+                    <div class="clear"></div>
+                </td>
+            </tr>
+            </tfoot>
+        {% else %}
+            <tbody>
+            <tr>
+                <td colspan="4">{% trans "Crap! No app found. However, you can add one with the menu on left side." %}</td>
+            </tr>
+            </tbody>
+        {% endif %}
+    </table>
+{% endblock %}

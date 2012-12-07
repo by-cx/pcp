@@ -16,9 +16,10 @@ from wsgiadmin.apacheconf.models import UserSite, SiteDomain
 from wsgiadmin.domains.models import Domain
 from wsgiadmin.domains.tools import domains_list, used_domains
 from wsgiadmin.requests.request import UWSGIRequest
-from wsgiadmin.apacheconf.tools import get_user_wsgis, get_user_venvs, user_directories, restart_master
+from wsgiadmin.apacheconf.tools import get_user_wsgis, get_user_venvs, user_directories, restart_master, remove_app_preparation
 from wsgiadmin.service.forms import RostiFormHelper
 from wsgiadmin.service.views import JsonResponse, RostiListView
+from wsgiadmin.stats.tools import pay
 
 info = logging.info
 
@@ -29,7 +30,7 @@ class AppsListView(RostiListView):
     delete_url_reverse = 'remove_site'
 
     def get_queryset(self):
-        return self.user.usersite_set.filter(removed=False).order_by("pub_date")
+        return self.user.usersite_set.order_by("pub_date")
 
 @login_required
 def app_static(request, app_type="static", app_id=0):
@@ -40,7 +41,7 @@ def app_static(request, app_type="static", app_id=0):
     superuser = request.user
 
     try:
-        site = UserSite.objects.get(id=app_id, owner=u)
+        site = u.usersite_set.get(id=app_id)
     except UserSite.DoesNotExist:
         site = None
 
@@ -91,27 +92,15 @@ def app_static(request, app_type="static", app_id=0):
 
 @login_required
 def remove_site(request):
-    u = request.session.get('switched_user', request.user)
+    user = request.session.get('switched_user', request.user)
 
     try:
         object_id = request.POST['object_id']
-        s = get_object_or_404(UserSite, id=object_id)
-        if s.owner != u:
+        spp = get_object_or_404(user.usersite_set, id=int(object_id))
+        if spp.owner != user:
             raise Exception("Forbidden operation")
-
-        s.removed = True
-        s.end_date = date.today()
-        s.save()
-
-        #Signal
-        restart_master(config.mode, u)
-
-        ur = UWSGIRequest(u, u.parms.web_machine)
-        ur.stop(s)
-        ur.mod_config()
-
-        # calculate!
-        u.parms.pay_for_sites(use_cache=False)
+        remove_app_preparation(spp)
+        spp.delete()
         return JsonResponse("OK", {1: ugettext("Site was successfuly removed")})
     except Exception, e:
         return JsonResponse("KO", {1: ugettext("Error deleting site")})
@@ -123,7 +112,7 @@ def app_wsgi(request, app_id=0):
     superuser = request.user
 
     try:
-        site = UserSite.objects.get(id=app_id, owner=u)
+        site = u.usersite_set.get(id=app_id)
     except UserSite.DoesNotExist:
         site = None
 
@@ -183,7 +172,7 @@ def reload(request, sid):
     superuser = request.user
 
     sid = int(sid)
-    s = get_object_or_404(UserSite, id=sid)
+    s = get_object_or_404(u.usersite_set, id=sid)
 
     #Signal
     if s.type in ("uwsgi", "modwsgi"):
@@ -203,7 +192,7 @@ def restart(request, sid):
     u = request.session.get('switched_user', request.user)
 
     sid = int(sid)
-    s = get_object_or_404(UserSite, id=sid)
+    s = get_object_or_404(u.usersite_set, id=sid)
 
     #Signal
     if s.type in ("uwsgi", "modwsgi"):

@@ -170,7 +170,8 @@ class PHPApp(AppObject):
         content.append("<VirtualHost %s>" % config.apache_url)
         content.append("\tSuexecUserGroup %(user)s %(group)s" % parms)
         content.append("\tServerName %(main_domain)s" % parms)
-        content.append("\tServerAlias %(misc_domains)s" % parms)
+        if parms.get("misc_domains"):
+            content.append("\tServerAlias %(misc_domains)s" % parms)
         content.append("\tDocumentRoot %(home)s/app/" % parms)
         content.append("\tCustomLog %(home)s/logs/access.log combined" % parms)
         content.append("\tErrorLog %(home)s/logs/error.log" % parms)
@@ -178,7 +179,7 @@ class PHPApp(AppObject):
         content.append("\t\tOptions +ExecCGI %s" % "+Indexes" if parms.get("flag_index") else "-Indexes")
         content.append("\t\tAllowOverride All")
         content.append("\t\tAddHandler fcgid-script .php")
-        content.append("\tFCGIWrapper %(home)s/fcgid/php-wrap .php")
+        content.append("\tFCGIWrapper %(home)s/fcgid/php-wrap .php" % parms)
         content.append("\tOrder deny,allow")
         content.append("\tAllow from all")
         content.append("\t</Directory>")

@@ -105,6 +105,8 @@ class PHPApp(AppObject):
         super(PHPApp, self).install()
         parms = self.get_parmameters()
         self.script.add_cmd("mkdir -p %(home)s/fcgid" % parms, user=self.get_user())
+        self.script.add_cmd("mkdir -p /var/www/%(user)s/" % parms)
+        self.script.add_cmd("chown %(user)s:%(group)s /var/www/%(user)s/" % parms)
 
     def disable(self):
         super(PHPApp, self).disable()
@@ -124,6 +126,7 @@ class PHPApp(AppObject):
         parms = self.get_parmameters()
         self.script.add_cmd("rm /etc/apache2/sites-enabled/%(user)s.conf" % parms)
         self.script.add_cmd("rm /etc/nginx/apps.d/%(user)s.conf" % parms)
+        self.script.add_cmd("rm /var/www/%(user)s/ -r" % parms)
         self.script.reload_apache()
         self.script.reload_nginx()
 
@@ -132,21 +135,22 @@ class PHPApp(AppObject):
         parms = self.get_parmameters()
         self.script.add_file("/etc/apache2/apps.d/%(user)s.conf" % parms, self.gen_apache_config())
         self.script.add_file("/etc/nginx/apps.d/%(user)s.conf" % parms, self.gen_nginx_config())
-        self.script.add_file("%(home)s/fcgid/php.ini" % parms, self.gen_php_ini())
-        self.script.add_file("%(home)s/fcgid/php-wrap" % parms, self.gen_php_wrap())
-        self.script.add_cmd("chmod 555 %(home)s/fcgid/php-wrap" % parms, user=self.get_user())
-        self.script.add_cmd("chmod 444 %(home)s/fcgid/php.ini" % parms)
+        self.script.add_file("/var/www/%(user)s/php-wrap" % parms, self.gen_php_wrap())
+        self.script.add_file("/var/www/%(user)s/php.ini" % parms, self.gen_php_ini())
+        self.script.add_cmd("chmod 555 /var/www/%(user)s/php-wrap" % parms)
+        self.script.add_cmd("chmod 444 /var/www/%(user)s/php.ini" % parms)
         self.script.reload_nginx()
         self.script.reload_apache()
 
     def gen_php_wrap(self):
+        parms = self.get_parmameters()
         content = []
         content.append("#!/bin/sh")
         content.append("PHP_FCGI_CHILDREN=2")
         content.append("export PHP_FCGI_CHILDREN")
         content.append("PHP_FCGI_MAX_REQUESTS=400")
         content.append("export PHP_FCGI_MAX_REQUESTS")
-        content.append("PHPRC=%s(home)/fcgid/")
+        content.append("PHPRC=/var/www/%(user)s/php.ini" % parms)
         content.append("export PHPRC")
         content.append("exec /usr/bin/php-cgi\n")
         return "\n".join(content)
@@ -179,7 +183,7 @@ class PHPApp(AppObject):
         content.append("\t\tOptions +ExecCGI %s" % "+Indexes" if parms.get("flag_index") else "-Indexes")
         content.append("\t\tAllowOverride All")
         content.append("\t\tAddHandler fcgid-script .php")
-        content.append("\t\tFCGIWrapper %(home)s/fcgid/php-wrap .php" % parms)
+        content.append("\t\tFCGIWrapper /var/www/%(user)s/php-wrap .php" % parms)
         content.append("\t\tOrder deny,allow")
         content.append("\t\tAllow from all")
         content.append("\t</Directory>")

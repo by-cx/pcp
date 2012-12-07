@@ -15,7 +15,9 @@
             <th>{% trans "Date" %}</th>
             <th>{% trans "Price" %}</th>
             <th>{% trans "Credits" %}</th>
-            <th>{% trans "Bonus" %}</th>
+            {% if user.is_superuser %}
+            <th>{% trans "Username" %}</th>
+            {% endif %}
             <th>{% trans "State" %}</th>
         </tr>
         </thead>
@@ -25,13 +27,18 @@
                 <tr>
                     <th><a href="{% url payment_info pk=credit.id %}">{{ credit.date }}</a></th>
                     <td>{{ credit.price }} {{ credit.currency }}</td>
-                    <td>{{ credit.value }} cr.</td>
-                    <td>{{ credit.bonus }} cr.</td>
+                    <td>{{ credit.value }} cr.{% if credit.bonus %} (bonus: {{ credit.bonus }}){% endif %}</td>
+                    {% if user.is_superuser %}
+                    <td>{{ credit.user.username }} {{ credit.address.name }}</td>
+                    {% endif %}
                     <td>
                         {% if credit.date_payed %}
-                            {% trans "payed" %} ({{ date.payed }})
+                            {% trans "payed" %} ({{ credit.date_payed }})
                         {% else %}
                             {% trans "No payment" %}
+                            {% if user.is_superuser %}
+                                <a href="{% url payment_payed %}?credit_id={{ credit.id }}">{% trans "Payed!" %}</a>
+                            {% endif %}
                         {% endif %}
                     </td>
                 </tr>

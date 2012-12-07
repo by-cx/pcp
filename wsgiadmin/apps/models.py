@@ -15,6 +15,7 @@ SITE_TYPE_CHOICES = [
 
 class Server(models.Model):
     hostname = models.CharField(_("Hostname/address"), max_length=256, help_text=_("it has to match with ssh config"))
+    domain = models.CharField(_("Domain"), max_length=256)
     ip = models.CharField(_("IP"), max_length=128, blank=True, null=True)
     comment = models.TextField(_("Comment"), blank=True, null=True)
 

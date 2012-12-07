@@ -37,7 +37,11 @@
                         {% else %}
                             {% trans "No payment" %}
                             {% if user.is_superuser %}
+                                {% if credit.address %}
                                 <a href="{% url payment_payed %}?credit_id={{ credit.id }}">{% trans "Payed!" %}</a>
+                                {% else %}
+                                    {% trans "No address for invoice system" %}
+                                {% endif %}
                             {% endif %}
                         {% endif %}
                     </td>

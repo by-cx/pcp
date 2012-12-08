@@ -224,7 +224,7 @@
                         <li>
                             <a href="{% url wsgiadmin.useradmin.views.change_passwd %}">{% trans "Change password" %}</a>
                         </li>
-                        {% if user.parms.home %}
+                        {% if user.parms.home != "/dev/null" %}
                         <li>
                             <a href="{% url wsgiadmin.users.views.ssh_passwd %}">{% trans "Change SSH/SFTP/FTP password" %}</a>
                         </li>

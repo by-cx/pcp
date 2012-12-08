@@ -91,9 +91,6 @@
                                 <a href="{% url wsgiadmin.useradmin.views.master %}" class="red">{% trans "Master panel" %}</a>
                             </li>{% endif %}
                         <li>
-                            <a href="{% url wsgiadmin.useradmin.views.requests %}">{% trans "Last 20 server's request" %}</a>
-                        </li>
-                        <li>
                             <a href="{% url credit_stats %}">{% trans "Payout stats" %}</a>
                         </li>
                         <li>
@@ -221,6 +218,7 @@
                         <li>
                             <a href="{% url address_list %}"><i class="icon-list"></i>{% trans "Addresses" %}</a>
                         </li>
+                        <li><br></li>
                         <li>
                             <a href="{% url wsgiadmin.useradmin.views.change_passwd %}">{% trans "Change password" %}</a>
                         </li>

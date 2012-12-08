@@ -286,6 +286,8 @@ class PythonApp(AppObject):
         self.stop()
         self.script.add_cmd("rm /etc/supervisor/conf.d/%(user)s.conf" % parms)
         self.script.add_cmd("rm /etc/nginx/apps.d/%(user)s.conf" % parms)
+        self.script.add_cmd("supervisorctl reread")
+        self.script.add_cmd("supervisorctl update")
 
     def update(self):
         super(PythonApp, self).update()

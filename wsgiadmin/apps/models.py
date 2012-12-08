@@ -82,7 +82,11 @@ class App(models.Model):
 
     @property
     def price(self):
-        return 0.0
+        if self.user.parms.fee > 0:
+            return 0.0
+        if self.app_type == "static":
+            return (10.0/30.0) * self.user.parms.dc()
+        return (50.0/30.0) * self.user.parms.dc()
 
     def __repr__(self):
         return "<App %s>" % self.name

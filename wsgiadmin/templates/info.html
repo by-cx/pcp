@@ -50,7 +50,7 @@
         <tr>
             <td>{% trans "Apps" %}</td>
             <td>{{ u.parms.count_apps }}×</td>
-            <td>0</a>
+            <td>{{ u.parms.pay_for_apps|floatformat:2 }}</a>
             </td>
         </tr>
         {% if u.parms.count_domains %}

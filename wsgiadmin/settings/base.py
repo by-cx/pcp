@@ -76,8 +76,17 @@ SITE_ID = 1
 USE_I18N = True
 #USE_L10N = True
 
-STATIC_ROOT = join(ROOT, "static")
+STATIC_ROOT = join(ROOT, "..", "static")
 STATIC_URL = "/static/"
+
+STATICFILES_DIRS = (
+    join(ROOT, 'static'),
+)
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+)
+
 
 LOGIN_URL = "/login/"
 LOGOUT_URL = "/logout/"
@@ -129,6 +138,7 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
+    'django.contrib.staticfiles',
     'django.contrib.admin',
 
     'crispy_forms',

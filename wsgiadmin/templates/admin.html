@@ -224,9 +224,11 @@
                         <li>
                             <a href="{% url wsgiadmin.useradmin.views.change_passwd %}">{% trans "Change password" %}</a>
                         </li>
+                        {% if user.parms.home %}
                         <li>
                             <a href="{% url wsgiadmin.users.views.ssh_passwd %}">{% trans "Change SSH/SFTP/FTP password" %}</a>
                         </li>
+                        {% endif %}
                         <li>
                             <a href="{% url django.contrib.auth.views.logout %}">{% trans "Logout" %}</a>
                         </li>

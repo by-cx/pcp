@@ -166,6 +166,11 @@ class AppCreateView(CreateView):
         self.user = request.session.get('switched_user', request.user)
         return super(AppCreateView, self).dispatch(request, *args, **kwargs)
 
+    def get_form(self, form_class):
+        form = super(AppCreateView, self).get_form(form_class)
+        form.user = self.user
+        return form
+
     def get_success_url(self):
         if self.app_type == "static":
             return reverse("app_params_static", kwargs={"app_id": self.object.id})

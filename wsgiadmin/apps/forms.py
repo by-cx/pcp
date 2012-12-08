@@ -59,7 +59,7 @@ class AppForm(ModelForm):
     def clean_name(self):
         if not re.match("^[0-9a-zA-Z_]*$", self.cleaned_data["name"]):
             raise forms.ValidationError(_("App name has to be in this format: ^[0-9a-zA-Z_]*$"))
-        if App.objects.filter(name=self.cleaned_data["name"]):
+        if self.user.app_set.filter(name=self.cleaned_data["name"]):
             raise forms.ValidationError(_("This name is already used"))
         return self.cleaned_data["name"]
 
@@ -78,7 +78,8 @@ class AppParametersForm(forms.Form):
         max_length=128,
         required=False,
         label=_("Password"),
-        widget=forms.PasswordInput
+        widget=forms.PasswordInput,
+        help_text=_("For SSH/SFTP/FTP")
     )
 
     def clean_domains(self):

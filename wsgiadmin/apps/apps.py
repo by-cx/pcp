@@ -138,7 +138,9 @@ class PHPApp(AppObject):
         self.script.add_file("/var/www/%(user)s/php-wrap" % parms, self.gen_php_wrap(), owner=self.get_user())
         self.script.add_file("/var/www/%(user)s/php.ini" % parms, self.gen_php_ini(), owner=self.get_user())
         self.script.add_cmd("chmod 555 /var/www/%(user)s/php-wrap" % parms)
+        self.script.add_cmd("chown %(user)s:%(group)s /var/www/%(user)s/php-wrap" % parms)
         self.script.add_cmd("chmod 444 /var/www/%(user)s/php.ini" % parms)
+        self.script.add_cmd("chown %(user)s:%(group)s /var/www/%(user)s/php.ini" % parms)
         self.script.reload_nginx()
         self.script.reload_apache()
 
@@ -180,7 +182,7 @@ class PHPApp(AppObject):
         content.append("\tCustomLog %(home)s/logs/access.log combined" % parms)
         content.append("\tErrorLog %(home)s/logs/error.log" % parms)
         content.append("\t<Directory %(home)s/app/>" % parms)
-        content.append("\t\tOptions +ExecCGI %s" % "+Indexes" if parms.get("flag_index") else "-Indexes")
+        content.append("\t\tOptions +ExecCGI %s" % "+Indexes" if parms.get("flag_index") else "")
         content.append("\t\tAllowOverride All")
         content.append("\t\tAddHandler fcgid-script .php")
         content.append("\t\tFCGIWrapper /var/www/%(user)s/php-wrap .php" % parms)

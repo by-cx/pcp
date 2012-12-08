@@ -16,11 +16,9 @@
                             <a href="{% url wsgiadmin.users.views.show %}" class="red">{% trans "Users" %}</a>
                         </li>
                     {% endif %}
-                    {% if user.domain_set.count %}
                     <li {% if menu_active == "domains" %} class="active"{% endif %}>
                         <a href="{% url domains_list %}">{% trans "Domains" %}</a>
                     </li>
-                    {% endif %}
                     {% if user.usersite_set.count %}
                     <li {% if menu_active == "webapps" %} class="active"{% endif %}>
                         <a href="{% url app_list %}">{% trans "Web apps" %}</a>

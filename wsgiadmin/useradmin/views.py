@@ -192,7 +192,7 @@ def reg(request):
             u = user.objects.create_user(form.cleaned_data["username"],
                                          form.cleaned_data["email"],
                                          form.cleaned_data["password1"])
-            u.is_active = False
+            u.is_active = True
             u.save()
 
             # parms
@@ -213,7 +213,7 @@ def reg(request):
             if message:
                 message[0].send(form.cleaned_data["email"])
 
-            message = _("New user has been registered.")
+            message = _("User %s has been registered." % u.username)
             send_mail(_('New registration'),
                       message,
                       settings.EMAIL_FROM,

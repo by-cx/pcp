@@ -44,6 +44,9 @@ class EmailAdmin(admin.ModelAdmin):
 
         return super(EmailAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
+class MessageAdmin(admin.ModelAdmin):
+    list_display = ("purpose", "subject")
+
 admin.site.register(Email, EmailAdmin)
 admin.site.register(EmailRedirect)
-admin.site.register(Message)
+admin.site.register(Message, MessageAdmin)

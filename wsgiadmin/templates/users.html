@@ -18,7 +18,6 @@
 			<table class="table table-striped">
 				<thead>
 					<tr>
-					   <th></th>
 					   <th>Jméno uživatele</th>
 					   <th>Informace</th>
 					   <th>Domény</th>
@@ -43,12 +42,12 @@
 						<td>{{ parms.count_domains }}×</td>
 						<td>{{ parms.count_sites }}×</td>
 						<td>{{ parms.count_apps }}×</td>
-                        <td>{{ parms.pay_total_day }}</td>
+                        <td>{{ parms.pay_total_day|floatformat:2 }}</td>
                         {% with parms.credit as credits %}
                         {% if credits >= 0 %}
-                        <td style="color: green;">{{ credits }}</td>
+                        <td style="color: green;">{{ credits|floatformat:2 }}</td>
                         {% else %}
-                        <td style="color: red;">{{ credits }}</td>
+                        <td style="color: red;">{{ credits|floatformat:2 }}</td>
                         {% endif %}
                         {% endwith %}
 						<td>

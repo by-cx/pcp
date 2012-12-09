@@ -171,7 +171,7 @@ class AppNativeForm(AppParametersForm):
         self.fields["domains"] = None
 
     command = forms.CharField(
-        label=_("Commnad"),
+        label=_("Command"),
         max_length=1024,
     )
 

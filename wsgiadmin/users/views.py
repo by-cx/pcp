@@ -248,6 +248,7 @@ def rm(request, uid):
     script.add_cmd("rm -r /var/www/%s" % user.username)
     script.add_cmd("userdel -r %s" % user.username)
     script.add_cmd("dropuser %s" % user.username)
+    script.add_cmd("rm -r /home/%s" % user.username)
     script.commit()
 
     if parms:

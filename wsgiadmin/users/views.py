@@ -32,11 +32,7 @@ def show(request):
         return HttpResponseForbidden(_("Permission error"))
     u = request.session.get('switched_user', request.user)
 
-    if not cache.get('users_list') or request.GET.get("no_cache"):
-        users = list(User.objects.order_by("username").prefetch_related("parms"))
-        cache.set("users_list", users, 21600)
-    else:
-        users = cache.get('users_list')
+    users = list(User.objects.order_by("username").prefetch_related("parms"))
 
     if request.GET.get("order_by") == "credits":
         users = sorted(users, key=lambda x: x.parms.credit)

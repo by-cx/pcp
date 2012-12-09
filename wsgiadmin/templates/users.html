@@ -1,5 +1,6 @@
 {% extends "admin.html" %}
 {% load i18n %}
+{% load cache %}
 
 {% block title %}
 	{% trans "Administration" %} > {% trans "Users" %}
@@ -30,8 +31,9 @@
 				</thead>
 				<tbody id="user_table">
                     {% for user in users %}
-                    {% with user.parms as parms %}
 					<tr>
+                        {% cache 21600 userlist_user_part_of_row user.username %}
+                        {% with user.parms as parms %}
 						<td>
                             {{ user }}
                         </td>
@@ -43,18 +45,20 @@
 						<td>{{ parms.count_sites }}×</td>
 						<td>{{ parms.count_apps }}×</td>
                         <td>{{ parms.pay_total_day|floatformat:2 }}</td>
-                        {% with parms.credit as credits %}
+                        {% with parms.credit_cached as credits %}
                         {% if credits >= 0 %}
                         <td style="color: green;">{{ credits|floatformat:2 }}</td>
                         {% else %}
                         <td style="color: red;">{{ credits|floatformat:2 }}</td>
                         {% endif %}
                         {% endwith %}
+                        {% endwith %}
+                        {% endcache %}
 						<td>
                             <a href="{% url switch_to_user user.id %}" class="btn">{% trans "Switch" %}</a>
+                            <a href="#a" class="btn btn-danger" onclick="if(confirm('{% trans "Are you sure?" %}')) {document.location='{% url user_rm user.id %}';};">{% trans "Delete" %}</a>
 						</td>
 					</tr>
-                    {% endwith %}
                     {% endfor %}
 				</tbody>
                 <tfoot>

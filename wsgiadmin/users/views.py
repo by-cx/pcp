@@ -12,6 +12,8 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.template.context import RequestContext
 from django.utils.translation import ugettext_lazy as _
+from wsgiadmin.apps.tools import Script
+from wsgiadmin.apps.apps import typed_object
 from wsgiadmin.clients.forms import UserForm, ParmsForm
 
 from wsgiadmin.clients.models import *
@@ -30,7 +32,12 @@ def show(request):
         return HttpResponseForbidden(_("Permission error"))
     u = request.session.get('switched_user', request.user)
 
-    users = list(User.objects.order_by("username").select_related())
+    if not cache.get('users_list') or request.GET.get("no_cache"):
+        users = list(User.objects.order_by("username").prefetch_related("parms"))
+        cache.set("users_list", users, 21600)
+    else:
+        users = cache.get('users_list')
+
     if request.GET.get("order_by") == "credits":
         users = sorted(users, key=lambda x: x.parms.credit)
     elif request.GET.get("order_by") == "payments":
@@ -215,25 +222,43 @@ def rm(request, uid):
     if not superuser.is_superuser:
         return HttpResponseForbidden(_("Permission error"))
 
-    iuser = get_object_or_404(User, id=int(uid))
+    user = get_object_or_404(User, id=int(uid))
+    script = Script(user.parms.web_machine.name)
     try:
-        iparms = iuser.parms
+        parms = user.parms
     except Exception, e:
         print 'users/views - handle only this exception type'
         print type(e)
-        iparms = None
+        parms = None
 
-    if iparms: iparms.delete()
+    for app in user.app_set.all():
+        app = typed_object(app)
+        app.uninstall()
+        app.commit()
+        app.delete()
+    for webapp in user.usersite_set.all():
+        webapp.delete()
+    for mydb in user.mysqldb_set.all():
+        script.add_cmd("mysql -u root", stdin="DROP DATABASE %s;" % mydb.dbname)
+        mydb.delete()
+    for pgdb in user.pgsql_set.all():
+        script.add_cmd("dropdb %s" % pgdb.dbname)
+        script.add_cmd("dropuser %s" % pgdb.dbname)
+        pgdb.delete()
+    for email in Email.objects.filter(domain__owner=user):
+        script.add_cmd("rm -r /var/mail/%s/%s" % (email.domain.name, email.login))
+        email.delete()
 
-    if ";" not in iuser.username:
-        sr = SystemRequest(u, iparms.web_machine)
-        sr.run("dropuser %s" % iuser.username)
-        sr.run("userdel %s" % iuser.username)
-        sr.run("groupdel %s" % iuser.username)
-        sr.run("rm -r %s" % iparms.home)
-    iuser.delete()
+    script.add_cmd("rm -r /var/www/%s" % user.username)
+    script.add_cmd("userdel -r %s" % user.username)
+    script.add_cmd("dropuser %s" % user.username)
+    script.commit()
 
-    return HttpResponse("Smazáno")
+    if parms:
+        parms.delete()
+    user.delete()
+
+    return HttpResponseRedirect(reverse("users_list"))
 
 
 @login_required

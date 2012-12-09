@@ -76,6 +76,10 @@ SITE_ID = 1
 USE_I18N = True
 #USE_L10N = True
 
+LOCALE_PATHS = (
+    join(ROOT, "locale")
+)
+
 STATIC_ROOT = join(ROOT, "..", "static")
 STATIC_URL = "/static/"
 
@@ -91,11 +95,6 @@ STATICFILES_FINDERS = (
 LOGIN_URL = "/login/"
 LOGOUT_URL = "/logout/"
 LOGIN_REDIRECT_URL = "/"
-
-# URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
-# trailing slash.
-# Examples: "http://foo.com/media/", "/media/".
-ADMIN_MEDIA_PREFIX = '/media/'
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'l=!i_!9q8tc9@jn@m*n*z6zri01$kvjdh94v^1_bzw!8ja5z=*'

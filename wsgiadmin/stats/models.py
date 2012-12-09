@@ -6,6 +6,8 @@ from wsgiadmin.clients.models import Address
 class RecordExists(Exception): pass
 
 SERVICES = (
+    ("old_webs", 'old_webs'), #domain|processes
+    ("apps", 'apps'), #domain|processes
     ("modwsgi", 'modwsgi'), #domain|processes
     ("uwsgi", 'uwsgi'), #domain|processes
     ("php", 'php'), #domain
@@ -39,7 +41,7 @@ class Record(models.Model):
         return "%s %s %s for %s" % (self.date, self.user, self.service, self.value)
 
 class Credit(models.Model):
-    date = models.DateField(_("Date"), auto_now_add=True)
+    date = models.DateTimeField(_("Date"), auto_now_add=True)
     date_payed = models.DateTimeField(_("Date payed"), blank=True, null=True)
     user = models.ForeignKey(User, verbose_name=_("User"))
     price = models.FloatField(_("Price"))

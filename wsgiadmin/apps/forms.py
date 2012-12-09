@@ -141,7 +141,7 @@ class AppPythonForm(AppParametersForm):
         help_text=_("Write python code, which create WSGI handler of your app.")
     )
     python = forms.ChoiceField(
-        label=_("Static maps"),
+        label=_("Python version"),
         required=True,
         choices=[(x, x) for x in settings.PYTHON_INTERPRETERS]
     )

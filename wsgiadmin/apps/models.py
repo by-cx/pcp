@@ -82,6 +82,8 @@ class App(models.Model):
 
     @property
     def price(self):
+        if self.disabled:
+            return 0.0
         if self.user.parms.fee > 0:
             return 0.0
         if self.app_type == "static":

@@ -161,7 +161,7 @@ class AppPythonForm(AppParametersForm):
         label=_("Static maps"),
         required=False,
         widget=forms.Textarea(attrs={"class": "textarea-code"}),
-        help_text=_("Consider your app as root.")
+        help_text=_("Consider your app as root. One pair <em>/url/ /path/</em> per line.")
     )
 
 

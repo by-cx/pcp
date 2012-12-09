@@ -81,7 +81,7 @@ class AppObject(App):
     def update(self):
         parms = self.get_parmameters()
         limits = "%(user)s         hard    nproc           64\n"
-        limits += "%(user)s         hard    as          262144\n"
+        limits += "%(user)s         hard    as          393216\n"
         self.script.add_file("/etc/security/limits.d/%(user)s.conf" % parms, limits)
 
     def get_logs(self):

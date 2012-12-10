@@ -120,14 +120,6 @@ class Parms(models.Model):
         return (credit if credit else 0) - (cost if cost else 0)
 
     @property
-    def credit_cached(self):
-        if not cache.get('credit_%s' % self.user.username):
-            result = cache.get('credit_%s' % self.user.username, self.credit, 21600)
-        else:
-            result = cache.get('credit_%s' % self.user.username)
-        return result
-
-    @property
     def var_symbol(self):
         return "%d%.4d" % (config.var_symbol_prefix, self.user.id)
 

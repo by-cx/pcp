@@ -45,7 +45,7 @@
 						<td>{{ parms.count_sites }}×</td>
 						<td>{{ parms.count_apps }}×</td>
                         <td>{{ parms.pay_total_day|floatformat:2 }}</td>
-                        {% with parms.credit_cached as credits %}
+                        {% with parms.credit as credits %}
                         {% if credits >= 0 %}
                         <td style="color: green;">{{ credits|floatformat:2 }}</td>
                         {% else %}

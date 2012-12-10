@@ -96,7 +96,7 @@ def payed(credit):
     items.append([
         config.pcp_invoices_item_desc,
         config.pcp_invoices_item_unit,
-        credit.value,
+        credit.value - credit.bonus,
         (1 / float(config.credit_quotient)),
         0,
     ])

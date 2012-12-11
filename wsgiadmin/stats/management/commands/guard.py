@@ -3,6 +3,7 @@ import logging
 from constance import config
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
+from wsgiadmin.apps.apps import PythonApp, AppObject, typed_object
 from wsgiadmin.apacheconf.tools import restart_master
 from wsgiadmin.clients.models import Parms
 from wsgiadmin.emails.models import Message
@@ -22,6 +23,22 @@ class Command(BaseCommand):
                 users.append(user)
         return users
 
+    def disable_apps(self, user):
+        for app in user.app_set.all():
+            app = typed_object(app)
+            app.disable()
+            app.commit()
+            logging.info("%s (%d) disabled" % (app.name, app.id))
+            print "%s (%d) disabled" % (app.name, app.id)
+
+    def enable_apps(self, user):
+        for app in user.app_set.all():
+            app = typed_object(app)
+            app.enable()
+            app.commit()
+            logging.info("%s (%d) enabled" % (app.name, app.id))
+            print "%s (%d) enabled" % (app.name, app.id)
+
     def process(self, user):
         parms = user.parms
         apache_reload = False
@@ -33,14 +50,19 @@ class Command(BaseCommand):
                 parms.enable = False
                 parms.save()
                 apache_reload = True
-                message = Message.objects.filter(purpose="web_disabled")
+                message = Message.objects.filter(purpose="webs_disabled")
                 if message:
                     message[0].send(user.email, {})
+                self.disable_apps(user)
                 print "\t* %s disabled" % user.username
             elif parms.credit >= 0 and not parms.enable:
                 parms.enable = True
                 parms.save()
                 apache_reload = True
+                self.enable_apps(user)
+                message = Message.objects.filter(purpose="webs_enabled")
+                if message:
+                    message[0].send(user.email, {"username": user.username})
                 print "\t* %s enabled" % user.username
 
         correction = 0.0

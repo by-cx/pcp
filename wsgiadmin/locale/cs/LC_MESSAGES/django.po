@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-09 22:01+0100\n"
+"POT-Creation-Date: 2012-12-11 18:08+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -226,17 +226,17 @@ msgid ""
 "own. Otherwise everybody can see your tables/views/.. (not data, just "
 "structure)."
 msgstr ""
-"PostgreSQL databáze používá schéma public jako výchozí. Ujistěte se, že"
-"si před použitím vytvoříte schéma vlastní. V opačném případě uvidí všichni"
-"strukturu vašich tabulek/pohledu/.. (nikoli data)."
+"PostgreSQL databáze používá schéma public jako výchozí. Ujistěte se, žesi "
+"před použitím vytvoříte schéma vlastní. V opačném případě uvidí "
+"všichnistrukturu vašich tabulek/pohledu/.. (nikoli data)."
 
 #: apps/forms.py:45
 msgid ""
 "There is no relation to DNS or Domains menu (if you see one). Write your "
 "domains separated by spaces."
 msgstr ""
-"Není zde žádná vazba na sekci DNS nebo domény (pokud je vidíte). Napište"
-"domény oddělené mezerami."
+"Není zde žádná vazba na sekci DNS nebo domény (pokud je vidíte). "
+"Napištedomény oddělené mezerami."
 
 #: apps/forms.py:54 apps/forms.py:93
 msgid "Each domain has to be in this format: ^[0-9a-z_\\.\\-]*$"
@@ -264,7 +264,9 @@ msgstr "Domény"
 msgid ""
 "There is no relation to DNS or Domains menu. Write your domains separated by "
 "spaces."
-msgstr "Není zde žádná vazba na sekci DNS nebo Domains. Napište své domény oddělené čárkou."
+msgstr ""
+"Není zde žádná vazba na sekci DNS nebo Domains. Napište své domény oddělené "
+"čárkou."
 
 #: apps/forms.py:80 apps/models.py:112 emails/forms.py:26 ftps/models.py:9
 #: service/forms.py:20 service/forms.py:49
@@ -331,7 +333,8 @@ msgstr "Počet procesů"
 msgid ""
 "List of requirements. One package per one line. Like requirements.txt file."
 msgstr ""
-"Seznam modulů, které vaše aplikace potřebuje k běhu. Podobný jako soubor requirements.txt."
+"Seznam modulů, které vaše aplikace potřebuje k běhu. Podobný jako soubor "
+"requirements.txt."
 
 #: apps/forms.py:161
 msgid "Static maps"
@@ -339,7 +342,9 @@ msgstr "Mapa statického obsahu"
 
 #: apps/forms.py:164
 msgid "Consider your app as root. One pair <em>/url/ /path/</em> per line."
-msgstr "Napište na každý řádek jeden pár <em>/url/ /cesta/</em>. Cesta je brána vzhledem k rootu vaší aplikace (~/app/). Detaily na wiki."
+msgstr ""
+"Napište na každý řádek jeden pár <em>/url/ /cesta/</em>. Cesta je brána "
+"vzhledem k rootu vaší aplikace (~/app/). Detaily na wiki."
 
 #: apps/forms.py:174
 msgid "Command"
@@ -366,8 +371,8 @@ msgstr ""
 msgid "Comment"
 msgstr "Komentář"
 
-#: apps/models.py:30 apps/models.py:101 apps/models.py:110 stats/models.py:26
-#: stats/models.py:44 templates/credits.html:15 templates/info.html:113
+#: apps/models.py:30 apps/models.py:101 apps/models.py:110 stats/models.py:30
+#: stats/models.py:49 templates/credits.html:15 templates/info.html:113
 #: templates/payment_infopage.html:15 templates/requests.html:17
 msgid "Date"
 msgstr "Datum"
@@ -526,66 +531,66 @@ msgstr "Poslední upozornění na nízkou hodnotu kreditů"
 msgid "Uživatel"
 msgstr ""
 
-#: clients/models.py:172 clients/models.py:191 cron/models.py:50
-#: db/models.py:8 db/models.py:19 stats/models.py:27 stats/models.py:46
+#: clients/models.py:164 clients/models.py:183 cron/models.py:50
+#: db/models.py:8 db/models.py:19 stats/models.py:31 stats/models.py:51
 #: templates/app_info.html:20
 msgid "User"
 msgstr "Uživatel"
 
-#: clients/models.py:173 templates/admin.html:16 templates/users.html:6
+#: clients/models.py:165 templates/admin.html:16 templates/users.html:6
 msgid "Users"
 msgstr "Uživatelé"
 
-#: clients/models.py:177
+#: clients/models.py:169
 msgid "Default address"
 msgstr "Výchozí adresa"
 
-#: clients/models.py:178 useradmin/forms.py:27
+#: clients/models.py:170 useradmin/forms.py:27
 msgid "Company"
 msgstr "Společnost"
 
-#: clients/models.py:179 useradmin/forms.py:28
+#: clients/models.py:171 useradmin/forms.py:28
 msgid "First name"
 msgstr "Jméno"
 
-#: clients/models.py:180 useradmin/forms.py:29
+#: clients/models.py:172 useradmin/forms.py:29
 msgid "Last name"
 msgstr "Příjmení"
 
-#: clients/models.py:181 stats/models.py:51
+#: clients/models.py:173 stats/models.py:56
 msgid "Address"
 msgstr "Adresa"
 
-#: clients/models.py:182 templates/addresses.html:17 useradmin/forms.py:31
+#: clients/models.py:174 templates/addresses.html:17 useradmin/forms.py:31
 msgid "City"
 msgstr "Město"
 
-#: clients/models.py:183 useradmin/forms.py:32
+#: clients/models.py:175 useradmin/forms.py:32
 msgid "ZIP"
 msgstr "PSČ"
 
-#: clients/models.py:185 templates/addresses.html:18 useradmin/forms.py:36
+#: clients/models.py:177 templates/addresses.html:18 useradmin/forms.py:36
 msgid "Phone"
 msgstr "Telefon"
 
-#: clients/models.py:186 templates/addresses.html:19 templates/boxes.html:21
+#: clients/models.py:178 templates/addresses.html:19 templates/boxes.html:21
 #: useradmin/forms.py:13 useradmin/forms.py:35 useradmin/forms.py:55
 msgid "E-mail"
 msgstr "E-mail"
 
-#: clients/models.py:188
+#: clients/models.py:180
 msgid "Company identification number"
 msgstr "IČ"
 
-#: clients/models.py:189
+#: clients/models.py:181
 msgid "VAT registration number"
 msgstr "DIČ"
 
-#: clients/models.py:192
+#: clients/models.py:184
 msgid "Removed"
 msgstr "Vymazáno"
 
-#: clients/views.py:16 stats/views.py:191 useradmin/views.py:34
+#: clients/views.py:16 stats/views.py:279 useradmin/views.py:34
 #: useradmin/views.py:53 users/views.py:32 users/views.py:61 users/views.py:78
 #: users/views.py:91 users/views.py:133 users/views.py:178 users/views.py:219
 msgid "Permission error"
@@ -1093,7 +1098,7 @@ msgstr ""
 msgid "Return code"
 msgstr "Návratový kód"
 
-#: service/forms.py:13 templates/payment_infopage.html:42
+#: service/forms.py:13 templates/payment_infopage.html:49
 msgid "Save"
 msgstr "Uložit"
 
@@ -1123,64 +1128,64 @@ msgstr "Vytvořit"
 msgid "Update"
 msgstr "Upravit"
 
-#: settings/base.py:255
+#: settings/base.py:257
 msgid "Per application (60 CZK/app/month)"
 msgstr "Za aplikaci (60 Kč/app/měsíc)"
 
-#: settings/base.py:256
+#: settings/base.py:258
 msgid "Constant fee (200 CZK/196 MB RAM)"
 msgstr "Paušální poplatek (200 Kč/196 MB RAM)"
 
-#: stats/models.py:28 templates/info.html:46
+#: stats/models.py:32 templates/info.html:46
 msgid "Service"
 msgstr "Služba"
 
-#: stats/models.py:29
+#: stats/models.py:33
 msgid "Value"
 msgstr "Hodnota"
 
-#: stats/models.py:30 templates/payment_infopage.html:68
+#: stats/models.py:34 templates/payment_infopage.html:92
 msgid "Cost"
 msgstr "Cena"
 
-#: stats/models.py:45
+#: stats/models.py:50
 msgid "Date payed"
 msgstr "Datum zaplacení"
 
-#: stats/models.py:47 templates/credits.html:16 templates/info.html:115
+#: stats/models.py:52 templates/credits.html:16 templates/info.html:115
 #: templates/payment_infopage.html:19
 msgid "Price"
 msgstr "Cena"
 
-#: stats/models.py:48
+#: stats/models.py:53
 msgid "Currenty"
 msgstr "Měna"
 
-#: stats/models.py:49
+#: stats/models.py:54
 msgid "Credits (bonus included)"
 msgstr "Kredity (včetně bonusu)"
 
-#: stats/models.py:50
+#: stats/models.py:55
 msgid "Bonus"
 msgstr ""
 
-#: stats/views.py:39
+#: stats/views.py:124
 msgid "Credits will been added on your account after payment"
 msgstr "Kredity budou připsány po zaplacení"
 
-#: stats/views.py:44
+#: stats/views.py:129
 msgid "Low level behavior has been setted"
 msgstr "Chování při nízkém kreditu bylo upraveno"
 
-#: stats/views.py:127
+#: stats/views.py:213
 msgid "Address has been changed"
 msgstr "Adresa byla upravena"
 
-#: stats/views.py:129
+#: stats/views.py:215
 msgid "Address hasn't been changed"
 msgstr "Adresa nebyla změněna"
 
-#: stats/views.py:195
+#: stats/views.py:283
 #, python-format
 msgid "API call result: %s"
 msgstr ""
@@ -1200,6 +1205,7 @@ msgstr ""
 #: templates/bill.html:5 templates/boxes.html:5 templates/credit.html:5
 #: templates/credits.html:5 templates/cron.html:5 templates/db.html:5
 #: templates/domains.html:5 templates/ftps.html:5 templates/info.html:5
+#: templates/payment_done.html:5 templates/payment_error.html:5
 #: templates/payment_infopage.html:5 templates/redirects.html:5
 #: templates/requests.html:5 templates/subdomains.html:5
 #: templates/universal.html:5 templates/users.html:6
@@ -1681,7 +1687,7 @@ msgstr "Prodloužit služby o jeden měsíc"
 
 #: templates/credit.html:181
 msgid "Buy THREE months"
-msgstr "Prdloužit služby o tři měsíce"
+msgstr "Prodloužit služby o tři měsíce"
 
 #: templates/credit.html:182
 msgid "Buy SIX months"
@@ -2024,6 +2030,38 @@ msgstr "Obnova hesla"
 msgid "Go to login page"
 msgstr "Na přihlašovací stránku"
 
+#: templates/payment_done.html:5 templates/payment_done.html.py:11
+msgid "Payment is done"
+msgstr "Platba proběhla úspěšně"
+
+#: templates/payment_done.html:13
+msgid ""
+"Thank you for your payment. Credits will be approved after confirmation from "
+"GoPay. Confirmation depends on payment method."
+msgstr ""
+"Platba byla provedena a kredity budou přičteny hned po potvrzení ze strany "
+"platební brány GoPay. Doba, za kterou dojde k potvrzení, závisí na vybrané platební metodě."
+
+#: templates/payment_done.html:15
+msgid "Payment detail"
+msgstr "Detail platby"
+
+#: templates/payment_error.html:5 templates/payment_error.html.py:11
+msgid "Payment failed"
+msgstr "Platba byla odmítnua"
+
+#: templates/payment_error.html:13
+msgid "Payment has been failed because one of this reason:"
+msgstr "K tomu mohlo dojít z jednoho z následujících důvodů:"
+
+#: templates/payment_error.html:16
+msgid "You canceled it"
+msgstr "Platba byla zrušena z vaší strany"
+
+#: templates/payment_error.html:17
+msgid "GoPay refuse your payment"
+msgstr "GoPay odmítlo vaši platbu"
+
 #: templates/payment_infopage.html:5
 msgid "Payment"
 msgstr "Platba"
@@ -2033,32 +2071,56 @@ msgid "Payment information"
 msgstr "Informace k platbě"
 
 #: templates/payment_infopage.html:32
+msgid "GoPay payment state"
+msgstr "Stav GoPay platby"
+
+#: templates/payment_infopage.html:38
 msgid "Address at invoice"
 msgstr "Adresa na faktuře"
 
-#: templates/payment_infopage.html:44
+#: templates/payment_infopage.html:51
 msgid "Add new address"
 msgstr "Přidat novou adresu"
 
-#: templates/payment_infopage.html:50
+#: templates/payment_infopage.html:61
 msgid "Now, last step you have to do is a pay. Look at the information below."
 msgstr ""
 "Aby kredity byly připsány na účet, je nutné uhradit následující platbu. "
 "Daňový doklad bude zaslán po uhrazení."
 
-#: templates/payment_infopage.html:52
+#: templates/payment_infopage.html:66
+msgid "Payment via GoPay (Credit Card)"
+msgstr "Platba přes platební bránu GoPay (platební karta)"
+
+#: templates/payment_infopage.html:68
+msgid ""
+"If you prefer fast and simple payments, use GoPay and pay with credit card "
+"or other quick methods."
+msgstr "Pokud preferujete rychlost, jednoduchost a pohodlí, použijte toto tlačítko."
+"Budete přesměrování na platební bránu GoPay, kde můžete kredity uhradit platební kartou "
+"či rychlým bankovním převodem."
+
+#: templates/payment_infopage.html:69
+msgid "Pay with GoPay"
+msgstr "Zaplatit přes GoPay"
+
+#: templates/payment_infopage.html:72
+msgid "Try again with GoPay"
+msgstr "Zkusit znovu zaplatit přes GoPay"
+
+#: templates/payment_infopage.html:76
 msgid "Payment via your bank"
 msgstr "Platba bankovním převodem"
 
-#: templates/payment_infopage.html:56
+#: templates/payment_infopage.html:80
 msgid "Bank"
 msgstr "Banka"
 
-#: templates/payment_infopage.html:60
+#: templates/payment_infopage.html:84
 msgid "Bank account"
 msgstr "Bankovní účet"
 
-#: templates/payment_infopage.html:64
+#: templates/payment_infopage.html:88
 msgid "Variable symbol"
 msgstr "Variabilní symbol"
 
@@ -2210,7 +2272,7 @@ msgstr "Reset hesla"
 
 #: useradmin/views.py:149
 msgid "Password has been reseted and sent to your email"
-msgstr ""
+msgstr "Heslo bylo resetováno a odesláno na váš e-mail"
 
 #: useradmin/views.py:173
 msgid "Change password for this administration"

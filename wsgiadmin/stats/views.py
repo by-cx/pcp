@@ -94,11 +94,16 @@ class PaymentError(TemplateView):
         self.user = request.session.get('switched_user', request.user)
         return super(PaymentError, self).dispatch(request, *args, **kwargs)
 
+    def get_credit(self):
+        payment = Payment.objects.get(uuid=self.request.GET.get("payment_uuid"))
+        return self.user.credit_set.get(id=payment.p4)
+
     def get_context_data(self, **kwargs):
         context = super(PaymentError, self).get_context_data(**kwargs)
         context['u'] = self.user
         context['superuser'] = self.request.user
         context['menu_active'] = "dashboard"
+        context['credit'] = self.get_credit()
         return context
 
 
@@ -194,7 +199,7 @@ class PaymentView(TemplateView):
         context['superuser'] = self.request.user
         context['menu_active'] = "dashboard"
         context['config'] = config
-        context['gopay'] = settings.GOPAY and self.user.username in ("cx",) #remove after approved
+        context['gopay'] = settings.GOPAY and self.user.username in ("cx", "gopay",) #TODO:remove after approved
         context['addresses'] = self.user.address_set.filter(removed=False)
         return context
 

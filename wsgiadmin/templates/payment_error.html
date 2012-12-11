@@ -10,10 +10,17 @@
 
     <h2>{% trans "Payment failed" %}</h2>
 
+    <br>
+
     <p>{% trans "Payment has been failed because one of this reason:" %}</p>
+
 
     <ul>
         <li>{% trans "You canceled it" %}</li>
         <li>{% trans "GoPay refuse your payment" %}</li>
     </ul>
+
+    <br>
+
+    <p><a href="{% url payment_info pk=credit.id %}" class="btn">{% trans "Payment detail" %}</a></p>
 {% endblock %}

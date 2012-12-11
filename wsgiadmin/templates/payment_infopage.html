@@ -60,7 +60,7 @@
     {% if not credit.date_payed %}
     <p class="red">{% trans "Now, last step you have to do is a pay. Look at the information below." %}</p>
 
-    <br>
+    <br><br>
 
     {% if gopay %}
     <h2>{% trans "Payment via GoPay (Credit Card)" %}</h2>
@@ -69,9 +69,11 @@
         <p><a href="{% url payment_gopay %}?credit_id={{ credit.id }}" class="btn btn-success btn-large">{% trans "Pay with GoPay" %}</a></p>
     {% else %}
         <p>It looks like you have already try make a payment via GoPay. If your attempt failed, let's try it again.</p>
-        <p><a href="{% url payment_gopay %}?credit_id={{ credit.id }}" class="btn btn-primary">{% trans "Try again with GoPay" %}</a></p>
+        <p><a href="{% url payment_gopay %}?credit_id={{ credit.id }}" class="btn btn-success btn-large">{% trans "Try again with GoPay" %}</a></p>
     {% endif %}
     {% endif %}
+
+    <br><br>
 
     <h2>{% trans "Payment via your bank" %}</h2>
 

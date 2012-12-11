@@ -51,7 +51,7 @@ def create_gopay_payment(request):
         p4="%d" % credit.id,
         name="%.2f credits for %s (credit_id=%d)" % (credit.price, user.username, credit.id),
     )
-    credit.gopay_payment = Payment.objects.get(p4=str(credit.id))
+    credit.gopay_payment = Payment.objects.filter(p4=str(credit.id)).order_by("date").reverse()[0]
     credit.save()
     return HttpResponseRedirect(url)
 

@@ -54,7 +54,21 @@ class Credit(models.Model):
     value = models.FloatField(_("Credits (bonus included)"))
     bonus = models.FloatField(_("Bonus"), default=0)
     address = models.ForeignKey(Address, verbose_name=_("Address"), null=True)
-    gopay_payment = models.ForeignKey(Payment, null=True, blank=True)
+
+    def gopay_payment(self):
+        payments = self.gopay_payments()
+        if payments:
+            return payments[0]
+        return None
+
+    def gopay_paid(self):
+        for payment in self.gopay_payments():
+            if payment.state == "PAID":
+                return True
+        return False
+
+    def gopay_payments(self):
+        return Payment.objects.filter(p4=str(self.id)).order_by("date").reverse()
 
     def __unicode__(self):
         return "%s += %.2f" % (self.user.username, self.value)

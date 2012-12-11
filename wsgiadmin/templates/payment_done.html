@@ -10,7 +10,11 @@
 
     <h2>{% trans "Payment is done" %}</h2>
 
+    <br>
+
     <p>{% trans "Thank you for your payment. Credits will be approved after confirmation from GoPay. Confirmation depends on payment method." %}</p>
+
+    <br>
 
     <p><a href="{% url payment_info pk=credit.id %}" class="btn">{% trans "Payment detail" %}</a></p>
 

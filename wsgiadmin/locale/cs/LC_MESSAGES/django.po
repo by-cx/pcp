@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-11 18:08+0100\n"
+"POT-Creation-Date: 2012-12-11 18:32+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -590,7 +590,7 @@ msgstr "DIČ"
 msgid "Removed"
 msgstr "Vymazáno"
 
-#: clients/views.py:16 stats/views.py:279 useradmin/views.py:34
+#: clients/views.py:16 stats/views.py:284 useradmin/views.py:34
 #: useradmin/views.py:53 users/views.py:32 users/views.py:61 users/views.py:78
 #: users/views.py:91 users/views.py:133 users/views.py:178 users/views.py:219
 msgid "Permission error"
@@ -1098,7 +1098,7 @@ msgstr ""
 msgid "Return code"
 msgstr "Návratový kód"
 
-#: service/forms.py:13 templates/payment_infopage.html:49
+#: service/forms.py:13
 msgid "Save"
 msgstr "Uložit"
 
@@ -1144,7 +1144,7 @@ msgstr "Služba"
 msgid "Value"
 msgstr "Hodnota"
 
-#: stats/models.py:34 templates/payment_infopage.html:92
+#: stats/models.py:34 templates/payment_infopage.html:94
 msgid "Cost"
 msgstr "Cena"
 
@@ -1169,23 +1169,23 @@ msgstr "Kredity (včetně bonusu)"
 msgid "Bonus"
 msgstr ""
 
-#: stats/views.py:124
+#: stats/views.py:129
 msgid "Credits will been added on your account after payment"
 msgstr "Kredity budou připsány po zaplacení"
 
-#: stats/views.py:129
+#: stats/views.py:134
 msgid "Low level behavior has been setted"
 msgstr "Chování při nízkém kreditu bylo upraveno"
 
-#: stats/views.py:213
+#: stats/views.py:218
 msgid "Address has been changed"
 msgstr "Adresa byla upravena"
 
-#: stats/views.py:215
+#: stats/views.py:220
 msgid "Address hasn't been changed"
 msgstr "Adresa nebyla změněna"
 
-#: stats/views.py:283
+#: stats/views.py:288
 #, python-format
 msgid "API call result: %s"
 msgstr ""
@@ -2034,15 +2034,16 @@ msgstr "Na přihlašovací stránku"
 msgid "Payment is done"
 msgstr "Platba proběhla úspěšně"
 
-#: templates/payment_done.html:13
+#: templates/payment_done.html:15
 msgid ""
 "Thank you for your payment. Credits will be approved after confirmation from "
 "GoPay. Confirmation depends on payment method."
 msgstr ""
 "Platba byla provedena a kredity budou přičteny hned po potvrzení ze strany "
-"platební brány GoPay. Doba, za kterou dojde k potvrzení, závisí na vybrané platební metodě."
+"platební brány GoPay. Doba, za kterou dojde k potvrzení, závisí na vybrané "
+"platební metodě."
 
-#: templates/payment_done.html:15
+#: templates/payment_done.html:19 templates/payment_error.html:25
 msgid "Payment detail"
 msgstr "Detail platby"
 
@@ -2050,15 +2051,15 @@ msgstr "Detail platby"
 msgid "Payment failed"
 msgstr "Platba byla odmítnua"
 
-#: templates/payment_error.html:13
+#: templates/payment_error.html:15
 msgid "Payment has been failed because one of this reason:"
 msgstr "K tomu mohlo dojít z jednoho z následujících důvodů:"
 
-#: templates/payment_error.html:16
+#: templates/payment_error.html:19
 msgid "You canceled it"
 msgstr "Platba byla zrušena z vaší strany"
 
-#: templates/payment_error.html:17
+#: templates/payment_error.html:20
 msgid "GoPay refuse your payment"
 msgstr "GoPay odmítlo vaši platbu"
 
@@ -2078,6 +2079,10 @@ msgstr "Stav GoPay platby"
 msgid "Address at invoice"
 msgstr "Adresa na faktuře"
 
+#: templates/payment_infopage.html:49
+msgid "Change address"
+msgstr "Změnit adresu"
+
 #: templates/payment_infopage.html:51
 msgid "Add new address"
 msgstr "Přidat novou adresu"
@@ -2096,9 +2101,10 @@ msgstr "Platba přes platební bránu GoPay (platební karta)"
 msgid ""
 "If you prefer fast and simple payments, use GoPay and pay with credit card "
 "or other quick methods."
-msgstr "Pokud preferujete rychlost, jednoduchost a pohodlí, použijte toto tlačítko."
-"Budete přesměrování na platební bránu GoPay, kde můžete kredity uhradit platební kartou "
-"či rychlým bankovním převodem."
+msgstr ""
+"Pokud preferujete rychlost, jednoduchost a pohodlí, použijte toto tlačítko."
+"Budete přesměrování na platební bránu GoPay, kde můžete kredity uhradit "
+"platební kartou či rychlým bankovním převodem."
 
 #: templates/payment_infopage.html:69
 msgid "Pay with GoPay"
@@ -2108,19 +2114,19 @@ msgstr "Zaplatit přes GoPay"
 msgid "Try again with GoPay"
 msgstr "Zkusit znovu zaplatit přes GoPay"
 
-#: templates/payment_infopage.html:76
+#: templates/payment_infopage.html:78
 msgid "Payment via your bank"
 msgstr "Platba bankovním převodem"
 
-#: templates/payment_infopage.html:80
+#: templates/payment_infopage.html:82
 msgid "Bank"
 msgstr "Banka"
 
-#: templates/payment_infopage.html:84
+#: templates/payment_infopage.html:86
 msgid "Bank account"
 msgstr "Bankovní účet"
 
-#: templates/payment_infopage.html:88
+#: templates/payment_infopage.html:90
 msgid "Variable symbol"
 msgstr "Variabilní symbol"
 

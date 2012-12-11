@@ -100,7 +100,7 @@
             <form method="post" action="{% url credit %}">
                 <input type="hidden" name="credit" value="{{ for_month }}" />
                 <strong>+{{ for_month|floatformat:2 }}</strong>
-                <input type="submit" value="{% trans "BUY" %}" />
+                <input type="submit" class="btn btn-success" value="{% trans "BUY" %}" />
                 <i>({{ for_month_cost|floatformat:2 }} Kč)</i>
                 {% csrf_token %}
             </form>
@@ -114,7 +114,7 @@
             <form method="post" action="{% url credit %}">
                 <input type="hidden" name="credit" value="{{ for_three_months }}" />
                 <strong>+{{ for_three_months|floatformat:2 }}</strong>
-                <input type="submit" value="{% trans "BUY" %}" />
+                <input type="submit" class="btn btn-success" value="{% trans "BUY" %}" />
                 <i>({{ for_three_months_cost|floatformat:2 }} Kč)</i>
                 {% csrf_token %}
             </form>
@@ -128,7 +128,7 @@
             <form method="post" action="{% url credit %}">
                 <input type="hidden" name="credit" value="{{ for_six_months }}" />
                 <strong>+{{ for_six_months|floatformat:2 }}</strong>
-                <input type="submit" value="{% trans "BUY" %}" />
+                <input type="submit" class="btn btn-success" value="{% trans "BUY" %}" />
                 <i>({{ for_six_months_cost|floatformat:2 }} Kč)</i>
                 {% csrf_token %}
             </form>
@@ -142,7 +142,7 @@
             <form method="post" action="{% url credit %}">
                 <input type="hidden" name="credit" value="{{ for_year }}" />
                 <strong>+{{ for_year|floatformat:2 }}</strong>
-                <input type="submit" value="{% trans "BUY" %}" />
+                <input type="submit" class="btn btn-success" value="{% trans "BUY" %}" />
                 <i>({{ for_year_cost|floatformat:2 }} Kč)</i>
                 {% csrf_token %}
             </form>
@@ -154,7 +154,7 @@
         <td>
             <form method="post" action="{% url credit %}">
                 <input type="text" name="credit" value="100" />
-                <input type="submit" value="{% trans "Buy" %}" />
+                <input type="submit" class="btn btn-success" value="{% trans "Buy" %}" />
                 {% csrf_token %}
             </form>
         </td>

@@ -46,7 +46,7 @@
                                 <option value="{{ address.id }}"{% if credit.address == address %} selected="selected" {% endif %}>{{ address.address }}</option>
                             {% endfor %}
                         </select><br>
-                        <input type="submit" value="{% trans "Save" %}" class="btn">
+                        <input type="submit" value="{% trans "Change address" %}" class="btn">
                     </form>
                     <a href="{% url address_create %}">{% trans "Add new address" %}</a>
                 {% else %}

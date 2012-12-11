@@ -1,0 +1,19 @@
+{% extends "admin.html" %}
+{% load i18n %}
+
+{% block title %}
+    {% trans "Administration" %} &gt; {% trans "Payment failed" %}
+{% endblock %}
+
+{% block content %}
+    <div id="message-box"></div>
+
+    <h2>{% trans "Payment failed" %}</h2>
+
+    <p>{% trans "Payment has been failed because one of this reason:" %}</p>
+
+    <ul>
+        <li>{% trans "You cancel it" %}</li>
+        <li>{% trans "GoPay refuse your payment" %}</li>
+    </ul>
+{% endblock %}

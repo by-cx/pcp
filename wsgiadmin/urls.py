@@ -13,9 +13,10 @@ if getattr(settings, 'ENABLE_DEBUG_URLS', False):
     )
 
 urlpatterns += patterns('',
-    (r'^django-admin/', include(admin.site.urls)),
-    (r'^favicon\.ico$', 'django.views.generic.simple.redirect_to', {'url': '/static/favicon.ico'}),
-    (r'^i18n/', include('django.conf.urls.i18n')),
+    url(r'^django-admin/', include(admin.site.urls)),
+    url(r'^gopay/', include('gopay4django.urls')),
+    url(r'^favicon\.ico$', 'django.views.generic.simple.redirect_to', {'url': '/static/favicon.ico'}),
+    url(r'^i18n/', include('django.conf.urls.i18n')),
 )
 
 if 'rosetta' in settings.INSTALLED_APPS:
@@ -24,5 +25,5 @@ if 'rosetta' in settings.INSTALLED_APPS:
     )
 
 urlpatterns += patterns('',
-    (r'^', include('wsgiadmin.useradmin.urls')),
+    url(r'^', include('wsgiadmin.useradmin.urls')),
 )

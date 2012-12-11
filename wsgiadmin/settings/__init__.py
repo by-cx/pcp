@@ -15,6 +15,8 @@ try:
 except ImportError:
     pass
 
+if GOPAY:
+    INSTALLED_APPS.append('gopay4django')
 
 if DEBUG_TOOLBAR:
 

@@ -60,7 +60,7 @@ def add_credit(user, value, address=None, free=None):
     credit.price = (1 / float(config.credit_quotient)) * value
     credit.currency = config.credit_currency
     credit.value = value
-    credit.bonus = 1.0
+    credit.bonus = 0
     credit.address = address
     credit.save()
 

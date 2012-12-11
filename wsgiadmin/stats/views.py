@@ -1,4 +1,4 @@
-from datetime import date, timedelta, datetime
+from datetime import date, timedelta
 from constance import config
 from django.conf import settings
 from django.contrib import messages
@@ -10,11 +10,96 @@ from django.views.generic.base import TemplateView
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
+from gopay4django.api import GoPay
+from gopay4django.models import Payment
 from wsgiadmin.clients.models import Address
 from wsgiadmin.emails.models import Message
 from wsgiadmin.service.views import RostiListView
 from wsgiadmin.stats.models import Credit
 from wsgiadmin.stats.tools import add_credit, payed
+from gopay4django.signals import payment_changed
+from django.dispatch import receiver
+
+
+@receiver(payment_changed)
+def payment_changed_callback(sender, **kwargs):
+    payment = kwargs.get("payment")
+    if payment.state == "PAID":
+        credit = Credit.objects.get(id=int(payment.p4))
+        payed(credit)
+
+
+@login_required
+def create_gopay_payment(request):
+    user = request.session.get('switched_user', request.user)
+    superuser = request.user
+    credit = user.credit_set.get(id=request.GET.get("credit_id"))
+    address = credit.address
+    gopay = GoPay()
+    url = gopay.create_payment(
+        productName = settings.GOPAY_PRODUCT_NAME,
+        totalPrice = credit.price,
+        currency = "CZK",
+        firstName = address.first_name,
+        lastName = address.last_name,
+        city = address.city,
+        street = address.street,
+        postalCode = address.zip,
+        countryCode = "CZE",
+        email = address.email,
+        phoneNumber=int(address.phone.replace(" ", "")),
+        p4="%d" % credit.id,
+        name="%.2f credits for %s (credit_id=%d)" % (credit.price, user.username, credit.id),
+    )
+    credit.gopay_payment = Payment.objects.get(p4=str(credit.id))
+    credit.save()
+    return HttpResponseRedirect(url)
+
+
+class PaymentDone(TemplateView):
+    template_name = "payment_done.html"
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        self.user = request.session.get('switched_user', request.user)
+        return super(PaymentDone, self).dispatch(request, *args, **kwargs)
+
+    def get_payment(self):
+        return Payment.objects.get(uuid=self.request.GET.get("payment_uuid"))
+
+    def get_credit(self):
+        payment = self.get_payment()
+        return self.user.credit_set.get(id=payment.p4)
+
+    def get_payment_paid(self):
+        payment = self.get_payment()
+        if payment.state == "PAID":
+            payed(self.get_credit())
+
+    def get_context_data(self, **kwargs):
+        context = super(PaymentDone, self).get_context_data(**kwargs)
+        context['u'] = self.user
+        context['superuser'] = self.request.user
+        context['menu_active'] = "dashboard"
+        context['credit'] = self.get_credit()
+        self.get_payment_paid()
+        return context
+
+
+class PaymentError(TemplateView):
+    template_name = "payment_error.html"
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        self.user = request.session.get('switched_user', request.user)
+        return super(PaymentError, self).dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(PaymentError, self).get_context_data(**kwargs)
+        context['u'] = self.user
+        context['superuser'] = self.request.user
+        context['menu_active'] = "dashboard"
+        return context
 
 
 class CreditView(TemplateView):
@@ -109,6 +194,7 @@ class PaymentView(TemplateView):
         context['superuser'] = self.request.user
         context['menu_active'] = "dashboard"
         context['config'] = config
+        context['gopay'] = settings.GOPAY and self.user.username in ("cx",) #remove after approved
         context['addresses'] = self.user.address_set.filter(removed=False)
         return context
 
@@ -184,6 +270,8 @@ class StatsView(TemplateView):
         context['config'] = config
         return context
 
+
+@login_required
 def send_invoice(request):
     u = request.session.get('switched_user', request.user)
     superuser = request.user

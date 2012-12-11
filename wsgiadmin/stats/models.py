@@ -1,9 +1,12 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
+from gopay4django.models import Payment
 from wsgiadmin.clients.models import Address
 
+
 class RecordExists(Exception): pass
+
 
 SERVICES = (
     ("old_webs", 'old_webs'), #domain|processes
@@ -19,6 +22,7 @@ SERVICES = (
     ("fee", 'fee'), #count
     ("correction", 'correction'), #count
 )
+
 
 class Record(models.Model):
     check=True
@@ -40,6 +44,7 @@ class Record(models.Model):
     def __unicode__(self):
         return "%s %s %s for %s" % (self.date, self.user, self.service, self.value)
 
+
 class Credit(models.Model):
     date = models.DateTimeField(_("Date"), auto_now_add=True)
     date_payed = models.DateTimeField(_("Date payed"), blank=True, null=True)
@@ -49,6 +54,7 @@ class Credit(models.Model):
     value = models.FloatField(_("Credits (bonus included)"))
     bonus = models.FloatField(_("Bonus"), default=0)
     address = models.ForeignKey(Address, verbose_name=_("Address"), null=True)
+    gopay_payment = models.ForeignKey(Payment, null=True, blank=True)
 
     def __unicode__(self):
         return "%s += %.2f" % (self.user.username, self.value)

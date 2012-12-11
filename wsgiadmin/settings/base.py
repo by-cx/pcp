@@ -40,6 +40,8 @@ CURRENCY = (
     ("usd", "USD"),
 )
 
+GOPAY = False
+
 ##########
 
 CACHES = {
@@ -132,7 +134,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'constance.context_processors.config',
 )
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -159,7 +161,7 @@ INSTALLED_APPS = (
     'wsgiadmin.service',
     'wsgiadmin.stats',
     'wsgiadmin.apps',
-)
+]
 
 PYTHON_INTERPRETERS = {
     "python2.7": "/usr/bin/virtualenv",

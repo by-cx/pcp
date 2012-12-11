@@ -25,29 +25,50 @@
         </tr>
         <tr>
             <th>{% trans "State" %}</th>
-            <td>{% if credit.date_payed %}{% trans "payed" %} ({{ date.payed }}){% else %}{% trans "No payment" %}{% endif %}</td>
+            <td>{% if credit.date_payed %}{% trans "payed" %} ({{ credit.date_payed }}){% else %}{% trans "No payment" %}{% endif %}</td>
         </tr>
+        {% if credit.gopay_payment %}
+            <tr>
+                <th>{% trans "GoPay payment state" %}</th>
+                <td>{{ credit.gopay_payment.state }}</td>
+            </tr>
+        {% endif %}
         {% if credit.address %}
         <tr>
             <th>{% trans "Address at invoice" %}</th>
             <td>
-                <form action="{% url payment_address %}" method="post">
-                    {% csrf_token %}
-                    <input type="hidden" name="credit_id" value="{{ credit.id }}">
-                    <select name="address_id">
-                        {% for address in addresses %}
-                            <option value="{{ address.id }}"{% if credit.address == address %} selected="selected" {% endif %}>{{ address.address }}</option>
-                        {% endfor %}
-                    </select><br>
-                    <input type="submit" value="{% trans "Save" %}" class="btn">
-                </form>
-                <a href="{% url address_create %}">{% trans "Add new address" %}</a>
+                {% if not credit.date_payed %}
+                    <form action="{% url payment_address %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="credit_id" value="{{ credit.id }}">
+                        <select name="address_id">
+                            {% for address in addresses %}
+                                <option value="{{ address.id }}"{% if credit.address == address %} selected="selected" {% endif %}>{{ address.address }}</option>
+                            {% endfor %}
+                        </select><br>
+                        <input type="submit" value="{% trans "Save" %}" class="btn">
+                    </form>
+                    <a href="{% url address_create %}">{% trans "Add new address" %}</a>
+                {% else %}
+                    {{ credit.address }}, {{ credit.address.street }}, {{ credit.address.zip }} {{ credit.address.city }}
+                {% endif %}
             </td>
         </tr>
         {% endif %}
     </table>
 
+    {% if not credit.date_payed %}
     <p class="red">{% trans "Now, last step you have to do is a pay. Look at the information below." %}</p>
+
+    <br>
+
+    {% if gopay %}
+    <h2>{% trans "Payment via GoPay (Credit Card)" %}</h2>
+
+    <p>{% trans "If you prefer fast and simple payments, use GoPay and pay with credit card or other quick methods." %}</p>
+
+    <p><a href="{% url payment_gopay %}?credit_id={{ credit.id }}" class="btn btn-primary">{% trans "Pay with GoPay" %}</a></p>
+    {% endif %}
 
     <h2>{% trans "Payment via your bank" %}</h2>
 
@@ -69,5 +90,6 @@
             <td>{{ credit.price }} {{ credit.currency }}</td>
         </tr>
     </table>
+    {% endif %}
 
 {% endblock %}

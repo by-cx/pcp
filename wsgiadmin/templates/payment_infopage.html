@@ -63,7 +63,8 @@
     <br><br>
 
     {% if gopay %}
-    <h2>{% trans "Payment via GoPay (Credit Card)" %}</h2>
+    <h3>{% trans "Payment via GoPay (Credit Card)" %}</h3>
+    <br>
     {% if not credit.gopay_payment %}
         <p>{% trans "If you prefer fast and simple payments, use GoPay and pay with credit card or other quick methods." %}</p>
         <p><a href="{% url payment_gopay %}?credit_id={{ credit.id }}" class="btn btn-success btn-large">{% trans "Pay with GoPay" %}</a></p>
@@ -75,7 +76,10 @@
 
     <br><br>
 
-    <h2>{% trans "Payment via your bank" %}</h2>
+    <h3>{% trans "Payment via your bank" %}</h3>
+
+    <br>
+    <p>{% trans "You can use classic payment too." %}</p>
 
     <table class="table table-striped">
         <tr>

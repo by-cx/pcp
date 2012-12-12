@@ -57,8 +57,8 @@ class AppForm(ModelForm):
         return self.cleaned_data["domains"]
 
     def clean_name(self):
-        if not re.match("^[0-9a-zA-Z_]*$", self.cleaned_data["name"]):
-            raise forms.ValidationError(_("App name has to be in this format: ^[0-9a-zA-Z_]*$"))
+        if not re.match("^[0-9a-zA-Z_\ ]*$", self.cleaned_data["name"]):
+            raise forms.ValidationError(_("App name has to be in this format: ^[0-9a-zA-Z_\ ]*$"))
         if self.user.app_set.filter(name=self.cleaned_data["name"]):
             raise forms.ValidationError(_("This name is already used"))
         return self.cleaned_data["name"]

@@ -97,7 +97,7 @@ class Command(BaseCommand):
             message = Message.objects.filter(purpose=tmpl)
             if message:
                 message[0].send(user.email, data)
-                message[0].send(config.email, data)
+                #message[0].send(config.email, data)
                 print "\t* E-mail sent"
             parms.last_notification = datetime.date.today()
             parms.save()

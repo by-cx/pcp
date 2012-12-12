@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-11 18:37+0100\n"
+"POT-Creation-Date: 2012-12-12 18:00+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -248,8 +248,8 @@ msgid "One of your domain is already used. (%s)"
 msgstr "Jedna z vašich domén je již použita. (%s)"
 
 #: apps/forms.py:61
-msgid "App name has to be in this format: ^[0-9a-zA-Z_]*$"
-msgstr "Jméno aplikace musí mít tento formát: ^[0-9a-zA-Z_]*$"
+msgid "App name has to be in this format: ^[0-9a-zA-Z_\\ ]*$"
+msgstr "Jméno aplikace musí mít tento formát: ^[0-9a-zA-Z_\\ ]*$"
 
 #: apps/forms.py:63
 msgid "This name is already used"
@@ -1128,11 +1128,11 @@ msgstr "Vytvořit"
 msgid "Update"
 msgstr "Upravit"
 
-#: settings/base.py:257
+#: settings/base.py:259
 msgid "Per application (60 CZK/app/month)"
 msgstr "Za aplikaci (60 Kč/app/měsíc)"
 
-#: settings/base.py:258
+#: settings/base.py:260
 msgid "Constant fee (200 CZK/196 MB RAM)"
 msgstr "Paušální poplatek (200 Kč/196 MB RAM)"
 
@@ -2090,8 +2090,9 @@ msgstr "Přidat novou adresu"
 #: templates/payment_infopage.html:61
 msgid "Now, last step you have to do is a pay. Look at the information below."
 msgstr ""
-"Aby byly kredity připsány na účet, je nutné je zaplatit. K tomu můžete využít klasický bankovní "
-"převod nebo <del>platební bránu GoPay</del>. Daňový doklad bude zaslán po uhrazení."
+"Aby byly kredity připsány na účet, je nutné je zaplatit. K tomu můžete "
+"využít klasický bankovní převod nebo <del>platební bránu GoPay</del>. Daňový "
+"doklad bude zaslán po uhrazení."
 
 #: templates/payment_infopage.html:66
 msgid "Payment via GoPay (Credit Card)"

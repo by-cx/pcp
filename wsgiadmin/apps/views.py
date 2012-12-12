@@ -322,4 +322,4 @@ def app_restart(request):
         messages.add_message(request, messages.WARNING, _('App is disabled'))
     else:
         messages.add_message(request, messages.ERROR, _('App is not resetable'))
-    return HttpResponseRedirect(reverse("apps_list"))
+    return HttpResponseRedirect(reverse("app_detail", kwargs={"app_id": app.id}))

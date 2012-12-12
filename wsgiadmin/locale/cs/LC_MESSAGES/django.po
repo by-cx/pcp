@@ -236,7 +236,7 @@ msgid ""
 "domains separated by spaces."
 msgstr ""
 "Není zde žádná vazba na sekci DNS nebo domény (pokud je vidíte). "
-"Napištedomény oddělené mezerami."
+"Napište domény oddělené mezerami."
 
 #: apps/forms.py:54 apps/forms.py:93
 msgid "Each domain has to be in this format: ^[0-9a-z_\\.\\-]*$"

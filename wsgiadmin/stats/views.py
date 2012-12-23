@@ -199,7 +199,7 @@ class PaymentView(TemplateView):
         context['superuser'] = self.request.user
         context['menu_active'] = "dashboard"
         context['config'] = config
-        context['gopay'] = settings.GOPAY and self.user.username in ("cx", "gopay",) #TODO:remove after approved
+        context['gopay'] = settings.GOPAY
         context['addresses'] = self.user.address_set.filter(removed=False)
         return context
 

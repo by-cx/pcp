@@ -43,7 +43,7 @@ class Domain(models.Model):
 
 
 class Record(models.Model):
-    name = models.CharField(_("Name"), max_length=256)
+    name = models.CharField(_("Name"), max_length=256, default="@")
     record_type = models.CharField(_("Type"), max_length=32, choices=[(x, x) for x in RECORD_TYPES])
     value = models.CharField(_("Value"), max_length=256)
     ttl = models.IntegerField(_("TTL"), null=True, blank=True)
@@ -84,7 +84,7 @@ class Record(models.Model):
         #    for record in Record.objects.filter(order_num=self.order_num).order_by("order_num").reverse():
         #        record.order_num += 1
         #        record.save()
-        else:
+        elif not self.order_num:
             self.order_num = 1
         self.domain.save()
         super(Record, self).save(*args, **kwargs)

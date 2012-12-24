@@ -75,14 +75,23 @@ class EditorView(TemplateView):
             record.user = self.user
             record.domain = self.get_domain()
             record.save()
-            print "saved!"
             return HttpResponseRedirect(reverse("dns_editor", kwargs={"pk": self.kwargs.get("pk")}))
         return self.render_to_response(context)
 
     def get_form(self):
+        record = self.get_record()
         if self.request.method == "POST":
+            if record:
+                return RecordForm(self.request.POST, instance=record)
             return RecordForm(self.request.POST)
+        if record:
+            return RecordForm(instance=record)
         return RecordForm()
+
+    def get_record(self):
+        if self.request.GET.get("record_pk"):
+            return Record.objects.filter(domain=self.get_domain()).get(id=self.request.GET.get("record_pk"))
+        return None
 
     def get_domain(self):
          return self.user.dns_set.get(id=self.kwargs.get("pk"))
@@ -106,4 +115,11 @@ def rm_domain(request):
 
 
 def rm_record(request):
-    pass
+    user = request.session.get('switched_user', request.user)
+    superuser = request.user
+
+    record_id = int(request.GET.get("record_pk"))
+    record = Record.objects.filter(domain__user=user).get(id=record_id)
+    domain = record.domain
+    record.delete()
+    return HttpResponseRedirect(reverse("dns_editor", kwargs={"pk": domain.id}))

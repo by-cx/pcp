@@ -41,6 +41,7 @@ CURRENCY = (
 )
 
 GOPAY = False
+FIO_TOKEN = ""
 
 ##########
 
@@ -154,6 +155,7 @@ INSTALLED_APPS = [
     'wsgiadmin.useradmin',
     'wsgiadmin.clients',
     'wsgiadmin.domains',
+    'wsgiadmin.dns',
     'wsgiadmin.emails',
     'wsgiadmin.ftps',
     'wsgiadmin.db',

@@ -15,9 +15,12 @@
                         <li {% if menu_active == "users" %} class="active"{% endif %}>
                             <a href="{% url wsgiadmin.users.views.show %}" class="red">{% trans "Users" %}</a>
                         </li>
-                    {% endif %}
                     <li {% if menu_active == "domains" %} class="active"{% endif %}>
                         <a href="{% url domains_list %}">{% trans "Domains" %}</a>
+                    </li>
+                    {% endif %}
+                    <li {% if menu_active == "dns" %} class="active"{% endif %}>
+                        <a href="{% url dns_list %}">{% trans "DNS" %}</a>
                     </li>
                     {% if user.usersite_set.count %}
                     <li {% if menu_active == "webapps" %} class="active"{% endif %}>
@@ -40,11 +43,6 @@
                     <li {% if menu_active == "emails" %} class="active"{% endif %}>
                         <a href="{% url mailbox_list %}">{% trans "E-mails" %}</a>
                     </li>
-                    {% if u.is_superuser %}
-                    <li {% if menu_active == "tools" %} class="active"{% endif %}>
-                        <a href="">{% trans "Tools" %}<sup style="color: red;">beta</sup></a>
-                    </li>
-                    {% endif %}
                     <li
                             {% if menu_active == "settings" %} class="active"{% endif %}>
                         <a href="{% url wsgiadmin.useradmin.views.change_passwd %}">{% trans "Settings" %}</a>
@@ -105,12 +103,16 @@
                             <a href="{% url wsgiadmin.users.views.show %}">{% trans "User's list" %}</a>
                         </li>
                     {% endif %}
-                    {% if menu_active == "invoices" %}
+                    {% if menu_active == "dns" %}
                         <li>
-                            <a href="{% url wsgiadmin.invoices.views.add_invoice %}">{% trans "Add invoice" %}</a>
-                        </li>
-                        <li>
-                            <a href="{% url wsgiadmin.invoices.views.show %}">{% trans "Invoice's list" %}</a>
+                            <a href="{% url dns_create %}">
+                                <i class="icon-plus"></i>
+                                {% trans "Add domain" %}
+                            </a>
+                            <a href="{% url dns_list %}">
+                                <i class="icon-list"></i>
+                                {% trans "Your domains" %}
+                            </a>
                         </li>
                     {% endif %}
                     {% if menu_active == "domains" %}

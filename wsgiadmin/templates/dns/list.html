@@ -9,7 +9,7 @@
     <div id="message-box"></div>
 
     <h3>{% trans "List of domains" %}</h3>
-    <table class="table table-striped">
+    <table class="table table-striped grid" id="sort">
         <thead>
         <tr>
             <th>{% trans "Domain" %}</th>
@@ -51,4 +51,17 @@
             </tbody>
         {% endif %}
     </table>
+    <script type="text/javascript">
+        // Return a helper with preserved width of cells
+        var fixHelper = function(e, ui) {
+            ui.children().each(function() {
+                $(this).width($(this).width());
+            });
+            return ui;
+        };
+
+        $("#objects_list").sortable({
+            helper: fixHelper
+        }).disableSelection();
+    </script>
 {% endblock %}

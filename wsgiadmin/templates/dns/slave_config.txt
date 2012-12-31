@@ -1,0 +1,6 @@
+zone "{{ domain }}" IN {
+        type slave;
+        file "zones/{{ domain }}.zone";
+        allow-query { any; };
+        masters { {{ msters_ips }}; };
+};

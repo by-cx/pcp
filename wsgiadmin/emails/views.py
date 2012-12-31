@@ -24,7 +24,7 @@ class MailboxListView(RostiListView):
     delete_url_reverse = 'mailbox_remove'
 
     def get_queryset(self, **kwargs):
-        return Email.objects.filter(domain__in=self.user.domain_set.all(), remove=False)
+        return Email.objects.filter(domain__in=self.user.domain_set.all())
 
 
 @login_required
@@ -87,11 +87,7 @@ def mailbox_remove(request):
         except EmailRedirect.DoesNotExist:
             raise Exception("redirect doesn't exist, obviously")
         else:
-            mail.remove = True
-            mail.save()
-
-            er = EMailRequest(u, u.parms.mail_machine)
-            er.remove_mailbox(mail)
+            mail.delete()
 
         return JsonResponse("OK", {1: ugettext("Mailbox was successfuly deleted")})
     except Exception, e:

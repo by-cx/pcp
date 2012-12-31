@@ -1,0 +1,10 @@
+$TTL {{ TTL }}s
+@       IN      SOA     {{ ns1 }}. {{ rname }}.  (
+                                        {{ serial }}
+                                        {{ refresh }}
+                                        {{ retry }}
+                                        {{ expire }}
+                                        {{ minimum }} )
+
+{% for record in records %}
+{{ record.name }}  {{ record.TTL }}s     IN              {{ record.type }}  {{ record.prio }}      {{ record.value }}{% endfor %}

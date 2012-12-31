@@ -58,6 +58,7 @@
                 {% endif %}
             </table>
             <p><em>{% trans "You can change order of records by your mouse." %}</em></p>
+            <p><a href="{% url dns_new_configuration domain_pk=domain.id %}" class="btn btn-large btn-danger">{% trans "Write configuration to the NS servers" %}</a></p>
         </div>
         <div class="span6">
             {% crispy form %}

@@ -3,10 +3,10 @@ from wsgiadmin.domains.models import Domain
 from wsgiadmin.emails.models import Email, EmailRedirect, Message
 
 class EmailAdmin(admin.ModelAdmin):
-    list_display = ("pub_date", "address")
-    list_display_links = ("pub_date", "address")
-    list_filter = ['pub_date']
-    ordering = ['-pub_date']
+    list_display = ("last_modified", "address")
+    list_display_links = ("last_modified", "address")
+    list_filter = ['last_modified']
+    ordering = ['-last_modified']
     fieldsets = (
         (None, {'fields': ("login", "domain", "password")}),
     )

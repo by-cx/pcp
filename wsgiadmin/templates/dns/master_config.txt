@@ -1,0 +1,7 @@
+zone "{{ domain }}" IN {
+        type master;
+        file "zones/{{ domain }}.zone";
+        allow-query { any; };
+        allow-transfer { {{ slaves_ips }}; };
+        notify yes;
+};

@@ -10,4 +10,5 @@ urlpatterns = patterns('',
     url(r'^rm/$', 'wsgiadmin.dns.views.rm_domain', name="dns_rm_domain"),
     url(r'^record/rm/$', 'wsgiadmin.dns.views.rm_record', name="dns_rm_record"),
     url(r'^record/order/(?P<domain_pk>\d+)/$', 'wsgiadmin.dns.views.record_order', name="dns_record_order"),
+    url(r'^record/new_configuration/(?P<domain_pk>\d+)/$', 'wsgiadmin.dns.views.new_configuration', name="dns_new_configuration"),
 )

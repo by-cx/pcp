@@ -57,7 +57,7 @@ def create_gopay_payment(request):
 
 
 class PaymentDone(TemplateView):
-    template_name = "payment_done.html"
+    template_name = "stats/payment_done.html"
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
@@ -87,7 +87,7 @@ class PaymentDone(TemplateView):
 
 
 class PaymentError(TemplateView):
-    template_name = "payment_error.html"
+    template_name = "stats/payment_error.html"
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
@@ -108,7 +108,7 @@ class PaymentError(TemplateView):
 
 
 class CreditView(TemplateView):
-    template_name = "credit.html"
+    template_name = "stats/credit.html"
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
@@ -167,7 +167,7 @@ class CreditView(TemplateView):
 
 
 class PaymentsView(RostiListView):
-    template_name = "credits.html"
+    template_name = "stats/credits.html"
     model = Credit
     menu_active = "dashboard"
 
@@ -180,7 +180,7 @@ class PaymentsView(RostiListView):
 
 
 class PaymentView(TemplateView):
-    template_name = "payment_infopage.html"
+    template_name = "stats/payment_infopage.html"
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
@@ -223,7 +223,7 @@ def change_address(request):
 
 
 class StatsView(TemplateView):
-    template_name = "bill.html"
+    template_name = "stats/bill.html"
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):

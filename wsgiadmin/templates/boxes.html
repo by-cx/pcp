@@ -19,7 +19,6 @@
         <thead>
         <tr>
             <th>{% trans "E-mail" %}</th>
-            <th>{% trans "Created" %}</th>
             <th>{% trans "Action" %}</th>
         </tr>
         </thead>
@@ -28,7 +27,6 @@
             {% for email in object_list %}
                 <tr>
                     <td>{{ email.login }}@{{ email.domain.name }}</td>
-                    <td>{{ email.pub_date|date:"d.m.Y" }}</td>
                     <td>
                         <ul class="akce">
                         <li><a href="{% url wsgiadmin.emails.views.changePasswdBox email.id %}" title="{% trans "Edit" %}">

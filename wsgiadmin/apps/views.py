@@ -15,7 +15,7 @@ from django.contrib import messages
 class AppsListView(ListView):
     menu_active = "apps"
     model = App
-    template_name = "apps.html"
+    template_name = "apps/apps.html"
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
@@ -38,7 +38,7 @@ class AppsListView(ListView):
 class AppDetailView(TemplateView):
     model = App
     menu_active = "apps"
-    template_name = "app_info.html"
+    template_name = "apps/app_info.html"
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):

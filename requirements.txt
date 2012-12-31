@@ -9,4 +9,5 @@ raven
 django-debug-toolbar
 fabric
 requests
+python-memcached
 https://github.com/creckx/gopay4django/archive/master.zip

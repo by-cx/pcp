@@ -1,0 +1,66 @@
+{% extends "admin.html" %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+{% block title %}
+    {% trans "Administration" %} &gt; {% trans "records for" %} {{ domain.name }}
+{% endblock %}
+
+{% block content %}
+    <div id="message-box"></div>
+
+    <h3>{% trans "Records for " %}{{ domain.name }}</h3>
+    <div class="row-fluid">
+        <div class="span6">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>{% trans "Name" %}</th>
+                    <th>{% trans "Type" %}</th>
+                    <th>{% trans "TTL" %}</th>
+                    <th>{% trans "Prio" %}</th>
+                    <th>{% trans "Value" %}</th>
+                    <th>{% trans "Actions" %}</th>
+                </tr>
+                </thead>
+                {% if records %}
+                    <tbody id="objects_list">
+                    {% for record in records %}
+                        <tr>
+                            <td>{{ record.name }}</td>
+                            <td>{{ record.record_type }}</td>
+                            <td>{{ record.ttl }}</td>
+                            <td>{{ record.prio|default_if_none:"--" }}</td>
+                            <td>{{ record.value }}</td>
+                            <td class="list_actions">
+                                <a href="?record_pk={{ record.id }}" class="btn btn-warning"><i class="icon-edit"></i> {% trans "Update" %}</a>
+                                <a href="#a" onclick="if(confirm('{% trans "Are you sure?" %}')) {document.location= '{% url dns_rm_record %}?record_pk={{ record.id }}';}" class="btn btn-danger"><i class="icon-remove"></i> {% trans "Delete" %}</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td colspan="4">
+                            <div class="pagination">
+                                {% include "paginator.html" %}
+                            </div>
+                            <div class="clear"></div>
+                        </td>
+                    </tr>
+                    </tfoot>
+                {% else %}
+                    <tbody>
+                    <tr>
+                        <td colspan="4">{% trans "Crap! No records found." %}</td>
+                    </tr>
+                    </tbody>
+                {% endif %}
+            </table>
+            <p><em>{% trans "You can change order of records by your mouse." %}</em></p>
+        </div>
+        <div class="span6">
+            {% crispy form %}
+        </div>
+    </div>
+{% endblock %}

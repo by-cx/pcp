@@ -1,0 +1,67 @@
+{% extends "admin.html" %}
+{% load i18n %}
+
+{% block title %}
+    {% trans "Administration" %} &gt; {% trans "Domains and DNS records" %}
+{% endblock %}
+
+{% block content %}
+    <div id="message-box"></div>
+
+    <h3>{% trans "List of domains" %}</h3>
+    <table class="table table-striped grid" id="sort">
+        <thead>
+        <tr>
+            <th>{% trans "Domain" %}</th>
+            <th>{% trans "Nameservers" %}</th>
+            <th>{% trans "TTL" %}</th>
+            <th>{% trans "Serial" %}</th>
+            <th>{% trans "Actions" %}</th>
+        </tr>
+        </thead>
+        {% if object_list %}
+            <tbody id="objects_list">
+            {% for domain in object_list %}
+                <tr>
+                    <td>{{ domain.name }}</td>
+                    <td>{{ domain.nss }}</td>
+                    <td>{{ domain.ttl }}</td>
+                    <td>{{ domain.serial }}</td>
+                    <td class="list_actions">
+                        <a href="{% url dns_editor pk=domain.id %}" class="btn btn-primary">Records editor</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="4">
+                    <div class="pagination">
+                        {% include "paginator.html" %}
+                    </div>
+                    <div class="clear"></div>
+                </td>
+            </tr>
+            </tfoot>
+        {% else %}
+            <tbody>
+            <tr>
+                <td colspan="4">{% trans "Crap! No domain found. However, you can add one with the menu on left side." %}</td>
+            </tr>
+            </tbody>
+        {% endif %}
+    </table>
+    <script type="text/javascript">
+        // Return a helper with preserved width of cells
+        var fixHelper = function(e, ui) {
+            ui.children().each(function() {
+                $(this).width($(this).width());
+            });
+            return ui;
+        };
+
+        $("#objects_list").sortable({
+            helper: fixHelper
+        }).disableSelection();
+    </script>
+{% endblock %}

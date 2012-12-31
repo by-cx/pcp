@@ -24,7 +24,7 @@ class MailboxListView(RostiListView):
     delete_url_reverse = 'mailbox_remove'
 
     def get_queryset(self, **kwargs):
-        return Email.objects.filter(domain__in=self.user.domain_set.all())
+        return Email.objects.filter(domain__in=self.user.email_domain_set.all())
 
 
 @login_required
@@ -170,7 +170,7 @@ def changeRedirect(request, rid):
     if r.domain.owner != u:
         return HttpResponseForbidden(ugettext("Forbidden operation"))
 
-    domains = [(x.name, x.name) for x in u.domain_set.filter(mail=True)]
+    domains = [(x.name, x.name) for x in u.email_domain_set.filter(mail=True)]
     if request.method == 'POST':
         form = FormRedirect(request.POST, instance=r)
         form.fields["_domain"].choices = domains

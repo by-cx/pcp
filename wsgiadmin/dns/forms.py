@@ -3,6 +3,14 @@ from wsgiadmin.dns.models import Domain, Record
 from wsgiadmin.service.forms import RostiFormHelper
 
 
+class DomainUpdateForm(ModelForm):
+    helper = RostiFormHelper()
+
+    class Meta:
+        model = Domain
+        fields = ["rname", "ttl"]
+
+
 class DomainForm(ModelForm):
     helper = RostiFormHelper()
 

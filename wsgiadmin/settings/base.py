@@ -213,6 +213,12 @@ CONSTANCE_CONFIG = {
     "dns_retry": (1800, "Retry"),
     "dns_expire": (604800, "Expire"),
     "dns_minimum": (30, "Minimum"),
+    "dns_default_a": ("87.236.194.121", "Default A"),
+    "dns_default_aaaa": ("2a01:5f0:1022:1::1", "Default AAAA"),
+    "dns_default_mx": ("mail.rosti.cz", "Default MX"),
+    "dns_default_ns1": ("ns1.rosti.cz", "Default NS1"),
+    "dns_default_ns2": ("ns2.rosti.cz", "Default NS2"),
+    "dns_default_record_ttl": (3600, "Default TTL of records"),
 
     "default_web_machine": ("localhost", "Default web machine for new accounts. (must be in Machines table)"),
     "default_mail_machine": ("localhost", "Default mail machine for new accounts. (must be in Machines table)"),

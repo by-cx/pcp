@@ -21,7 +21,7 @@ class Domain(models.Model):
     last_modified = models.DateTimeField(_("Update date"), auto_now=True)
     serial = models.IntegerField(_("Serial"), default=0)
     nss = models.CharField(_("Name servers"), max_length=512, help_text=_("Name servers separated by space"), default="ns1.rosti.cz ns2.rosti.cz")
-    name = models.CharField(_("Domain"), max_length=256)
+    name = models.CharField(_("Domain"), max_length=256, unique=True)
     rname = models.EmailField(_("Admin e-mail"))
     ttl = models.IntegerField(_("TTL"), default=86400)
     user = models.ForeignKey(User, related_name="dns_set")

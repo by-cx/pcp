@@ -26,7 +26,7 @@
                 {% if records %}
                     <tbody id="objects_list">
                     {% for record in records %}
-                        <tr>
+                        <tr data="{{ record.id }}" class="dns_record">
                             <td>{{ record.name }}</td>
                             <td>{{ record.record_type }}</td>
                             <td>{{ record.ttl }}</td>
@@ -63,4 +63,22 @@
             {% crispy form %}
         </div>
     </div>
+    <script type="text/javascript">
+        function sorted() {
+            var id_list = [];
+            $(".dns_record").each(function (index, value){
+                id_list[id_list.length] = $(value).attr("data") * 1;
+            });
+            $.get(
+                "{% url dns_record_order domain_pk=domain.id %}",
+                {"records": id_list.join()},
+                function (data){
+                    if (data != "OK") {
+                        alert("Error: new sort is not saved!")
+                    }
+                }
+            );
+        }
+        $("#objects_list").sortable({stop: sorted});
+    </script>
 {% endblock %}

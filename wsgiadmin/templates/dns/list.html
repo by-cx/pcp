@@ -9,7 +9,7 @@
     <div id="message-box"></div>
 
     <h3>{% trans "List of domains" %}</h3>
-    <table class="table table-striped grid" id="sort">
+    <table class="table table-striped grid">
         <thead>
         <tr>
             <th>{% trans "Domain" %}</th>
@@ -28,7 +28,9 @@
                     <td>{{ domain.ttl }}</td>
                     <td>{{ domain.serial }}</td>
                     <td class="list_actions">
-                        <a href="{% url dns_editor pk=domain.id %}" class="btn btn-primary">Records editor</a>
+                        <a href="{% url dns_domain_update pk=domain.id %}" class="btn btn-primary">{% trans "Update" %}</a>
+                        <a href="{% url dns_editor pk=domain.id %}" class="btn btn-primary">{% trans "Records editor" %}</a>
+                        <a href="#a" onclick="if(confirm('{% trans "Are you sure?" %}')) {document.location= '{% url dns_rm_domain %}?domain_pk={{ domain.id }}';}" class="btn btn-danger"><i class="icon-remove"></i> {% trans "Delete" %}</a>
                     </td>
                 </tr>
             {% endfor %}
@@ -51,17 +53,4 @@
             </tbody>
         {% endif %}
     </table>
-    <script type="text/javascript">
-        // Return a helper with preserved width of cells
-        var fixHelper = function(e, ui) {
-            ui.children().each(function() {
-                $(this).width($(this).width());
-            });
-            return ui;
-        };
-
-        $("#objects_list").sortable({
-            helper: fixHelper
-        }).disableSelection();
-    </script>
 {% endblock %}

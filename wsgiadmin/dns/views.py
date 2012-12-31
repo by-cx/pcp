@@ -1,12 +1,13 @@
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.utils.decorators import method_decorator
 from django.views.generic.base import TemplateView
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.list import ListView
-from wsgiadmin.dns.forms import RecordForm, DomainForm
+from wsgiadmin.dns.forms import RecordForm, DomainForm, DomainUpdateForm
 from wsgiadmin.dns.models import Domain, Record
+from wsgiadmin.dns.utils import set_domain_default_state
 
 class DomainsListView(ListView):
     menu_active = "dns"
@@ -45,6 +46,7 @@ class DomainCreateView(CreateView):
         self.object = form.save(commit=False)
         self.object.user = self.user
         self.object.save()
+        set_domain_default_state(self.object)
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
@@ -52,6 +54,28 @@ class DomainCreateView(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super(DomainCreateView, self).get_context_data(**kwargs)
+        context['menu_active'] = self.menu_active
+        context['u'] = self.user
+        context['superuser'] = self.request.user
+        return context
+
+
+class DomainUpdateView(UpdateView):
+    form_class = DomainUpdateForm
+    menu_active = "dns"
+    template_name = "universal.html"
+    model = Domain
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        self.user = request.session.get('switched_user', request.user)
+        return super(DomainUpdateView, self).dispatch(request, *args, **kwargs)
+
+    def get_success_url(self):
+        return reverse("dns_list")
+
+    def get_context_data(self, **kwargs):
+        context = super(DomainUpdateView, self).get_context_data(**kwargs)
         context['menu_active'] = self.menu_active
         context['u'] = self.user
         context['superuser'] = self.request.user
@@ -111,7 +135,13 @@ class EditorView(TemplateView):
 
 
 def rm_domain(request):
-    pass
+    user = request.session.get('switched_user', request.user)
+    superuser = request.user
+
+    domain_id = int(request.GET.get("domain_pk"))
+    domain = user.dns_set.get(id=domain_id)
+    domain.delete()
+    return HttpResponseRedirect(reverse("dns_list"))
 
 
 def rm_record(request):
@@ -123,3 +153,15 @@ def rm_record(request):
     domain = record.domain
     record.delete()
     return HttpResponseRedirect(reverse("dns_editor", kwargs={"pk": domain.id}))
+
+
+def record_order(request, domain_pk):
+    user = request.session.get('switched_user', request.user)
+    superuser = request.user
+
+    domain = user.dns_set.get(id=domain_pk)
+    for index, record_id in enumerate(request.GET.get("records").split(",")):
+        record = domain.record_set.get(id=record_id)
+        record.order_num = index + 1
+        record.save()
+    return HttpResponse("OK")

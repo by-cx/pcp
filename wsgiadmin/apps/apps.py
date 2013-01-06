@@ -111,7 +111,7 @@ class PHPApp(AppObject):
     def disable(self):
         super(PHPApp, self).disable()
         parms = self.get_parmameters()
-        self.script.add_cmd("rm /etc/apache2/sites-enabled/%(user)s.conf" % parms)
+        self.script.add_cmd("rm /etc/apache2/apps.d/%(user)s.conf" % parms)
         self.script.add_cmd("rm /etc/nginx/apps.d/%(user)s.conf" % parms)
         self.script.reload_apache()
         self.script.reload_nginx()
@@ -124,7 +124,7 @@ class PHPApp(AppObject):
     def uninstall(self):
         super(PHPApp, self).uninstall()
         parms = self.get_parmameters()
-        self.script.add_cmd("rm /etc/apache2/sites-enabled/%(user)s.conf" % parms)
+        self.script.add_cmd("rm /etc/apache2/apps.d/%(user)s.conf" % parms)
         self.script.add_cmd("rm /etc/nginx/apps.d/%(user)s.conf" % parms)
         self.script.add_cmd("rm /var/www/%(user)s/ -r" % parms)
         self.script.reload_apache()

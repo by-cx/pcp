@@ -158,23 +158,23 @@
                     {% endif %}
                     {% if menu_active == "apps" %}
                         <li>
-                            <a href="{% url apps_list %}"><i class="icon-list"></i>{% trans "Apps list" %}</a>
+                            <a href="{% url apps_list %}"><i class="icon-list"></i> {% trans "Apps list" %}</a>
                         </li>
                         <li><br></li>
                         <li>
-                            <a href="{% url app_add_static %}"><i class="icon-plus-sign"></i>{% trans "Add static app" %}</a>
+                            <a href="{% url app_add_static %}"><i class="icon-plus"></i> {% trans "Add static app" %}</a>
                         </li>
                         <li>
-                            <a href="{% url app_add_php %}"><i class="icon-plus-sign"></i>{% trans "Add php app" %}</a>
+                            <a href="{% url app_add_php %}"><i class="icon-plus"></i> {% trans "Add php app" %}</a>
                         </li>
                         <li>
-                            <a href="{% url app_add_python %}"><i class="icon-plus-sign"></i>{% trans "Add python app" %}</a>
+                            <a href="{% url app_add_python %}"><i class="icon-plus"></i> {% trans "Add python app" %}</a>
                         </li>
                         <!--<li>
-                            <a href="{% url app_add_native %}"><i class="icon-plus-sign"></i>{% trans "Add native app" %}</a>
+                            <a href="{% url app_add_native %}"><i class="icon-plus"></i> {% trans "Add native app" %}</a>
                         </li>
                         <li>
-                            <a href="{% url app_add_proxy %}"><i class="icon-plus-sign"></i>{% trans "Add proxy" %}</a>
+                            <a href="{% url app_add_proxy %}"><i class="icon-plus"></i> {% trans "Add proxy" %}</a>
                         </li>-->
                     {% endif %}
                     {% if menu_active == "dbs" %}
@@ -193,10 +193,13 @@
                     {% endif %}
                     {% if menu_active == "emails" %}
                         <li>
-                            <a href="{% url add_mailbox %}">{% trans "Add e-mail account" %}</a>
+                            <a href="{% url email_domain_add %}">{% trans "Add domain for mailbox" %}</a>
                         </li>
                         <li>
-                            <a href="{% url mailbox_list %}">{% trans "E-mail's accounts" %}</a>
+                            <a href="{% url add_mailbox %}">{% trans "Add mailbox" %}</a>
+                        </li>
+                        <li>
+                            <a href="{% url mailbox_list %}">{% trans "List of mailboxes" %}</a>
                         </li>
                         <li>
                             <a href="{% url add_redirect %}">{% trans "Add redirection" %}</a>
@@ -215,10 +218,10 @@
                     {% endif %}
                     {% if menu_active == "settings" %}
                         <li>
-                            <a href="{% url address_create %}"><i class="icon-plus"></i>{% trans "New address" %}</a>
+                            <a href="{% url address_create %}"><i class="icon-plus"></i> {% trans "New address" %}</a>
                         </li>
                         <li>
-                            <a href="{% url address_list %}"><i class="icon-list"></i>{% trans "Addresses" %}</a>
+                            <a href="{% url address_list %}"><i class="icon-list"></i> {% trans "Addresses" %}</a>
                         </li>
                         <li><br></li>
                         <li>

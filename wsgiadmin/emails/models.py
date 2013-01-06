@@ -44,6 +44,9 @@ class Domain(models.Model):
     name = models.CharField(_("Domain"), max_length=256, unique=True)
     user = models.ForeignKey(User, related_name="email_domain_set")
 
+    def boxes(self):
+        return self.email_set.order_by("login")
+
 
 class Email(models.Model):
     last_modified = models.DateTimeField(_("Update date"), auto_now=True)

@@ -33,8 +33,8 @@
                             <td>{{ record.prio|default_if_none:"--" }}</td>
                             <td>{{ record.value }}</td>
                             <td class="list_actions">
-                                <a href="?record_pk={{ record.id }}" class="btn btn-warning"><i class="icon-edit"></i> {% trans "Update" %}</a>
-                                <a href="#a" onclick="if(confirm('{% trans "Are you sure?" %}')) {document.location= '{% url dns_rm_record %}?record_pk={{ record.id }}';}" class="btn btn-danger"><i class="icon-remove"></i> {% trans "Delete" %}</a>
+                                <a href="?record_pk={{ record.id }}" class="btn btn-warning"><i class="icon-edit icon-white"></i> {% trans "Update" %}</a>
+                                <a href="#a" onclick="if(confirm('{% trans "Are you sure?" %}')) {document.location= '{% url dns_rm_record %}?record_pk={{ record.id }}';}" class="btn btn-danger"><i class="icon-remove icon-white"></i> {% trans "Delete" %}</a>
                             </td>
                         </tr>
                     {% endfor %}

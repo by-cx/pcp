@@ -7,7 +7,10 @@ from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.template.context import RequestContext
+from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _, ugettext
+from django.views.generic.edit import CreateView
+from wsgiadmin.emails.forms import DomainForm
 
 from wsgiadmin.emails.forms import FormEmail, FormRedirect
 from wsgiadmin.emails.models import Email, EmailRedirect
@@ -24,7 +27,36 @@ class MailboxListView(RostiListView):
     delete_url_reverse = 'mailbox_remove'
 
     def get_queryset(self, **kwargs):
-        return Email.objects.filter(domain__in=self.user.email_domain_set.all())
+        return self.user.email_domain_set.all()
+
+
+class DomainCreateView(CreateView):
+    form_class = DomainForm
+    template_name = "universal.html"
+    menu_active = "emails"
+
+    def get_success_url(self):
+        return reverse("mailbox_list")
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.user = self.user
+        self.object.save()
+        messages.add_message(self.request, messages.SUCCESS, _('Domain has been created'))
+        return HttpResponseRedirect(self.get_success_url())
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        self.user = request.session.get('switched_user', request.user)
+        return super(DomainCreateView, self).dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(DomainCreateView, self).get_context_data(**kwargs)
+        context['menu_active'] = self.menu_active
+        context['u'] = self.user
+        context['superuser'] = self.request.user
+        return context
+
 
 
 @login_required

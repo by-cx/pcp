@@ -2,8 +2,8 @@ from django import forms
 from django.forms.models import ModelForm
 from django.utils.translation import ugettext_lazy as _
 
-from wsgiadmin.emails.models import Email, EmailRedirect
-from wsgiadmin.service.forms import PassCheckModelForm
+from wsgiadmin.emails.models import Email, EmailRedirect, Domain
+from wsgiadmin.service.forms import PassCheckModelForm, RostiFormHelper
 
 
 class FormEmail(PassCheckModelForm):
@@ -40,3 +40,14 @@ class FormRedirect(ModelForm):
             raise forms.ValidationError(_("Given alias already exists"))
 
         return self.cleaned_data["alias"]
+
+
+class DomainForm(forms.ModelForm):
+    helper = RostiFormHelper()
+
+    class Meta:
+        model = Domain
+        fields = ("name", )
+
+    def clean_user(self):
+        return None

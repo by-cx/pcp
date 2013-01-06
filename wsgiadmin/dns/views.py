@@ -9,7 +9,7 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.list import ListView
 from wsgiadmin.dns.forms import RecordForm, DomainForm, DomainUpdateForm
 from wsgiadmin.dns.models import Domain, Record
-from wsgiadmin.dns.server import DomainObject
+from wsgiadmin.dns.backend import DomainObject
 from wsgiadmin.dns.utils import set_domain_default_state
 from django.utils.translation import ugettext_lazy as _
 

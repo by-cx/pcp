@@ -1,7 +1,7 @@
 import logging
 from django.core.management.base import BaseCommand, CommandError
 from wsgiadmin.apps.models import App
-from wsgiadmin.apps.apps import PythonApp, AppObject, typed_object
+from wsgiadmin.apps.backend import PythonApp, AppBackend, typed_object
 from wsgiadmin.emails.models import Message
 
 class Command(BaseCommand):

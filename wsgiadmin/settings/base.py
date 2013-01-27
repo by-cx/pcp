@@ -234,6 +234,7 @@ CONSTANCE_CONFIG = {
 
     "mysql_bind": ("localhost", "Host for mysql's users"),
 
+    "email_server": ("127.0.0.1", "E-mail server"),
     "email_uid": (117, "Email UID"),
     "email_gid": (117, "Email GID"),
 

@@ -27,7 +27,7 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th colspan="2">{{ domain.name }}</th>
+                <th colspan="2" class="text18bold">{% trans "Domain" %} {{ domain.name }} <a href="#a" class="btn btn-mini btn-danger" onclick="if(confirm('Are you sure? This delete all mailboxes under this domain.')) document.location='{% url email_domain_delete %}?domain_pk={{ domain.id }}';"><i class="icon-remove icon-white"></i></a></th>
             </tr>
         </thead>
         <tbody id="objects_list">

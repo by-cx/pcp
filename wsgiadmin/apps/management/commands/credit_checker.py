@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 import os
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
-from wsgiadmin.apps.apps import PythonApp, AppObject
+from wsgiadmin.apps.backend import PythonApp, AppBackend
 from wsgiadmin.clients.models import Address
 from wsgiadmin.emails.models import Message
 
@@ -21,7 +21,7 @@ class Command(BaseCommand):
                     if app.app_type == "python":
                         app = PythonApp.objects.get(id=app.id)
                     else:
-                        app = AppObject.objects.get(id=app.id)
+                        app = AppBackend.objects.get(id=app.id)
                     app.disable()
                     app.commit()
                     logging.info("%s (%d) disabled" % (app.name, app.id))

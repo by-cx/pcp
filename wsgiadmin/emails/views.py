@@ -10,6 +10,7 @@ from django.template.context import RequestContext
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _, ugettext
 from django.views.generic.edit import CreateView
+from wsgiadmin.emails.backend import EmailBackend
 from wsgiadmin.emails.forms import DomainForm
 
 from wsgiadmin.emails.forms import FormEmail, FormRedirect
@@ -58,6 +59,20 @@ class DomainCreateView(CreateView):
         return context
 
 
+def delete_domain(request):
+    user = request.session.get('switched_user', request.user)
+    superuser = request.user
+
+    domain = user.email_domain_set.get(id=request.GET.get("domain_pk"))
+    backend = EmailBackend()
+    backend.uninstall_domain(domain)
+    backend.commit()
+    domain.delete()
+
+    messages.add_message(request, messages.INFO, _('Domain and it\'s mailboxes has been deleted.'))
+
+    return HttpResponseRedirect(reverse("mailbox_list"))
+
 
 @login_required
 def addBox(request):
@@ -76,15 +91,13 @@ def addBox(request):
             email = form.save(commit=False)
             email.login = form.cleaned_data["login"]
             email.domain = form.cleaned_data["xdomain"]
-            email.pub_date = date.today()
             email.password = crypt.crypt(form.cleaned_data["password1"],
                                          form.cleaned_data["login"])
-            email.uid = config.email_uid
-            email.gid = config.email_gid
             email.save()
 
-            er = EMailRequest(u, u.parms.mail_machine)
-            er.create_mailbox(email)
+            backend = EmailBackend()
+            backend.install(email)
+            backend.commit()
 
             messages.add_message(request, messages.INFO, _('Box will be created in few minutes'))
             return HttpResponseRedirect(reverse("mailbox_list"))
@@ -119,6 +132,9 @@ def mailbox_remove(request):
         except EmailRedirect.DoesNotExist:
             raise Exception("redirect doesn't exist, obviously")
         else:
+            backend = EmailBackend()
+            backend.uninstall(mail)
+            backend.commit()
             mail.delete()
 
         return JsonResponse("OK", {1: ugettext("Mailbox was successfuly deleted")})

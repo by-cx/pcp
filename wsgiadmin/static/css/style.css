@@ -178,3 +178,8 @@ pre {
 .red {
     color: red;
 }
+
+.text18bold {
+    font-size: 18px;
+    font-weight: bold;
+}

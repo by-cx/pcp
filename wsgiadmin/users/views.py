@@ -13,7 +13,7 @@ from django.contrib.auth.decorators import login_required
 from django.template.context import RequestContext
 from django.utils.translation import ugettext_lazy as _
 from wsgiadmin.apps.tools import Script
-from wsgiadmin.apps.apps import typed_object
+from wsgiadmin.apps.backend import typed_object
 from wsgiadmin.clients.forms import UserForm, ParmsForm
 
 from wsgiadmin.clients.models import *

@@ -6,7 +6,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic import ListView, TemplateView, CreateView, UpdateView
 from wsgiadmin.apps.forms import AppForm, AppStaticForm, AppPHPForm, AppNativeForm, AppProxyForm, AppPythonForm, DbForm, DbFormPasswd
 from wsgiadmin.apps.models import App, Db
-from wsgiadmin.apps.apps import PythonApp, AppObject, PHPApp, typed_object, DbObject
+from wsgiadmin.apps.backend import PythonApp, AppBackend, PHPApp, typed_object, DbObject
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext as __
 from django.contrib import messages

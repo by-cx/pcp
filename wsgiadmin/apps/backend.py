@@ -10,13 +10,13 @@ from constance import config
 class AppException(Exception): pass
 
 
-class AppObject(App):
+class AppBackend(App):
 
     class Meta:
         proxy = True
 
     def __init__(self, *args, **kwargs):
-        super(AppObject, self).__init__(*args, **kwargs)
+        super(AppBackend, self).__init__(*args, **kwargs)
         self.script = Script(self.server.hostname)
 
     def get_user(self):
@@ -97,7 +97,7 @@ class AppObject(App):
         self.script.add_cmd("/usr/sbin/chpasswd", stdin="%s:%s" % (self.get_user(), password))
 
 
-class PHPApp(AppObject):
+class PHPApp(AppBackend):
     class Meta:
         proxy = True
 
@@ -209,7 +209,7 @@ class PHPApp(AppObject):
         return "\n".join(content)
 
 
-class StaticApp(AppObject):
+class StaticApp(AppBackend):
 
     class Meta:
         proxy = True
@@ -255,7 +255,7 @@ class StaticApp(AppObject):
         return "\n".join(content)
 
 
-class PythonApp(AppObject):
+class PythonApp(AppBackend):
 
     class Meta:
         proxy = True
@@ -427,5 +427,5 @@ def typed_object(app):
     elif app.app_type == "static":
         app = StaticApp.objects.get(id=app.id)
     else:
-        app = AppObject.objects.get(id=app.id)
+        app = AppBackend.objects.get(id=app.id)
     return app

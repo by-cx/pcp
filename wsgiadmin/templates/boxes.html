@@ -23,7 +23,6 @@
     <hr>
 
     {% for domain in object_list %}
-    {% if domain.boxes %}
     <table class="table table-striped">
         <thead>
             <tr>
@@ -49,6 +48,5 @@
             {% endfor %}
         </tbody>
     </table>
-    {% endif %}
     {% endfor %}
 {% endblock %}

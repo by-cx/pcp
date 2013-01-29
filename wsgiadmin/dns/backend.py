@@ -33,7 +33,7 @@ class DomainObject(object):
 
     def update(self, domain=None):
         if domain:
-            self.script_master.add_file("%s/%s" % (config.bind_master_zones_dir, domain.name), self.gen_zone(domain))
+            self.script_master.add_file("%s/%s.zone" % (config.bind_master_zones_dir, domain.name), self.gen_zone(domain))
         self.script_master.add_file(config.bind_master_config_file, self.gen_master_config())
         for slave in self.scripts_slaves:
             slave.add_file(config.bind_slave_config_file, self.gen_slave_config())

@@ -53,7 +53,7 @@ class DomainObject(object):
                 "name": record.name,
                 "TTL": record.ttl,
                 "type": record.record_type,
-                "prio": record.prio,
+                "prio": record.prio if record.prio else "",
                 "value": record.value,
             })
         return render_to_string("dns/zone.txt", {

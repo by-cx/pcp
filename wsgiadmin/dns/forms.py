@@ -1,3 +1,4 @@
+from django import forms
 from django.forms.models import ModelForm
 from wsgiadmin.dns.models import Domain, Record
 from wsgiadmin.service.forms import RostiFormHelper
@@ -31,3 +32,8 @@ class RecordForm(ModelForm):
 
     def clean_user(self):
         return None
+
+    def clean_prio(self):
+        if self.cleaned_data["record_type"] == "MX" and not self.cleaned_data["prio"]:
+            raise forms.ValidationError(_("MX needs prio"))
+        return self.cleaned_data["prio"]

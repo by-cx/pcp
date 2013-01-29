@@ -79,7 +79,7 @@ def addBox(request):
     u = request.session.get('switched_user', request.user)
     superuser = request.user
 
-    domains = [(x.name, x.name) for x in u.email_domain_set.filter(mail=True)]
+    domains = [(x.name, x.name) for x in u.email_domain_set.all()]
 
     if request.method == 'POST':
         form = FormEmail(request.POST)
@@ -123,23 +123,22 @@ def addBox(request):
 
 @login_required
 def mailbox_remove(request):
+    object_id = request.GET['pk']
+    u = request.session.get('switched_user', request.user)
+
     try:
-        object_id = request.POST['object_id']
-        u = request.session.get('switched_user', request.user)
+        mail = Email.objects.get(domain__in=u.email_domain_set.all(), id=object_id)
+    except EmailRedirect.DoesNotExist:
+        raise Exception("redirect doesn't exist, obviously")
 
-        try:
-            mail = Email.objects.get(domain__in=u.email_domain_set.all(), id=object_id)
-        except EmailRedirect.DoesNotExist:
-            raise Exception("redirect doesn't exist, obviously")
-        else:
-            backend = EmailBackend()
-            backend.uninstall(mail)
-            backend.commit()
-            mail.delete()
+    backend = EmailBackend()
+    backend.uninstall(mail)
+    backend.commit()
+    mail.delete()
 
-        return JsonResponse("OK", {1: ugettext("Mailbox was successfuly deleted")})
-    except Exception, e:
-        return JsonResponse("KO", {1: ugettext("Error during mailbox delete")})
+    messages.add_message(request, messages.SUCCESS, _('E-mail has been added'))
+
+    return HttpResponseRedirect(reverse("mailbox_list"))
 
 
 @login_required
@@ -253,7 +252,7 @@ def addRedirect(request):
     u = request.session.get('switched_user', request.user)
     superuser = request.user
 
-    domains = [(x.name, x.name) for x in u.email_domain_set.filter(mail=True)]
+    domains = [(x.name, x.name) for x in u.email_domain_set.filter()]
     if request.method == 'POST':
         form = FormRedirect(request.POST)
         form.fields["_domain"].choices = domains

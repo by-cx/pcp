@@ -10,14 +10,16 @@ CREATE VIEW mailboxes AS
   SELECT
     e.login||'@'||d.name AS email,
     password,
-    100 AS uid,
-    100 AS gid,
-    '/var/www/' AS homedir,
+    117 AS uid,
+    118 AS gid,
+    '/var/mail' AS homedir,
     d.name||'/'||e.login||'/' AS maildir,
-    '/var/www'||'/'||d.name||'/'||e.login||'/' AS dir,
+    '/var/mail'||'/'||d.name||'/'||e.login||'/' AS dir,
     e.login AS name
   FROM
     emails_email e,
     emails_domain d
   WHERE
     e.domain_id = d.id;
+
+SELECT alias||'@'||d.name AS alias, email, 'f' AS trash FROM emails_redirect r, emails_domain d WHERE r.domain_id = d.id;

@@ -28,15 +28,16 @@ def run(cmd, stdin=None):
 def main():
     requests = json.loads(sys.stdin.read().strip())
     for request in requests:
+        log(request)
         if request["type"] == "cmd":
             cmd = request["cmd"]
             if request.get("user"):
                 cmd = "su %s -c '%s'" % (request.get("user"), cmd)
-            ret_code, stdout, stderr = run(cmd, request.get("stdin") if request.get("stdin") else None)
-            request["status"] = "ok"
-            request["stdout"] = stdout
-            request["stderr"] = stderr
-            request["ret_code"] = ret_code
+                ret_code, stdout, stderr = run(cmd, request.get("stdin") if request.get("stdin") else None)
+                request["status"] = "ok"
+                request["stdout"] = stdout
+                request["stderr"] = stderr
+                request["ret_code"] = ret_code
             if request.get("rm_stdin"):
                 request["stdin"] = ""
             #if ret_code != 0:
@@ -56,4 +57,4 @@ if __name__ == "__main__":
     try:
         main()
     except OSError as e:
-        log("[exception]: OSError (%s)" % e.message)
+        print "OSError (%s)" % e

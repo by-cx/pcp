@@ -10,18 +10,18 @@ class EmailBackend(object):
         homedir = join(config.maildir, email.domain.name)
         maildir = join(homedir, email.login)
 
-        self.script.add_cmd("mkdir -p %s" % homedir)
-        self.script.add_cmd("chown email:email %s -R" % homedir)
-        self.script.add_cmd("maildirmake %s" % maildir)
-        self.script.add_cmd("chown email:email %s -R" % maildir)
-        self.script.add_cmd("maildirmake %s" % join(maildir, '.Spam'))
-        self.script.add_cmd("chown email:email %s -R" % join(maildir, 'Spam'))
+        self.script.add_cmd("mkdir -p '%s'" % homedir)
+        self.script.add_cmd("chown email:email '%s' -R" % homedir)
+        self.script.add_cmd("maildirmake '%s'" % maildir)
+        self.script.add_cmd("chown email:email '%s' -R" % maildir)
+        self.script.add_cmd("maildirmake '%s'" % join(maildir, '.Spam'))
+        self.script.add_cmd("chown email:email '%s' -R" % join(maildir, 'Spam'))
 
     def commit(self):
         self.script.commit()
 
     def uninstall(self, email):
-        maildir = join(config.maildir, email.domain.domain_name, email.login)
+        maildir = join(config.maildir, email.domain.name, email.login)
         self.script.add_cmd("rm -rf %s" % maildir)
 
     def uninstall_domain(self, domain):

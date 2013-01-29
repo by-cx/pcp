@@ -15,9 +15,9 @@
                         <li {% if menu_active == "users" %} class="active"{% endif %}>
                             <a href="{% url wsgiadmin.users.views.show %}" class="red">{% trans "Users" %}</a>
                         </li>
-                    <li {% if menu_active == "domains" %} class="active"{% endif %}>
+                    <!--<li {% if menu_active == "domains" %} class="active"{% endif %}>
                         <a href="{% url domains_list %}">{% trans "Domains" %}</a>
-                    </li>
+                    </li>-->
                     {% endif %}
                     <li {% if menu_active == "dns" %} class="active"{% endif %}>
                         <a href="{% url dns_list %}">{% trans "DNS" %}</a>
@@ -193,7 +193,7 @@
                     {% endif %}
                     {% if menu_active == "emails" %}
                         <li>
-                            <a href="{% url email_domain_add %}">{% trans "Add domain for mailbox" %}</a>
+                            <a href="{% url email_domain_add %}">{% trans "Add domain for mailboxes" %}</a>
                         </li>
                         <li>
                             <a href="{% url add_mailbox %}">{% trans "Add mailbox" %}</a>

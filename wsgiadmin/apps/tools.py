@@ -36,8 +36,6 @@ class Script(object):
                 logging.info("[stdin]: %s" % stdin)
         p = Popen(["ssh", self.server]+cmd, stdout=PIPE, stderr=PIPE, stdin=PIPE)
         stdout, stderr = p.communicate(stdin)
-        if not stderr:
-            return json.loads(stdout)
         if settings.DEBUG:
             if stdout:
                 sys.stdout.write("[stdout]: %s\n" % stdout)
@@ -46,6 +44,8 @@ class Script(object):
                 sys.stdout.write("[stderr]: %s\n" % stderr)
                 logging.info("[stderr]: %s" % stderr)
             sys.stdout.write("---\n")
+        if not stderr:
+            return json.loads(stdout)
         raise ScriptException("PCP runner script error: %s" % stderr)
 
     def commit(self, no_thread=False):

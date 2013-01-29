@@ -40,7 +40,7 @@
                             <a href="{% url wsgiadmin.emails.views.changePasswdBox email.id %}" class="btn btn-warning">{% trans "Change password" %}</a>
                         </li>
                         <li class="smazat">
-                            <a href="#" class="object_delete btn btn-danger" rel="{{ email.id }}">{% trans "Delete" %}</a>
+                            <a href="#a" class="btn btn-danger" onclick="if(confirm('{% trans "Are you sure?" %}')) document.location='{% url mailbox_remove %}?pk={{ email.id }}';">{% trans "Delete" %}</a>
                         </li>
                         </ul>
                         <span id="removed_{{ email.id }}" class="info"></span>

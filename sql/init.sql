@@ -6,6 +6,9 @@ CREATE VIEW redirects AS SELECT alias,email FROM emails_redirect;
 
 CREATE VIEW email_pam AS SELECT e.password AS password,e.login||'@'||d.name AS user FROM emails_email e, domains_domain d WHERE e.domain_id = d.id;
 
+
+-- last
+
 CREATE VIEW mailboxes AS
   SELECT
     e.login||'@'||d.name AS email,
@@ -22,4 +25,4 @@ CREATE VIEW mailboxes AS
   WHERE
     e.domain_id = d.id;
 
-SELECT alias||'@'||d.name AS alias, email, 'f' AS trash FROM emails_redirect r, emails_domain d WHERE r.domain_id = d.id;
+CREATE VIEW redirects AS SELECT alias||'@'||d.name AS alias, email, 'f' AS trash FROM emails_redirect r, emails_domain d WHERE r.domain_id = d.id;

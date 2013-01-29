@@ -15,7 +15,7 @@ class EmailBackend(object):
         self.script.add_cmd("maildirmake '%s'" % maildir)
         self.script.add_cmd("chown email:email '%s' -R" % maildir)
         self.script.add_cmd("maildirmake '%s'" % join(maildir, '.Spam'))
-        self.script.add_cmd("chown email:email '%s' -R" % join(maildir, 'Spam'))
+        self.script.add_cmd("chown email:email '%s' -R" % join(maildir, '.Spam'))
 
     def commit(self):
         self.script.commit()

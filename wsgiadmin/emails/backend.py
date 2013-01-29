@@ -22,7 +22,7 @@ class EmailBackend(object):
 
     def uninstall(self, email):
         maildir = join(config.maildir, email.domain.name, email.login)
-        self.script.add_cmd("rm -rf %s" % maildir)
+        self.script.add_cmd("rm -rf '%s'" % maildir)
 
     def uninstall_domain(self, domain):
         for email in domain.email_set.all():

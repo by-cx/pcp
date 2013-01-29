@@ -52,14 +52,12 @@ class formReg2(PassCheckForm):
 
 
 class SendPwdForm(forms.Form):
-    email = forms.EmailField(label=_("E-mail"), max_length=250, required=False)
-    username = forms.CharField(label=_("Username"), max_length=250, required=False)
+    email = forms.EmailField(label=_("E-mail"), max_length=250, required=True)
+    username = forms.CharField(label=_("Username"), max_length=250, required=True)
 
 
     def clean(self):
-        if not 'email' in self.cleaned_data and not 'username' in self.cleaned_data:
-            raise ValidationError(_("Fill at least one input"))
-
+        user = None
         if 'email' in self.cleaned_data and self.cleaned_data['email']:
             try:
                 user = User.objects.filter(email=self.cleaned_data['email'])
@@ -72,5 +70,6 @@ class SendPwdForm(forms.Form):
             except User.DoesNotExist:
                 raise ValidationError(_("Given username doesn't exists"))
 
-        self.user_object = user
+        if user:
+            self.user_object = user
         return self.cleaned_data

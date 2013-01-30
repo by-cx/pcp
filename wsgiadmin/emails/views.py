@@ -217,7 +217,7 @@ def changeRedirect(request, rid):
     if r.domain.user != u:
         return HttpResponseForbidden(ugettext("Forbidden operation"))
 
-    domains = [(x.name, x.name) for x in u.email_domain_set.filter(mail=True)]
+    domains = [(x.name, x.name) for x in u.email_domain_set.filter()]
     if request.method == 'POST':
         form = FormRedirect(request.POST, instance=r)
         form.fields["_domain"].choices = domains

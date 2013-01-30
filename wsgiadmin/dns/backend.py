@@ -47,18 +47,18 @@ class DomainObject(object):
         domain.new_serial()
         records = []
         for ns in config.dns_default_nss.split():
-            records.append({"name": "@", "TTL": "", "type": "NS", "prio": "", "value": ns})
+            records.append({"name": "@", "TTL": domain.ttl if domain.ttl else 86400, "type": "NS", "prio": "", "value": "%s." % ns})
         for record in domain.record_set.order_by("order_num"):
             records.append({
                 "name": record.name,
-                "TTL": record.ttl,
+                "TTL": record.ttl if record.ttl else 86400,
                 "type": record.record_type,
                 "prio": record.prio if record.prio else "",
                 "value": record.value,
             })
         return render_to_string("dns/zone.txt", {
             "records": records,
-            "TTL": domain.ttl,
+            "TTL": domain.ttl if domain.ttl else 86400,
             "ns1": config.dns_default_nss.split()[0],
             "rname": domain.rname.replace("@", "."),
             "serial": domain.serial,

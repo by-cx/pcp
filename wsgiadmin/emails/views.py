@@ -196,7 +196,7 @@ def alias_remove(request):
         u = request.session.get('switched_user', request.user)
 
         try:
-            r = EmailRedirect.objects.get(id=object_id, domain__owner=u)
+            r = EmailRedirect.objects.get(id=object_id, domain__user=u)
         except EmailRedirect.DoesNotExist:
             raise Exception("redirect doesn't exist, obviously")
         else:
@@ -214,7 +214,7 @@ def changeRedirect(request, rid):
     rid = int(rid)
 
     r = get_object_or_404(EmailRedirect, id=rid)
-    if r.domain.owner != u:
+    if r.domain.user != u:
         return HttpResponseForbidden(ugettext("Forbidden operation"))
 
     domains = [(x.name, x.name) for x in u.email_domain_set.filter(mail=True)]

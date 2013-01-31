@@ -50,6 +50,10 @@ class Migration(DataMigration):
         #TODO: this is really ugly and wont work in the future
         for domain in Domain.objects.all():
             if not domain.parent and domain.dns:
+                converted_domains = [x.name for x in orm['dns.domain'].objects.all()]
+                if domain.name in converted_domains:
+                    print "\t\tSkip domain %s (duplicity)" % domain.name
+                    continue
                 dns = orm['dns.domain']()
                 dns.name = domain.name
                 dns.rname = "info@rosti.cz"

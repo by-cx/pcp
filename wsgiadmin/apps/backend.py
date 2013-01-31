@@ -160,7 +160,7 @@ class PHPApp(AppBackend):
     def gen_php_ini(self):
         parms = self.get_parmameters()
         content = []
-        content.append("%s" % self.script.run("cat /etc/php5/php.ini")["stdout"])
+        content.append("%s" % self.script.run("cat /etc/php5/cgi/php.ini")["stdout"])
         content.append("memory_limit = %s" % parms.get("memory_limit", "32M"))
         content.append("post_max_size = %s" % parms.get("post_max_size", "32M"))
         content.append("upload_max_filesize = %s" % parms.get("upload_max_filesize", "10"))

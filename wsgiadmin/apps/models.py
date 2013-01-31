@@ -78,7 +78,7 @@ class App(models.Model):
     @property
     def misc_domains_list(self):
         domains = [x.strip() for x in self.domains.split()]
-        return domains[1:] if len(domains) > 2 else []
+        return domains[1:] if len(domains) > 1 else []
 
     @property
     def price(self):

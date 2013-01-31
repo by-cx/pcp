@@ -85,7 +85,6 @@ class AppParametersForm(forms.Form):
     def clean_domains(self):
         domains = self.cleaned_data["domains"].split()
         used_domains = []
-        print self.this_app
         for x in [app.domains_list for app in App.objects.all() if not self.this_app or self.this_app.id != app.id]:
             used_domains += x
         for domain in domains:

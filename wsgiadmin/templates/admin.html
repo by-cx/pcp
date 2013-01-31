@@ -19,9 +19,11 @@
                         <a href="{% url domains_list %}">{% trans "Domains" %}</a>
                     </li>-->
                     {% endif %}
+                    {% if config.handle_dns %}
                     <li {% if menu_active == "dns" %} class="active"{% endif %}>
                         <a href="{% url dns_list %}">{% trans "DNS" %}</a>
                     </li>
+                    {% endif %}
                     {% if user.usersite_set.count %}
                     <li {% if menu_active == "webapps" %} class="active"{% endif %}>
                         <a href="{% url app_list %}">{% trans "Web apps" %}</a>

@@ -31,7 +31,7 @@ class Migration(DataMigration):
         record = orm['dns.record']()
         record.name = "@"
         record.record_type = "MX"
-        record.value = config.dns_default_mx
+        record.value = "%s." % config.dns_default_mx
         record.ttl = config.dns_default_record_ttl
         record.domain = domain
         record.order_num = 1

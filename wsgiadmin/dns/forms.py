@@ -2,6 +2,7 @@ from django import forms
 from django.forms.models import ModelForm
 from wsgiadmin.dns.models import Domain, Record
 from wsgiadmin.service.forms import RostiFormHelper
+from django.utils.translation import ugettext_lazy as _
 
 
 class DomainUpdateForm(ModelForm):
@@ -34,6 +35,6 @@ class RecordForm(ModelForm):
         return None
 
     def clean_prio(self):
-        if self.cleaned_data["record_type"] == "MX" and not self.cleaned_data["prio"]:
+        if self.data["record_type"] == "MX" and not self.cleaned_data["prio"]:
             raise forms.ValidationError(_("MX needs prio"))
         return self.cleaned_data["prio"]

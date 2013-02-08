@@ -241,14 +241,11 @@ def rm(request, uid):
         script.add_cmd("dropdb %s" % pgdb.dbname)
         script.add_cmd("dropuser %s" % pgdb.dbname)
         pgdb.delete()
-    for email in Email.objects.filter(domain__owner=user):
-        script.add_cmd("rm -r /var/mail/%s/%s" % (email.domain.name, email.login))
-        email.delete()
 
-    script.add_cmd("rm -r /var/www/%s" % user.username)
+    script.add_cmd("rm -r '/var/www/%s'" % user.username)
     script.add_cmd("userdel -r %s" % user.username)
     script.add_cmd("dropuser %s" % user.username)
-    script.add_cmd("rm -r /home/%s" % user.username)
+    script.add_cmd("rm -r '/home/%s'" % user.username)
     script.commit()
 
     if parms:

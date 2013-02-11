@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
-import json
 from os.path import join
 from django.contrib import messages
 from django.contrib.auth.models import User
-from django.core.exceptions import ObjectDoesNotExist
 
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
+from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import render_to_response, get_object_or_404
-from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.template.context import RequestContext
@@ -18,9 +15,8 @@ from wsgiadmin.clients.forms import UserForm, ParmsForm
 
 from wsgiadmin.clients.models import *
 from wsgiadmin.emails.models import Message
-from wsgiadmin.requests.request import SystemRequest
+from wsgiadmin.old.requests.request import SystemRequest
 from wsgiadmin.service.forms import PassCheckForm, RostiFormHelper
-from django.core.exceptions import ObjectDoesNotExist
 from wsgiadmin.stats.tools import add_credit
 
 @login_required

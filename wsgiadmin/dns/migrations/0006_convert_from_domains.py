@@ -1,11 +1,7 @@
 # -*- coding: utf-8 -*-
-import datetime
 from constance import config
-from django.contrib.auth.models import User
-from south.db import db
 from south.v2 import DataMigration
-from django.db import models
-from wsgiadmin.domains.models import Domain
+from wsgiadmin.old.domains.models import Domain
 
 class Migration(DataMigration):
 

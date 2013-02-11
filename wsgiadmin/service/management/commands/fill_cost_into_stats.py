@@ -1,8 +1,7 @@
-import logging
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.db.models.query_utils import Q
-from wsgiadmin.apacheconf.models import UserSite
+from wsgiadmin.old.apacheconf.models import UserSite
 from wsgiadmin.stats.models import Record
 
 class Command(BaseCommand):

@@ -1,0 +1,80 @@
+{% extends "admin.html" %}
+{% load i18n %}
+
+{% block title %}
+    {% trans "Administration" %} &gt; {% trans "Web pages and apps" %}
+{% endblock %}
+
+{% block content %}
+    <div id="message-box"></div>
+
+    <h3>{% trans "List of existing apps and webs" %}</h3>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>{% trans "Create date" %}</th>
+            <th>{% trans "Type" %}</th>
+            <th>{% trans "Server name" %}</th>
+            <th>{% trans "Actions" %}</th>
+        </tr>
+        </thead>
+        {% if object_list %}
+            <tbody id="objects_list">
+            {% for site in object_list %}
+                <tr>
+                    <td>{{ site.pub_date }}</td>
+                    <td>{% trans site.type %}</td>
+                    <td>{{ site.main_domain }}</td>
+                    <td class="list_actions">
+                        <ul class="akce">
+                            {% if site.type == "php" or site.type == "static" %}
+                                <li>
+                                    <a href="{% url app_static app_type=site.type app_id=site.id %}">
+                                        <img src="{{ STATIC_URL }}images/ico-editovat.png" alt="{% trans "Edit" %}"/>
+                                    </a>
+                                </li>
+                            {% endif %}
+                            {% if site.type == "uwsgi" or site.type == "modwsgi" %}
+                                {% if site.type == "uwsgi" %}
+                                    <li>
+                                        <a href="{% url wsgiadmin.old.apacheconf.views.restart site.id %}" title="{% trans "Restart" %}">
+                                            <img src="{{ STATIC_URL }}images/ico-obnovit.png" alt="{% trans "Restart" %}"/>
+                                        </a>
+                                    </li>
+                                {% endif %}
+                                <li>
+                                    <a href="{% url wsgiadmin.old.apacheconf.views.app_wsgi site.id %}" title="{% trans "Edit" %}">
+                                        <img src="{{ STATIC_URL }}images/ico-editovat.png" alt="{% trans "Edit" %}"/>
+                                    </a>
+                                </li>
+                            {% endif %}
+                            <li class="smazat">
+                                <a href="#" id="remove_{{ site.id }}" rel="{{ site.id }}" class="bold object_delete" title="{% trans "Delete" %}">
+                                    <img src="{{ STATIC_URL }}images/ico-smazat.png" alt="{% trans "Delete" %}"/>
+                                </a>
+                            </li>
+                        </ul>
+                        <span id="removed_{{ site.id }}" class="info"></span>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="4">
+                    <div class="pagination">
+                        {% include "paginator.html" %}
+                    </div>
+                    <div class="clear"></div>
+                </td>
+            </tr>
+            </tfoot>
+        {% else %}
+            <tbody>
+            <tr>
+                <td colspan="4">{% trans "Crap! No web found. However, you can add one with the menu on left side." %}</td>
+            </tr>
+            </tbody>
+        {% endif %}
+    </table>
+{% endblock %}

@@ -1,13 +1,15 @@
 import datetime
 import logging
+
 from constance import config
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
-from wsgiadmin.apps.backend import PythonApp, AppBackend, typed_object
-from wsgiadmin.apacheconf.tools import restart_master
-from wsgiadmin.clients.models import Parms
-from wsgiadmin.emails.models import Message
 from django.db import transaction
+
+from wsgiadmin.apps.backend import typed_object
+from wsgiadmin.old.apacheconf.tools import restart_master
+from wsgiadmin.emails.models import Message
+
 
 info = logging.info
 

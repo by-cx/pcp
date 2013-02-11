@@ -1,11 +1,9 @@
 from random import randint
 from time import time
-from constance import config
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout
-from os.path import join
 from hashlib import md5
 
+from constance import config
+from crispy_forms.helper import FormHelper
 from django.contrib import messages
 from django.db.models.query_utils import Q
 from django.shortcuts import render_to_response, get_object_or_404
@@ -17,12 +15,12 @@ from django.template.context import RequestContext
 from django.core.mail import send_mail
 from django.views.generic.edit import FormView
 
-from wsgiadmin.apacheconf.models import UserSite
+from wsgiadmin.old.apacheconf.models import UserSite
 from wsgiadmin.clients.models import *
 from wsgiadmin.emails.models import Message
-from wsgiadmin.requests.request import SSHHandler
+from wsgiadmin.old.requests.request import SSHHandler
 from wsgiadmin.service.forms import PassCheckForm, RostiFormHelper
-from wsgiadmin.useradmin.forms import formReg, formReg2, SendPwdForm, RegistrationForm
+from wsgiadmin.useradmin.forms import SendPwdForm, RegistrationForm
 from wsgiadmin.clients.models import Parms
 
 
@@ -97,7 +95,7 @@ def requests(request):
 
     requests = u.request_set.order_by("add_date").reverse()
 
-    return render_to_response('requests.html', {
+    return render_to_response('old/requests.html', {
             "u": u,
             "superuser": superuser,
             "menu_active": "dashboard",

@@ -1,8 +1,9 @@
-from django.conf import settings
 from django.core.management.base import BaseCommand
-from wsgiadmin.requests.request import SSHHandler
-from wsgiadmin.clients.models import Machine
 from django.contrib.auth.models import User
+
+from wsgiadmin.old.requests.request import SSHHandler
+from wsgiadmin.clients.models import Machine
+
 
 class Command(BaseCommand):
     help = "Commits performed user actions"

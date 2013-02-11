@@ -54,7 +54,7 @@
                 {% elif app.app_type == "proxy" %}
                     <a href="{% url app_params_proxy app_id=app.id %}" class="btn btn-warning"><i class="icon-edit icon-white"></i> {% trans "Parameters" %}</a>
                 {% endif %}
-                <a href="#a" onclick="if(confirm('{% trans "Are you sure?" %}')) {document.location= '{% url app_rm %}?app_id={{ app.id }}';}" class="btn btn-danger icon-white"><i class="icon-remove"></i> {% trans "Delete" %}</a>
+                <a href="#a" onclick="if(confirm('{% trans "Are you sure?" %}')) {document.location= '{% url app_rm %}?app_id={{ app.id }}';}" class="btn btn-danger"><i class="icon-remove icon-white"></i> {% trans "Delete" %}</a>
             </td>
         </tr>
         <tr>

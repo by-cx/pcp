@@ -1851,7 +1851,7 @@ msgstr "Stará implementace"
 
 #: templates/users.html:58
 msgid "Switch"
-msgstr "Přepnout uživatele"
+msgstr "Přepnout"
 
 #: templates/apps/app_info.html:11
 msgid "Information about app"

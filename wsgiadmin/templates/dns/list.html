@@ -13,8 +13,8 @@
         <thead>
         <tr>
             <th>{% trans "Domain" %}</th>
-            <th>{% trans "Nameservers" %}</th>
             <th>{% trans "TTL" %}</th>
+            <th>{% trans "Admin e-mail" %}</th>
             <th>{% trans "Serial" %}</th>
             <th>{% trans "Actions" %}</th>
         </tr>
@@ -24,8 +24,8 @@
             {% for domain in object_list %}
                 <tr>
                     <td>{{ domain.name }}</td>
-                    <td>{{ domain.nss }}</td>
                     <td>{{ domain.ttl }}</td>
+                    <td>{{ domain.rname }}</td>
                     <td>{{ domain.serial }}</td>
                     <td class="list_actions">
                         <a href="{% url dns_domain_update pk=domain.id %}" class="btn btn-primary btn-mini">{% trans "Update" %}</a>

@@ -32,9 +32,6 @@
                             <a href="{% url wsgiadmin.useradmin.views.info %}">{% trans "Dashboard" %}</a>
                         </li>
                         {% if superuser.is_superuser %}
-                            <li {% if menu_active == "users" %} class="active"{% endif %}>
-                                <a href="{% url wsgiadmin.users.views.show %}" class="red">{% trans "Users" %}</a>
-                            </li>
                             <!--<li {% if menu_active == "domains" %} class="active"{% endif %}>
                         <a href="{% url domains_list %}">{% trans "Domains" %}</a>
                     </li>-->
@@ -80,8 +77,8 @@
         <div class="span3">
             <div class="well sidebar-nav">
                 <ul class="nav nav-list">
-                    <li class="nav-header">{% trans "Actions" %}</li>
                     {% if menu_active == "dashboard" %}
+                        <li class="nav-header">{% trans "Dashboard" %}</li>
                         <li>
                             <a href="{% url wsgiadmin.useradmin.views.info %}">
                                 <i class="icon-home"></i>
@@ -107,23 +104,24 @@
                             </a>
                         </li>
                         {% if superuser.is_superuser %}
+                            <li class="nav-header">{% trans "Master panel" %}</li>
                             <li class="divider"></li>
                             <li>
                                 <a href="{% url wsgiadmin.useradmin.views.master %}" class="red">
                                     <i class="icon-lock"></i>
                                     {% trans "Master panel" %}
                                 </a>
-                            </li>{% endif %}
-                    {% endif %}
-                    {% if menu_active == "users" %}
-                        <li>
-                            <a href="{% url wsgiadmin.users.views.show %}">
-                                <i class="icon-list"></i>
-                                {% trans "User's list" %}
-                            </a>
-                        </li>
+                            </li>
+                            <li>
+                                <a href="{% url wsgiadmin.users.views.show %}">
+                                    <i class="icon-list"></i>
+                                    {% trans "User's list" %}
+                                </a>
+                            </li>
+                        {% endif %}
                     {% endif %}
                     {% if menu_active == "dns" %}
+                        <li class="nav-header">{% trans "DNS settings" %}</li>
                         <li>
                             <a href="{% url dns_list %}">
                                 <i class="icon-list"></i>
@@ -139,6 +137,7 @@
                         </li>
                     {% endif %}
                     {% if menu_active == "domains" %}
+                        <li class="nav-header">{% trans "Domains" %}</li>
                         <li>
                             <a href="{% url domains_list %}">
                                 <i class="icon-list"></i>
@@ -154,6 +153,7 @@
                         </li>
                     {% endif %}
                     {% if menu_active == "webapps" %}
+                        <li class="nav-header">{% trans "Web applications" %}</li>
                         <li>
                             <a href="{% url app_list %}">
                                 <i class="icon-list"></i>
@@ -189,6 +189,7 @@
                         </li>
                     {% endif %}
                     {% if menu_active == "apps" %}
+                        <li class="nav-header">{% trans "Apps" %}</li>
                         <li>
                             <a href="{% url apps_list %}"><i class="icon-list"></i> {% trans "Apps list" %}</a>
                         </li>
@@ -210,6 +211,7 @@
                         </li>-->
                     {% endif %}
                     {% if menu_active == "dbs" %}
+                        <li class="nav-header">{% trans "Databases" %}</li>
                         <li>
                             <a href="{% url db_list dbtype='mysql' %}">
                                 <i class="icon-list"></i>
@@ -237,6 +239,7 @@
                         </li>
                     {% endif %}
                     {% if menu_active == "emails" %}
+                        <li class="nav-header">{% trans "E-mails" %}</li>
                         <li>
                             <a href="{% url mailbox_list %}">
                                 <i class="icon-list"></i>
@@ -270,6 +273,7 @@
                         </li>
                     {% endif %}
                     {% if menu_active == "ftps" %}
+                        <li class="nav-header">{% trans "FTP accounts" %}</li>
                         <li>
                             <a href="{% url ftp_upsert %}">
                                 <i class="icon-plus"></i>
@@ -284,6 +288,7 @@
                         </li>
                     {% endif %}
                     {% if menu_active == "settings" %}
+                        <li class="nav-header">{% trans "Settings" %}</li>
                         <li>
                             <a href="{% url address_create %}"><i class="icon-plus"></i> {% trans "New address" %}</a>
                         </li>

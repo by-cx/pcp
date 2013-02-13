@@ -152,20 +152,22 @@ INSTALLED_APPS = [
     # not necessarly, make it optional
     'gopay4django',
 
-    'wsgiadmin.old.requests',
     'wsgiadmin.useradmin',
     'wsgiadmin.clients',
-    'wsgiadmin.old.domains',
     'wsgiadmin.dns',
     'wsgiadmin.emails',
+    'wsgiadmin.users',
+    'wsgiadmin.service',
+    'wsgiadmin.stats',
+    'wsgiadmin.core',
+    'wsgiadmin.apps',
+
+    'wsgiadmin.old.requests',
     'wsgiadmin.old.ftps',
     'wsgiadmin.old.db',
     'wsgiadmin.old.cron',
-    'wsgiadmin.users',
+    'wsgiadmin.old.domains',
     'wsgiadmin.old.apacheconf',
-    'wsgiadmin.service',
-    'wsgiadmin.stats',
-    'wsgiadmin.apps',
 ]
 
 PYTHON_INTERPRETERS = {

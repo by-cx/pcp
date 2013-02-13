@@ -28,9 +28,9 @@
                     <td>{{ domain.ttl }}</td>
                     <td>{{ domain.serial }}</td>
                     <td class="list_actions">
-                        <a href="{% url dns_domain_update pk=domain.id %}" class="btn btn-primary">{% trans "Update" %}</a>
-                        <a href="{% url dns_editor pk=domain.id %}" class="btn btn-primary">{% trans "Records editor" %}</a>
-                        <a href="#a" onclick="if(confirm('{% trans "Are you sure?" %}')) {document.location= '{% url dns_rm_domain %}?domain_pk={{ domain.id }}';}" class="btn btn-danger"><i class="icon-remove icon-white"></i> {% trans "Delete" %}</a>
+                        <a href="{% url dns_domain_update pk=domain.id %}" class="btn btn-primary btn-mini">{% trans "Update" %}</a>
+                        <a href="{% url dns_editor pk=domain.id %}" class="btn btn-primary btn-mini">{% trans "Records editor" %}</a>
+                        <a href="#a" onclick="if(confirm('{% trans "Are you sure?" %}')) {document.location= '{% url dns_rm_domain %}?domain_pk={{ domain.id }}';}" class="btn btn-danger btn-mini"><i class="icon-remove icon-white"></i> {% trans "Delete" %}</a>
                     </td>
                 </tr>
             {% endfor %}

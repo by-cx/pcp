@@ -15,10 +15,8 @@ from wsgiadmin.emails.forms import DomainForm
 
 from wsgiadmin.emails.forms import FormEmail, FormRedirect
 from wsgiadmin.emails.models import Email, EmailRedirect
-from wsgiadmin.requests.request import EMailRequest
 from wsgiadmin.service.forms import PassCheckModelForm, RostiFormHelper
 from wsgiadmin.service.views import JsonResponse, RostiListView
-from constance import config
 
 
 class MailboxListView(RostiListView):

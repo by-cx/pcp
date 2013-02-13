@@ -1,13 +1,16 @@
 import datetime
 import logging
+
 from constance import config
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
-from wsgiadmin.apps.backend import PythonApp, AppBackend, typed_object
-from wsgiadmin.apacheconf.tools import restart_master
-from wsgiadmin.clients.models import Parms
-from wsgiadmin.emails.models import Message
 from django.db import transaction
+from wsgiadmin.stats.tools import add_credit
+
+from wsgiadmin.apps.backend import typed_object
+from wsgiadmin.old.apacheconf.tools import restart_master
+from wsgiadmin.emails.models import Message
+
 
 info = logging.info
 
@@ -75,22 +78,22 @@ class Command(BaseCommand):
         elif parms.low_level_credits == "buy_month":
             data = {"credit": parms.credit, "days": parms.days_left}
             credits = parms.pay_total_day() * 30 + correction
-            parms.add_credit(credits)
+            add_credit(user, credits)
             tmpl = "autobuy_credit"
         elif parms.low_level_credits == "buy_three_months":
             data = {"credit": parms.credit, "days": parms.days_left}
             credits = parms.pay_total_day() * 90 + correction
-            parms.add_credit(credits)
+            add_credit(user, credits)
             tmpl = "autobuy_credit"
         elif parms.low_level_credits == "buy_six_months":
             data = {"credit": parms.credit, "days": parms.days_left}
             credits = parms.pay_total_day() * 180 + correction
-            parms.add_credit(credits)
+            add_credit(user, credits)
             tmpl = "autobuy_credit"
         elif parms.low_level_credits == "buy_year":
             data = {"credit": parms.credit, "days": parms.days_left}
             credits = parms.pay_total_day() * 360 + correction
-            parms.add_credit(credits)
+            add_credit(user, credits)
             tmpl = "autobuy_credit"
 
         if tmpl and data:

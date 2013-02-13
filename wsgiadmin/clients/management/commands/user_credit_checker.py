@@ -1,7 +1,5 @@
-from constance import config
 from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand
-from wsgiadmin.apacheconf.tools import restart_master
 from wsgiadmin.emails.models import Message
 
 class Command(BaseCommand):

@@ -121,13 +121,24 @@ class CreditView(TemplateView):
             message[0].send(config.email, {"user": self.user.username, "credit": value})
 
     def post(self, request, *args, **kwargs):
-        if request.POST.get("credit"):
-            credit = add_credit(self.user, float(request.POST.get("credit")))
-            message = Message.objects.filter(purpose="add_credit")
-            if message:
-                message[0].send(config.email, {"user": self.user.username, "credit": float(request.POST.get("credit")), "bonus": float(request.POST.get("credit"))})
-            messages.add_message(request, messages.SUCCESS, _('Credits will been added on your account after payment'))
-            return HttpResponseRedirect(reverse("payment_info", kwargs={"pk": credit.id}))
+        right_format = False
+        try:
+            if request.POST.get("credit"):
+                float(request.POST.get("credit"))
+                right_format = True
+        except UnicodeEncodeError:
+            messages.add_message(request, messages.ERROR, _('Put number into form below.'))
+
+        if right_format and float(request.POST.get("credit")) < 50:
+            messages.add_message(request, messages.ERROR, _('Minimum value is 50 credits'))
+        elif right_format:
+            if request.POST.get("credit"):
+                credit = add_credit(self.user, float(request.POST.get("credit")))
+                message = Message.objects.filter(purpose="add_credit")
+                if message:
+                    message[0].send(config.email, {"user": self.user.username, "credit": float(request.POST.get("credit")), "bonus": float(request.POST.get("credit"))})
+                messages.add_message(request, messages.SUCCESS, _('Credits will been added on your account after payment'))
+                return HttpResponseRedirect(reverse("payment_info", kwargs={"pk": credit.id}))
         if request.POST.get("what_to_do"):
             self.user.parms.low_level_credits = request.POST.get("what_to_do")
             self.user.parms.save()

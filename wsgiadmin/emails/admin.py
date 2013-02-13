@@ -1,5 +1,5 @@
 from django.contrib import admin
-from wsgiadmin.domains.models import Domain
+from wsgiadmin.old.domains.models import Domain
 from wsgiadmin.emails.models import Email, EmailRedirect, Message
 
 class EmailAdmin(admin.ModelAdmin):

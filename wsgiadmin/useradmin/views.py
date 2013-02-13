@@ -130,7 +130,10 @@ class PasswordView(FormView):
         return data
 
     def form_valid(self, form):
+        print form
+        print dir(form)
         user = form.user_object
+        print user
 
         pwd = md5( str(time()*randint(1, 300)) ).hexdigest()[:7]
         message = ugettext("Your password has been reseted: %s" % pwd)

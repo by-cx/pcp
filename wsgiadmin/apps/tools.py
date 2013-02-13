@@ -4,6 +4,7 @@ from multiprocessing import Process
 from subprocess import Popen, PIPE
 import sys
 from django.conf import settings
+from wsgiadmin.apps.models import Log
 
 
 class ScriptException(Exception): pass
@@ -46,6 +47,8 @@ class Script(object):
             sys.stdout.write("---\n")
         if not stderr:
             return json.loads(stdout)
+        log = Log(content=stdout)
+        log.save()
         raise ScriptException("PCP runner script error: %s" % stderr)
 
     def commit(self, no_thread=False):

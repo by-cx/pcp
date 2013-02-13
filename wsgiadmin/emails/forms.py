@@ -53,7 +53,7 @@ class DomainForm(forms.ModelForm):
         fields = ("name", )
 
     def clean_name(self):
-        if not re.match("^[0-9a-zA-Z\.]*$", self.cleaned_data["name"]):
+        if not re.match("^[0-9a-zA-Z\.\-]*$", self.cleaned_data["name"]):
             raise forms.ValidationError(_("Domain name has to be in this format: ^[0-9a-zA-Z\.]*$"))
         return self.cleaned_data["name"]
 

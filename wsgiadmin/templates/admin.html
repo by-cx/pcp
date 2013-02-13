@@ -104,8 +104,8 @@
                             </a>
                         </li>
                         {% if superuser.is_superuser %}
-                            <li class="nav-header">{% trans "Master panel" %}</li>
                             <li class="divider"></li>
+                            <li class="nav-header">{% trans "Master panel" %}</li>
                             <li>
                                 <a href="{% url wsgiadmin.useradmin.views.master %}" class="red">
                                     <i class="icon-lock"></i>

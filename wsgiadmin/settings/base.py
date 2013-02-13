@@ -43,6 +43,7 @@ CURRENCY = (
 GOPAY = False
 FIO_TOKEN = ""
 
+
 ##########
 
 CACHES = {

@@ -7,75 +7,71 @@
 {% endblock %}
 
 {% block content %}
-<div id="message-box"></div>
-<div class="clear"></div>
-<div class="content-box">
-	<div class="content-box-header">
-		<h3>Seznam uživatelů</h3>
-		<div class="clear"></div>
-	</div>
-	<div class="content-box-content">
-		<div class="tab-content default-tab" id="tab1">
-			<table class="table table-striped">
-				<thead>
-					<tr>
-					   <th>Jméno uživatele</th>
-					   <th>Informace</th>
-					   <th>Domény</th>
-					   <th>Web/app</th>
-					   <th>Apps</th>
-                       <th>{% trans "Pay per day" %}</th>
-                       <th>{% trans "Credits" %}</th>
-					   <th>Akce</th>
-					</tr>
-				</thead>
-				<tbody id="user_table">
-                    {% for user in users %}
-					<tr>
-                        {% cache 21600 userlist_user_part_of_row user.username %}
-                        {% with user.parms as parms %}
-						<td>
-                            {{ user }}
-                        </td>
-						<td>
-							{% if user.username in ssh_users %}Nainstalováno{% endif %}
-							{% if parms.discount %} Sleva: {{ parms.discount }}%{% endif %}
-						</td>
-						<td>{{ parms.count_domains }}×</td>
-						<td>{{ parms.count_sites }}×</td>
-						<td>{{ parms.count_apps }}×</td>
-                        <td>{{ parms.pay_total_day|floatformat:2 }}</td>
-                        {% with parms.credit as credits %}
-                        {% if credits >= 0 %}
+    <h3>Seznam uživatelů</h3>
+
+    <p>
+        <strong>{% trans "Ordering" %}</strong><br>
+        <a href="{% url users_list %}?order=" class="btn btn-small{% if order == "" %} btn-info disabled{% endif %}">{% trans "Username" %}</a>
+        <a href="{% url users_list %}?order=credits" class="btn btn-small{% if order == "credits" %} btn-info disabled{% endif %}">{% trans "Credits" %}</a>
+        <a href="{% url users_list %}?order=payments" class="btn btn-small{% if order == "payments" %} btn-info disabled{% endif %}">{% trans "Payments" %}</a>
+        <a href="{% url users_list %}?order=date" class="btn btn-small{% if order == "date" %} btn-info disabled{% endif %}">{% trans "Joined" %}</a>
+        <a href="{% url users_list %}?order={{ order }}&reverse={% if reverse %}0{% else %}1{% endif %}" class="btn btn-primary btn-small">{% trans "Reverse" %}</a>
+    </p>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+               <th>{% trans "Username" %}</th>
+               <th>{% trans "Joined" %}</th>
+               <th>{% trans "Info" %}</th>
+               <th>{% trans "Apps (new/old)" %}</th>
+               <th>{% trans "Pay per day" %}</th>
+               <th>{% trans "Credits" %}</th>
+               <th>{% trans "Actions" %}</th>
+            </tr>
+        </thead>
+        <tbody id="user_table">
+            {% for user in users %}
+            <tr>
+                {% cache 21600 userlist_user_part_of_row user.username %}
+                {% with user.parms as parms %}
+                <td>
+                    {{ user.username }} ({{ user.id }})
+                </td>
+                <td>{{ user.date_joined|date:'d.m.Y' }}</td>
+                <td>
+                    {% if parms.home %}{% trans "Old style" %}{% endif %}
+                    {% if parms.discount %} {% trans "Discount" %}: {{ parms.discount }}%{% endif %}
+                </td>
+                <td>{{ parms.count_apps }} / {{ parms.count_sites }}</td>
+                <td>{{ parms.pay_total_day|floatformat:2 }}</td>
+                {% with parms.credit as credits %}
+                    {% if credits >= 0 %}
                         <td style="color: green;">{{ credits|floatformat:2 }}</td>
-                        {% else %}
+                    {% else %}
                         <td style="color: red;">{{ credits|floatformat:2 }}</td>
-                        {% endif %}
-                        {% endwith %}
-                        {% endwith %}
-                        {% endcache %}
-						<td>
-                            <a href="{% url switch_to_user user.id %}" class="btn">{% trans "Switch" %}</a>
-                            <a href="#a" class="btn btn-danger" onclick="if(confirm('{% trans "Are you sure?" %}')) {document.location='{% url user_rm user.id %}';};">{% trans "Delete" %}</a>
-						</td>
-					</tr>
-                    {% endfor %}
-				</tbody>
-                <tfoot>
-                <tr>
-                    <th></th>
-                    <th id="total"></th>
-                    <th></th>
-                    <th id="total_domains"></th>
-                    <th id="total_sites"></th>
-                    <th id="total_pay_per_day"></th>
-                    <th></th>
-                    <th></th>
-                </tr>
-                </tfoot>
-			</table>
-		</div>
-	</div>
-</div>
+                    {% endif %}
+                {% endwith %}
+                {% endwith %}
+                {% endcache %}
+                <td>
+                    <a href="{% url switch_to_user user.id %}" class="btn">{% trans "Switch" %}</a>
+                    <a href="#a" class="btn btn-danger" onclick="if(confirm('{% trans "Are you sure?" %}')) {document.location='{% url user_rm user.id %}';};">{% trans "Delete" %}</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+        <tr>
+            <th>{% trans "Users" %}</th>
+            <td>{{ users_count }}</td>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+        </tfoot>
+    </table>
 
 {% endblock %}

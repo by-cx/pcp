@@ -61,10 +61,10 @@ msgstr "Domény"
 #: apps/forms.py:75
 msgid ""
 "There is no relation to DNS or Domains menu. Write your domains separated by "
-"spaces."
+"sodd."
 msgstr ""
-"Není zde žádná vazba na sekci DNS nebo Domains. Napište své domény oddělené "
-"čárkou."
+"Není zde žádná vazba na sekci DNS nebo Domény. Napište své domény oddělené "
+"mezerou."
 
 #: apps/forms.py:80 apps/models.py:114 emails/forms.py:29 old/ftps/models.py:9
 #: service/forms.py:20 service/forms.py:49

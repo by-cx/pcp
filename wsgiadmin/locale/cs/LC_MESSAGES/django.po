@@ -2091,7 +2091,7 @@ msgstr "Přidat novou adresu"
 msgid "Now, last step you have to do is a pay. Look at the information below."
 msgstr ""
 "Aby byly kredity připsány na účet, je nutné je zaplatit. K tomu můžete "
-"využít klasický bankovní převod nebo <del>platební bránu GoPay</del>. Daňový "
+"využít klasický bankovní převod nebo platební bránu GoPay. Daňový "
 "doklad bude zaslán po uhrazení."
 
 #: templates/payment_infopage.html:66

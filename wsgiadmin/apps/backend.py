@@ -2,7 +2,7 @@ import json
 from django.conf import settings
 import os
 import re
-from wsgiadmin.apps.models import App, Log, Db
+from wsgiadmin.apps.models import App, Db
 from wsgiadmin.apps.tools import Script
 from constance import config
 

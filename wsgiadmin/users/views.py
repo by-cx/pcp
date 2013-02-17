@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
-import json
 from os.path import join
 from django.contrib import messages
 from django.contrib.auth.models import User
-from django.core.exceptions import ObjectDoesNotExist
 
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
+from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import render_to_response, get_object_or_404
-from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.template.context import RequestContext
@@ -18,9 +15,8 @@ from wsgiadmin.clients.forms import UserForm, ParmsForm
 
 from wsgiadmin.clients.models import *
 from wsgiadmin.emails.models import Message
-from wsgiadmin.requests.request import SystemRequest
+from wsgiadmin.old.requests.request import SystemRequest
 from wsgiadmin.service.forms import PassCheckForm, RostiFormHelper
-from django.core.exceptions import ObjectDoesNotExist
 from wsgiadmin.stats.tools import add_credit
 
 @login_required
@@ -32,19 +28,28 @@ def show(request):
         return HttpResponseForbidden(_("Permission error"))
     u = request.session.get('switched_user', request.user)
 
-    users = list(User.objects.order_by("username").prefetch_related("parms"))
+    users = list(User.objects.order_by("username"))
+    #.prefetch_related("parms"))
 
-    if request.GET.get("order_by") == "credits":
+    if request.GET.get("order") == "credits":
         users = sorted(users, key=lambda x: x.parms.credit)
-    elif request.GET.get("order_by") == "payments":
+    elif request.GET.get("order") == "payments":
         users = sorted(users, key=lambda x: x.parms.pay_total_month)
+    elif request.GET.get("order") == "date":
+        users = sorted(users, key=lambda x: x.date_joined)
+
+    if request.GET.get("reverse") == "1":
+        users.reverse()
 
     return render_to_response('users.html',
             {
             "users": users,
+            "users_count": len(users),
             "u": u,
             "superuser": request.user,
-            "menu_active": "users",
+            "menu_active": "dashboard",
+            "order": request.GET.get("order", ""),
+            "reverse": request.GET.get("reverse") == "1",
             },
         context_instance=RequestContext(request)
     )

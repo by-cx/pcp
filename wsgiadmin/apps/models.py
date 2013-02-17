@@ -97,15 +97,6 @@ class App(models.Model):
         return "%s" % self.name
 
 
-class Log(models.Model):
-    date = models.DateField(_("Date"), auto_now_add=True)
-    app = models.ForeignKey(App, verbose_name=_("App"))
-    content = models.TextField(_("Messages"))
-
-    def __unicode__(self):
-        return "Log with id %d for %s app" % (self.id, self.app_id)
-
-
 class Db(models.Model):
     date = models.DateField(_("Date"), auto_now_add=True)
     db_type = models.CharField(_("DB engine"), max_length=32, choices=(("mysql", "MySQL"), ("pgsql", "PgSQL")))
@@ -119,3 +110,4 @@ class Db(models.Model):
 
     def __unicode__(self):
         return self.name #"%s db for %s app" % (self.name, self.app_id)
+

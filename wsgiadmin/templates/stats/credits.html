@@ -25,11 +25,11 @@
             <tbody id="objects_list">
             {% for credit in credit_list %}
                 <tr>
-                    <th><a href="{% url payment_info pk=credit.id %}">{{ credit.date }}</a></th>
+                    <th><a href="{% url payment_info pk=credit.id %}">{{ credit.date|date:"d.m.Y H:M" }}</a></th>
                     <td>{{ credit.price }} {{ credit.currency }}</td>
                     <td>{{ credit.value }} cr.{% if credit.bonus %} (bonus: {{ credit.bonus }}){% endif %}</td>
                     {% if user.is_superuser %}
-                    <td>{{ credit.user.username }} {{ credit.address.name }}</td>
+                    <td>{{ credit.user.username }} {{ credit.user.id }}<br>{{ credit.address.name }}</td>
                     {% endif %}
                     <td>
                         {% if credit.date_payed %}
@@ -39,7 +39,7 @@
                             {% if user.is_superuser %}
                                 {% if credit.address %}
                                 {% if config.pcp_invoices_api_key and config.pcp_invoices_api_url %}
-                                    <a href="{% url payment_payed %}?credit_id={{ credit.id }}">{% trans "Payed!" %}</a>
+                                    <a href="{% url payment_payed %}?credit_id={{ credit.id }}" class="btn btn-danger btn-mini">{% trans "Payed!" %}</a>
                                 {% endif %}
                                 {% else %}
                                     {% trans "No address for invoice system" %}

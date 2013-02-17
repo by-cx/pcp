@@ -53,23 +53,17 @@ class formReg2(PassCheckForm):
 
 class SendPwdForm(forms.Form):
     email = forms.EmailField(label=_("E-mail"), max_length=250, required=True)
-    username = forms.CharField(label=_("Username"), max_length=250, required=True)
-
 
     def clean(self):
         user = None
         if 'email' in self.cleaned_data and self.cleaned_data['email']:
-            try:
-                user = User.objects.filter(email=self.cleaned_data['email'])
-            except User.DoesNotExist:
+            users = User.objects.filter(email=self.cleaned_data['email'])
+
+            if len(users) == 1:
+                self.user_object = users[0]
+            elif len(users) > 1:
+                raise ValidationError(_("Found more than one user with this e-mail address. Please contact technical support."))
+            else:
                 raise ValidationError(_("Given email doesn't belong to any user"))
 
-        if 'username' in self.cleaned_data and self.cleaned_data['username']:
-            try:
-                user = User.objects.get(username=self.cleaned_data['username'])
-            except User.DoesNotExist:
-                raise ValidationError(_("Given username doesn't exists"))
-
-        if user:
-            self.user_object = user
         return self.cleaned_data

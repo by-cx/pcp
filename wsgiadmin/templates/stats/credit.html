@@ -7,7 +7,7 @@
 
 {% block content %}
 
-    <h3>{% blocktrans %}Buy some credit{% endblocktrans %}</h3>
+    <h3>{% blocktrans %}Summary{% endblocktrans %}</h3>
 
     <table class="table table-striped">
     <tr>
@@ -62,31 +62,7 @@
     {% endif %}
     </table>
 
-    <table class="table table-striped">
-    <tr>
-        <th colspan="2">{% trans "What you get for 1 credit" %}</th>
-    </tr>
-    <tr>
-        <td>{% trans "WSGI app" %}</td>
-        <td>{% trans "for one day" %}</td>
-    </tr>
-    <tr>
-        <td>{% trans "WSGI extra process" %}</td>
-        <td>{% trans "one extra process for 5 days" %}</td>
-    </tr>
-    <tr>
-        <td>{% trans "PHP app" %}</td>
-        <td>{% trans "for one day" %}</td>
-    </tr>
-    <tr>
-        <td>{% trans "Static app" %}</td>
-        <td>{% trans "for four days" %}</td>
-    </tr>
-    <tr>
-        <td><strong>{% trans "Credits versus currency" %}</strong></td>
-        <td>{{ config.credit_description }}</td>
-    </tr>
-    </table>
+    <h3>{% blocktrans %}Buy some credit{% endblocktrans %}</h3>
 
     {% if addresses_count %}
     <table class="table table-striped">

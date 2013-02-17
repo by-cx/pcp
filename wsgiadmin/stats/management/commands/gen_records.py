@@ -1,7 +1,8 @@
-from datetime import date
+from datetime import date, datetime
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
-from wsgiadmin.stats.models import RecordExists, Record
+from wsgiadmin.stats.models import RecordExists, Record, Credit
+
 
 class RecordUser(object):
     def __init__(self, user):
@@ -45,6 +46,8 @@ class RecordUser(object):
         if self.user.parms.fee:
             self._record("fee", "Fee", float(self.user.parms.fee) / 30.0)
 
+
+
 class Command(BaseCommand):
     help = "Create records"
 
@@ -53,3 +56,7 @@ class Command(BaseCommand):
         for user in users:
             RecordUser(user)
 
+        #remove old not payed credits
+        for credit in Credit.objects.filter(date_payed__isnull=True):
+            if (datetime.now() - credit.date).days > 21:
+                credit.delete()

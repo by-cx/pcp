@@ -84,8 +84,8 @@
             <td>{{ db.name }}</td>
             <td>{{ db.comment }}</td>
             <td>
-                <a href="{% url db_update pk=db.id %}" class="btn">{% trans "Update" %}</a>
-                <a href="#a" class="btn btn-danger" onclick="if(confirm('{% trans "Are you sure?" %}')){ document.location='{% url db_rm %}?db_id={{ db.id }}'; }">{% trans "Delete" %}</a>
+                <a href="{% url db_update pk=db.id %}" class="btn btn-small">{% trans "Update" %}</a>
+                <a href="#a" class="btn btn-danger btn-small" onclick="if(confirm('{% trans "Are you sure?" %}')){ document.location='{% url db_rm %}?db_id={{ db.id }}'; }">{% trans "Delete" %}</a>
             </td>
         </tr>
         {% endfor %}

@@ -116,6 +116,34 @@ class EditorView(TemplateView):
         self.user = request.session.get('switched_user', request.user)
         return super(EditorView, self).dispatch(request, *args, **kwargs)
 
+    def get_domain(self):
+         return self.user.dns_set.get(id=self.kwargs.get("pk"))
+
+    def get_records(self):
+        return Record.objects.filter(domain=self.get_domain()).order_by("order_num")
+
+    def get_context_data(self, **kwargs):
+        context = super(EditorView, self).get_context_data(**kwargs)
+        context['menu_active'] = self.menu_active
+        context['u'] = self.user
+        context['superuser'] = self.request.user
+        context['domain'] = self.get_domain()
+        context['records'] = self.get_records()
+        return context
+
+
+class RecordEditorView(TemplateView):
+    template_name = "universal.html"
+    menu_active = "dns"
+
+    def get_domain(self):
+        return self.user.dns_set.get(id=self.kwargs.get("pk"))
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        self.user = request.session.get('switched_user', request.user)
+        return super(RecordEditorView, self).dispatch(request, *args, **kwargs)
+
     def post(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
         form = context.get("form")
@@ -130,10 +158,13 @@ class EditorView(TemplateView):
             script.reload()
             script.commit()
 
-            messages.add_message(request, messages.SUCCESS, _('Record has been created'))
+            messages.add_message(request, messages.SUCCESS, _('Domain zone has been updated'))
 
             return HttpResponseRedirect(reverse("dns_editor", kwargs={"pk": self.kwargs.get("pk")}))
         return self.render_to_response(context)
+
+    def get_domain(self):
+        return self.user.dns_set.get(id=self.kwargs.get("pk"))
 
     def get_form(self):
         record = self.get_record()
@@ -146,23 +177,15 @@ class EditorView(TemplateView):
         return RecordForm()
 
     def get_record(self):
-        if self.request.GET.get("record_pk"):
-            return Record.objects.filter(domain=self.get_domain()).get(id=self.request.GET.get("record_pk"))
+        if self.kwargs.get("record_pk"):
+            return Record.objects.filter(domain=self.get_domain()).get(id=self.kwargs.get("record_pk"))
         return None
 
-    def get_domain(self):
-         return self.user.dns_set.get(id=self.kwargs.get("pk"))
-
-    def get_records(self):
-        return Record.objects.filter(domain=self.get_domain()).order_by("order_num")
-
     def get_context_data(self, **kwargs):
-        context = super(EditorView, self).get_context_data(**kwargs)
+        context = super(RecordEditorView, self).get_context_data(**kwargs)
         context['menu_active'] = self.menu_active
         context['u'] = self.user
         context['superuser'] = self.request.user
-        context['domain'] = self.get_domain()
-        context['records'] = self.get_records()
         context['form'] = self.get_form()
         return context
 

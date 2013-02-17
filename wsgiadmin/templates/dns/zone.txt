@@ -7,4 +7,4 @@ $TTL {{ TTL }}s
                                         {{ minimum }} )
 
 {% for record in records %}
-{{ record.name }}  {{ record.TTL }}s     IN              {{ record.type }}  {{ record.prio }}      {{ record.value }}{% endfor %}
+{{ record.name }}  {% if record.TTL %}{{ record.TTL }}s{% endif %}     IN              {{ record.type }}  {{ record.prio }}      {{ record.value }}{% endfor %}

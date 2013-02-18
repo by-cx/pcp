@@ -29,6 +29,7 @@ urlpatterns += patterns('',
                         url(r'^credit/', include('wsgiadmin.stats.urls')),
                         url(r'^users/', include('wsgiadmin.users.urls')),
                         url(r'^apps/', include('wsgiadmin.apps.urls')),
+                        url(r'^vm/', include('wsgiadmin.virt.urls')),
                         url(r'^login/$', 'django.contrib.auth.views.login',
                                 {
                                     'template_name': 'login.html',

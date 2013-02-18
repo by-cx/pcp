@@ -49,6 +49,9 @@
                         <li {% if menu_active == "apps" %} class="active"{% endif %}>
                             <a href="{% url apps_list %}">{% trans "Apps" %}</a>
                         </li>
+                        <li {% if menu_active == "virt" %} class="active"{% endif %}>
+                            <a href="{% url virt_list %}">{% trans "VM" %}</a>
+                        </li>
                         {% if user.mysqldb_set.count or user.pgsql_set.count %}
                             <li{% if menu_active == "dbs" %} class="active"{% endif %}>
                                 <a href="{% url db_list %}">{% trans "Databases" %}</a>
@@ -209,6 +212,16 @@
                         <li>
                             <a href="{% url app_add_proxy %}"><i class="icon-plus"></i> {% trans "Add proxy" %}</a>
                         </li>-->
+                    {% endif %}
+                    {% if menu_active == "virt" %}
+                        <li class="nav-header">{% trans "Virtual machines" %}</li>
+                        <li>
+                            <a href="{% url virt_list %}"><i class="icon-list"></i> {% trans "Your virtual machines" %}</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="{% url virt_create %}"><i class="icon-plus"></i> {% trans "New virtual machine" %}</a>
+                        </li>
                     {% endif %}
                     {% if menu_active == "dbs" %}
                         <li class="nav-header">{% trans "Databases" %}</li>

@@ -161,6 +161,7 @@ INSTALLED_APPS = [
     'wsgiadmin.stats',
     'wsgiadmin.core',
     'wsgiadmin.apps',
+    'wsgiadmin.virt',
 
     'wsgiadmin.old.requests',
     'wsgiadmin.old.ftps',

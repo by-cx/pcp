@@ -47,6 +47,7 @@
     </tr>
     </table>
 
+    {% if vm.state == 1 %}
     <h3>{% trans "VNC Access" %}</h3>
 
     <div id="noVNC_screen">
@@ -163,5 +164,6 @@
             display.resize(640, 480);
         };
     </script>
+    {% endif %}
 
 {% endblock %}

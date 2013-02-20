@@ -5,6 +5,7 @@ from wsgiadmin.apps.models import App, Db
 from django.utils.translation import ugettext_lazy as _
 import re
 from wsgiadmin.service.forms import RostiFormHelper
+from wsgiadmin.virt.models import VirtMachine
 
 
 class VirtForm(forms.ModelForm):
@@ -12,4 +13,5 @@ class VirtForm(forms.ModelForm):
 
     class Meta:
         fields = ("name", )
+        model = VirtMachine
 

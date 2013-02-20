@@ -28,6 +28,8 @@ class AppsListView(ListView):
         return queryset
 
     def get_context_data(self, **kwargs):
+
+
         context = super(AppsListView, self).get_context_data(**kwargs)
         context['menu_active'] = self.menu_active
         context['u'] = self.user

@@ -29,17 +29,26 @@
         <th>{% trans "Disks" %}</th>
         <td>
             {% for disk in vm.storage_list %}
-                {{ disk.name }} {% if disk.size.capacity >= 0 %}<em>({{ disk.size.capacity|floatformat:2 }} GB)</em>{% else %}<em>{% trans "disk not found" %}</em>{% endif %}<br>
+                /dev/{{ disk.name }} {% if disk.size.capacity >= 0 %}<em>({{ disk.size.capacity|floatformat:2 }} GB)</em>{% else %}<em>{% trans "disk not found" %}</em>{% endif %}<br>
             {% endfor %}
         </td>
     </tr>
     <tr>
         <th>{% trans "State" %}</th>
-        <td>{% if vm.state == 1 %}{% trans "running" %}{% else %}{% trans "not running" %}{% endif %}</td>
+        <td>{% if vm.state == 1 %}{% trans "running" %}{% else %}{% trans "not running" %}{% endif %} ({{ vm.state }})</td>
     </tr>
     <tr>
-        <th></th>
-        <td></td>
+        <th>{% trans "Actions" %}</th>
+        <td>
+            {% if vm.state != 1 %}<a href="{% url virt_state pk=vm.id state="start" %}" class="btn btn-success">{% trans "Start" %}</a>{% endif %}
+            {% if vm.state == 1 %}
+            <a href="{% url virt_state pk=vm.id state="reboot" %}" class="btn btn-warning">{% trans "Reboot" %}</a>
+            <a href="{% url virt_state pk=vm.id state="restart" %}" class="btn btn-warning">{% trans "Restart" %}</a>
+            <a href="{% url virt_state pk=vm.id state="shutdown" %}" class="btn btn-warning">{% trans "Shutdown" %}</a>
+            <a href="{% url virt_state pk=vm.id state="force_shutdown" %}" class="btn btn-warning">{% trans "Force shutdown" %}</a>
+            {% endif %}
+            <a href="" class="btn btn-danger">{% trans "Delete" %}</a>
+        </td>
     </tr>
     <tr>
         <th></th>
@@ -55,8 +64,7 @@
             <table border=0 width="100%"><tr>
                 <td><div id="noVNC_status">Loading</div></td>
                 <td width="1%"><div id="noVNC_buttons">
-                    <input type=button value="Send CtrlAltDel"
-                           id="sendCtrlAltDelButton">
+                    <input type=button value="Send CtrlAltDel" id="sendCtrlAltDelButton">
                 </div></td>
             </tr></table>
         </div>

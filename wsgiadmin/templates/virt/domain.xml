@@ -1,0 +1,86 @@
+<domain type='kvm'>
+    <name>{{ name }}</name>
+    <uuid>{{ uuid }}</uuid>
+    <memory unit='KiB'>{{ memory }}</memory>
+    <currentMemory unit='KiB'>{{ memory }}</currentMemory>
+    <vcpu placement='static'>{{ cpus }}</vcpu>
+    <os>
+        <type arch='x86_64' machine='pc-1.2'>hvm</type>
+        <boot dev='hd'/>
+    </os>
+    <features>
+        <acpi/>
+        <apic/>
+        <pae/>
+    </features>
+    <cpu mode='custom' match='exact'>
+        <model fallback='allow'>Opteron_G5</model>
+        <vendor>AMD</vendor>
+        <feature policy='require' name='perfctr_core'/>
+        <feature policy='require' name='skinit'/>
+        <feature policy='require' name='perfctr_nb'/>
+        <feature policy='require' name='mmxext'/>
+        <feature policy='require' name='osxsave'/>
+        <feature policy='require' name='vme'/>
+        <feature policy='require' name='topoext'/>
+        <feature policy='require' name='fxsr_opt'/>
+        <feature policy='require' name='bmi1'/>
+        <feature policy='require' name='ht'/>
+        <feature policy='require' name='cr8legacy'/>
+        <feature policy='require' name='ibs'/>
+        <feature policy='require' name='wdt'/>
+        <feature policy='require' name='extapic'/>
+        <feature policy='require' name='osvw'/>
+        <feature policy='require' name='nodeid_msr'/>
+        <feature policy='require' name='tce'/>
+        <feature policy='require' name='cmp_legacy'/>
+        <feature policy='require' name='lwp'/>
+        <feature policy='require' name='monitor'/>
+    </cpu>
+    <clock offset='utc'/>
+    <on_poweroff>destroy</on_poweroff>
+    <on_reboot>restart</on_reboot>
+    <on_crash>restart</on_crash>
+    <devices>
+        <emulator>/usr/bin/qemu-kvm</emulator>
+        <disk type='file' device='disk'>
+            <driver name='qemu' type='qcow2' cache='none'/>
+            <source file='{{ disk_file }}'/>
+            <target dev='vda' bus='virtio'/>
+            <address type='pci' domain='0x0000' bus='0x00' slot='0x04' function='0x0'/>
+        </disk>
+        <disk type='block' device='cdrom'>
+            <driver name='qemu' type='raw'/>
+            <target dev='hdc' bus='ide'/>
+            <readonly/>
+            <address type='drive' controller='0' bus='1' target='0' unit='0'/>
+        </disk>
+        <controller type='usb' index='0'>
+            <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x2'/>
+        </controller>
+        <controller type='ide' index='0'>
+            <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x1'/>
+        </controller>
+        <interface type='bridge'>
+            <mac address='{{ mac }}'/>
+            <source bridge='br0'/>
+            <model type='virtio'/>
+            <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
+        </interface>
+        <serial type='pty'>
+            <target port='0'/>
+        </serial>
+        <console type='pty'>
+            <target type='serial' port='0'/>
+        </console>
+        <input type='mouse' bus='ps2'/>
+        <graphics type='vnc' port='-1' autoport='yes'/>
+        <video>
+            <model type='cirrus' vram='9216' heads='1'/>
+            <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x0'/>
+        </video>
+        <memballoon model='virtio'>
+            <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x0'/>
+        </memballoon>
+    </devices>
+</domain>

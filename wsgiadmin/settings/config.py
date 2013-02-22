@@ -100,4 +100,7 @@ CONSTANCE_CONFIG = {
     "pcp_invoices_api_key": ("", "PCP Invoices API KEY"),
     "pcp_invoices_item_desc": ("Kredit hostingové služby Roští.cz", "Item description on invoice"),
     "pcp_invoices_item_unit": ("ks", "Item unit on invoice"),
+
+    "virt_disk_pathfile": ("/home/vms/machines/%s.img", "Place where VM images are store"),
+    "virt_pool": ("machines", "Default pool for images"),
     }

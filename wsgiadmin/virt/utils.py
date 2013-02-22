@@ -1,4 +1,8 @@
+import uuid
+from constance import config
+from django.template.loader import render_to_string
 import libvirt
+import random
 from wsgiadmin.virt.models import VirtMachine
 import xml.etree.ElementTree as ET
 
@@ -12,6 +16,38 @@ class VirtMachineConnection(VirtMachine):
     class Meta:
         proxy = True
 
+    def create_domain(self, memory, cpus, size):
+        """
+            memory - memory in MiB
+            cpus - number of CPUs
+            size - size of disk in GB
+        """
+
+        domain_xml = render_to_string("virt/domain.xml", {
+            "name": self.ident,
+            "memory": memory,
+            "cpus": cpus,
+            "uuid": uuid.uuid4(),
+            "disk_file": config.virt_disk_pathfile % self.ident,
+            "mac": mac_generator(),
+        })
+        self.create_storage(size)
+        conn = libvirt.open(self.server.libvirt_url)
+        conn.virDomainDefineXML(domain_xml)
+
+    def create_storage(self, size):
+        """
+            size - size in GB
+        """
+        storage_xml = render_to_string("virt/storage-vol.xml", {
+            "name": self.ident,
+            "disk_file": config.virt_disk_pathfile % self.ident,
+            "size": size,
+        })
+        conn = libvirt.open(self.server.libvirt_url)
+        pool = conn.virStoragePoolLookupByName(config.virt_pool)
+        pool.virStorageVolCreateXMLFrom(storage_xml)
+
     def _get_libvirt_connection(self):
         conn = libvirt.open(self.server.libvirt_url)
         if conn == None:
@@ -24,7 +60,7 @@ class VirtMachineConnection(VirtMachine):
         #print conn.domainXMLToNative("hypervisor", "messenger", 0)
         #for parm in dir(conn):
         #    print parm
-        return conn.lookupByName(self.name)
+        return conn.lookupByName(self.ident)
 
     def memory(self):
         domain = self.domain()
@@ -44,7 +80,33 @@ class VirtMachineConnection(VirtMachine):
         info = domain.info()
         return info[0]
 
+    def start(self):
+        "Resume stopped VM"
+        domain = self.domain()
+        domain.create()
+
+    def reset(self):
+        "Force reset VM"
+        domain = self.domain()
+        domain.reset(0)
+
+    def reboot(self):
+        "Kindly reboot VM"
+        domain = self.domain()
+        domain.reboot(1)
+
+    def shutdown(self):
+        "Kindly shutdown VM"
+        domain = self.domain()
+        domain.shutdown(1)
+
+    def force_shutdown(self):
+        "Brutaly shutdown VM"
+        domain = self.domain()
+        domain.destroy(0)
+
     def dump(self):
+        "Returns XML of domain"
         domain = self.domain()
         return ET.fromstring(domain.XMLDesc(0))
 
@@ -75,3 +137,7 @@ class VirtMachineConnection(VirtMachine):
         dump = self.dump()
         for subtree in dump.findall("./devices/graphics"):
             return subtree.attrib.get("port", 0)
+
+
+def mac_generator():
+    return ':'.join(map(lambda x: "%02x" % x, [ 0x52, 0x54, 0x00, random.randint(0x00, 0x7F), random.randint(0x00, 0xFF), random.randint(0x00, 0xFF) ]))

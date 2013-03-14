@@ -332,6 +332,7 @@ class PythonApp(AppBackend):
         content.append("--processes %s" % parms.get("procs", "2"))
         content.append("--home %(home)s/venv" % parms)
         content.append("--limit-as 256")
+        content.append("--harakiri 600")
         content.append("--chmod-socket=660")
         content.append("--uid %(user)s" % parms)
         content.append("--gid %(group)s" % parms)

@@ -83,6 +83,7 @@ CONSTANCE_CONFIG = {
     "credit_currency": ("CZK", "Currency"),
     "credit_quotient": (0.5, "Credit/currency Quotient"),
     "credit_threshold": (-7, "When should be a web disabled"),
+    "credit_registration": (30, "Credits for registration"),
     "tax": (0, "%"),
 
     "terms_url": ("", "Terms URL"),

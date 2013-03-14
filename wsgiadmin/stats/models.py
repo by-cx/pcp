@@ -53,7 +53,7 @@ class Credit(models.Model):
     currency = models.CharField(_("Currenty"), max_length=8)
     value = models.FloatField(_("Credits (bonus included)"))
     bonus = models.FloatField(_("Bonus"), default=0)
-    address = models.ForeignKey(Address, verbose_name=_("Address"), null=True)
+    address = models.ForeignKey(Address, verbose_name=_("Address"), null=True, blank=True)
 
     def gopay_payment(self):
         payments = self.gopay_payments()

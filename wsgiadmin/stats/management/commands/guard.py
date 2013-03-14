@@ -49,7 +49,7 @@ class Command(BaseCommand):
         tmpl = ""
 
         if config.auto_disable:
-            if parms.pay_total_day() > 0 and parms.credit >= 0 and (parms.credit / parms.pay_total_day()) < config.credit_threshold and parms.enable:
+            if parms.credit <= config.credit_threshold and parms.enable:
                 parms.enable = False
                 parms.save()
                 apache_reload = True
@@ -129,8 +129,11 @@ class Command(BaseCommand):
             if not parms.guard_enable: print "Guarding disabled",
             if parms.credit < 0:
                 total_credit += parms.credit
-            if not parms.last_notification or (parms.last_notification and (datetime.date.today() - parms.last_notification).days >= 7):
-                if parms.guard_enable:
+            if not parms.last_notification or (parms.last_notification and (datetime.date.today() - parms.last_notification).days >= 3):
+                if parms.guard_enable and parms.credit < config.credit_threshold:
+                    guarding.append(user)
+                    print "Be disabled!!!",
+                elif parms.guard_enable:
                     guarding.append(user)
                     print "Be guarded",
             print

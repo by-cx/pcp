@@ -10,9 +10,10 @@ class RecordUser(object):
         self.gen()
 
     def gen(self):
-        self.record_sites()
+        if self.user.parms.enable:
+            self.record_sites()
+            self.record_fee()
         self.record_apps()
-        self.record_fee()
 
     def _record(self, service, value, cost=0):
         record = Record()
@@ -38,7 +39,8 @@ class RecordUser(object):
         fee = self.user.parms.fee
         total = 0.0
         for app in self.user.app_set.all():
-            total += app.price
+            if not app.disabled:
+                total += app.price
         if total:
             self._record("apps", "Apps", total if fee <= 0 else 0.0)
 

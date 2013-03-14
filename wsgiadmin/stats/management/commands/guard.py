@@ -68,6 +68,9 @@ class Command(BaseCommand):
                     message[0].send(user.email, {"username": user.username})
                 print "\t* %s enabled" % user.username
 
+        if not parms.enable:
+            return apache_reload
+
         correction = 0.0
         if parms.credit < 0:
             correction += abs(parms.credit)

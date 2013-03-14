@@ -211,7 +211,8 @@ def reg(request):
             p.user = u
             p.save()
 
-            add_credit(u, float(config.credit_registration), free=True)
+            if config.credit_registration:
+                add_credit(u, float(config.credit_registration), free=True)
 
             message = Message.objects.filter(purpose="reg")
             if message:

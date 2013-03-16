@@ -8,6 +8,7 @@ class Server(models.Model):
     name = models.CharField(_("Name"), max_length=128)
     domain = models.CharField(_("Domain"), max_length=128)
     ip = models.IPAddressField(_("IP address"))
+    ssh_port = models.IntegerField(_("SSH Port"), default=22)
     python = models.BooleanField(_("Python"))
     php = models.BooleanField(_("PHP"))
     mail = models.BooleanField(_("Mail server"))
@@ -17,11 +18,15 @@ class Server(models.Model):
 
     @property
     def libvirt_url(self):
-        return "qemu+ssh://root@%s/system" % self.ip
+        return "qemu+ssh://%s/system" % self.ssh
 
     @property
     def ssh(self):
-        return "root@%s" % self.ip
+        return "root@%s:%d" % (self.ip, self.ssh_port)
+
+    @property
+    def ssh_cmd(self):
+        return "ssh root@%s -p %d" % (self.ip, self.ssh_port)
 
     def __unicode__(self):
         return unicode(self.name)

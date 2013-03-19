@@ -39,7 +39,7 @@ class Script(object):
         stdout, stderr = p.communicate(stdin)
         log = Log()
         log.content = stdout
-        log.save()
+        #log.save()
         if settings.DEBUG:
             if stdout:
                 sys.stdout.write("[stdout]: %s\n" % stdout)

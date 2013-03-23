@@ -1,5 +1,6 @@
 import json
 import logging
+from constance import config
 from multiprocessing import Process
 from subprocess import Popen, PIPE
 import sys
@@ -69,11 +70,11 @@ class Script(object):
             self.reloads["apache"] = False
 
         if no_thread:
-            self.send(["pcp_runner"], json.dumps(self.requests))
+            self.send([config.pcp_runner_path], json.dumps(self.requests))
         else:
             p = Process(
                 target=self.send,
-                args=[["pcp_runner"], json.dumps(self.requests)]
+                args=[[config.pcp_runner_path], json.dumps(self.requests)]
             )
             p.start()
         return True #self.send(["pcp_runner"], json.dumps(self.requests))
@@ -87,7 +88,7 @@ class Script(object):
 
     def run(self, cmd):
         cmd = [{"type": "cmd", "cmd": cmd}]
-        result = self.send(["pcp_runner"], json.dumps(cmd))
+        result = self.send([config.pcp_runner_path], json.dumps(cmd))
         if len(result) > 0:
             return result[0]
 

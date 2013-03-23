@@ -12,10 +12,13 @@ class EmailBackend(object):
 
         self.script.add_cmd("mkdir -p '%s'" % homedir)
         self.script.add_cmd("chown email:email '%s' -R" % homedir)
-        self.script.add_cmd("maildirmake '%s'" % maildir)
+        # Good for courier, not for dovecot
+        #self.script.add_cmd("maildirmake '%s'" % maildir)
+        #self.script.add_cmd("chown email:email '%s' -R" % maildir)
+        #self.script.add_cmd("maildirmake '%s'" % join(maildir, '.Spam'))
+        #self.script.add_cmd("chown email:email '%s' -R" % join(maildir, '.Spam'))
+        self.script.add_cmd("mkdir -p '%s'" % maildir)
         self.script.add_cmd("chown email:email '%s' -R" % maildir)
-        self.script.add_cmd("maildirmake '%s'" % join(maildir, '.Spam'))
-        self.script.add_cmd("chown email:email '%s' -R" % join(maildir, '.Spam'))
 
     def commit(self):
         self.script.commit()

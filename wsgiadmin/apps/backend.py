@@ -17,7 +17,7 @@ class AppBackend(App):
 
     def __init__(self, *args, **kwargs):
         super(AppBackend, self).__init__(*args, **kwargs)
-        self.script = Script(self.server.ssh)
+        self.script = Script(self.core_server.ssh)
 
     def get_user(self):
         return "app_%.5d" % self.id

@@ -10,6 +10,7 @@ from wsgiadmin.apps.backend import PythonApp, AppBackend, PHPApp, typed_object, 
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext as __
 from django.contrib import messages
+from wsgiadmin.core.utils import server_chooser
 
 
 class AppsListView(ListView):
@@ -171,6 +172,7 @@ class AppCreateView(CreateView):
     def get_form(self, form_class):
         form = super(AppCreateView, self).get_form(form_class)
         form.user = self.user
+        form.fields["core_server"].queryset = server_chooser(self.app_type)
         return form
 
     def get_success_url(self):

@@ -23,7 +23,7 @@ class App(models.Model):
     parameters_data = models.TextField(_("Parameters"), blank=True, null=True)
     addons_data = models.TextField(_("Addons"), blank=True, null=True, help_text=_("Extra stuff: databases for example"))
     user = models.ForeignKey(User, blank=True, null=True)
-    core_server = models.ForeignKey(Server, verbose_name=_("Server"))
+    core_server = models.ForeignKey(Server, verbose_name=_("Server"), null=True) #TODO: not entirly clean
 
     def parameters_get(self):
         return json.loads(self.parameters_data if self.parameters_data else "{}")

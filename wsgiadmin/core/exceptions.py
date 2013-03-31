@@ -1,0 +1,1 @@
+class PCPException(Exception): pass

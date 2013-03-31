@@ -4,6 +4,7 @@ from django import forms
 from wsgiadmin.apps.models import App, Db
 from django.utils.translation import ugettext_lazy as _
 import re
+from wsgiadmin.core.utils import server_chooser
 from wsgiadmin.service.forms import RostiFormHelper
 
 
@@ -38,7 +39,7 @@ class AppForm(ModelForm):
 
     class Meta:
         model = App
-        fields = ("name", "domains", "server")
+        fields = ("name", "domains", "core_server")
 
     def __init__(self, *args, **kwargs):
         super(AppForm, self).__init__(*args, **kwargs)

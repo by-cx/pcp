@@ -1,10 +1,12 @@
 from constance import config
 from wsgiadmin.apps.tools import Script
 from os.path import join
+from wsgiadmin.core.utils import get_mail_server
+
 
 class EmailBackend(object):
     def __init__(self):
-        self.script = Script(config.email_server)
+        self.script = Script(get_mail_server().ssh)
 
     def install(self, email):
         homedir = join(config.maildir, email.domain.name)

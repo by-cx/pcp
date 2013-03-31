@@ -3,6 +3,7 @@ import json
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from wsgiadmin.core.models import Server
 
 SITE_TYPE_CHOICES = [
     ("uwsgi", "uWSGI"),
@@ -11,20 +12,6 @@ SITE_TYPE_CHOICES = [
     ("nodejs", "Node.js"),
     ("native", "Native"),
 ]
-
-
-class Server(models.Model):
-    hostname = models.CharField(_("Hostname/address"), max_length=256, help_text=_("it has to match with ssh config"))
-    domain = models.CharField(_("Domain"), max_length=256)
-    ip = models.CharField(_("IP"), max_length=128, blank=True, null=True)
-    comment = models.TextField(_("Comment"), blank=True, null=True)
-
-    def __unicode__(self):
-        if self.comment:
-            return "%s (%s)" % (self.hostname, self.comment)
-        else:
-            return self.hostname
-
 
 class App(models.Model):
     date = models.DateField(_("Date"), auto_now_add=True)
@@ -36,7 +23,7 @@ class App(models.Model):
     parameters_data = models.TextField(_("Parameters"), blank=True, null=True)
     addons_data = models.TextField(_("Addons"), blank=True, null=True, help_text=_("Extra stuff: databases for example"))
     user = models.ForeignKey(User, blank=True, null=True)
-    server = models.ForeignKey(Server, verbose_name=_("Server"))
+    core_server = models.ForeignKey(Server, verbose_name=_("Server"))
 
     def parameters_get(self):
         return json.loads(self.parameters_data if self.parameters_data else "{}")

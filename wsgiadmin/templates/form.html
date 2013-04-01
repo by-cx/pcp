@@ -15,9 +15,9 @@
             <a href="/" class="brand">{{ site }}</a>
             <div class="nav-collapse collapse pull-left">
                 <ul class="nav pull-left" id="main-menu">
-                    <li {% if menu_active == "login" %} class="active"{% endif %}><a href="{% url login %}">{% trans "Login" %}</a></li>
-                    <li {% if menu_active == "registration" %} class="active"{% endif %}><a href="{% url registration %}">{% trans "Registration" %}</a></li>
-                    <li {% if menu_active == "reset_passwd" %} class="active"{% endif %}><a href="{% url reset_passwd %}">{% trans "Lost password" %}</a></li>
+                    <li {% if menu_active == "login" %} class="active"{% endif %}><a href="{% url 'login' %}">{% trans "Login" %}</a></li>
+                    <li {% if menu_active == "registration" %} class="active"{% endif %}><a href="{% url 'registration' %}">{% trans "Registration" %}</a></li>
+                    <li {% if menu_active == "reset_passwd" %} class="active"{% endif %}><a href="{% url 'reset_passwd' %}">{% trans "Lost password" %}</a></li>
                 </ul>
             </div>
         </div>

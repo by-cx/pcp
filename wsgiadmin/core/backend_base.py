@@ -3,9 +3,11 @@ import logging
 from multiprocessing import Process
 from subprocess import Popen, PIPE
 import sys
+import time
 from wsgiadmin.core.exceptions import ScriptException, PCPException
 from django.conf import settings
 from wsgiadmin.core.models import CommandLog
+from django.db import connection
 
 
 class BaseScript(object):
@@ -71,6 +73,7 @@ class QueueScript(BaseScript):
         command.stdin = stdin
         command.rm_stdin = rm_stdin
         command.save()
+        return command
 
     def commit(self, no_thread=False):
         if self.restarts["nginx"]:
@@ -129,7 +132,16 @@ class QueueScript(BaseScript):
                     self.add_command(**args)
 
     def run(self, cmd):
-        raise PCPException("Error: QueueScript backend has not working run method")
+        command = self.add_command(cmd)
+        cur = connection.cursor()
+        cur.execute("NOTIFY process_commands, '%s';" % self.server_object.key)
+        counter = 0
+        while counter < 100:
+            if command.processed:
+                return command.result_stdout
+            counter += 1
+            time.sleep(0.1)
+        raise PCPException("Error: waiting for response too long")
 
 
 class DirectSSHScript(BaseScript):

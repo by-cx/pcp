@@ -22,5 +22,5 @@
 
     <br>
 
-    <p><a href="{% url payment_info pk=credit.id %}" class="btn">{% trans "Payment detail" %}</a></p>
+    <p><a href="{% url 'payment_info' pk=credit.id %}" class="btn">{% trans "Payment detail" %}</a></p>
 {% endblock %}

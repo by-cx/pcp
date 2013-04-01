@@ -31,7 +31,7 @@
                     <td>{{ redirect.email }}</td>
                     <td>
                         <ul class="akce">
-                        <li><a href="{% url wsgiadmin.emails.views.changeRedirect redirect.id %}">
+                        <li><a href="{% url 'wsgiadmin.emails.views.changeRedirect' redirect.id %}">
                             <img src="{{ STATIC_URL }}images/ico-editovat.png" alt="{% trans "Edit" %}"/>
                         </a></li>
 
@@ -57,7 +57,7 @@
             <tbody>
             <tr>
                 <td colspan="3">{% trans "No email alias exists yet." %}
-                    <a href="{% url add_redirect %}">
+                    <a href="{% url 'add_redirect' %}">
                         {% trans "Create new email redirect" %}
                     </a>.
                 </td>

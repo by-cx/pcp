@@ -11,11 +11,11 @@
 
     <p>
         <strong>{% trans "Ordering" %}</strong><br>
-        <a href="{% url users_list %}?order=" class="btn btn-small{% if order == "" %} btn-info disabled{% endif %}">{% trans "Username" %}</a>
-        <a href="{% url users_list %}?order=credits" class="btn btn-small{% if order == "credits" %} btn-info disabled{% endif %}">{% trans "Credits" %}</a>
-        <a href="{% url users_list %}?order=payments" class="btn btn-small{% if order == "payments" %} btn-info disabled{% endif %}">{% trans "Payments" %}</a>
-        <a href="{% url users_list %}?order=date" class="btn btn-small{% if order == "date" %} btn-info disabled{% endif %}">{% trans "Joined" %}</a>
-        <a href="{% url users_list %}?order={{ order }}&reverse={% if reverse %}0{% else %}1{% endif %}" class="btn btn-primary btn-small">{% trans "Reverse" %}</a>
+        <a href="{% url 'users_list' %}?order=" class="btn btn-small{% if order == "" %} btn-info disabled{% endif %}">{% trans "Username" %}</a>
+        <a href="{% url 'users_list' %}?order=credits" class="btn btn-small{% if order == "credits" %} btn-info disabled{% endif %}">{% trans "Credits" %}</a>
+        <a href="{% url 'users_list' %}?order=payments" class="btn btn-small{% if order == "payments" %} btn-info disabled{% endif %}">{% trans "Payments" %}</a>
+        <a href="{% url 'users_list' %}?order=date" class="btn btn-small{% if order == "date" %} btn-info disabled{% endif %}">{% trans "Joined" %}</a>
+        <a href="{% url 'users_list' %}?order={{ order }}&reverse={% if reverse %}0{% else %}1{% endif %}" class="btn btn-primary btn-small">{% trans "Reverse" %}</a>
     </p>
 
     <table class="table table-striped">
@@ -55,8 +55,8 @@
                 {% endwith %}
                 {% endcache %}
                 <td>
-                    <a href="{% url switch_to_user user.id %}" class="btn">{% trans "Switch" %}</a>
-                    <a href="#a" class="btn btn-danger" onclick="if(confirm('{% trans "Are you sure?" %}')) {document.location='{% url user_rm user.id %}';};">{% trans "Delete" %}</a>
+                    <a href="{% url 'switch_to_user' user.id %}" class="btn">{% trans "Switch" %}</a>
+                    <a href="#a" class="btn btn-danger" onclick="if(confirm('{% trans "Are you sure?" %}')) {document.location='{% url 'user_rm' user.id %}';};">{% trans "Delete" %}</a>
                 </td>
             </tr>
             {% endfor %}

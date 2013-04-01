@@ -32,10 +32,10 @@
                     <td class="list_actions">
                         <ul class="akce">
                             <li>
-                                <a href="{% url address_update pk=addr.id %}"><i class="icon-edit icon-white"></i> {% trans "Update" %}</a>
+                                <a href="{% url 'address_update' pk=addr.id %}"><i class="icon-edit icon-white"></i> {% trans "Update" %}</a>
                             </li>
                             <li class="smazat">
-                                <a href="#a" onclick="if(confirm('{% trans "Are you sure?" %}̈́')){document.location='{% url address_delete pk=addr.id %}'};"><i class="icon-remove icon-white"></i> {% trans "Delete" %}</a>
+                                <a href="#a" onclick="if(confirm('{% trans "Are you sure?" %}̈́')){document.location='{% url 'address_delete' pk=addr.id %}'};"><i class="icon-remove icon-white"></i> {% trans "Delete" %}</a>
                             </li>
                         </ul>
                     </td>

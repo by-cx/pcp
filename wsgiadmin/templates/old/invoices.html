@@ -8,20 +8,20 @@
 {% block jsblock %}
 {{ block.super }}
 function send_item(what) {
-		$.get("{% url wsgiadmin.invoices.views.send_invoice 0 %}"+what, function (data){
+		$.get("{% url 'wsgiadmin.invoices.views.send_invoice' 0 %}"+what, function (data){
 			alert("Odesláno");
 		});
 	}
 	function send_item_warning(what) {
-		$.get("{% url wsgiadmin.invoices.views.send_invoice 0 %}"+what+"/1/", function (data){
+		$.get("{% url 'wsgiadmin.invoices.views.send_invoice' 0 %}"+what+"/1/", function (data){
 			alert("Odesláno");
 		});
 	}
 	function remove(what) {
-		$("#invoice_"+what).load("{% url wsgiadmin.invoices.views.rm 0 %}"+what);
+		$("#invoice_"+what).load("{% url 'wsgiadmin.invoices.views.rm' 0 %}"+what);
 	}
 	function remove_item(what) {
-		$("#item_"+what).load("{% url wsgiadmin.invoices.views.rm_item 0 %}"+what);
+		$("#item_"+what).load("{% url 'wsgiadmin.invoices.views.rm_item' 0 %}"+what);
 	}
 {% endblock %}
 
@@ -34,7 +34,7 @@ function send_item(what) {
 
 <ul>
 	{% for invoice in not_payed %}
-	<li>{{ invoice.payment_id }} - {{ invoice.total }} - <a href="{% url wsgiadmin.invoices.views.invoice_get invoice.payment_id %}">{% trans "Stáhnout" %}</a> - {{ invoice.client_address.getName }}</li>
+	<li>{{ invoice.payment_id }} - {{ invoice.total }} - <a href="{% url 'wsgiadmin.invoices.views.invoice_get' invoice.payment_id %}">{% trans "Stáhnout" %}</a> - {{ invoice.client_address.getName }}</li>
 	{% endfor %}
 </ul>
 
@@ -70,10 +70,10 @@ function send_item(what) {
 			<td{% if not invoice.payed %} style="background-color: #FFA4A4;"{% endif %}>{{ invoice.date_payback }}</td>
 			<td{% if not invoice.payed %} style="background-color: #FFA4A4;"{% endif %}>{{ invoice.total }}</td>
 			<td id="invoice_{{ invoice.id }}"{% if not invoice.payed %} style="background-color: #FFA4A4;"{% endif %}>
-				<a href="{% url wsgiadmin.invoices.views.add_item invoice.id %}">{% trans "Přidat položku" %}</a>
-				{% if not invoice.payed %}<span id="payback_{{ invoice.id }}"><a href="#" onclick="$('#payback_{{ invoice.id }}').load('{% url wsgiadmin.invoices.views.payback invoice.id %}')">Zaplaceno</a></span>{% endif %}
-				<a href="{% url wsgiadmin.invoices.views.invoice_get invoice.payment_id %}">{% trans "Stáhnout" %}</a>
-				<a href="{% url wsgiadmin.invoices.views.update_invoice invoice.id %}" title="Upravit"><img src="{{ STATIC_URL }}images/icons/pencil.png" alt="Upravit" /></a>
+				<a href="{% url 'wsgiadmin.invoices.views.add_item' invoice.id %}">{% trans "Přidat položku" %}</a>
+				{% if not invoice.payed %}<span id="payback_{{ invoice.id }}"><a href="#" onclick="$('#payback_{{ invoice.id }}').load('{% url 'wsgiadmin.invoices.views.payback' invoice.id %}')">Zaplaceno</a></span>{% endif %}
+				<a href="{% url 'wsgiadmin.invoices.views.invoice_get' invoice.payment_id %}">{% trans "Stáhnout" %}</a>
+				<a href="{% url 'wsgiadmin.invoices.views.update_invoice' invoice.id %}" title="Upravit"><img src="{{ STATIC_URL }}images/icons/pencil.png" alt="Upravit" /></a>
 				<a href="#" title="Smazat" onclick="if(confirm('Opravdu chcete smazat fakturu {{ invoice.payment_id }}?')) remove('{{ invoice.id }}')"><img src="{{ STATIC_URL }}images/icons/cross.png" alt="{% trans "Delete" %}" /></a>
 				{% if not invoice.sended %}
 					<a href="#" title="Odeslat" onclick="if(confirm('Opravdu chcete odeslat fakturu {{ invoice.payment_id }}?')) send_item('{{ invoice.payment_id }}')">Odeslat</a>
@@ -93,7 +93,7 @@ function send_item(what) {
 				<td>{{ item.price_per_one }} kč</td>
 				<td>{{ item.total }} kč</td>
 				<td id="item_{{ item.id }}">
-					<a href="{% url wsgiadmin.invoices.views.update_item item.id %}" title="{% trans "Edit" %}"><img src="{{ STATIC_URL }}images/icons/pencil.png" alt="Upravit" /></a>
+					<a href="{% url 'wsgiadmin.invoices.views.update_item' item.id %}" title="{% trans "Edit" %}"><img src="{{ STATIC_URL }}images/icons/pencil.png" alt="Upravit" /></a>
 					<a href="#" title="{% trans "Delete" %}" onclick="if(confirm('Opravdu chcete smazat položku {{ item.id }}?')) remove_item('{{ item.id }}')"><img src="{{ STATIC_URL }}images/icons/cross.png" alt="Smazat" /></a>
 				</td>
 			</tr>
@@ -105,19 +105,19 @@ function send_item(what) {
 		<tr>
 			<td colspan="6">
 					<div class="pagination">
-						{% if invoices.has_previous %}<a href="{% url wsgiadmin.invoices.views.show 1 %}" title="{% trans "First page" %}">&laquo; {% trans "First" %}</a>{% endif %}
-						{% if invoices.has_previous %}<a href="{% url wsgiadmin.invoices.views.show invoices.previous_page_number %}" title="{% trans "Previous page" %}">&laquo; {% trans "Previous" %}</a>{% endif %}
+						{% if invoices.has_previous %}<a href="{% url 'wsgiadmin.invoices.views.show' 1 %}" title="{% trans "First page" %}">&laquo; {% trans "First" %}</a>{% endif %}
+						{% if invoices.has_previous %}<a href="{% url 'wsgiadmin.invoices.views.show' invoices.previous_page_number %}" title="{% trans "Previous page" %}">&laquo; {% trans "Previous" %}</a>{% endif %}
 
 						{% for p in paginator.page_range %}
 							{% if p == num_page %}
-								<a href="{% url wsgiadmin.invoices.views.show p %}" class="number current" title="{{ p }}">{{ p }}</a>
+								<a href="{% url 'wsgiadmin.invoices.views.show' p %}" class="number current" title="{{ p }}">{{ p }}</a>
 							{% else %}
-								<a href="{% url wsgiadmin.invoices.views.show p %}" class="number" title="{{ p }}">{{ p }}</a>
+								<a href="{% url 'wsgiadmin.invoices.views.show' p %}" class="number" title="{{ p }}">{{ p }}</a>
 							{% endif %}
 						{% endfor %}
 
-						{% if invoices.has_next %}<a href="{% url wsgiadmin.invoices.views.show invoices.next_page_number %}" title="{% trans "Next page" %}">{% trans "Next" %} &raquo;</a>{% endif %}
-						{% if invoices.has_next %}<a href="{% url wsgiadmin.invoices.views.show paginator.num_pages %}" title="{% trans "Last page" %}">{% trans "Last" %} &raquo;</a>{% endif %}
+						{% if invoices.has_next %}<a href="{% url 'wsgiadmin.invoices.views.show' invoices.next_page_number %}" title="{% trans "Next page" %}">{% trans "Next" %} &raquo;</a>{% endif %}
+						{% if invoices.has_next %}<a href="{% url 'wsgiadmin.invoices.views.show' paginator.num_pages %}" title="{% trans "Last page" %}">{% trans "Last" %} &raquo;</a>{% endif %}
 					</div>
 					<div class="clear"></div>
 			</td>

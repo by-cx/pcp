@@ -40,12 +40,12 @@
     <tr>
         <th>{% trans "Actions" %}</th>
         <td>
-            {% if vm.state != 1 %}<a href="{% url virt_state pk=vm.id state="start" %}" class="btn btn-success">{% trans "Start" %}</a>{% endif %}
+            {% if vm.state != 1 %}<a href="{% url 'virt_state' pk=vm.id state="start" %}" class="btn btn-success">{% trans "Start" %}</a>{% endif %}
             {% if vm.state == 1 %}
-            <a href="{% url virt_state pk=vm.id state="reboot" %}" class="btn btn-warning">{% trans "Reboot" %}</a>
-            <a href="{% url virt_state pk=vm.id state="restart" %}" class="btn btn-warning">{% trans "Restart" %}</a>
-            <a href="{% url virt_state pk=vm.id state="shutdown" %}" class="btn btn-warning">{% trans "Shutdown" %}</a>
-            <a href="{% url virt_state pk=vm.id state="force_shutdown" %}" class="btn btn-warning">{% trans "Force shutdown" %}</a>
+            <a href="{% url 'virt_state' pk=vm.id state="reboot" %}" class="btn btn-warning">{% trans "Reboot" %}</a>
+            <a href="{% url 'virt_state' pk=vm.id state="restart" %}" class="btn btn-warning">{% trans "Restart" %}</a>
+            <a href="{% url 'virt_state' pk=vm.id state="shutdown" %}" class="btn btn-warning">{% trans "Shutdown" %}</a>
+            <a href="{% url 'virt_state' pk=vm.id state="force_shutdown" %}" class="btn btn-warning">{% trans "Force shutdown" %}</a>
             {% endif %}
             <a href="" class="btn btn-danger">{% trans "Delete" %}</a>
         </td>

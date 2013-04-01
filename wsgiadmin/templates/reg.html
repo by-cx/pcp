@@ -6,7 +6,7 @@
 {% block container %}
 
     <h2>{% trans "Registration" %}</h2>
-    <form action="{% url registration %}" method="post" class="well form-horizontal" id="reg-form">
+    <form action="{% url 'registration' %}" method="post" class="well form-horizontal" id="reg-form">
         {% crispy form form_helper %}
         <div class="form-actions">
             <input type="submit" value="{% trans "Register" %}"/>
@@ -18,7 +18,7 @@
             {% if config.terms_url %}
                 <div class="terms center">{% trans "By click on the button, you agree with our terms" %}</div>
             {% endif %}
-            <a href="{% url login %}">{% trans "Login screen" %}</a>
+            <a href="{% url 'login' %}">{% trans "Login screen" %}</a>
             {% if config.terms_url %}| <a href="{{ config.terms_url }}" target="_blank">{% trans "Terms" %}</a>{% endif %}
         </div>
     </div>

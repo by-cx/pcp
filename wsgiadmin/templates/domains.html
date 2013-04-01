@@ -58,9 +58,9 @@
                     </td>
                     <td id="domain_{{ domain.id }}">
                         <ul class="akce">
-                            <li><a href="{% url subdomains domain.id %}">{% trans "Subdomains" %}</a></li>
+                            <li><a href="{% url 'subdomains' domain.id %}">{% trans "Subdomains" %}</a></li>
                             <li>
-                                <a href="{% url domain_update pk=domain.id %}" title="{% trans "Edit" %}">
+                                <a href="{% url 'domain_update' pk=domain.id %}" title="{% trans "Edit" %}">
                                     <img src="{{ STATIC_URL }}images/ico-editovat.png" alt="{% trans "Edit" %}"/>
                                 </a>
                             </li>

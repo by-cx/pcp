@@ -28,7 +28,7 @@ class Server(models.Model):
     ip = models.IPAddressField(_("IP address"), default="127.0.0.1")
     ssh_port = models.IntegerField(_("SSH Port"), default=22)
     os = models.CharField(_("Operating system"), max_length=64, default="debian6", choices=OSS)
-    communication_key = models.TextField(_("API key"), null=True, blank=True)
+    key = models.TextField(_("API key"), null=True, blank=True)
     capabilities = models.ManyToManyField(Capability, verbose_name=_("Capabilities"))
 
     user = models.ForeignKey(User, blank=True, null=True)

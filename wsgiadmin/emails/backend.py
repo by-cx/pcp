@@ -1,6 +1,6 @@
 from constance import config
-from wsgiadmin.apps.tools import Script
 from os.path import join
+from wsgiadmin.core.backend_base import Script
 from wsgiadmin.core.utils import get_mail_server
 
 

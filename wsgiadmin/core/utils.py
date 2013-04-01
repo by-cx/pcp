@@ -4,7 +4,7 @@ from wsgiadmin.core.models import Server, Capability
 
 def server_chooser(capname):
     capability = Capability.objects.get(name=capname)
-    return Server.objects.filter(capabilities_in=capability)
+    return Server.objects.filter(capabilities__in=[capability.id])
 
 
 def get_mail_server():

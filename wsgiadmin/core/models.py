@@ -4,6 +4,12 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 CAPABILITIES = [(x, x) for x in ("python", "php", "mail", "static", "load_balancer", "ns_primary", "ns_secondary", "native")]
+OSS = (
+    ("debian6", "Debian 6.0"),
+    ("debian7", "Debian 7.0"),
+    ("archlinux", "Arch Linux"),
+)
+
 
 class Capability(models.Model):
     name = models.CharField(_("Capability"), max_length=32, choices=CAPABILITIES)
@@ -21,6 +27,8 @@ class Server(models.Model):
     domain = models.CharField(_("Domain"), max_length=128)
     ip = models.IPAddressField(_("IP address"), default="127.0.0.1")
     ssh_port = models.IntegerField(_("SSH Port"), default=22)
+    os = models.CharField(_("Operating system"), max_length=64, default="debian6", choices=OSS)
+    communication_key = models.TextField(_("API key"), null=True, blank=True)
     capabilities = models.ManyToManyField(Capability, verbose_name=_("Capabilities"))
 
     user = models.ForeignKey(User, blank=True, null=True)
@@ -54,3 +62,19 @@ class Log(models.Model):
 
     def __unicode__(self):
         return "Log with id %d" % self.id
+
+
+class CommandLog(models.Model):
+    date = models.DateTimeField(_("Date"), auto_now_add=True)
+    server = models.ForeignKey(Server, verbose_name=_("Server"))
+    command = models.CharField(_("Command"), max_length=512)
+    execute_user = models.CharField(_("Execute user"), max_length=128, default="root")
+    stdin = models.TextField(_("Stdin"), null=True, blank=True)
+    rm_stdin = models.BooleanField(_("Remove stdin adter process"), default=False)
+    result_stdout = models.TextField(_("Stdout"), null=True, blank=True)
+    result_stderr = models.TextField(_("Stderr"), null=True, blank=True)
+    status_code = models.IntegerField(_("Return code"), null=True, blank=True)
+    processed = models.BooleanField(_("Processed"), default=False)
+
+    def __unicode__(self):
+        return self.command

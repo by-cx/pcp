@@ -1,8 +1,8 @@
 from constance import config
 from django.template.loader import render_to_string
+from wsgiadmin.core.backend_base import Script
 from wsgiadmin.core.utils import get_primary_ns_server, get_secondary_ns_servers
 from wsgiadmin.dns.models import Domain
-from wsgiadmin.apps.tools import Script
 
 
 class DomainException(Exception): pass

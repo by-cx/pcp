@@ -443,8 +443,8 @@ class ProxyObject(object):
             content.append("server {")
             content.append("\tlisten       [::]:443 ssl;")
             content.append("\tserver_name  %(domains)s;" % self.app.domains)
-            content.append("\tssl_certificate      /etc/ssl/apps/app_%.5d.cert.pem" % self.app.id)
-            content.append("\tssl_certificate_key  /etc/ssl/apps/app_%.5d.key.pem" % self.app.id)
+            content.append("\tssl_certificate      /etc/nginx/ssl/app_%.5d.cert.pem" % self.app.id)
+            content.append("\tssl_certificate_key  /etc/nginx/ssl/app_%.5d.key.pem" % self.app.id)
             content.append("\tlocation / {")
             content.append("\t\tproxy_pass         http://%s/;" % self.app.core_server.ip)
             content.append("\t\tproxy_redirect     off;")
@@ -454,12 +454,12 @@ class ProxyObject(object):
 
     def save_ssl_cert_key(self, script, rm_certs=False):
         if self.app.ssl_cert and self.app.ssl_key and not rm_certs:
-            script.add_cmd("mkdir -p /etc/ssl/apps/")
-            script.add_file("/etc/ssl/apps/app_%.5d.cert.pem" % self.app.id, self.app.ssl_cert)
-            script.add_file("/etc/ssl/apps/app_%.5d.key.pem" % self.app.id, self.app.ssl_key)
+            script.add_cmd("mkdir -p /etc/nginx/ssl/")
+            script.add_file("/etc/nginx/ssl/app_%.5d.cert.pem" % self.app.id, self.app.ssl_cert)
+            script.add_file("/etc/nginx/ssl/app_%.5d.key.pem" % self.app.id, self.app.ssl_key)
         else:
-            script.add_file("rm -f /etc/ssl/apps/app_%.5d.cert.pem" % self.app.id)
-            script.add_file("rm -f /etc/ssl/apps/app_%.5d.key.pem" % self.app.id)
+            script.add_file("rm -f /etc/nginx/ssl/app_%.5d.cert.pem" % self.app.id)
+            script.add_file("rm -f /etc/nginx/ssl/app_%.5d.key.pem" % self.app.id)
 
     def gen_config(self):
         content = []

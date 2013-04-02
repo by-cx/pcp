@@ -22,6 +22,8 @@ class App(models.Model):
     domains = models.CharField(_("Domains"), max_length=512, blank=True, null=True)
     parameters_data = models.TextField(_("Parameters"), blank=True, null=True)
     addons_data = models.TextField(_("Addons"), blank=True, null=True, help_text=_("Extra stuff: databases for example"))
+    ssl_cert = models.TextField(_("SSL cert"), blank=True, null=True, help_text=_("Service cert + CA cert"))
+    ssl_key = models.TextField(_("SSL key"), blank=True, null=True, help_text=_("Key without password"))
     user = models.ForeignKey(User, blank=True, null=True)
     core_server = models.ForeignKey(Server, verbose_name=_("Server"), null=True) #TODO: not entirly clean
 

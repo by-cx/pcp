@@ -32,3 +32,10 @@ def get_secondary_ns_servers():
         raise PCPException("Error: no secondary NS server found")
     else:
         return servers
+
+def get_load_balancers():
+    servers = server_chooser("load_balancer")
+    if len(servers) == 0:
+        raise PCPException("Error: no loadbalancer found")
+    else:
+        return servers

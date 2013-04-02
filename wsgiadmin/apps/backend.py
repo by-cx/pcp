@@ -5,6 +5,7 @@ import re
 from wsgiadmin.apps.models import App, Db
 from constance import config
 from wsgiadmin.core.backend_base import Script
+from wsgiadmin.core.utils import get_load_balancers
 
 
 class AppException(Exception): pass
@@ -18,6 +19,7 @@ class AppBackend(App):
     def __init__(self, *args, **kwargs):
         super(AppBackend, self).__init__(*args, **kwargs)
         self.script = Script(self.core_server)
+        self.proxy = ProxyObject(self)
 
     def get_user(self):
         return "app_%.5d" % self.id
@@ -59,6 +61,7 @@ class AppBackend(App):
         self.script.add_cmd("chmod 750 %(home)s" % parms)
         self.installed = True
         self.save()
+        self.proxy.setup()
 
     def commit(self, no_thread=False):
         self.script.commit(no_thread)
@@ -66,10 +69,12 @@ class AppBackend(App):
     def disable(self):
         parms = self.get_parmameters()
         self.script.add_cmd("chmod 000 %(home)s" % parms, user=self.get_user())
+        self.proxy.setdown()
 
     def enable(self):
         parms = self.get_parmameters()
         self.script.add_cmd("chmod 750 %(home)s" % parms, user=self.get_user())
+        self.proxy.setup()
 
     def uninstall(self):
         parms = self.get_parmameters()
@@ -77,6 +82,7 @@ class AppBackend(App):
         #self.script.add_cmd("/usr/sbin/groupdel %(group)s" % parms)
         self.script.add_cmd("rm -rf %(home)s" % parms)
         self.script.add_cmd("rm /etc/security/limits.d/%(user)s.conf" % parms)
+        self.proxy.setdown()
 
     def update(self):
         parms = self.get_parmameters()
@@ -418,6 +424,72 @@ class DbObject(Db):
 
     def commit(self, no_thread=False):
         self.script.commit(no_thread)
+
+
+class ProxyObject(object):
+
+    def __init__(self, app):
+        self.app = app
+        self.scripts = []
+        self.setup_scripts()
+
+    def setup_scripts(self):
+        for server in self.get_servers():
+            self.scripts.append(Script(server))
+
+    def gen_ssl_config(self):
+        content = []
+        if self.app.ssl_cert and self.app.ssl_key:
+            content.append("server {")
+            content.append("\tlisten       [::]:443 ssl;")
+            content.append("\tserver_name  %(domains)s;" % self.app.domains)
+            content.append("\tssl_certificate      /etc/ssl/apps/app_%.5d.cert.pem" % self.app.id)
+            content.append("\tssl_certificate_key  /etc/ssl/apps/app_%.5d.key.pem" % self.app.id)
+            content.append("\tlocation / {")
+            content.append("\t\tproxy_pass         http://%s/;" % self.app.core_server.ip)
+            content.append("\t\tproxy_redirect     off;")
+            content.append("\t}")
+            content.append("}\n")
+        return content
+
+    def save_ssl_cert_key(self, script, rm_certs=False):
+        if self.app.ssl_cert and self.app.ssl_key and not rm_certs:
+            script.add_cmd("mkdir -p /etc/ssl/apps/")
+            script.add_file("/etc/ssl/apps/app_%.5d.cert.pem" % self.app.id, self.app.ssl_cert)
+            script.add_file("/etc/ssl/apps/app_%.5d.key.pem" % self.app.id, self.app.ssl_key)
+        else:
+            script.add_file("rm -f /etc/ssl/apps/app_%.5d.cert.pem" % self.app.id)
+            script.add_file("rm -f /etc/ssl/apps/app_%.5d.key.pem" % self.app.id)
+
+    def gen_config(self):
+        content = []
+        content.append("server {")
+        content.append("\tlisten       [::]:80;")
+        content.append("\tserver_name  %(domains)s;" % self.app.domains)
+        content.append("\tlocation / {")
+        content.append("\t\tproxy_pass         http://%s/;" % self.app.core_server.ip)
+        content.append("\t\tproxy_redirect     off;")
+        content.append("\t}")
+        content.append("}\n")
+        return content
+
+    def get_servers(self):
+        return get_load_balancers()
+
+    def setup(self):
+        for script in self.scripts:
+            self.save_ssl_cert_key(script)
+            script.add_cmd("mkdir -p /etc/nginx/proxy.d/")
+            script.add_file("/etc/nginx/proxy.d/app_%.5d.conf" % self.app.id, "\n".join(self.gen_config() + self.gen_ssl_config()))
+            script.reload_nginx()
+            script.commit()
+
+    def setdown(self):
+        for script in self.scripts:
+            self.save_ssl_cert_key(script, rm_certs=True)
+            script.add_cmd("rm -f /etc/nginx/proxy.d/app_%.5d.conf" % self.app.id)
+            script.reload_nginx()
+            script.commit()
 
 
 def typed_object(app):

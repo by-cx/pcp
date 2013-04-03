@@ -1,21 +1,31 @@
 # -*- coding: utf-8 -*-
 import datetime
 from south.db import db
-from south.v2 import DataMigration
+from south.v2 import SchemaMigration
 from django.db import models
 
-class Migration(DataMigration):
+
+class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        "Write your forwards methods here."
-        server = orm["core.server"].objects.get(name="Default")
+        # Adding field 'App.ssl_cert'
+        db.add_column(u'apps_app', 'ssl_cert',
+                      self.gf('django.db.models.fields.TextField')(null=True, blank=True),
+                      keep_default=False)
 
-        for app in orm["apps.app"].objects.all():
-            app.core_server = server
-            app.save()
+        # Adding field 'App.ssl_key'
+        db.add_column(u'apps_app', 'ssl_key',
+                      self.gf('django.db.models.fields.TextField')(null=True, blank=True),
+                      keep_default=False)
+
 
     def backwards(self, orm):
-        "Write your backwards methods here."
+        # Deleting field 'App.ssl_cert'
+        db.delete_column(u'apps_app', 'ssl_cert')
+
+        # Deleting field 'App.ssl_key'
+        db.delete_column(u'apps_app', 'ssl_key')
+
 
     models = {
         u'apps.app': {
@@ -30,6 +40,8 @@ class Migration(DataMigration):
             'installed': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '256'}),
             'parameters_data': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
+            'ssl_cert': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
+            'ssl_key': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']", 'null': 'True', 'blank': 'True'})
         },
         u'apps.db': {
@@ -85,10 +97,10 @@ class Migration(DataMigration):
         u'core.server': {
             'Meta': {'object_name': 'Server'},
             'capabilities': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['core.Capability']", 'symmetrical': 'False'}),
-            'key': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'domain': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'ip': ('django.db.models.fields.IPAddressField', [], {'default': "'127.0.0.1'", 'max_length': '15'}),
+            'key': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
             'os': ('django.db.models.fields.CharField', [], {'default': "'debian6'", 'max_length': '64'}),
             'ssh_port': ('django.db.models.fields.IntegerField', [], {'default': '22'}),
@@ -97,4 +109,3 @@ class Migration(DataMigration):
     }
 
     complete_apps = ['apps']
-    symmetrical = True

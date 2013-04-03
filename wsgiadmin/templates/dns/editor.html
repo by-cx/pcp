@@ -29,7 +29,7 @@
         {% if records %}
             <tbody id="objects_list">
             {% for record in records %}
-                <tr data="{{ record.id }}">
+                <tr data="{{ record.id }}" class="dns_record">
                     <td>{{ record.name }}</td>
                     <td>{{ record.record_type }}</td>
                     <td>{{ record.ttl|default_if_none:"--" }}</td>

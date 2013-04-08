@@ -9,6 +9,7 @@ class VirtMachine(models.Model):
     lastest_update = models.DateTimeField(_("Lastest update"), auto_now=True)
     name = models.CharField(_("Name"), max_length=128)
     own_ident = models.CharField(_("Ownident"), max_length=128, blank=True, null=True)
+    token = models.CharField(_("Token"), max_length=512, blank=True, null=True)
     user = models.ForeignKey(User)
     server = models.ForeignKey(Server, verbose_name=_("Server"))
 
@@ -17,6 +18,10 @@ class VirtMachine(models.Model):
         if self.own_ident:
             return self.own_ident
         return "vm_%05d" % self.id
+
+    @property
+    def websock_port(self):
+        return 5000 + self.id
 
     def __unicode__(self):
         return "Virtual machine: %s" % self.name

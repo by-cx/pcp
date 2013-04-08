@@ -47,6 +47,9 @@
             <a href="{% url 'virt_state' pk=vm.id state="shutdown" %}" class="btn btn-warning">{% trans "Shutdown" %}</a>
             <a href="{% url 'virt_state' pk=vm.id state="force_shutdown" %}" class="btn btn-warning">{% trans "Force shutdown" %}</a>
             {% endif %}
+            {% if superuser.is_superuser %}
+            <a href="{% url 'virt_backend_install' pk=vm.id %}" class="btn btn-primary">{% trans "Backend install" %}</a>
+            {% endif %}
             <a href="" class="btn btn-danger">{% trans "Delete" %}</a>
         </td>
     </tr>
@@ -135,8 +138,8 @@
             WebUtil.init_logging(WebUtil.getQueryVar('logging', 'warn'));
             document.title = unescape(WebUtil.getQueryVar('title', 'noVNC'));
             // By default, use the host and port of server that served this file
-            host = "192.168.1.99";
-            port = 8001;
+            host = "{{ vm.server.ip }}";
+            port = {{ vm.server.vnc_port }};
 
             // If a token variable is passed in, set the parameter in a cookie.
             // This is used by nova-novncproxy.

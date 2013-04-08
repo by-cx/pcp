@@ -1,11 +1,12 @@
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django.views.generic.base import TemplateView
 from wsgiadmin.core.models import Server
 from wsgiadmin.service.views import RostiListView, RostiCreateView
+from wsgiadmin.virt.backend import VirtMachineBackend
 from wsgiadmin.virt.forms import VirtForm
 from wsgiadmin.virt.models import VirtMachine, VirtVariant
 from wsgiadmin.virt.utils import VirtMachineConnection
@@ -98,6 +99,9 @@ class VirtCreateView(RostiCreateView):
         virt_machine = VirtMachineConnection.objects.get(id=object.id)
         virt_machine.create_domain(variant.memory, variant.cpus, variant.disk_size)
 
+        backend = VirtMachineBackend.objects.get(id=virt_machine.id)
+        backend.install()
+
         return HttpResponseRedirect(reverse("virt_list"))
 
     def get_context_data(self, **kwargs):
@@ -125,5 +129,17 @@ def virt_state_changer(request, pk, state):
         vm.shutdown()
     elif state == "force_shutdown":
         vm.force_shutdown()
+
+    return HttpResponseRedirect(reverse("virt_summary", kwargs={"pk": pk}))
+
+
+def backend_install(request, pk):
+    user = request.session.get('switched_user', request.user)
+    superuser = request.user
+    if not superuser.is_superuser():
+        return HttpResponseForbidden('You are not superuser')
+
+    backend = get_object_or_404(VirtMachineBackend, id=pk)
+    backend.install()
 
     return HttpResponseRedirect(reverse("virt_summary", kwargs={"pk": pk}))

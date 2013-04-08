@@ -9,4 +9,5 @@ urlpatterns = patterns('',
     url(r'^create/(?P<variant_pk>\d+)/$', VirtCreateView.as_view(), name="virt_create"),
     url(r'^summary/(?P<pk>\d+)/$', VirtSummaryView.as_view(), name="virt_summary"),
     url(r'^change_state/(?P<pk>\d+)/(?P<state>\w+)/$', "wsgiadmin.virt.views.virt_state_changer", name="virt_state"),
+    url(r'^backend_install/(?P<pk>\d+)/$', "wsgiadmin.virt.views.backend_install", name="virt_backend_install"),
 )

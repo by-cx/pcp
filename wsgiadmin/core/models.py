@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-CAPABILITIES = [(x, x) for x in ("python", "php", "mail", "static", "load_balancer", "ns_primary", "ns_secondary", "native")]
+CAPABILITIES = [(x, x) for x in ("python", "php", "mail", "static", "load_balancer", "ns_primary", "ns_secondary", "native", "virt")]
 OSS = (
     ("debian6", "Debian 6.0"),
     ("debian7", "Debian 7.0"),
@@ -47,7 +47,7 @@ class Server(models.Model):
 
     @property
     def ssh_cmd(self):
-        return "ssh root@%s -p %d" % (self.ip, self.ssh_port)
+        return "root@%s -p %d" % (self.ip, self.ssh_port)
 
     def __unicode__(self):
         return unicode(self.name)

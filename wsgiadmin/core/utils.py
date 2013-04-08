@@ -17,6 +17,11 @@ def get_mail_server():
         return servers[0]
 
 
+def get_virt_servers():
+    servers = server_chooser("virt")
+    return servers
+
+
 def get_primary_ns_server():
     servers = server_chooser("ns_primary")
     if len(servers) > 1:
@@ -26,6 +31,7 @@ def get_primary_ns_server():
     else:
         return servers[0]
 
+
 def get_secondary_ns_servers():
     servers = server_chooser("ns_secondary")
     if len(servers) == 0:
@@ -33,9 +39,11 @@ def get_secondary_ns_servers():
     else:
         return servers
 
+
 def get_load_balancers():
     servers = server_chooser("load_balancer")
-    if len(servers) == 0:
-        raise PCPException("Error: no loadbalancer found")
-    else:
-        return servers
+    return servers
+    #if len(servers) == 0:
+    #    raise PCPException("Error: no loadbalancer found")
+    #else:
+    #    return servers

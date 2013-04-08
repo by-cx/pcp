@@ -442,7 +442,7 @@ class ProxyObject(object):
         if self.app.ssl_cert and self.app.ssl_key:
             content.append("server {")
             content.append("\tlisten       [::]:443 ssl;")
-            content.append("\tserver_name  %(domains)s;" % self.app.domains)
+            content.append("\tserver_name  %s;" % self.app.domains)
             content.append("\tssl_certificate      /etc/nginx/ssl/app_%.5d.cert.pem" % self.app.id)
             content.append("\tssl_certificate_key  /etc/nginx/ssl/app_%.5d.key.pem" % self.app.id)
             content.append("\tlocation / {")
@@ -458,14 +458,14 @@ class ProxyObject(object):
             script.add_file("/etc/nginx/ssl/app_%.5d.cert.pem" % self.app.id, self.app.ssl_cert)
             script.add_file("/etc/nginx/ssl/app_%.5d.key.pem" % self.app.id, self.app.ssl_key)
         else:
-            script.add_file("rm -f /etc/nginx/ssl/app_%.5d.cert.pem" % self.app.id)
-            script.add_file("rm -f /etc/nginx/ssl/app_%.5d.key.pem" % self.app.id)
+            script.add_cmd("rm -f /etc/nginx/ssl/app_%.5d.cert.pem" % self.app.id)
+            script.add_cmd("rm -f /etc/nginx/ssl/app_%.5d.key.pem" % self.app.id)
 
     def gen_config(self):
         content = []
         content.append("server {")
         content.append("\tlisten       [::]:80;")
-        content.append("\tserver_name  %(domains)s;" % self.app.domains)
+        content.append("\tserver_name  %s;" % self.app.domains)
         content.append("\tlocation / {")
         content.append("\t\tproxy_pass         http://%s/;" % self.app.core_server.ip)
         content.append("\t\tproxy_redirect     off;")

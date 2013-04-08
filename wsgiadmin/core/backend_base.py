@@ -3,6 +3,7 @@ import logging
 from multiprocessing import Process
 from subprocess import Popen, PIPE
 import sys
+from threading import Thread
 import time
 from wsgiadmin.core.exceptions import ScriptException, PCPException
 from django.conf import settings
@@ -27,7 +28,7 @@ class BaseScript(object):
         self.restarts = {"apache": False, "nginx": False}
         self.log = []
         self.server_object = server
-        self.server = server.ssh
+        self.server = server.ssh_cmd.split(" ")
 
     def commit(self, no_thread=False):
         #dummy method, define new one
@@ -62,9 +63,6 @@ class BaseScript(object):
     def reload_nginx(self):
         self.reloads["nginx"] = True
 
-
-class QueueScript(BaseScript):
-
     def add_command(self, cmd, stdin=None, rm_stdin=False, user="root"):
         command = CommandLog()
         command.server = self.server_object
@@ -75,6 +73,17 @@ class QueueScript(BaseScript):
         command.save()
         return command
 
+    def set_result(self, command, stdout, stderr, status_code):
+        command.result_stdout = stdout
+        command.result_stderr = stderr
+        command.status_code = status_code
+        if command.rm_stdin:
+            command.stdin = ""
+        command.save()
+
+
+class QueueScript(BaseScript):
+
     def commit(self, no_thread=False):
         if self.restarts["nginx"]:
             if self.server_object.os in ("debian6", "debian7", ):
@@ -84,20 +93,20 @@ class QueueScript(BaseScript):
             self.reloads["nginx"] = False
             self.restarts["nginx"] = False
         elif self.reloads["nginx"]:
-            if self.server.os in ("debian6", "debian7", ):
+            if self.server_object.os in ("debian6", "debian7", ):
                 self.add_cmd("/etc/init.d/nginx reload")
             elif self.server_object.os == "archlinux":
                 self.add_cmd("systemctl reload nginx")
             self.reloads["nginx"] = False
         if self.restarts["apache"]:
-            if self.server.os in ("debian6", "debian7", ):
+            if self.server_object.os in ("debian6", "debian7", ):
                 self.add_cmd("/etc/init.d/apache2 restart")
             elif self.server_object.os == "archlinux":
                 self.add_cmd("systemctl restart apache")
             self.reloads["apache"] = False
             self.restarts["apache"] = False
         elif self.reloads["apache"]:
-            if self.server.os in ("debian6", "debian7", ):
+            if self.server_object.os in ("debian6", "debian7", ):
                 self.add_cmd("/etc/init.d/apache2 reload")
             elif self.server_object.os == "archlinux":
                 self.add_cmd("systemctl reload apache")
@@ -134,7 +143,6 @@ class QueueScript(BaseScript):
     def run(self, cmd):
         command = self.add_command(cmd)
         cur = connection.cursor()
-        cur.execute("NOTIFY process_commands, '%s';" % self.server_object.key)
         counter = 0
         while counter < 100:
             if command.processed:
@@ -154,20 +162,20 @@ class DirectSSHScript(BaseScript):
             self.reloads["nginx"] = False
             self.restarts["nginx"] = False
         elif self.reloads["nginx"]:
-            if self.server.os in ("debian6", "debian7", ):
+            if self.server_object.os in ("debian6", "debian7", ):
                 self.add_cmd("/etc/init.d/nginx reload")
             elif self.server_object.os == "archlinux":
                 self.add_cmd("systemctl reload nginx")
             self.reloads["nginx"] = False
         if self.restarts["apache"]:
-            if self.server.os in ("debian6", "debian7", ):
+            if self.server_object.os in ("debian6", "debian7", ):
                 self.add_cmd("/etc/init.d/apache2 restart")
             elif self.server_object.os == "archlinux":
                 self.add_cmd("systemctl restart apache")
             self.reloads["apache"] = False
             self.restarts["apache"] = False
         elif self.reloads["apache"]:
-            if self.server.os in ("debian6", "debian7", ):
+            if self.server_object.os in ("debian6", "debian7", ):
                 self.add_cmd("/etc/init.d/apache2 reload")
             elif self.server_object.os == "archlinux":
                 self.add_cmd("systemctl reload apache")
@@ -176,7 +184,7 @@ class DirectSSHScript(BaseScript):
         if no_thread:
             self.send(["pcp_runner"], json.dumps(self.requests))
         else:
-            p = Process(
+            p = Thread(
                 target=self.send,
                 args=[["pcp_runner"], json.dumps(self.requests)]
             )
@@ -185,12 +193,13 @@ class DirectSSHScript(BaseScript):
 
     def send(self, cmd, stdin=None):
         if settings.DEBUG:
-            sys.stdout.write("[cmd]: %s\n" % " ".join(["ssh", self.server]+cmd))
-            logging.info("[cmd]: %s" % " ".join(["ssh", self.server]+cmd))
+            sys.stdout.write("[cmd]: %s\n" % " ".join(["ssh"] + self.server + cmd))
+            logging.info("[cmd]: %s" % " ".join(["ssh"] + self.server + cmd))
             if stdin:
                 sys.stdout.write("[stdin]: %s\n" % stdin)
                 logging.info("[stdin]: %s" % stdin)
-        p = Popen(["ssh", self.server]+cmd, stdout=PIPE, stderr=PIPE, stdin=PIPE)
+
+        p = Popen(["ssh"] + self.server + cmd, stdout=PIPE, stderr=PIPE, stdin=PIPE)
         stdout, stderr = p.communicate(stdin)
         if settings.DEBUG:
             if stdout:

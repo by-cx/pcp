@@ -392,11 +392,13 @@ class DbObject(Db):
         proxy = True
 
     def __init__(self, *args, **kwargs):
+        database_server = config.mysql_server if not self.app.db_server else self.app.db_server
+
         super(DbObject, self).__init__(*args, **kwargs)
         if self.db_type == "mysql":
-            self.script = self.script = Script(config.mysql_server)
+            self.script = self.script = Script(database_server)
         elif self.db_type == "pgsql":
-            self.script = self.script = Script(config.pgsql_server)
+            self.script = self.script = Script(database_server)
 
     def install(self):
         if self.db_type == "mysql":

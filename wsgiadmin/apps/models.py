@@ -26,7 +26,7 @@ class App(models.Model):
     ssl_key = models.TextField(_("SSL key"), blank=True, null=True, help_text=_("Key without password"))
     user = models.ForeignKey(User, blank=True, null=True)
     core_server = models.ForeignKey(Server, verbose_name=_("Server"), null=True) #TODO: not entirly clean
-    db_server = models.ForeignKey(Server, verbose_name=_("Server for database"), null=True, blank=True)
+    db_server = models.ForeignKey(Server, verbose_name=_("Server for database"), null=True, blank=True, related_name="app_db_set")
 
     def parameters_get(self):
         return json.loads(self.parameters_data if self.parameters_data else "{}")

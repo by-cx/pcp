@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-CAPABILITIES = [(x, x) for x in ("python", "php", "mail", "static", "load_balancer", "ns_primary", "ns_secondary", "native", "virt")]
+CAPABILITIES = [(x, x) for x in ("python", "php", "phpfpm", "mail", "static", "load_balancer", "ns_primary", "ns_secondary", "native", "virt")]
 OSS = (
     ("debian6", "Debian 6.0"),
     ("debian7", "Debian 7.0"),

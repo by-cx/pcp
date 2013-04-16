@@ -182,6 +182,11 @@ PAYMENT_CHOICES = (
     ("fee", _("Constant fee (200 CZK/196 MB RAM)")),
 )
 
+LOCALE_PATHS = (
+    join(ROOT, "locale"),
+)
+
+
 ## Logování
 import logging
 

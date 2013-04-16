@@ -29,7 +29,7 @@ class Server(models.Model):
     ssh_port = models.IntegerField(_("SSH Port"), default=22)
     os = models.CharField(_("Operating system"), max_length=64, default="debian6", choices=OSS)
     key = models.TextField(_("API key"), null=True, blank=True)
-    capabilities = models.ManyToManyField(Capability, verbose_name=_("Capabilities"))
+    capabilities = models.ManyToManyField(Capability, verbose_name=_("Capabilities"), null=True, blank=True)
 
     user = models.ForeignKey(User, blank=True, null=True)
 

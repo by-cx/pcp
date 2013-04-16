@@ -49,9 +49,11 @@
                         <li {% if menu_active == "apps" %} class="active"{% endif %}>
                             <a href="{% url 'apps_list' %}">{% trans "Apps" %}</a>
                         </li>
+                        {% if superuser.is_superuser %}
                         <li {% if menu_active == "virt" %} class="active"{% endif %}>
                             <a href="{% url 'virt_list' %}">{% trans "VM" %}</a>
                         </li>
+                        {% endif %}
                         {% if user.mysqldb_set.count or user.pgsql_set.count %}
                             <li{% if menu_active == "dbs" %} class="active"{% endif %}>
                                 <a href="{% url 'db_list' %}">{% trans "Databases" %}</a>

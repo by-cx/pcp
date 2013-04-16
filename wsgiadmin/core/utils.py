@@ -47,3 +47,17 @@ def get_load_balancers():
     #    raise PCPException("Error: no loadbalancer found")
     #else:
     #    return servers
+
+def get_mysql_server():
+    servers = server_chooser("mysql")
+    if len(servers) == 0:
+        raise PCPException("Error: no MySQL server found")
+    else:
+        return servers
+
+def get_pgsql_server():
+    servers = server_chooser("pgsql")
+    if len(servers) == 0:
+        raise PCPException("Error: no PostgreSQL server found")
+    else:
+        return servers

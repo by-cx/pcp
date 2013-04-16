@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-CAPABILITIES = [(x, x) for x in ("python", "php", "phpfpm", "mail", "static", "load_balancer", "ns_primary", "ns_secondary", "native", "virt")]
+CAPABILITIES = [(x, x) for x in ("python", "php", "phpfpm", "mail", "static", "load_balancer", "ns_primary", "ns_secondary", "native", "virt", "mysql", "pgsql")]
 OSS = (
     ("debian6", "Debian 6.0"),
     ("debian7", "Debian 7.0"),
@@ -25,7 +25,7 @@ class Capability(models.Model):
 class Server(models.Model):
     name = models.CharField(_("Name"), max_length=128)
     domain = models.CharField(_("Domain"), max_length=128)
-    ip = models.IPAddressField(_("IP address"), default="127.0.0.1")
+    ip = models.CharField(_("IP address"), default="127.0.0.1", max_length=64)
     ssh_port = models.IntegerField(_("SSH Port"), default=22)
     os = models.CharField(_("Operating system"), max_length=64, default="debian6", choices=OSS)
     key = models.TextField(_("API key"), null=True, blank=True)

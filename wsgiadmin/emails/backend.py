@@ -6,7 +6,7 @@ from wsgiadmin.core.utils import get_mail_server
 
 class EmailBackend(object):
     def __init__(self):
-        self.script = Script(get_mail_server().ssh)
+        self.script = Script(get_mail_server())
 
     def install(self, email):
         homedir = join(config.maildir, email.domain.name)

@@ -12,10 +12,12 @@ from django.views.generic.list import ListView
 from django.utils.translation import ugettext_lazy as _
 from wsgiadmin.service.forms import RostiFormHelper
 
+
 class JsonResponse(HttpResponse):
     def __init__(self, result, messages):
         content = anyjson.serialize(dict(result=result, messages=messages))
         super(JsonResponse, self).__init__(content, content_type='application/jsonrequest')
+
 
 class RostiListView(ListView):
     menu_active = ""
@@ -35,6 +37,7 @@ class RostiListView(ListView):
         if self.delete_url_reverse:
             context['delete_url'] = reverse(self.delete_url_reverse)
         return context
+
 
 class RostiCreateView(CreateView):
     menu_active = ""

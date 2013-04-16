@@ -4,7 +4,7 @@
 {% block header %}
     <div class="navbar navbar-inverse navbar-fixed-top"><!-- navbar-inverse -->
         <div class="navbar-inner">
-            <div class="container-fluid">
+            <div class="container">
                 <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
@@ -21,50 +21,53 @@
                         {% if u.is_superuser %}<span id="uzivatel">({% trans "superuser" %})</span>{% endif %}
                     </button>
                     <ul class="dropdown-menu">
-                        {% if superuser != u %}<li><a href="{% url wsgiadmin.users.views.switch_to_admin %}"><i class="icon-arrow-left"></i> {% trans "back" %}</a></li>
+                        {% if superuser != u %}<li><a href="{% url 'wsgiadmin.users.views.switch_to_admin' %}"><i class="icon-arrow-left"></i> {% trans "back" %}</a></li>
                             <li class="divider"></li>{% endif %}
-                        <li><a href="{% url django.contrib.auth.views.logout %}"><i class="icon-remove"></i> {% trans "Logout" %}</a></li>
+                        <li><a href="{% url 'django.contrib.auth.views.logout' %}"><i class="icon-remove"></i> {% trans "Logout" %}</a></li>
                     </ul>
                 </div>
                 <div class="nav-collapse collapse pull-left">
                     <ul class="nav pull-left" id="main-menu">
                         <li {% if menu_active == "dashboard" %} class="active"{% endif %}>
-                            <a href="{% url wsgiadmin.useradmin.views.info %}">{% trans "Dashboard" %}</a>
+                            <a href="{% url 'wsgiadmin.useradmin.views.info' %}">{% trans "Dashboard" %}</a>
                         </li>
                         {% if superuser.is_superuser %}
                             <!--<li {% if menu_active == "domains" %} class="active"{% endif %}>
-                        <a href="{% url domains_list %}">{% trans "Domains" %}</a>
+                        <a href="{% url 'domains_list' %}">{% trans "Domains" %}</a>
                     </li>-->
                         {% endif %}
                         {% if config.handle_dns %}
                             <li {% if menu_active == "dns" %} class="active"{% endif %}>
-                                <a href="{% url dns_list %}">{% trans "DNS" %}</a>
+                                <a href="{% url 'dns_list' %}">{% trans "DNS" %}</a>
                             </li>
                         {% endif %}
                         {% if user.usersite_set.count %}
                             <li {% if menu_active == "webapps" %} class="active"{% endif %}>
-                                <a href="{% url app_list %}">{% trans "Web apps" %}</a>
+                                <a href="{% url 'app_list' %}">{% trans "Web apps" %}</a>
                             </li>
                         {% endif %}
                         <li {% if menu_active == "apps" %} class="active"{% endif %}>
-                            <a href="{% url apps_list %}">{% trans "Apps" %}</a>
+                            <a href="{% url 'apps_list' %}">{% trans "Apps" %}</a>
+                        </li>
+                        <li {% if menu_active == "virt" %} class="active"{% endif %}>
+                            <a href="{% url 'virt_list' %}">{% trans "VM" %}</a>
                         </li>
                         {% if user.mysqldb_set.count or user.pgsql_set.count %}
                             <li{% if menu_active == "dbs" %} class="active"{% endif %}>
-                                <a href="{% url db_list %}">{% trans "Databases" %}</a>
+                                <a href="{% url 'db_list' %}">{% trans "Databases" %}</a>
                             </li>
                         {% endif %}
                         {% if user.ftp_set.count %}
                             <li{% if menu_active == "ftps" %} class="active"{% endif %}>
-                                <a href="{% url ftp_list %}">{% trans "FTP" %}</a>
+                                <a href="{% url 'ftp_list' %}">{% trans "FTP" %}</a>
                             </li>
                         {% endif %}
                         <li {% if menu_active == "emails" %} class="active"{% endif %}>
-                            <a href="{% url mailbox_list %}">{% trans "E-mails" %}</a>
+                            <a href="{% url 'mailbox_list' %}">{% trans "E-mails" %}</a>
                         </li>
                         <li
                                 {% if menu_active == "settings" %} class="active"{% endif %}>
-                            <a href="{% url wsgiadmin.useradmin.views.change_passwd %}">{% trans "Settings" %}</a>
+                            <a href="{% url 'wsgiadmin.useradmin.views.change_passwd' %}">{% trans "Settings" %}</a>
                         </li>
                     </ul>
                 </div><!--/.nav-collapse -->
@@ -80,25 +83,25 @@
                     {% if menu_active == "dashboard" %}
                         <li class="nav-header">{% trans "Dashboard" %}</li>
                         <li>
-                            <a href="{% url wsgiadmin.useradmin.views.info %}">
+                            <a href="{% url 'wsgiadmin.useradmin.views.info' %}">
                                 <i class="icon-home"></i>
                                 {% trans "Home" %}
                             </a>
                         </li>
                         <li>
-                            <a href="{% url credit_stats %}">
+                            <a href="{% url 'credit_stats' %}">
                                 <i class="icon-list-alt"></i>
                                 {% trans "Payout stats" %}
                             </a>
                         </li>
                         <li>
-                            <a href="{% url payments_info %}">
+                            <a href="{% url 'payments_info' %}">
                                 <i class="icon-list-alt"></i>
-                                {% trans "Buyed credit" %}
+                                {% trans "Bought credit" %}
                             </a>
                         </li>
                         <li>
-                            <a href="{% url credit %}" style="color: red;">
+                            <a href="{% url 'credit' %}" style="color: red;">
                                 <i class="icon-plus"></i>
                                 {% trans "Buy some credit" %}
                             </a>
@@ -107,13 +110,13 @@
                             <li class="divider"></li>
                             <li class="nav-header">{% trans "Master panel" %}</li>
                             <li>
-                                <a href="{% url wsgiadmin.useradmin.views.master %}" class="red">
+                                <a href="{% url 'wsgiadmin.useradmin.views.master' %}" class="red">
                                     <i class="icon-lock"></i>
                                     {% trans "Master panel" %}
                                 </a>
                             </li>
                             <li>
-                                <a href="{% url wsgiadmin.users.views.show %}">
+                                <a href="{% url 'wsgiadmin.users.views.show' %}">
                                     <i class="icon-list"></i>
                                     {% trans "User's list" %}
                                 </a>
@@ -123,14 +126,14 @@
                     {% if menu_active == "dns" %}
                         <li class="nav-header">{% trans "DNS settings" %}</li>
                         <li>
-                            <a href="{% url dns_list %}">
+                            <a href="{% url 'dns_list' %}">
                                 <i class="icon-list"></i>
                                 {% trans "Your domains" %}
                             </a>
                         </li>
                         <li class="divider"></li>
                         <li>
-                            <a href="{% url dns_create %}">
+                            <a href="{% url 'dns_create' %}">
                                 <i class="icon-plus"></i>
                                 {% trans "Add domain" %}
                             </a>
@@ -139,14 +142,14 @@
                     {% if menu_active == "domains" %}
                         <li class="nav-header">{% trans "Domains" %}</li>
                         <li>
-                            <a href="{% url domains_list %}">
+                            <a href="{% url 'domains_list' %}">
                                 <i class="icon-list"></i>
                                 {% trans "Domains list" %}
                             </a>
                         </li>
                         <li class="divider"></li>
                         <li>
-                            <a href="{% url wsgiadmin.old.domains.views.add %}">
+                            <a href="{% url 'wsgiadmin.old.domains.views.add' %}">
                                 <i class="icon-plus"></i>
                                 {% trans "Add registered domain" %}
                             </a>
@@ -155,35 +158,35 @@
                     {% if menu_active == "webapps" %}
                         <li class="nav-header">{% trans "Web applications" %}</li>
                         <li>
-                            <a href="{% url app_list %}">
+                            <a href="{% url 'app_list' %}">
                                 <i class="icon-list"></i>
                                 {% trans "Your apps" %}</a>
                         </li>
                         <li class="divider"></li>
                         <li>
-                            <a href="{% url app_static app_type='static' %}">
+                            <a href="{% url 'app_static' app_type='static' %}">
                                 <i class="icon-plus"></i>
                                 {% trans "Add static page" %}
                             </a>
                         </li>
                         <li>
-                            <a href="{% url app_static app_type='php' %}">
+                            <a href="{% url 'app_static' app_type='php' %}">
                                 <i class="icon-plus"></i>
                                 {% trans "Add PHP app" %}</a>
                         </li>
                         <li>
-                            <a href="{% url app_wsgi %}">
+                            <a href="{% url 'app_wsgi' %}">
                                 <i class="icon-plus"></i>
                                 {% trans "Add WSGI app" %}</a>
                         </li>
                         <li class="divider"></li>
                         <li>
-                            <a href="{% url cron_list %}">
+                            <a href="{% url 'cron_list' %}">
                                 <i class="icon-list"></i>
                                 {% trans "Crontab" %}</a>
                         </li>
                         <li>
-                            <a href="{% url create_cron %}">
+                            <a href="{% url 'create_cron' %}">
                                 <i class="icon-plus"></i>
                                 {% trans "Add cron record" %}</a>
                         </li>
@@ -191,48 +194,58 @@
                     {% if menu_active == "apps" %}
                         <li class="nav-header">{% trans "Apps" %}</li>
                         <li>
-                            <a href="{% url apps_list %}"><i class="icon-list"></i> {% trans "Apps list" %}</a>
+                            <a href="{% url 'apps_list' %}"><i class="icon-list"></i> {% trans "Apps list" %}</a>
                         </li>
                         <li class="divider"></li>
                         <li>
-                            <a href="{% url app_add_static %}"><i class="icon-plus"></i> {% trans "Add static app" %}</a>
+                            <a href="{% url 'app_add_static' %}"><i class="icon-plus"></i> {% trans "Add static app" %}</a>
                         </li>
                         <li>
-                            <a href="{% url app_add_php %}"><i class="icon-plus"></i> {% trans "Add php app" %}</a>
+                            <a href="{% url 'app_add_phpfpm' %}"><i class="icon-plus"></i> {% trans "Add php app" %}</a>
                         </li>
                         <li>
-                            <a href="{% url app_add_python %}"><i class="icon-plus"></i> {% trans "Add python app" %}</a>
+                            <a href="{% url 'app_add_python' %}"><i class="icon-plus"></i> {% trans "Add python app" %}</a>
                         </li>
                         <!--<li>
-                            <a href="{% url app_add_native %}"><i class="icon-plus"></i> {% trans "Add native app" %}</a>
+                            <a href="{% url 'app_add_native' %}"><i class="icon-plus"></i> {% trans "Add native app" %}</a>
                         </li>
                         <li>
-                            <a href="{% url app_add_proxy %}"><i class="icon-plus"></i> {% trans "Add proxy" %}</a>
+                            <a href="{% url 'app_add_proxy' %}"><i class="icon-plus"></i> {% trans "Add proxy" %}</a>
                         </li>-->
+                    {% endif %}
+                    {% if menu_active == "virt" %}
+                        <li class="nav-header">{% trans "Virtual machines" %}</li>
+                        <li>
+                            <a href="{% url 'virt_list' %}"><i class="icon-list"></i> {% trans "Your virtual machines" %}</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="{% url 'virt_new' %}"><i class="icon-plus"></i> {% trans "New virtual machine" %}</a>
+                        </li>
                     {% endif %}
                     {% if menu_active == "dbs" %}
                         <li class="nav-header">{% trans "Databases" %}</li>
                         <li>
-                            <a href="{% url db_list dbtype='mysql' %}">
+                            <a href="{% url 'db_list' dbtype='mysql' %}">
                                 <i class="icon-list"></i>
                                 {% trans "MySQL databases" %}
                             </a>
                         </li>
                         <li>
-                            <a href="{% url db_list dbtype='pgsql' %}">
+                            <a href="{% url 'db_list' dbtype='pgsql' %}">
                                 <i class="icon-list"></i>
                                 {% trans "PostgreSQL databases" %}
                             </a>
                         </li>
                         <li class="divider"></li>
                         <li>
-                            <a href="{% url wsgiadmin.old.db.views.add dbtype='mysql' %}">
+                            <a href="{% url 'wsgiadmin.old.db.views.add' dbtype='mysql' %}">
                                 <i class="icon-plus"></i>
                                 {% trans "Add MySQL database" %}
                             </a>
                         </li>
                         <li>
-                            <a href="{% url wsgiadmin.old.db.views.add dbtype='pgsql' %}">
+                            <a href="{% url 'wsgiadmin.old.db.views.add' dbtype='pgsql' %}">
                                 <i class="icon-plus"></i>
                                 {% trans "Add postgresql database" %}
                             </a>
@@ -241,32 +254,32 @@
                     {% if menu_active == "emails" %}
                         <li class="nav-header">{% trans "E-mails" %}</li>
                         <li>
-                            <a href="{% url mailbox_list %}">
+                            <a href="{% url 'mailbox_list' %}">
                                 <i class="icon-list"></i>
                                 {% trans "List of mailboxes" %}
                             </a>
                         </li>
                         <li>
-                            <a href="{% url redirect_list %}">
+                            <a href="{% url 'redirect_list' %}">
                                 <i class="icon-list"></i>
                                 {% trans "Redirections" %}
                             </a>
                         </li>
                         <li class="divider"></li>
                         <li>
-                            <a href="{% url email_domain_add %}">
+                            <a href="{% url 'email_domain_add' %}">
                                 <i class="icon-plus"></i>
                                 {% trans "Add domain for mailboxes" %}
                             </a>
                         </li>
                         <li>
-                            <a href="{% url add_mailbox %}">
+                            <a href="{% url 'add_mailbox' %}">
                                 <i class="icon-plus"></i>
                                 {% trans "Add mailbox" %}
                             </a>
                         </li>
                         <li>
-                            <a href="{% url add_redirect %}">
+                            <a href="{% url 'add_redirect' %}">
                                 <i class="icon-plus"></i>
                                 {% trans "Add redirection" %}
                             </a>
@@ -275,13 +288,13 @@
                     {% if menu_active == "ftps" %}
                         <li class="nav-header">{% trans "FTP accounts" %}</li>
                         <li>
-                            <a href="{% url ftp_upsert %}">
+                            <a href="{% url 'ftp_upsert' %}">
                                 <i class="icon-plus"></i>
                                 {% trans "Add FTP account" %}
                             </a>
                         </li>
                         <li>
-                            <a href="{% url ftp_list %}">
+                            <a href="{% url 'ftp_list' %}">
                                 <i class="icon-list"></i>
                                 {% trans "List of FTP accounts" %}
                             </a>
@@ -290,28 +303,28 @@
                     {% if menu_active == "settings" %}
                         <li class="nav-header">{% trans "Settings" %}</li>
                         <li>
-                            <a href="{% url address_create %}"><i class="icon-plus"></i> {% trans "New address" %}</a>
+                            <a href="{% url 'address_create' %}"><i class="icon-plus"></i> {% trans "New address" %}</a>
                         </li>
                         <li>
-                            <a href="{% url address_list %}"><i class="icon-list"></i> {% trans "Addresses" %}</a>
+                            <a href="{% url 'address_list' %}"><i class="icon-list"></i> {% trans "Addresses" %}</a>
                         </li>
                         <li><br></li>
                         <li>
-                            <a href="{% url wsgiadmin.useradmin.views.change_passwd %}">
+                            <a href="{% url 'wsgiadmin.useradmin.views.change_passwd' %}">
                                 <i class="icon-lock"></i>
                                 {% trans "Change password" %}
                             </a>
                         </li>
                         {% if user.parms.home != "/dev/null" %}
                         <li>
-                            <a href="{% url wsgiadmin.users.views.ssh_passwd %}">
+                            <a href="{% url 'wsgiadmin.users.views.ssh_passwd' %}">
                                 <i class="icon-lock"></i>
                                 {% trans "Change SSH/SFTP/FTP password" %}
                             </a>
                         </li>
                         {% endif %}
                         <li>
-                            <a href="{% url django.contrib.auth.views.logout %}">
+                            <a href="{% url 'django.contrib.auth.views.logout' %}">
                                 <i class="icon-remove"></i>
                                 {% trans "Logout" %}
                             </a>

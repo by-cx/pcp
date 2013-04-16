@@ -40,7 +40,7 @@
     <h2>{% trans "Copy php/static application" %}</h2>
 
     <p>
-        <form action="{% url app_copy %}" method="post">
+        <form action="{% url 'app_copy' %}" method="post">
             {% csrf_token %}
             <select name="app">
                 {% for app in apps %}

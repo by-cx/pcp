@@ -3,8 +3,10 @@ from django.conf import settings
 import os
 import re
 from wsgiadmin.apps.models import App, Db
-from wsgiadmin.apps.tools import Script
 from constance import config
+from wsgiadmin.core.backend_base import Script
+from wsgiadmin.core.exceptions import PCPException
+from wsgiadmin.core.utils import get_load_balancers
 
 
 class AppException(Exception): pass
@@ -17,7 +19,8 @@ class AppBackend(App):
 
     def __init__(self, *args, **kwargs):
         super(AppBackend, self).__init__(*args, **kwargs)
-        self.script = Script(self.server.hostname)
+        self.script = Script(self.core_server)
+        self.proxy = ProxyObject(self)
 
     def get_user(self):
         return "app_%.5d" % self.id
@@ -59,6 +62,7 @@ class AppBackend(App):
         self.script.add_cmd("chmod 750 %(home)s" % parms)
         self.installed = True
         self.save()
+        self.proxy.setup()
 
     def commit(self, no_thread=False):
         self.script.commit(no_thread)
@@ -66,10 +70,12 @@ class AppBackend(App):
     def disable(self):
         parms = self.get_parmameters()
         self.script.add_cmd("chmod 000 %(home)s" % parms, user=self.get_user())
+        self.proxy.setdown()
 
     def enable(self):
         parms = self.get_parmameters()
         self.script.add_cmd("chmod 750 %(home)s" % parms, user=self.get_user())
+        self.proxy.setup()
 
     def uninstall(self):
         parms = self.get_parmameters()
@@ -77,6 +83,7 @@ class AppBackend(App):
         #self.script.add_cmd("/usr/sbin/groupdel %(group)s" % parms)
         self.script.add_cmd("rm -rf %(home)s" % parms)
         self.script.add_cmd("rm /etc/security/limits.d/%(user)s.conf" % parms)
+        self.proxy.setdown()
 
     def update(self):
         parms = self.get_parmameters()
@@ -208,6 +215,126 @@ class PHPApp(AppBackend):
         content.append("\t}")
         content.append("}\n")
         return "\n".join(content)
+
+
+class PHPFPMApp(AppBackend):
+    class Meta:
+        proxy = True
+
+    def install(self):
+        super(PHPFPMApp, self).install()
+        parms = self.get_parmameters()
+        self.script.add_cmd("mkdir -p %(home)s" % parms, user=self.get_user())
+
+    def disable(self):
+        super(PHPFPMApp, self).disable()
+        parms = self.get_parmameters()
+        self.script.add_cmd("rm /etc/apache2/apps.d/%(user)s.conf" % parms)
+        self.script.add_cmd("rm /etc/nginx/apps.d/%(user)s.conf" % parms)
+        self.script.add_cmd("rm /etc/php5/fpm/pool.d/%(user)s.conf" % parms)
+        self.script.reload_apache()
+        self.script.reload_nginx()
+        self.disabled = True
+        self.save()
+
+    def enable(self):
+        super(PHPFPMApp, self).enable()
+
+    def uninstall(self):
+        super(PHPFPMApp, self).uninstall()
+        parms = self.get_parmameters()
+        self.script.add_cmd("rm /etc/apache2/apps.d/%(user)s.conf" % parms)
+        self.script.add_cmd("rm /etc/nginx/apps.d/%(user)s.conf" % parms)
+        self.script.add_cmd("rm /etc/php5/fpm/pool.d/%(user)s.conf" % parms)
+        self.script.reload_apache()
+        self.script.reload_nginx()
+
+    def update(self):
+        super(PHPFPMApp, self).update()
+        parms = self.get_parmameters()
+        self.script.add_file("/etc/apache2/apps.d/%(user)s.conf" % parms, self.gen_apache_config())
+        self.script.add_file("/etc/nginx/apps.d/%(user)s.conf" % parms, self.gen_nginx_config())
+        # TODO: I think this will work just for debian
+        self.script.add_file("/etc/php5/fpm/pool.d/%(user)s.conf" % parms, self.gen_fpm_config())
+        self.script.reload_nginx()
+        self.script.reload_apache()
+        self.php_fpm_reload()
+
+    def gen_fpm_config(self):
+        parms = self.get_parmameters()
+        content = []
+        content.append("[%(user)s]" % parms)
+        content.append("user = %(user)s" % parms)
+        content.append("group = %(group)s" % parms)
+        content.append("")
+        content.append("listen = 127.0.0.1:%d" % (10000 + self.app.id))
+        content.append("")
+        content.append("pm = dynamic")
+        content.append("pm.max_children = 5")
+        content.append("pm.start_servers = 1")
+        content.append("pm.min_spare_servers = 1")
+        content.append("pm.max_spare_servers = 2")
+        content.append("pm.max_requests = 500")
+        content.append("")
+        content.append("slowlog = %(home)s/logs/slow_scripts.log" % parms)
+        content.append("request_slowlog_timeout = 10s")
+        content.append("request_terminate_timeout = %s" % parms.get("max_execution_time", "20"))
+        content.append("rlimit_files = 1024")
+        content.append("chdir = %(home)s" % parms)
+        content.append("")
+        content.append("php_admin_value[sendmail_path] = /usr/sbin/sendmail -t -i -f %s(user)@localhost" % parms)
+        content.append("php_admin_value[error_log] = %(home)s/logs/php.log" % parms)
+        content.append("php_admin_value[max_execution_time] = %s" % parms.get("max_execution_time", "20"))
+        content.append("php_admin_value[max_file_uploads] = %s" % parms.get("max_file_uploads", "10"))
+        content.append("php_admin_value[upload_max_filesize] = %s" % parms.get("upload_max_filesize", "10"))
+        content.append("php_admin_value[post_max_size] = %s" % parms.get("post_max_size", "32M"))
+        content.append("php_admin_value[memory_limit] = %s" % parms.get("memory_limit", "32M"))
+        content.append("php_admin_flag[allow_url_fopen] = %s" % ("On" if parms.get("allow_url_fopen") else "Off"))
+        content.append("php_admin_flag[display_errors] = %s" % ("On" if parms.get("display_errors") else "Off"))
+        return "\n".join(content)
+
+    def gen_apache_config(self):
+        parms = self.get_parmameters()
+        content = []
+        content.append("<VirtualHost %s>" % config.apache_url)
+        content.append("\tSuexecUserGroup %(user)s %(group)s" % parms)
+        content.append("\tServerName %(main_domain)s" % parms)
+        if parms.get("misc_domains"):
+            content.append("\tServerAlias %(misc_domains)s" % parms)
+        content.append("\tDocumentRoot %(home)s/app/" % parms)
+        content.append("\tCustomLog %(home)s/logs/access.log combined" % parms)
+        content.append("\tErrorLog %(home)s/logs/error.log" % parms)
+        content.append("\t<Directory %(home)s/app/>" % parms)
+        if parms.get("flag_index"): content.append("\t\tOptions +Indexes")
+        content.append("\t\tAllowOverride All")
+        content.append("\t\tOrder deny,allow")
+        content.append("\t\tAllow from all")
+        content.append("\t</Directory>")
+        content.append("\tProxyPassMatch ^/(.*\.php(/.*)?)$ fcgi://127.0.0.1:%d%s/$1" % (1000 + self.app.id))
+        content.append("</VirtualHost>\n")
+        return "\n".join(content)
+
+    def gen_nginx_config(self):
+        parms = self.get_parmameters()
+        content = []
+        content.append("server {")
+        content.append("\tlisten       %s;" % config.nginx_listen)
+        content.append("\tserver_name  %(domains)s;" % parms)
+        content.append("\taccess_log %(home)s/logs/access.log;"% parms)
+        content.append("\terror_log %(home)s/logs/error.log;"% parms)
+        content.append("\tlocation / {")
+        content.append("\t\tproxy_pass         http://%s/;" % config.apache_url)
+        content.append("\t\tproxy_redirect     off;")
+        content.append("\t}")
+        content.append("}\n")
+        return "\n".join(content)
+
+    def php_fpm_reload(self):
+        if self.app.core_server.os in ("debian6", "debian7", ):
+            self.script.add_cmd("/etc/init.d/php5-fpm reload")
+        # TODO: support for Arch Linux
+        else:
+            raise AppException("Unknown server OS")
 
 
 class StaticApp(AppBackend):
@@ -387,11 +514,13 @@ class DbObject(Db):
         proxy = True
 
     def __init__(self, *args, **kwargs):
+        database_server = config.mysql_server if not self.app.db_server else self.app.db_server
+
         super(DbObject, self).__init__(*args, **kwargs)
         if self.db_type == "mysql":
-            self.script = self.script = Script(config.mysql_server)
+            self.script = self.script = Script(database_server)
         elif self.db_type == "pgsql":
-            self.script = self.script = Script(config.pgsql_server)
+            self.script = self.script = Script(database_server)
 
     def install(self):
         if self.db_type == "mysql":
@@ -421,11 +550,79 @@ class DbObject(Db):
         self.script.commit(no_thread)
 
 
+class ProxyObject(object):
+
+    def __init__(self, app):
+        self.app = app
+        self.scripts = []
+        self.setup_scripts()
+
+    def setup_scripts(self):
+        for server in self.get_servers():
+            self.scripts.append(Script(server))
+
+    def gen_ssl_config(self):
+        content = []
+        if self.app.ssl_cert and self.app.ssl_key:
+            content.append("server {")
+            content.append("\tlisten       [::]:443 ssl;")
+            content.append("\tserver_name  %s;" % self.app.domains)
+            content.append("\tssl_certificate      /etc/nginx/ssl/app_%.5d.cert.pem" % self.app.id)
+            content.append("\tssl_certificate_key  /etc/nginx/ssl/app_%.5d.key.pem" % self.app.id)
+            content.append("\tlocation / {")
+            content.append("\t\tproxy_pass         http://%s/;" % self.app.core_server.ip)
+            content.append("\t\tproxy_redirect     off;")
+            content.append("\t}")
+            content.append("}\n")
+        return content
+
+    def save_ssl_cert_key(self, script, rm_certs=False):
+        if self.app.ssl_cert and self.app.ssl_key and not rm_certs:
+            script.add_cmd("mkdir -p /etc/nginx/ssl/")
+            script.add_file("/etc/nginx/ssl/app_%.5d.cert.pem" % self.app.id, self.app.ssl_cert)
+            script.add_file("/etc/nginx/ssl/app_%.5d.key.pem" % self.app.id, self.app.ssl_key)
+        else:
+            script.add_cmd("rm -f /etc/nginx/ssl/app_%.5d.cert.pem" % self.app.id)
+            script.add_cmd("rm -f /etc/nginx/ssl/app_%.5d.key.pem" % self.app.id)
+
+    def gen_config(self):
+        content = []
+        content.append("server {")
+        content.append("\tlisten       [::]:80;")
+        content.append("\tserver_name  %s;" % self.app.domains)
+        content.append("\tlocation / {")
+        content.append("\t\tproxy_pass         http://%s/;" % self.app.core_server.ip)
+        content.append("\t\tproxy_redirect     off;")
+        content.append("\t}")
+        content.append("}\n")
+        return content
+
+    def get_servers(self):
+        return get_load_balancers()
+
+    def setup(self):
+        for script in self.scripts:
+            self.save_ssl_cert_key(script)
+            script.add_cmd("mkdir -p /etc/nginx/proxy.d/")
+            script.add_file("/etc/nginx/proxy.d/app_%.5d.conf" % self.app.id, "\n".join(self.gen_config() + self.gen_ssl_config()))
+            script.reload_nginx()
+            script.commit()
+
+    def setdown(self):
+        for script in self.scripts:
+            self.save_ssl_cert_key(script, rm_certs=True)
+            script.add_cmd("rm -f /etc/nginx/proxy.d/app_%.5d.conf" % self.app.id)
+            script.reload_nginx()
+            script.commit()
+
+
 def typed_object(app):
     if app.app_type == "python":
         app = PythonApp.objects.get(id=app.id)
     elif app.app_type == "php":
         app = PHPApp.objects.get(id=app.id)
+    elif app.app_type == "phpfpm":
+        app = PHPFPMApp.objects.get(id=app.id)
     elif app.app_type == "static":
         app = StaticApp.objects.get(id=app.id)
     else:

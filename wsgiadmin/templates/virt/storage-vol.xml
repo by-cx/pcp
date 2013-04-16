@@ -1,0 +1,14 @@
+<volume>
+    <name>{{ name }}.img</name>
+    <source>
+    </source>
+    <capacity unit='G'>{{ size }}</capacity>
+    <allocation unit='G'>{{ size }}</allocation>
+    <target>
+        <path>{{ disk_file }}</path>
+        <format type='qcow2'/>
+        <permissions>
+            <mode>0600</mode>
+        </permissions>
+    </target>
+</volume>

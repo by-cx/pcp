@@ -1,7 +1,8 @@
 from constance import config
 from django.template.loader import render_to_string
+from wsgiadmin.core.backend_base import Script
+from wsgiadmin.core.utils import get_primary_ns_server, get_secondary_ns_servers
 from wsgiadmin.dns.models import Domain
-from wsgiadmin.apps.tools import Script
 
 
 class DomainException(Exception): pass
@@ -13,13 +14,10 @@ class DomainObject(object):
 
     def __init__(self, *args, **kwargs):
         super(DomainObject, self).__init__(*args, **kwargs)
-        try:
-            self.script_master = Script(config.dns_default_nss.split()[0])
-            self.scripts_slaves = []
-            for ns in config.dns_default_nss.split()[1:]:
-                self.scripts_slaves.append(Script(ns))
-        except ValueError:
-            raise DomainException("Error: in dns_default_nss set at least two NS servers")
+        self.script_master = Script(get_primary_ns_server().ssh)
+        self.scripts_slaves = []
+        for ns in get_secondary_ns_servers():
+            self.scripts_slaves.append(Script(ns.ssh))
 
     def commit(self):
         self.script_master.commit()
@@ -46,7 +44,7 @@ class DomainObject(object):
     def gen_zone(self, domain):
         domain.new_serial()
         records = []
-        for ns in config.dns_default_nss.split():
+        for ns in [get_primary_ns_server().domain] + [x.domain for x in get_secondary_ns_servers()]:
             records.append({"name": "@", "TTL": domain.ttl if domain.ttl else 86400, "type": "NS", "prio": "", "value": "%s." % ns})
         for record in domain.record_set.order_by("order_num"):
             records.append({
@@ -59,7 +57,7 @@ class DomainObject(object):
         return render_to_string("dns/zone.txt", {
             "records": records,
             "TTL": domain.ttl if domain.ttl else 86400,
-            "ns1": config.dns_default_nss.split()[0],
+            "ns1": get_primary_ns_server().domain,
             "rname": domain.rname.replace("@", "."),
             "serial": domain.serial,
             "refresh": config.dns_refresh,
@@ -73,7 +71,7 @@ class DomainObject(object):
         for domain in Domain.objects.all():
             domains.append(render_to_string("dns/master_config.txt", {
                 "domain": domain.name,
-                "slaves_ips": ";".join(config.dns_default_nss_ips.split()[1:]),
+                "slaves_ips": ";".join([x.ip for x in get_secondary_ns_servers()]),
             }))
         return "\n".join(domains)
 
@@ -82,6 +80,6 @@ class DomainObject(object):
         for domain in Domain.objects.all():
             domains.append(render_to_string("dns/slave_config.txt", {
                 "domain": domain.name,
-                "msters_ips": config.dns_default_nss_ips.split()[0],
+                "msters_ips": get_primary_ns_server().ip,
             }))
         return "\n".join(domains)

@@ -1,0 +1,53 @@
+{% extends "admin.html" %}
+{% load i18n %}
+
+{% block title %}
+    {% trans "Administration" %} &gt; {% trans "Virtual Machines" %}
+{% endblock %}
+
+{% block content %}
+    <div id="message-box"></div>
+
+    <h3>{% trans "List of virtual machines" %}</h3>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>{% trans "Create date" %}</th>
+            <th>{% trans "Name" %}</th>
+            <th>{% trans "State" %}</th>
+            <th>{% trans "Actions" %}</th>
+        </tr>
+        </thead>
+        {% if object_list %}
+            <tbody id="objects_list">
+            {% for vm in object_list %}
+                <tr>
+                    <td>{{ vm.created }}</td>
+                    <td>{{ vm.name }}</td>
+                    <td>{% if vm.state == 1 %}{% trans "running" %}{% else %}{% trans "not running" %}{% endif %}</td>
+                    <td class="list_actions">
+                        <a href="{% url 'virt_summary' pk=vm.id %}" class="btn btn-info btn-mini"><i class="icon-info-sign icon-white"></i> {% trans "Info" %}</a>
+                        <a href="#a" onclick="if(confirm('{% trans "Are you sure?" %}')) {document.location='';}" class="btn btn-danger btn-mini"><i class="icon-remove icon-white"></i> {% trans "Delete" %}</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="4">
+                    <div class="pagination">
+                        {% include "paginator.html" %}
+                    </div>
+                    <div class="clear"></div>
+                </td>
+            </tr>
+            </tfoot>
+        {% else %}
+            <tbody>
+            <tr>
+                <td colspan="4">{% trans "Crap! No virtual machines found. However, you can add one with the menu on left side." %}</td>
+            </tr>
+            </tbody>
+        {% endif %}
+    </table>
+{% endblock %}

@@ -4,16 +4,22 @@
 {% block bodyclass %}registrace{% endblock %}
 
 {% block header %}
-<div class="navbar navbar-fixed-top">
-
+<div class="navbar navbar-inverse navbar-fixed-top">
     <div class="navbar-inner">
-        <div id="header" class="container">
+        <div class="container">
+            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
             <a href="/" class="brand">{{ site }}</a>
-            <ul class="nav pull-left" id="main-menu">
-                <li {% if menu_active == "login" %} class="active"{% endif %}><a href="{% url login %}">{% trans "Login" %}</a></li>
-                <li {% if menu_active == "registration" %} class="active"{% endif %}><a href="{% url registration %}">{% trans "Registration" %}</a></li>
-                <li {% if menu_active == "reset_passwd" %} class="active"{% endif %}><a href="{% url reset_passwd %}">{% trans "Lost password" %}</a></li>
-            </ul>
+            <div class="nav-collapse collapse pull-left">
+                <ul class="nav pull-left" id="main-menu">
+                    <li {% if menu_active == "login" %} class="active"{% endif %}><a href="{% url 'login' %}">{% trans "Login" %}</a></li>
+                    <li {% if menu_active == "registration" %} class="active"{% endif %}><a href="{% url 'registration' %}">{% trans "Registration" %}</a></li>
+                    <li {% if menu_active == "reset_passwd" %} class="active"{% endif %}><a href="{% url 'reset_passwd' %}">{% trans "Lost password" %}</a></li>
+                </ul>
+            </div>
         </div>
     </div>
 </div>

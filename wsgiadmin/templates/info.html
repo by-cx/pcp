@@ -58,7 +58,7 @@
             <td>{% trans "Domains" %}</td>
             <td>{{ u.parms.count_domains }}×</td>
             <td>{% trans "More informations in" %}
-                <a href="{% url domains_list %}">{% trans "domains list" %}</a>
+                <a href="{% url 'domains_list' %}">{% trans "domains list" %}</a>
             </td>
         </tr>
         {% endif %}
@@ -92,9 +92,9 @@
                 <td><strong>{% trans "Your credits" %}</strong></td>
                 <td></td>
                 {% if u.parms.credit < 0 %}
-                    <td style="color: red;"><strong>{{ u.parms.credit|floatformat:2 }}</strong> <a href="{% url credit %}">{% trans "Buy some more!" %}</a></td>
+                    <td style="color: red;"><strong>{{ u.parms.credit|floatformat:2 }}</strong> <a href="{% url 'credit' %}">{% trans "Buy some more!" %}</a></td>
                 {% else %}
-                    <td style="color: green;"><strong>{{ u.parms.credit|floatformat:2 }}</strong> <a href="{% url credit %}">{% trans "Buy some more!" %}</a></td>
+                    <td style="color: green;"><strong>{{ u.parms.credit|floatformat:2 }}</strong> <a href="{% url 'credit' %}">{% trans "Buy some more!" %}</a></td>
                 {% endif %}
             </tr>
             {% if u.parms.credit_until %}
@@ -116,7 +116,7 @@
         </tr>
         {% for credit in not_payed %}
         <tr>
-            <td><a href="{% url payment_info pk=credit.id %}">{{ credit.date }}</td>
+            <td><a href="{% url 'payment_info' pk=credit.id %}">{{ credit.date }}</td>
             <td>{{ credit.value }}</td>
             <td>{{ credit.price }} {{ credit.currency }}</td>
         </tr>

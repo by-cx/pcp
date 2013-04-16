@@ -29,7 +29,7 @@
                         <ul class="akce">
                             {% if site.type == "php" or site.type == "static" %}
                                 <li>
-                                    <a href="{% url app_static app_type=site.type app_id=site.id %}">
+                                    <a href="{% url 'app_static' app_type=site.type app_id=site.id %}">
                                         <img src="{{ STATIC_URL }}images/ico-editovat.png" alt="{% trans "Edit" %}"/>
                                     </a>
                                 </li>
@@ -37,13 +37,13 @@
                             {% if site.type == "uwsgi" or site.type == "modwsgi" %}
                                 {% if site.type == "uwsgi" %}
                                     <li>
-                                        <a href="{% url wsgiadmin.old.apacheconf.views.restart site.id %}" title="{% trans "Restart" %}">
+                                        <a href="{% url 'wsgiadmin.old.apacheconf.views.restart' site.id %}" title="{% trans "Restart" %}">
                                             <img src="{{ STATIC_URL }}images/ico-obnovit.png" alt="{% trans "Restart" %}"/>
                                         </a>
                                     </li>
                                 {% endif %}
                                 <li>
-                                    <a href="{% url wsgiadmin.old.apacheconf.views.app_wsgi site.id %}" title="{% trans "Edit" %}">
+                                    <a href="{% url 'wsgiadmin.old.apacheconf.views.app_wsgi' site.id %}" title="{% trans "Edit" %}">
                                         <img src="{{ STATIC_URL }}images/ico-editovat.png" alt="{% trans "Edit" %}"/>
                                     </a>
                                 </li>

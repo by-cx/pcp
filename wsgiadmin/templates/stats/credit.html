@@ -73,7 +73,7 @@
     <tr>
         <td>{% trans "Buy credit for month" %} (30 {% trans "days" %})</td>
         <td>
-            <form method="post" action="{% url credit %}">
+            <form method="post" action="{% url 'credit' %}">
                 <input type="hidden" name="credit" value="{{ for_month }}" />
                 <strong>+{{ for_month|floatformat:2 }}</strong>
                 <input type="submit" class="btn btn-success" value="{% trans "BUY" %}" />
@@ -87,7 +87,7 @@
     <tr>
         <td>{% trans "Buy credit for three months" %} (90 {% trans "days" %})</td>
         <td>
-            <form method="post" action="{% url credit %}">
+            <form method="post" action="{% url 'credit' %}">
                 <input type="hidden" name="credit" value="{{ for_three_months }}" />
                 <strong>+{{ for_three_months|floatformat:2 }}</strong>
                 <input type="submit" class="btn btn-success" value="{% trans "BUY" %}" />
@@ -101,7 +101,7 @@
     <tr>
         <td>{% trans "Buy for six months" %} (180 {% trans "days" %})</td>
         <td>
-            <form method="post" action="{% url credit %}">
+            <form method="post" action="{% url 'credit' %}">
                 <input type="hidden" name="credit" value="{{ for_six_months }}" />
                 <strong>+{{ for_six_months|floatformat:2 }}</strong>
                 <input type="submit" class="btn btn-success" value="{% trans "BUY" %}" />
@@ -115,7 +115,7 @@
     <tr>
         <td>{% trans "Buy for year" %} (360 {% trans "days" %})</td>
         <td>
-            <form method="post" action="{% url credit %}">
+            <form method="post" action="{% url 'credit' %}">
                 <input type="hidden" name="credit" value="{{ for_year }}" />
                 <strong>+{{ for_year|floatformat:2 }}</strong>
                 <input type="submit" class="btn btn-success" value="{% trans "BUY" %}" />
@@ -128,7 +128,7 @@
     <tr>
         <td>{% trans "Buy custom" %}</td>
         <td>
-            <form method="post" action="{% url credit %}">
+            <form method="post" action="{% url 'credit' %}">
                 <input type="text" name="credit" value="100" />
                 <input type="submit" class="btn btn-success" value="{% trans "Buy" %}" />
                 {% csrf_token %}
@@ -148,7 +148,7 @@
     </tr>
     <tr>
         <td>
-            <form action="{% url credit %}" method="post">
+            <form action="{% url 'credit' %}" method="post">
                 {% csrf_token %}
                 <select name="what_to_do">
                     <option value="nothing"{% if u.parms.low_level_credits == "nothing" %} selected="selected" {% endif %}>{% trans "Do nothing" %}</option>
@@ -164,7 +164,7 @@
     </tr>
     </table>
     {% else %}
-        <p>{% trans "Before buying of new credit, you have to fill at least one address." %} - <a href="{% url address_create %}">{% trans "add my address" %}</a></p>
+        <p>{% trans "Before buying of new credit, you have to fill at least one address." %} - <a href="{% url 'address_create' %}">{% trans "add my address" %}</a></p>
     {% endif %}
     
 {% endblock %}

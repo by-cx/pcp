@@ -52,8 +52,6 @@ CONSTANCE_CONFIG = {
     "dns_default_a": ("87.236.194.121", "Default A"),
     "dns_default_aaaa": ("2a01:5f0:1022:1::1", "Default AAAA"),
     "dns_default_mx": ("mail.rosti.cz.", "Default MX"),
-    "dns_default_nss": ("ns1.rosti.cz ns2.rosti.cz", "Default NS servers separated by spaces. First one is primary/master."),
-    "dns_default_nss_ips": ("87.236.194.121 89.111.104.70", "Default NS servers IPs separated by spaces. First one is primary/master."),
     "dns_default_record_ttl": (3600, "Default TTL of records"),
     "bind_master_config_file": ("/etc/bind/config.master.conf", "Path to master bind config file"),
     "bind_slave_config_file": ("/etc/bind/config.slave.conf", "Path to slave bind config file"),
@@ -70,7 +68,6 @@ CONSTANCE_CONFIG = {
 
     "mysql_bind": ("localhost", "Host for mysql's users"),
 
-    "email_server": ("127.0.0.1", "E-mail server"),
     "email_uid": (117, "Email UID"),
     "email_gid": (117, "Email GID"),
 
@@ -101,6 +98,8 @@ CONSTANCE_CONFIG = {
     "pcp_invoices_api_key": ("", "PCP Invoices API KEY"),
     "pcp_invoices_item_desc": ("Kredit hostingové služby Roští.cz", "Item description on invoice"),
     "pcp_invoices_item_unit": ("ks", "Item unit on invoice"),
-    
     "pcp_runner_path": ("/usr/local/bin/pcp_runner", "PCP Runner path"),
+
+    "virt_disk_pathfile": ("/home/vms/machines/%s.img", "Place where VM images are store"),
+    "virt_pool": ("machines", "Default pool for images"),
     }

@@ -6,10 +6,11 @@ from django.utils.decorators import method_decorator
 from django.views.generic import ListView, TemplateView, CreateView, UpdateView
 from wsgiadmin.apps.forms import AppForm, AppStaticForm, AppPHPForm, AppNativeForm, AppProxyForm, AppPythonForm, DbForm, DbFormPasswd
 from wsgiadmin.apps.models import App, Db
-from wsgiadmin.apps.backend import PythonApp, AppBackend, PHPApp, typed_object, DbObject
+from wsgiadmin.apps.backend import PythonApp, typed_object, DbObject
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext as __
 from django.contrib import messages
+from wsgiadmin.core.utils import server_chooser
 
 
 class AppsListView(ListView):
@@ -28,6 +29,8 @@ class AppsListView(ListView):
         return queryset
 
     def get_context_data(self, **kwargs):
+
+
         context = super(AppsListView, self).get_context_data(**kwargs)
         context['menu_active'] = self.menu_active
         context['u'] = self.user
@@ -114,6 +117,8 @@ class AppParametersView(TemplateView):
             form = AppStaticForm
         elif self.app_type == "php":
             form = AppPHPForm
+        elif self.app_type == "phpfpm":
+            form = AppPHPForm
         elif self.app_type == "python":
             form = AppPythonForm
         elif self.app_type == "native":
@@ -169,6 +174,7 @@ class AppCreateView(CreateView):
     def get_form(self, form_class):
         form = super(AppCreateView, self).get_form(form_class)
         form.user = self.user
+        form.fields["core_server"].queryset = server_chooser(self.app_type)
         return form
 
     def get_success_url(self):
@@ -176,6 +182,8 @@ class AppCreateView(CreateView):
             return reverse("app_params_static", kwargs={"app_id": self.object.id})
         elif self.app_type == "php":
             return reverse("app_params_php", kwargs={"app_id": self.object.id})
+        elif self.app_type == "phpfpm":
+            return reverse("app_params_phpfpm", kwargs={"app_id": self.object.id})
         elif self.app_type == "python":
             return reverse("app_params_python", kwargs={"app_id": self.object.id})
         elif self.app_type == "native":

@@ -1,0 +1,180 @@
+{% extends "admin.html" %}
+{% load i18n %}
+
+{% block title %}
+    {% trans "Administration" %} &gt; {% trans "Virtual Machine" %} {{ vm.name }}
+{% endblock %}
+
+{% block extra %}
+    <script type="text/javascript">INCLUDE_URI = "{{ STATIC_URL }}novnc/include/";</script>
+    <script src="{{ STATIC_URL }}novnc/include/util.js"></script>
+
+{% endblock %}
+
+{% block content %}
+    <div id="message-box"></div>
+
+    <h3>{% trans "Summary of" %} {{ vm.name }}</h3>
+
+    <table class="table table-striped">
+    <tr>
+        <th>{% trans "CPUs" %}</th>
+        <td>{{ vm.cpus }}</td>
+    </tr>
+    <tr>
+        <th>{% trans "Memory" %}</th>
+        <td>{{ vm.memory|floatformat:2 }} MB RAM</td>
+    </tr>
+    <tr>
+        <th>{% trans "Disks" %}</th>
+        <td>
+            {% for disk in vm.storage_list %}
+                /dev/{{ disk.name }} {% if disk.size.capacity >= 0 %}<em>({{ disk.size.capacity|floatformat:2 }} GB)</em>{% else %}<em>{% trans "disk not found" %}</em>{% endif %}<br>
+            {% endfor %}
+        </td>
+    </tr>
+    <tr>
+        <th>{% trans "State" %}</th>
+        <td>{% if vm.state == 1 %}{% trans "running" %}{% else %}{% trans "not running" %}{% endif %} ({{ vm.state }})</td>
+    </tr>
+    <tr>
+        <th>{% trans "Actions" %}</th>
+        <td>
+            {% if vm.state != 1 %}<a href="{% url 'virt_state' pk=vm.id state="start" %}" class="btn btn-success">{% trans "Start" %}</a>{% endif %}
+            {% if vm.state == 1 %}
+            <a href="{% url 'virt_state' pk=vm.id state="reboot" %}" class="btn btn-warning">{% trans "Reboot" %}</a>
+            <a href="{% url 'virt_state' pk=vm.id state="restart" %}" class="btn btn-warning">{% trans "Restart" %}</a>
+            <a href="{% url 'virt_state' pk=vm.id state="shutdown" %}" class="btn btn-warning">{% trans "Shutdown" %}</a>
+            <a href="{% url 'virt_state' pk=vm.id state="force_shutdown" %}" class="btn btn-warning">{% trans "Force shutdown" %}</a>
+            {% endif %}
+            {% if superuser.is_superuser %}
+            <a href="{% url 'virt_backend_install' pk=vm.id %}" class="btn btn-primary">{% trans "Backend install" %}</a>
+            {% endif %}
+            <a href="" class="btn btn-danger">{% trans "Delete" %}</a>
+        </td>
+    </tr>
+    <tr>
+        <th></th>
+        <td></td>
+    </tr>
+    </table>
+
+    {% if vm.state == 1 %}
+    <h3>{% trans "VNC Access" %}</h3>
+
+    <div id="noVNC_screen">
+        <div id="noVNC_status_bar" class="noVNC_status_bar" style="margin-top: 0px;">
+            <table border=0 width="100%"><tr>
+                <td><div id="noVNC_status">Loading</div></td>
+                <td width="1%"><div id="noVNC_buttons">
+                    <input type=button value="Send CtrlAltDel" id="sendCtrlAltDelButton">
+                </div></td>
+            </tr></table>
+        </div>
+        <canvas id="noVNC_canvas" width="640px" height="480px" class="vnc">
+            Canvas not supported.
+        </canvas>
+    </div>
+
+
+    <script>
+        /*jslint white: false */
+        /*global window, $, Util, RFB, */
+        "use strict";
+
+        // Load supporting scripts
+        Util.load_scripts(["webutil.js", "base64.js", "websock.js", "des.js",
+            "input.js", "display.js", "jsunzip.js", "rfb.js"]);
+
+        var rfb;
+
+        function passwordRequired(rfb) {
+            var msg;
+            msg = '<form onsubmit="return setPassword();"';
+            msg += '  style="margin-bottom: 0px">';
+            msg += 'Password Required: ';
+            msg += '<input type=password size=10 id="password_input" class="noVNC_status">';
+            msg += '<\/form>';
+            $D('noVNC_status_bar').setAttribute("class", "noVNC_status_warn");
+            $D('noVNC_status').innerHTML = msg;
+        }
+        function setPassword() {
+            rfb.sendPassword($D('password_input').value);
+            return false;
+        }
+        function sendCtrlAltDel() {
+            rfb.sendCtrlAltDel();
+            return false;
+        }
+        function updateState(rfb, state, oldstate, msg) {
+            var s, sb, cad, level;
+            s = $D('noVNC_status');
+            sb = $D('noVNC_status_bar');
+            cad = $D('sendCtrlAltDelButton');
+            switch (state) {
+                case 'failed':       level = "error";  break;
+                case 'fatal':        level = "error";  break;
+                case 'normal':       level = "normal"; break;
+                case 'disconnected': level = "normal"; break;
+                case 'loaded':       level = "normal"; break;
+                default:             level = "warn";   break;
+            }
+
+            if (state === "normal") { cad.disabled = false; }
+            else                    { cad.disabled = true; }
+
+            if (typeof(msg) !== 'undefined') {
+                sb.setAttribute("class", "noVNC_status_" + level);
+                s.innerHTML = msg;
+            }
+        }
+
+        window.onscriptsload = function () {
+            var host, port, password, path, token;
+
+            $D('sendCtrlAltDelButton').style.display = "inline";
+            $D('sendCtrlAltDelButton').onclick = sendCtrlAltDel;
+
+            WebUtil.init_logging(WebUtil.getQueryVar('logging', 'warn'));
+            document.title = unescape(WebUtil.getQueryVar('title', 'noVNC'));
+            // By default, use the host and port of server that served this file
+            host = "{{ vm.server.ip }}";
+            port = {{ vm.server.vnc_port }};
+
+            // If a token variable is passed in, set the parameter in a cookie.
+            // This is used by nova-novncproxy.
+            token = WebUtil.getQueryVar('token', null);
+            if (token) {
+                WebUtil.createCookie('token', token, 1)
+            }
+
+            password = WebUtil.getQueryVar('password', '');
+            path = WebUtil.getQueryVar('path', 'websockify');
+
+            if ((!host) || (!port)) {
+                updateState('failed',
+                        "Must specify host and port in URL");
+                return;
+            }
+
+            rfb = new RFB({'target':       $D('noVNC_canvas'),
+                'encrypt':      WebUtil.getQueryVar('encrypt',
+                        (window.location.protocol === "https:")),
+                'repeaterID':   WebUtil.getQueryVar('repeaterID', ''),
+                'true_color':   WebUtil.getQueryVar('true_color', true),
+                'local_cursor': WebUtil.getQueryVar('cursor', true),
+                'shared':       WebUtil.getQueryVar('shared', true),
+                'view_only':    WebUtil.getQueryVar('view_only', false),
+                'updateState':  updateState,
+                'onPasswordRequired':  passwordRequired});
+            rfb.connect(host, port, password, path);
+
+            var display = rfb.get_display();
+            //display.set_viewport(true);
+            //display.viewportChange(0, 0, 640, 480);
+            display.resize(640, 480);
+        };
+    </script>
+    {% endif %}
+
+{% endblock %}

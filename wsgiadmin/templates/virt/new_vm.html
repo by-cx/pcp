@@ -1,0 +1,41 @@
+{% extends "admin.html" %}
+{% load i18n %}
+
+{% block title %}
+    {% trans "Administration" %} &gt; {% trans "New virtual machine" %} {{ vm.name }}
+{% endblock %}
+
+{% block content %}
+    <div id="message-box"></div>
+
+    <h3>{% trans "Get your own server" %}</h3>
+
+    <p><em>.. and make another Roští.cz!</em></p>
+
+    <div class="vmbox">
+        <h4>{% trans "Small one" %}</h4>
+        <p>
+            2 CPUs<br>
+            1 GB RAM<br>
+            40 GB HDD<br>
+            1 IPv4<br>
+            some IPv6s too<br><br>
+            <strong>125 cedits per month</strong>
+            <em>(250 kč)</em>
+        </p>
+    </div>
+
+    <div class="vmbox">
+        <h4>{% trans "Big one" %}</h4>
+        <p>
+            2 CPUs<br>
+            2 GB RAM<br>
+            80 GB HDD<br>
+            1 IPv4<br>
+            some IPv6s too<br><br>
+            <strong>250 cedits per month</strong>
+            <em>(500 kč)</em>
+        </p>
+    </div>
+
+{% endblock %}

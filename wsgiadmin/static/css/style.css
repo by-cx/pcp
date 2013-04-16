@@ -183,3 +183,29 @@ pre {
     font-size: 18px;
     font-weight: bold;
 }
+
+.vnc {
+    width: 870px;
+}
+
+.vmbox {
+    max-width: 300px;
+    padding: 19px 29px 29px;
+    margin: 0 10px 20px 10px;
+    background-color: #fff;
+    border: 1px solid #e5e5e5;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+    -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+    box-shadow: 0 1px 2px rgba(0,0,0,.05);
+    float: left;
+}
+
+.vmbox:hover {
+    cursor: hand;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    background-color: #FFE2C0;
+    border-color: #CBB499;
+}

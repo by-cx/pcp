@@ -13,7 +13,7 @@
 
     <p><strong>{% trans "Default TTL for this domain" %}:</strong> {{ domain.ttl }}s</p>
     
-    <p><a href="{% url dns_record_editor pk=domain.id %}" class="btn btn-primary">{% trans "New record" %}</a></p>
+    <p><a href="{% url 'dns_record_editor' pk=domain.id %}" class="btn btn-primary">{% trans "New record" %}</a></p>
 
     <table class="table table-striped">
         <thead>
@@ -29,15 +29,15 @@
         {% if records %}
             <tbody id="objects_list">
             {% for record in records %}
-                <tr data="{{ record.id }}">
+                <tr data="{{ record.id }}" class="dns_record">
                     <td>{{ record.name }}</td>
                     <td>{{ record.record_type }}</td>
                     <td>{{ record.ttl|default_if_none:"--" }}</td>
                     <td>{{ record.prio|default_if_none:"--" }}</td>
                     <td>{{ record.value }}</td>
                     <td class="list_actions">
-                        <a href="{% url dns_record_editor pk=domain.id record_pk=record.id %}" class="btn btn-warning btn-mini"><i class="icon-edit icon-white"></i> {% trans "Update" %}</a>
-                        <a href="#a" onclick="if(confirm('{% trans "Are you sure?" %}')) {document.location= '{% url dns_rm_record %}?record_pk={{ record.id }}';}" class="btn btn-danger btn-mini"><i class="icon-remove icon-white"></i> {% trans "Delete" %}</a>
+                        <a href="{% url 'dns_record_editor' pk=domain.id record_pk=record.id %}" class="btn btn-warning btn-mini"><i class="icon-edit icon-white"></i> {% trans "Update" %}</a>
+                        <a href="#a" onclick="if(confirm('{% trans "Are you sure?" %}')) {document.location= '{% url 'dns_rm_record' %}?record_pk={{ record.id }}';}" class="btn btn-danger btn-mini"><i class="icon-remove icon-white"></i> {% trans "Delete" %}</a>
                     </td>
                 </tr>
             {% endfor %}
@@ -61,7 +61,7 @@
         {% endif %}
     </table>
     <p><em>{% trans "You can change order of records by your mouse." %}</em></p>
-    <p><a href="{% url dns_new_configuration domain_pk=domain.id %}" class="btn btn-large btn-danger">{% trans "Write configuration to the NS servers" %}</a></p>
+    <p><a href="{% url 'dns_new_configuration' domain_pk=domain.id %}" class="btn btn-large btn-danger">{% trans "Write configuration to the NS servers" %}</a></p>
 
     <script type="text/javascript">
         function sorted() {
@@ -70,7 +70,7 @@
                 id_list[id_list.length] = $(value).attr("data") * 1;
             });
             $.get(
-                "{% url dns_record_order domain_pk=domain.id %}",
+                "{% url 'dns_record_order' domain_pk=domain.id %}",
                 {"records": id_list.join()},
                 function (data){
                     if (data != "OK") {

@@ -25,10 +25,10 @@
                     <td>{{ ftp.dir }}</td>
                     <td id="ftp_{{ ftp.id }}">
                         <ul class="akce">
-                        <li><a href="{% url ftp_passwd ftp.id %}" title="{% trans "Change password" %}">
+                        <li><a href="{% url 'ftp_passwd' ftp.id %}" title="{% trans "Change password" %}">
                             <img src="{{ STATIC_URL }}images/ico-heslo.png" alt="{% trans "Change password" %}"/>
                         </a></li>
-                        <li><a href="{% url ftp_upsert ftp.id %}" title="{% trans "Edit" %}">
+                        <li><a href="{% url 'ftp_upsert' ftp.id %}" title="{% trans "Edit" %}">
                             <img src="{{ STATIC_URL }}images/ico-editovat.png" alt="{% trans "Edit" %}"/>
                         </a></li>
                         <li class="smazat"><a href="#" class="object_delete" title="{% trans "Delete" %}" rel="{{ ftp.id }}">

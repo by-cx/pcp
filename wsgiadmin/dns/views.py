@@ -50,7 +50,6 @@ class DomainCreateView(CreateView):
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.user = self.user
-        self.object.nss = config.dns_default_nss
         self.object.save()
         set_domain_default_state(self.object)
 

@@ -228,9 +228,9 @@ class DbCreateView(CreateView):
         object = form.save(commit=False)
         object.app = self.get_app()
         object.save()
-        object = DbObject.objects.get(id=object.id)
-        object.install()
-        object.commit()
+        db = DbObject.objects.get(id=object.id)
+        db.install()
+        db.commit()
         return super(DbCreateView, self).form_valid(form)
 
     def get_context_data(self, **kwargs):

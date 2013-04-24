@@ -531,6 +531,7 @@ class DbObject(Db):
         elif self.db_type == "pgsql":
             self.script.add_cmd("createuser -D -R -S %s" % self.name)
             self.script.add_cmd("createdb -O %s %s" % (self.name, self.name))
+            self.passwd(self.password)
 
     def passwd(self, password):
         if self.db_type == "mysql":

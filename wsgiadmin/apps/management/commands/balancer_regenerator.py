@@ -21,6 +21,7 @@ class Command(BaseCommand):
 
         print "... generating new config"
         for app in App.objects.all():
+            if not app.domains: continue
             print "proxy for %s app set" % ("app_%.5d" % app.id)
             balancer = ProxyObject(app)
             balancer.setup(reload_nginx=False)

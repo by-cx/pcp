@@ -531,6 +531,7 @@ class DbObject(Db):
         elif self.db_type == "pgsql":
             self.script.add_cmd("createuser -D -R -S %s" % self.name)
             self.script.add_cmd("createdb -O %s %s" % (self.name, self.name))
+            self.passwd(self.password)
 
     def passwd(self, password):
         if self.db_type == "mysql":
@@ -601,12 +602,13 @@ class ProxyObject(object):
     def get_servers(self):
         return get_load_balancers()
 
-    def setup(self):
+    def setup(self, reload_nginx=True):
         for script in self.scripts:
             self.save_ssl_cert_key(script)
             script.add_cmd("mkdir -p /etc/nginx/proxy.d/")
             script.add_file("/etc/nginx/proxy.d/app_%.5d.conf" % self.app.id, "\n".join(self.gen_config() + self.gen_ssl_config()))
-            script.reload_nginx()
+            if reload_nginx:
+                script.reload_nginx()
             script.commit()
 
     def setdown(self):

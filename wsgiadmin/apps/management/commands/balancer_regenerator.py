@@ -2,7 +2,7 @@ import logging
 from django.core.management.base import BaseCommand, CommandError
 from wsgiadmin.apps.models import App
 from wsgiadmin.apps.backend import PythonApp, AppBackend, typed_object, ProxyObject
-from wsgiadmin.core.backend_base import BaseScript
+from wsgiadmin.core.backend_base import Script
 from wsgiadmin.core.utils import get_load_balancers
 from wsgiadmin.emails.models import Message
 
@@ -13,10 +13,10 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         print "... removing old config and ssl certificates/keys"
         for server in get_load_balancers():
-            script = BaseScript(server)
+            script = Script(server)
             script.add_cmd("rm -f /etc/nginx/ssl/*")
             script.add_cmd("rm -f /etc/nginx/proxy.d/*")
-            script.commit()
+            script.commit(no_thread=True)
             print "%s cleaned" % server.ip
 
         print "... generating new config"
@@ -28,8 +28,8 @@ class Command(BaseCommand):
 
         print "... reloading nginxes"
         for server in get_load_balancers():
-            script = BaseScript(server)
+            script = Script(server)
             script.reload_nginx()
-            script.commit()
+            script.commit(no_thread=True)
             print "nginx on %s reloaded" % server.ip
 

@@ -80,6 +80,7 @@ CONSTANCE_CONFIG = {
     "credit_currency": ("CZK", "Currency"),
     "credit_quotient": (0.5, "Credit/currency Quotient"),
     "credit_threshold": (-7, "When should be a web disabled"),
+    "credit_registration": (30, "Credits for registration"),
     "tax": (0, "%"),
 
     "terms_url": ("", "Terms URL"),
@@ -97,6 +98,7 @@ CONSTANCE_CONFIG = {
     "pcp_invoices_api_key": ("", "PCP Invoices API KEY"),
     "pcp_invoices_item_desc": ("Kredit hostingové služby Roští.cz", "Item description on invoice"),
     "pcp_invoices_item_unit": ("ks", "Item unit on invoice"),
+    "pcp_runner_path": ("/usr/local/bin/pcp_runner", "PCP Runner path"),
 
     "virt_disk_pathfile": ("/home/vms/machines/%s.img", "Place where VM images are store"),
     "virt_pool": ("machines", "Default pool for images"),

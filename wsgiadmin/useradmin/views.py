@@ -22,6 +22,7 @@ from wsgiadmin.old.requests.request import SSHHandler
 from wsgiadmin.service.forms import PassCheckForm, RostiFormHelper
 from wsgiadmin.useradmin.forms import SendPwdForm, RegistrationForm
 from wsgiadmin.clients.models import Parms
+from wsgiadmin.stats.tools import add_credit
 
 
 @login_required
@@ -209,6 +210,9 @@ def reg(request):
             p.pgsql_machine = m_pgsql
             p.user = u
             p.save()
+
+            if config.credit_registration:
+                add_credit(u, float(config.credit_registration), free=True)
 
             message = Message.objects.filter(purpose="reg")
             if message:

@@ -6,7 +6,7 @@ from wsgiadmin.core.utils import get_mail_server
 
 class EmailBackend(object):
     def __init__(self):
-        self.script = Script(get_mail_server().ssh)
+        self.script = Script(get_mail_server())
 
     def install(self, email):
         homedir = join(config.maildir, email.domain.name)
@@ -14,10 +14,13 @@ class EmailBackend(object):
 
         self.script.add_cmd("mkdir -p '%s'" % homedir)
         self.script.add_cmd("chown email:email '%s' -R" % homedir)
-        self.script.add_cmd("maildirmake '%s'" % maildir)
+        # Good for courier, not for dovecot
+        #self.script.add_cmd("maildirmake '%s'" % maildir)
+        #self.script.add_cmd("chown email:email '%s' -R" % maildir)
+        #self.script.add_cmd("maildirmake '%s'" % join(maildir, '.Spam'))
+        #self.script.add_cmd("chown email:email '%s' -R" % join(maildir, '.Spam'))
+        self.script.add_cmd("mkdir -p '%s'" % maildir)
         self.script.add_cmd("chown email:email '%s' -R" % maildir)
-        self.script.add_cmd("maildirmake '%s'" % join(maildir, '.Spam'))
-        self.script.add_cmd("chown email:email '%s' -R" % join(maildir, '.Spam'))
 
     def commit(self):
         self.script.commit()

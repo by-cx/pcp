@@ -78,8 +78,9 @@ def add_credit(user, value, address=None, free=None):
     return credit
 
 def payed(credit):
-    if credit.date_payed or credit.gopay_paid:
-        return _("It already has invoice")
+    #if credit.date_payed or credit.gopay_paid:
+    if credit.date_payed:
+        return "It already has invoice"
     address = credit.address
     address_json = {
         "company": address.company,

@@ -22,7 +22,8 @@ class Command(BaseCommand):
         users = []
         for user in User.objects.all():
             if ( float(user.parms.pay_total_day()) == 0 and user.parms.credit < 0 ) or\
-               ( user.parms.pay_total_day() > 0 and float(user.parms.credit) / float(user.parms.pay_total_day()) < 14 ):
+               ( user.parms.pay_total_day() > 0 and float(user.parms.credit) / float(user.parms.pay_total_day()) < 14 ) or\
+               ( not user.parms.enable and user.parms.credit >= 0):
                 users.append(user)
         return users
 
@@ -49,7 +50,7 @@ class Command(BaseCommand):
         tmpl = ""
 
         if config.auto_disable:
-            if parms.pay_total_day() > 0 and parms.credit >= 0 and (parms.credit / parms.pay_total_day()) < config.credit_threshold and parms.enable:
+            if parms.credit <= config.credit_threshold and parms.enable:
                 parms.enable = False
                 parms.save()
                 apache_reload = True
@@ -58,6 +59,7 @@ class Command(BaseCommand):
                     message[0].send(user.email, {})
                 self.disable_apps(user)
                 print "\t* %s disabled" % user.username
+                return apache_reload
             elif parms.credit >= 0 and not parms.enable:
                 parms.enable = True
                 parms.save()
@@ -67,6 +69,7 @@ class Command(BaseCommand):
                 if message:
                     message[0].send(user.email, {"username": user.username})
                 print "\t* %s enabled" % user.username
+                return apache_reload
 
         correction = 0.0
         if parms.credit < 0:
@@ -129,10 +132,18 @@ class Command(BaseCommand):
             if not parms.guard_enable: print "Guarding disabled",
             if parms.credit < 0:
                 total_credit += parms.credit
-            if not parms.last_notification or (parms.last_notification and (datetime.date.today() - parms.last_notification).days >= 7):
-                if parms.guard_enable:
+            if not parms.last_notification or (parms.last_notification and (datetime.date.today() - parms.last_notification).days >= 3):
+                if parms.guard_enable and parms.credit < config.credit_threshold and parms.enable:
+                    guarding.append(user)
+                    print "Be disabled!!!",
+                elif not parms.enable:
+                    print "is disabled",
+                elif parms.guard_enable:
                     guarding.append(user)
                     print "Be guarded",
+            if not parms.enable and parms.credit >= 0:
+                guarding.append(user)
+                print "will be enabled",
             print
         print "Total: %.2f" % total_credit
 

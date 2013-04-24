@@ -225,6 +225,7 @@ class UWSGIRequest(SSHHandler):
 
             uwsgi.append("\t<master/>")
             uwsgi.append("\t<no-orphans/>")
+            uwsgi.append("\t<enable-threads/>")
             uwsgi.append("\t<processes>%s</processes>" % site.processes)
             uwsgi.append("\t<optimize>0</optimize>")
             uwsgi.append("\t<home>%s</home>" % site.virtualenv_path)

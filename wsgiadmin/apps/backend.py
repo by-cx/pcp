@@ -6,7 +6,7 @@ from wsgiadmin.apps.models import App, Db
 from constance import config
 from wsgiadmin.core.backend_base import Script
 from wsgiadmin.core.exceptions import PCPException
-from wsgiadmin.core.utils import get_load_balancers
+from wsgiadmin.core.utils import get_load_balancers, get_mysql_server, get_pgsql_server
 
 
 class AppException(Exception): pass
@@ -459,6 +459,7 @@ class PythonApp(AppBackend):
         content.append("--processes %s" % parms.get("procs", "2"))
         content.append("--home %(home)s/venv" % parms)
         content.append("--limit-as 256")
+        content.append("--harakiri 600")
         content.append("--chmod-socket=660")
         content.append("--uid %(user)s" % parms)
         content.append("--gid %(group)s" % parms)
@@ -513,12 +514,13 @@ class DbObject(Db):
         proxy = True
 
     def __init__(self, *args, **kwargs):
-        database_server = config.mysql_server if not self.app.db_server else self.app.db_server
 
         super(DbObject, self).__init__(*args, **kwargs)
         if self.db_type == "mysql":
+            database_server = get_mysql_server() if not self.app.db_server else self.app.db_server
             self.script = self.script = Script(database_server)
         elif self.db_type == "pgsql":
+            database_server = get_pgsql_server() if not self.app.db_server else self.app.db_server
             self.script = self.script = Script(database_server)
 
     def install(self):

@@ -14,10 +14,10 @@ class DomainObject(object):
 
     def __init__(self, *args, **kwargs):
         super(DomainObject, self).__init__(*args, **kwargs)
-        self.script_master = Script(get_primary_ns_server().ssh)
+        self.script_master = Script(get_primary_ns_server())
         self.scripts_slaves = []
         for ns in get_secondary_ns_servers():
-            self.scripts_slaves.append(Script(ns.ssh))
+            self.scripts_slaves.append(Script(ns))
 
     def commit(self):
         self.script_master.commit()

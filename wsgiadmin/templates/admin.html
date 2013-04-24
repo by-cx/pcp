@@ -49,9 +49,11 @@
                         <li {% if menu_active == "apps" %} class="active"{% endif %}>
                             <a href="{% url 'apps_list' %}">{% trans "Apps" %}</a>
                         </li>
+                        {% if superuser.is_superuser %}
                         <li {% if menu_active == "virt" %} class="active"{% endif %}>
                             <a href="{% url 'virt_list' %}">{% trans "VM" %}</a>
                         </li>
+                        {% endif %}
                         {% if user.mysqldb_set.count or user.pgsql_set.count %}
                             <li{% if menu_active == "dbs" %} class="active"{% endif %}>
                                 <a href="{% url 'db_list' %}">{% trans "Databases" %}</a>
@@ -201,7 +203,7 @@
                             <a href="{% url 'app_add_static' %}"><i class="icon-plus"></i> {% trans "Add static app" %}</a>
                         </li>
                         <li>
-                            <a href="{% url 'app_add_phpfpm' %}"><i class="icon-plus"></i> {% trans "Add php app" %}</a>
+                            <a href="{% url 'app_add_php' %}"><i class="icon-plus"></i> {% trans "Add php app" %}</a>
                         </li>
                         <li>
                             <a href="{% url 'app_add_python' %}"><i class="icon-plus"></i> {% trans "Add python app" %}</a>

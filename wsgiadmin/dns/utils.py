@@ -24,9 +24,10 @@ def set_domain_default_state(domain):
     record = Record()
     record.name = "@"
     record.record_type = "MX"
-    record.value = config.dns_default_mx
+    record.value = config.dns_default_mx if config.dns_default_mx[-1] == "." else "%s." % config.dns_default_mx
     record.ttl = config.dns_default_record_ttl
     record.domain = domain
+    record.prio = 10
     record.save()
 
     record = Record()

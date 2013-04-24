@@ -24,7 +24,7 @@ class Command(BaseCommand):
             if not app.domains: continue
             print "proxy for %s app set" % ("app_%.5d" % app.id)
             balancer = ProxyObject(app)
-            balancer.setup(reload_nginx=False)
+            balancer.setup(reload_nginx=False, no_thread=True)
 
         print "... reloading nginxes"
         for server in get_load_balancers():

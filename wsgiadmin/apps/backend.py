@@ -602,14 +602,14 @@ class ProxyObject(object):
     def get_servers(self):
         return get_load_balancers()
 
-    def setup(self, reload_nginx=True):
+    def setup(self, reload_nginx=True, no_thread=False):
         for script in self.scripts:
             self.save_ssl_cert_key(script)
             script.add_cmd("mkdir -p /etc/nginx/proxy.d/")
             script.add_file("/etc/nginx/proxy.d/app_%.5d.conf" % self.app.id, "\n".join(self.gen_config() + self.gen_ssl_config()))
             if reload_nginx:
                 script.reload_nginx()
-            script.commit()
+            script.commit(no_thread)
 
     def setdown(self):
         for script in self.scripts:

@@ -1,6 +1,7 @@
 import logging
 from django.core.management.base import BaseCommand, CommandError
 from wsgiadmin.core.backend_base import Script
+from wsgiadmin.core.models import Server
 from wsgiadmin.core.utils import get_load_balancers
 from wsgiadmin.old.apacheconf.models import UserSite
 
@@ -12,8 +13,13 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         print "... removing old config and ssl certificates/keys"
 
+        server = self.choose_server()
+        def core_server():
+            return server
+
         scripts = [Script(server) for server in get_load_balancers()]
         for app in UserSite.objects.all():
+            app.core_server = property(core_server)
             if app.ssl_mode == "both":
                 for script in scripts:
                     self.save_ssl_cert_key(app, script)
@@ -24,6 +30,14 @@ class Command(BaseCommand):
         for script in scripts:
             script.reload_nginx()
             script.commit(no_thread=True)
+
+    def choose_server(self):
+        server_map = {}
+        for server in Server:
+            print "ID %d - %s" % (server.id, server.name)
+            server_map[server.id] = server
+        server_id = raw_input("What ID do you want to use?")
+        return server_map[int(server.id)]
 
     def save_ssl_cert_key(self, app, script, rm_certs=False):
         if app.ssl_crt and app.ssl_key and not rm_certs:

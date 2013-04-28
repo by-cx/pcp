@@ -11,15 +11,11 @@ class Command(BaseCommand):
     help = "Load balancers regeneration for old webapps"
 
     def handle(self, *args, **options):
-        print "... removing old config and ssl certificates/keys"
-
         server = self.choose_server()
-        def core_server():
-            return server
 
         scripts = [Script(server) for server in get_load_balancers()]
         for app in UserSite.objects.all():
-            app.core_server = property(core_server)
+            app.core_server = server
             if app.ssl_mode == "both":
                 for script in scripts:
                     self.save_ssl_cert_key(app, script)
@@ -33,10 +29,10 @@ class Command(BaseCommand):
 
     def choose_server(self):
         server_map = {}
-        for server in Server:
+        for server in Server.objects.all():
             print "ID %d - %s" % (server.id, server.name)
             server_map[server.id] = server
-        server_id = raw_input("What ID do you want to use?")
+        server_id = raw_input("What ID do you want to use? ")
         return server_map[int(server.id)]
 
     def save_ssl_cert_key(self, app, script, rm_certs=False):
@@ -50,12 +46,12 @@ class Command(BaseCommand):
 
     def gen_ssl_config(self, app):
         content = []
-        if self.app.ssl_cert and app.ssl_key:
+        if app.ssl_crt and app.ssl_key:
             content.append("server {")
             content.append("\tlisten       [::]:443 ssl;")
             content.append("\tserver_name  %s;" % app.domains)
-            content.append("\tssl_certificate      /etc/nginx/ssl/oldapp_%.5d.cert.pem" % app.id)
-            content.append("\tssl_certificate_key  /etc/nginx/ssl/oldapp_%.5d.key.pem" % app.id)
+            content.append("\tssl_certificate      /etc/nginx/ssl/oldapp_%.5d.cert.pem;" % app.id)
+            content.append("\tssl_certificate_key  /etc/nginx/ssl/oldapp_%.5d.key.pem;" % app.id)
             content.append("\tlocation / {")
             content.append("\t\tproxy_pass         http://%s/;" % app.core_server.ip)
             content.append("\t\tproxy_redirect     off;")

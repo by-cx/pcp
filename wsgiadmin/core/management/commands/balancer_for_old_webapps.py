@@ -11,8 +11,6 @@ class Command(BaseCommand):
     help = "Load balancers regeneration for old webapps"
 
     def handle(self, *args, **options):
-        print "... removing old config and ssl certificates/keys"
-
         server = self.choose_server()
         def core_server():
             return server
@@ -22,7 +20,7 @@ class Command(BaseCommand):
             app.core_server = property(core_server)
             if app.ssl_mode == "both":
                 for script in scripts:
-                    self.save_ssl_cert_key(app, script)
+                    self.save_ssl_cert_key(server, app, script)
                     script.commit(no_thread=True)
             for script in scripts:
                 script.add_cmd("mkdir -p /etc/nginx/proxy.d/")
@@ -39,11 +37,18 @@ class Command(BaseCommand):
         server_id = raw_input("What ID do you want to use?")
         return server_map[int(server.id)]
 
-    def save_ssl_cert_key(self, app, script, rm_certs=False):
+    def get_cert_key(self, server, crtfile, keyfile):
+        script = Script(server)
+        crt = script.run("cat %s" % crtfile)
+        key = script.run("cat %s" % keyfile)
+        return crt, key
+
+    def save_ssl_cert_key(self, server, app, script, rm_certs=False):
+        crt, key = self.get_cert_key(server, app.ssl_crt, app.ssl_key)
         if app.ssl_crt and app.ssl_key and not rm_certs:
             script.add_cmd("mkdir -p /etc/nginx/ssl/")
-            script.add_file("/etc/nginx/ssl/oldapp_%.5d.cert.pem" % app.id, app.ssl_crt)
-            script.add_file("/etc/nginx/ssl/oldapp_%.5d.key.pem" % app.id, app.ssl_key)
+            script.add_file("/etc/nginx/ssl/oldapp_%.5d.cert.pem" % app.id, crt)
+            script.add_file("/etc/nginx/ssl/oldapp_%.5d.key.pem" % app.id, key)
         else:
             script.add_cmd("rm -f /etc/nginx/ssl/app_%.5d.cert.pem" % app.id)
             script.add_cmd("rm -f /etc/nginx/ssl/app_%.5d.key.pem" % app.id)

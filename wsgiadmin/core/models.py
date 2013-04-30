@@ -26,6 +26,7 @@ class Server(models.Model):
     name = models.CharField(_("Name"), max_length=128)
     domain = models.CharField(_("Domain"), max_length=128)
     ip = models.CharField(_("IP address"), default="127.0.0.1", max_length=64)
+    ipv6 = models.CharField(_("IPv6 address"), default="::1", max_length=64)
     ssh_port = models.IntegerField(_("SSH Port"), default=22)
     os = models.CharField(_("Operating system"), max_length=64, default="debian6", choices=OSS)
     key = models.TextField(_("API key"), null=True, blank=True)

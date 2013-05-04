@@ -20,7 +20,7 @@ class Command(BaseCommand):
             print "%s cleaned" % server.ip
 
         print "... generating new config"
-        for app in App.objects.all():
+        for app in App.objects.filter(disabled=False):
             if not app.domains: continue
             print "proxy for %s app set" % ("app_%.5d" % app.id)
             balancer = ProxyObject(app)

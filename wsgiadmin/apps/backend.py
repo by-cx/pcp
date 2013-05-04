@@ -606,7 +606,7 @@ class ProxyObject(object):
     def gen_config(self):
         content = []
         content.append("server {")
-        if self.core_server.os in ("archlinux", ):
+        if self.app.core_server.os in ("archlinux", ):
             content.append("\tlisten       *:80;")
         else:
             content.append("\tlisten       [::]:80;")

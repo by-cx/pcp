@@ -144,6 +144,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.admin',
 
+    'rosetta',
     'crispy_forms',
     'south',
     'constance',

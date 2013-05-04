@@ -580,7 +580,7 @@ class ProxyObject(object):
         content = []
         if self.app.ssl_cert and self.app.ssl_key:
             content.append("server {")
-            if self.core_server.os in ("archlinux", ):
+            if self.app.core_server.os in ("archlinux", ):
                 content.append("\tlisten       *:443 ssl;")
             else:
                 content.append("\tlisten       [::]:443 ssl;")

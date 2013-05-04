@@ -57,7 +57,7 @@ class Command(BaseCommand):
         content = []
         if app.ssl_crt and app.ssl_key:
             content.append("server {")
-            content.append("\tlisten       [::]:443 ssl;")
+            content.append("\tlisten       *:443 ssl;")
             content.append("\tserver_name  %s;" % app.domains)
             content.append("\tssl_certificate      /etc/nginx/ssl/oldapp_%.5d.cert.pem;" % app.id)
             content.append("\tssl_certificate_key  /etc/nginx/ssl/oldapp_%.5d.key.pem;" % app.id)
@@ -71,7 +71,7 @@ class Command(BaseCommand):
     def gen_config(self, app):
         content = []
         content.append("server {")
-        content.append("\tlisten       [::]:80;")
+        content.append("\tlisten       *:80;")
         content.append("\tserver_name  %s;" % app.domains)
         content.append("\tlocation / {")
         content.append("\t\tproxy_pass         http://%s/;" % app.core_server.ip)

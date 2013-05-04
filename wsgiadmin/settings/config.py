@@ -18,8 +18,8 @@ CONSTANCE_CONFIG = {
 
     "nginx_conf": ("/etc/nginx/sites-enabled/99_auto.conf", "Nginx's config file"),
     "nginx_init_script": ("/etc/init.d/nginx", "Nginx's init script"),
-    "nginx_listen": ("[::]:80", "Listen config directive"),
-    "nginx_ssl_listen": ("[::]:443", "Listen config directive"),
+    "nginx_listen": ("*:80", "Listen config directive"),
+    "nginx_ssl_listen": ("*:443", "Listen config directive"),
     "nginx_log_dir": ("/var/log/webx/", "NGINX log directory"),
 
     "apache_conf": ("/etc/apache2/vhosts.d/99_auto.conf", "Apache's config file"),

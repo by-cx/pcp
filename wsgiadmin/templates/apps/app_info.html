@@ -31,9 +31,8 @@
             <th>{% trans "Server domain and IP" %}</th>
             <td>
                 {{ app.core_server.domain }}
-                {% if app.core_server.ip %}/ {{ app.core_server.ip }}{% endif %}
-                {% if app.core_server.ipv6 %}/ {{ app.core_server.ipv6 }}{% endif %}
-                <em>{% trans "DNS settings, SSH, SFTP, FTP, etc." %}</em></td>
+                {% if app.core_server.ip %}<br>IPv4: {{ app.core_server.ip }}{% endif %}
+                {% if app.core_server.ipv6 %}<br>IPv6: {{ app.core_server.ipv6 }}{% endif %}
         </tr>
         <tr>
             <th>{% trans "Stav" %}</th>

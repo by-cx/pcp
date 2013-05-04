@@ -11,10 +11,10 @@ class Command(BaseCommand):
     help = "Load balancers regeneration for old webapps"
 
     def handle(self, *args, **options):
-        server = self.choose_server()
-
         scripts = [Script(server) for server in get_load_balancers()]
+        server = self.choose_server()
         for app in UserSite.objects.all():
+            print "...", app.main_domain.name
             app.core_server = server
             if app.ssl_mode == "both":
                 for script in scripts:
@@ -22,7 +22,7 @@ class Command(BaseCommand):
                     script.commit(no_thread=True)
             for script in scripts:
                 script.add_cmd("mkdir -p /etc/nginx/proxy.d/")
-                script.add_file("/etc/nginx/proxy.d/app_%.5d.conf" % app.id, "\n".join(self.gen_config(app) + self.gen_ssl_config(app)))
+                script.add_file("/etc/nginx/proxy.d/oldapp_%.5d.conf" % app.id, "\n".join(self.gen_config(app) + self.gen_ssl_config(app)))
         for script in scripts:
             script.reload_nginx()
             script.commit(no_thread=True)
@@ -33,12 +33,14 @@ class Command(BaseCommand):
             print "ID %d - %s" % (server.id, server.name)
             server_map[server.id] = server
         server_id = raw_input("What ID do you want to use? ")
-        return server_map[int(server.id)]
+        print server_map
+        print "You choose %s" % server_map[int(server_id)].name
+        return server_map[int(server_id)]
 
     def get_cert_key(self, server, crtfile, keyfile):
         script = Script(server)
-        crt = script.run("cat %s" % crtfile)
-        key = script.run("cat %s" % keyfile)
+        crt = script.run("cat %s" % crtfile)["stdout"]
+        key = script.run("cat %s" % keyfile)["stdout"]
         return crt, key
 
     def save_ssl_cert_key(self, server, app, script, rm_certs=False):
@@ -48,8 +50,8 @@ class Command(BaseCommand):
             script.add_file("/etc/nginx/ssl/oldapp_%.5d.cert.pem" % app.id, crt)
             script.add_file("/etc/nginx/ssl/oldapp_%.5d.key.pem" % app.id, key)
         else:
-            script.add_cmd("rm -f /etc/nginx/ssl/app_%.5d.cert.pem" % app.id)
-            script.add_cmd("rm -f /etc/nginx/ssl/app_%.5d.key.pem" % app.id)
+            script.add_cmd("rm -f /etc/nginx/ssl/oldapp_%.5d.cert.pem" % app.id)
+            script.add_cmd("rm -f /etc/nginx/ssl/oldapp_%.5d.key.pem" % app.id)
 
     def gen_ssl_config(self, app):
         content = []

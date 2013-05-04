@@ -206,7 +206,10 @@ class PHPApp(AppBackend):
         parms = self.get_parmameters()
         content = []
         content.append("server {")
-        content.append("\tlisten       %s;" % config.nginx_listen)
+        if self.core_server.os in ("archlinux", ):
+            content.append("\tlisten       *:80;")
+        else:
+            content.append("\tlisten       [::]:80;")
         content.append("\tserver_name  %(domains)s;" % parms)
         content.append("\taccess_log %(home)s/logs/access.log;"% parms)
         content.append("\terror_log %(home)s/logs/error.log;"% parms)
@@ -319,7 +322,10 @@ class PHPFPMApp(AppBackend):
         parms = self.get_parmameters()
         content = []
         content.append("server {")
-        content.append("\tlisten       %s;" % config.nginx_listen)
+        if self.core_server.os in ("archlinux", ):
+            content.append("\tlisten       *:80;")
+        else:
+            content.append("\tlisten       [::]:80;")
         content.append("\tserver_name  %(domains)s;" % parms)
         content.append("\taccess_log %(home)s/logs/access.log;"% parms)
         content.append("\terror_log %(home)s/logs/error.log;"% parms)
@@ -370,7 +376,10 @@ class StaticApp(AppBackend):
         parms = self.get_parmameters()
         content = []
         content.append("server {")
-        content.append("\tlisten       %s;" % config.nginx_listen)
+        if self.core_server.os in ("archlinux", ):
+            content.append("\tlisten       *:80;")
+        else:
+            content.append("\tlisten       [::]:80;")
         content.append("\tserver_name  %(domains)s;" % parms)
         content.append("\taccess_log %(home)s/logs/access.log;"% parms)
         content.append("\terror_log %(home)s/logs/error.log;"% parms)
@@ -475,7 +484,10 @@ class PythonApp(AppBackend):
         parms = self.get_parmameters()
         content = []
         content.append("server {")
-        content.append("\tlisten       %s;" % config.nginx_listen)
+        if self.core_server.os in ("archlinux", ):
+            content.append("\tlisten       *:80;")
+        else:
+            content.append("\tlisten       [::]:80;")
         content.append("\tserver_name  %(domains)s;" % parms)
         content.append("\taccess_log %(home)s/logs/access.log;"% parms)
         content.append("\terror_log %(home)s/logs/error.log;"% parms)
@@ -568,7 +580,10 @@ class ProxyObject(object):
         content = []
         if self.app.ssl_cert and self.app.ssl_key:
             content.append("server {")
-            content.append("\tlisten       *:443 ssl;")
+            if self.core_server.os in ("archlinux", ):
+                content.append("\tlisten       *:443 ssl;")
+            else:
+                content.append("\tlisten       [::]:443 ssl;")
             content.append("\tserver_name  %s;" % self.app.domains)
             content.append("\tssl_certificate      /etc/nginx/ssl/app_%.5d.cert.pem;" % self.app.id)
             content.append("\tssl_certificate_key  /etc/nginx/ssl/app_%.5d.key.pem;" % self.app.id)
@@ -591,7 +606,10 @@ class ProxyObject(object):
     def gen_config(self):
         content = []
         content.append("server {")
-        content.append("\tlisten       *:80;")
+        if self.core_server.os in ("archlinux", ):
+            content.append("\tlisten       *:80;")
+        else:
+            content.append("\tlisten       [::]:80;")
         content.append("\tserver_name  %s;" % self.app.domains)
         content.append("\tlocation / {")
         content.append("\t\tproxy_pass         http://%s/;" % self.app.core_server.ip)

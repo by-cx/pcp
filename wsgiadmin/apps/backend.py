@@ -574,13 +574,13 @@ class ProxyObject(object):
 
     def setup_scripts(self):
         for server in self.get_servers():
-            self.scripts.append(Script(server))
+            self.scripts.append((Script(server), server.os))
 
-    def gen_ssl_config(self):
+    def gen_ssl_config(self, os):
         content = []
         if self.app.ssl_cert and self.app.ssl_key:
             content.append("server {")
-            if self.app.core_server.os in ("archlinux", ):
+            if os in ("archlinux", ):
                 content.append("\tlisten       *:443 ssl;")
             else:
                 content.append("\tlisten       [::]:443 ssl;")
@@ -603,10 +603,10 @@ class ProxyObject(object):
             script.add_cmd("rm -f /etc/nginx/ssl/app_%.5d.cert.pem" % self.app.id)
             script.add_cmd("rm -f /etc/nginx/ssl/app_%.5d.key.pem" % self.app.id)
 
-    def gen_config(self):
+    def gen_config(self, os):
         content = []
         content.append("server {")
-        if self.app.core_server.os in ("archlinux", ):
+        if os in ("archlinux", ):
             content.append("\tlisten       *:80;")
         else:
             content.append("\tlisten       [::]:80;")
@@ -622,16 +622,16 @@ class ProxyObject(object):
         return get_load_balancers()
 
     def setup(self, reload_nginx=True, no_thread=False):
-        for script in self.scripts:
+        for script, os in self.scripts:
             self.save_ssl_cert_key(script)
             script.add_cmd("mkdir -p /etc/nginx/proxy.d/")
-            script.add_file("/etc/nginx/proxy.d/app_%.5d.conf" % self.app.id, "\n".join(self.gen_config() + self.gen_ssl_config()))
+            script.add_file("/etc/nginx/proxy.d/app_%.5d.conf" % self.app.id, "\n".join(self.gen_config(os) + self.gen_ssl_config(os)))
             if reload_nginx:
                 script.reload_nginx()
             script.commit(no_thread)
 
     def setdown(self):
-        for script in self.scripts:
+        for script, os in self.scripts:
             self.save_ssl_cert_key(script, rm_certs=True)
             script.add_cmd("rm -f /etc/nginx/proxy.d/app_%.5d.conf" % self.app.id)
             script.reload_nginx()

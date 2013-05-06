@@ -22,7 +22,7 @@ class Command(BaseCommand):
                     script.commit(no_thread=True)
             for script in scripts:
                 script.add_cmd("mkdir -p /etc/nginx/proxy.d/")
-                script.add_file("/etc/nginx/proxy.d/oldapp_%.5d.conf" % app.id, "\n".join(self.gen_config(app, script.server.os) + self.gen_ssl_config(app, script.server.os)))
+                script.add_file("/etc/nginx/proxy.d/oldapp_%.5d.conf" % app.id, "\n".join(self.gen_config(app, script.server_object.os) + self.gen_ssl_config(app, script.server_object.os)))
         for script in scripts:
             script.reload_nginx()
             script.commit(no_thread=True)

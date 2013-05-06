@@ -22,7 +22,7 @@ class Command(BaseCommand):
                     script.commit(no_thread=True)
             for script in scripts:
                 script.add_cmd("mkdir -p /etc/nginx/proxy.d/")
-                script.add_file("/etc/nginx/proxy.d/oldapp_%.5d.conf" % app.id, "\n".join(self.gen_config(app) + self.gen_ssl_config(app)))
+                script.add_file("/etc/nginx/proxy.d/oldapp_%.5d.conf" % app.id, "\n".join(self.gen_config(app, server.os) + self.gen_ssl_config(app, server.os)))
         for script in scripts:
             script.reload_nginx()
             script.commit(no_thread=True)
@@ -53,11 +53,11 @@ class Command(BaseCommand):
             script.add_cmd("rm -f /etc/nginx/ssl/oldapp_%.5d.cert.pem" % app.id)
             script.add_cmd("rm -f /etc/nginx/ssl/oldapp_%.5d.key.pem" % app.id)
 
-    def gen_ssl_config(self, app):
+    def gen_ssl_config(self, app, os):
         content = []
         if app.ssl_crt and app.ssl_key:
             content.append("server {")
-            if app.core_server.os in ("archlinux", ):
+            if os in ("archlinux", ):
                 content.append("\tlisten       *:443 ssl;")
             else:
                 content.append("\tlisten       [::]:443 ssl;")
@@ -71,10 +71,10 @@ class Command(BaseCommand):
             content.append("}\n")
         return content
 
-    def gen_config(self, app):
+    def gen_config(self, app, os):
         content = []
         content.append("server {")
-        if app.core_server.os in ("archlinux", ):
+        if os in ("archlinux", ):
             content.append("\tlisten       *:80;")
         else:
             content.append("\tlisten       [::]:80;")

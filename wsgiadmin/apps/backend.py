@@ -530,11 +530,14 @@ class DbObject(Db):
 
         super(DbObject, self).__init__(*args, **kwargs)
         if self.db_type == "mysql":
-            database_server = get_mysql_server() if not self.app.db_server else self.app.db_server
+            database_server = get_mysql_server()[0] if not self.app.db_server else self.app.db_server
             self.script = Script(database_server)
         elif self.db_type == "pgsql":
-            database_server = get_pgsql_server() if not self.app.db_server else self.app.db_server
+            database_server = get_pgsql_server()[0] if not self.app.db_server else self.app.db_server
             self.script = Script(database_server)
+        if not self.app.db_server:
+            self.app.db_server = database_server
+            self.app.save()
 
     def install(self):
         if self.db_type == "mysql":

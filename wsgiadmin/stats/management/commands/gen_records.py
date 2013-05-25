@@ -14,8 +14,10 @@ class RecordUser(object):
         if self.user.parms.enable:
             if settings.OLD:
                 self.record_sites()
-            self.record_fee()
-        self.record_apps()
+            if self.user.parms.fee:
+                self.record_fee()
+            else:
+                self.record_apps()
 
     def _record(self, service, value, cost=0):
         record = Record()
@@ -44,7 +46,7 @@ class RecordUser(object):
             if not app.disabled:
                 total += app.price
         if total:
-            self._record("apps", "Apps", total if fee <= 0 else 0.0)
+            self._record("apps", "Apps", total)
 
     def record_fee(self):
         if self.user.parms.fee:

@@ -1,10 +1,10 @@
-django>=1.3
+django>=1.5
 django-constance
 django-picklefield
 south
 anyjson
 django-crispy-forms
-#psycopg2
+psycopg2
 raven
 django-debug-toolbar
 fabric
@@ -12,3 +12,6 @@ requests
 python-memcached
 https://github.com/creckx/gopay4django/archive/master.zip
 django-rosetta
+redis
+celery
+django-celery

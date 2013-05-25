@@ -8,14 +8,25 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
+        # Adding model 'Ftp'
+        db.create_table(u'ftps_ftp', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('pub_date', self.gf('django.db.models.fields.DateField')(auto_now=True, blank=True)),
+            ('username', self.gf('django.db.models.fields.CharField')(unique=True, max_length=100)),
+            ('password', self.gf('django.db.models.fields.CharField')(max_length=100)),
+            ('uid', self.gf('django.db.models.fields.IntegerField')()),
+            ('gid', self.gf('django.db.models.fields.IntegerField')()),
+            ('dir', self.gf('django.db.models.fields.CharField')(max_length=100)),
+            ('enable', self.gf('django.db.models.fields.BooleanField')(default=True)),
+            ('owner', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
+        ))
+        db.send_create_signal(u'ftps', ['Ftp'])
 
-        # Changing field 'Server.ip'
-        db.alter_column(u'core_server', 'ip', self.gf('django.db.models.fields.CharField')(max_length=64))
 
     def backwards(self, orm):
+        # Deleting model 'Ftp'
+        db.delete_table(u'ftps_ftp')
 
-        # Changing field 'Server.ip'
-        db.alter_column(u'core_server', 'ip', self.gf('django.db.models.fields.IPAddressField')(max_length=15))
 
     models = {
         u'auth.group': {
@@ -54,43 +65,18 @@ class Migration(SchemaMigration):
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
-        u'core.capability': {
-            'Meta': {'object_name': 'Capability'},
+        u'ftps.ftp': {
+            'Meta': {'object_name': 'Ftp'},
+            'dir': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            'enable': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'gid': ('django.db.models.fields.IntegerField', [], {}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '32'})
-        },
-        u'core.commandlog': {
-            'Meta': {'object_name': 'CommandLog'},
-            'command': ('django.db.models.fields.CharField', [], {'max_length': '512'}),
-            'date': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'execute_user': ('django.db.models.fields.CharField', [], {'default': "'root'", 'max_length': '128'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'processed': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'result_stderr': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'result_stdout': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'rm_stdin': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'server': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['core.Server']"}),
-            'status_code': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'stdin': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'})
-        },
-        u'core.log': {
-            'Meta': {'object_name': 'Log'},
-            'content': ('django.db.models.fields.TextField', [], {}),
-            'date': ('django.db.models.fields.DateField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'})
-        },
-        u'core.server': {
-            'Meta': {'object_name': 'Server'},
-            'capabilities': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['core.Capability']", 'symmetrical': 'False'}),
-            'domain': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'ip': ('django.db.models.fields.CharField', [], {'default': "'127.0.0.1'", 'max_length': '64'}),
-            'key': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
-            'os': ('django.db.models.fields.CharField', [], {'default': "'debian6'", 'max_length': '64'}),
-            'ssh_port': ('django.db.models.fields.IntegerField', [], {'default': '22'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']", 'null': 'True', 'blank': 'True'})
+            'owner': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"}),
+            'password': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            'pub_date': ('django.db.models.fields.DateField', [], {'auto_now': 'True', 'blank': 'True'}),
+            'uid': ('django.db.models.fields.IntegerField', [], {}),
+            'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '100'})
         }
     }
 
-    complete_apps = ['core']
+    complete_apps = ['ftps']

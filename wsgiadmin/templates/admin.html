@@ -31,7 +31,7 @@
                         <li {% if menu_active == "dashboard" %} class="active"{% endif %}>
                             <a href="{% url 'wsgiadmin.useradmin.views.info' %}">{% trans "Dashboard" %}</a>
                         </li>
-                        {% if superuser.is_superuser %}
+                        {% if superuser.is_superuser and settings.OLD %}
                             <!--<li {% if menu_active == "domains" %} class="active"{% endif %}>
                         <a href="{% url 'domains_list' %}">{% trans "Domains" %}</a>
                     </li>-->
@@ -41,7 +41,7 @@
                                 <a href="{% url 'dns_list' %}">{% trans "DNS" %}</a>
                             </li>
                         {% endif %}
-                        {% if user.usersite_set.count %}
+                        {% if user.usersite_set.count and settings.OLD %}
                             <li {% if menu_active == "webapps" %} class="active"{% endif %}>
                                 <a href="{% url 'app_list' %}">{% trans "Web apps" %}</a>
                             </li>
@@ -54,12 +54,14 @@
                             <a href="{% url 'virt_list' %}">{% trans "VM" %}</a>
                         </li>
                         {% endif %}
+                        {% if settings.OLD %}
                         {% if user.mysqldb_set.count or user.pgsql_set.count %}
                             <li{% if menu_active == "dbs" %} class="active"{% endif %}>
                                 <a href="{% url 'db_list' %}">{% trans "Databases" %}</a>
                             </li>
                         {% endif %}
-                        {% if user.ftp_set.count %}
+                        {% endif %}
+                        {% if user.ftp_set.count and settings.OLD %}
                             <li{% if menu_active == "ftps" %} class="active"{% endif %}>
                                 <a href="{% url 'ftp_list' %}">{% trans "FTP" %}</a>
                             </li>

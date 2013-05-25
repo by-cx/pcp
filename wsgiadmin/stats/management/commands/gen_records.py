@@ -1,6 +1,7 @@
 from datetime import date, datetime
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
+from django.conf import settings
 from wsgiadmin.stats.models import RecordExists, Record, Credit
 
 
@@ -11,7 +12,8 @@ class RecordUser(object):
 
     def gen(self):
         if self.user.parms.enable:
-            self.record_sites()
+            if settings.OLD:
+                self.record_sites()
             self.record_fee()
         self.record_apps()
 

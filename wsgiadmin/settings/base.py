@@ -134,6 +134,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.contrib.messages.context_processors.messages",
     "wsgiadmin.useradmin.context.rosti_context",
     'constance.context_processors.config',
+    'wsgiadmin.core.context.django_settings',
 )
 
 INSTALLED_APPS = [
@@ -152,6 +153,7 @@ INSTALLED_APPS = [
     'raven.contrib.django',
     # not necessarly, make it optional
     'gopay4django',
+    'djcelery',
 
     'wsgiadmin.useradmin',
     'wsgiadmin.clients',
@@ -163,13 +165,6 @@ INSTALLED_APPS = [
     'wsgiadmin.core',
     'wsgiadmin.apps',
     'wsgiadmin.virt',
-
-    'wsgiadmin.old.requests',
-    'wsgiadmin.old.ftps',
-    'wsgiadmin.old.db',
-    'wsgiadmin.old.cron',
-    'wsgiadmin.old.domains',
-    'wsgiadmin.old.apacheconf',
 ]
 
 PYTHON_INTERPRETERS = {
@@ -187,6 +182,8 @@ LOCALE_PATHS = (
     join(ROOT, "locale"),
 )
 
+# support for old style apps/emails/ftp/.. implementation
+OLD = False
 
 ## Logování
 import logging

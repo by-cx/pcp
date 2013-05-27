@@ -12,3 +12,4 @@ requests
 python-memcached
 https://github.com/creckx/gopay4django/archive/master.zip
 django-rosetta
+paramiko

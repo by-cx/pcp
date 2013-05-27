@@ -1,0 +1,2 @@
+from celery import task
+

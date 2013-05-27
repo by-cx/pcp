@@ -144,6 +144,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.admin',
 
+    'djcelery',
     'rosetta',
     'crispy_forms',
     'south',
@@ -187,6 +188,8 @@ LOCALE_PATHS = (
     join(ROOT, "locale"),
 )
 
+
+BROKER_URL = 'redis://localhost/'
 
 ## Logování
 import logging

@@ -204,11 +204,21 @@ class ParamikoScript(BaseScript):
         commit_requests.delay(self.requests, self.server_object, tasklog)
 
     def run(self, cmd):
+        log = CommandLog()
+        log.server = self.server_object
         ssh = SSHClient()
         ssh.load_system_host_keys(settings.SSH_HOSTKEYS)
         ssh.set_missing_host_key_policy(AutoAddPolicy())
         ssh.connect(self.server_object.domain, username="root", key_filename=settings.SSH_PRIVATEKEY)
+        log.command = cmd
+        log.execute_user = "root"
+        log.save()
         stdin, stdout, stderr = ssh.exec_command(cmd)
+        log.result_stdout = stdout.read()
+        log.result_stderr = stderr.read()
+        log.status_code = stdout.channel.recv_exit_status()
+        log.processed = True
+        log.save()
         ssh.close()
         return {"stdout": stdout.read(), "stderr": stderr.read()}
 

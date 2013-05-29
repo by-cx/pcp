@@ -174,7 +174,7 @@ class AppCreateView(CreateView):
     def get_form(self, form_class):
         form = super(AppCreateView, self).get_form(form_class)
         form.user = self.user
-        form.fields["core_server"].queryset = server_chooser(self.app_type)
+        form.fields["core_server"].queryset = server_chooser(self.app_type, hidden=False)
         return form
 
     def get_success_url(self):

@@ -32,6 +32,7 @@ class Server(models.Model):
     key = models.TextField(_("API key"), null=True, blank=True)
     capabilities = models.ManyToManyField(Capability, verbose_name=_("Capabilities"), null=True, blank=True)
     description = models.TextField(_("Description"), null=True, blank=True)
+    hide = models.BooleanField(_("Hide in app server field"), default=False)
 
     user = models.ForeignKey(User, blank=True, null=True)
 

@@ -188,6 +188,9 @@ OLD = False
 
 BROKER_URL = 'redis://localhost/'
 
+SSH_PRIVATEKEY = join(os.environ.get('HOME', "/"), ".ssh", "id_dsa")
+SSH_HOSTKEYS = join(os.environ.get('HOME', "/"), ".ssh", "known_hosts")
+
 ## Logování
 import logging
 

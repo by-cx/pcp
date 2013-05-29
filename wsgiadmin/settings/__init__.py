@@ -28,6 +28,11 @@ if OLD:
         'wsgiadmin.old.apacheconf',
     ]
 
+if GOPAY:
+    INSTALLED_APPS += [
+        'gopay4django',
+    ]
+
 if DEBUG_TOOLBAR:
 
     INSTALLED_APPS += ('debug_toolbar',)

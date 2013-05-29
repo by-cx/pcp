@@ -17,6 +17,10 @@ APPEND_SLASH = True
 MANAGERS = ADMINS = ()
 
 INTERNAL_IPS = ('127.0.0.1', '89.111.104.66')
+ALLOWED_HOSTS = (
+    "localhost",
+    "localhost:8000"
+)
 
 DATABASES = {}
 
@@ -153,7 +157,6 @@ INSTALLED_APPS = [
     'constance.backends.database',
     'raven.contrib.django',
     # not necessarly, make it optional
-    'gopay4django',
     'djcelery',
 
     'wsgiadmin.useradmin',

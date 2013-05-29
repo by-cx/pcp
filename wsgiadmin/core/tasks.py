@@ -6,6 +6,9 @@ from wsgiadmin.core.models import CommandLog
 
 @task()
 def commit_requests(requests, server, task_log=None):
+    """
+        Take requests for specific server and run them one by one. Summary can be saved in task_log.
+    """
     logger = commit_requests.get_logger()
 
     ssh = SSHClient()

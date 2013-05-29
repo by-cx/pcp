@@ -31,6 +31,7 @@ class Server(models.Model):
     os = models.CharField(_("Operating system"), max_length=64, default="debian6", choices=OSS)
     key = models.TextField(_("API key"), null=True, blank=True)
     capabilities = models.ManyToManyField(Capability, verbose_name=_("Capabilities"), null=True, blank=True)
+    description = models.TextField(_("Description"), null=True, blank=True)
 
     user = models.ForeignKey(User, blank=True, null=True)
 
@@ -51,7 +52,10 @@ class Server(models.Model):
         return "root@%s -p %d" % (self.ip, self.ssh_port)
 
     def __unicode__(self):
-        return unicode(self.name)
+        if self.description:
+            return u"%s (%s)" % (self.name, self.description)
+        else:
+            return u"%s" % self.name
 
 
 class Log(models.Model):

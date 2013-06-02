@@ -25,7 +25,7 @@
         </tr>
         <tr>
             <th>{% trans "State" %}</th>
-            <td>{% if credit.date_payed %}{% trans "payed" %} ({{ credit.date_payed }}){% else %}{% trans "No payment" %}{% endif %}</td>
+            <td>{% if credit.date_payed %}{% trans "paid" %} ({{ credit.date_payed }}){% else %}{% trans "No payment" %}{% endif %}</td>
         </tr>
         {% if credit.gopay_payment %}
             <tr>

@@ -65,7 +65,7 @@ class BaseScript(object):
             if request["type"] == "cmd":
                 sys.stdout.write("Run %s\n" % request["cmd"])
             elif request["type"] == "file":
-                sys.stdout.write("Write something into \n" % request["path"])
+                sys.stdout.write("Write something into %s\n" % request["path"])
 
     def run(self, cmd):
         #dummy method, define new one

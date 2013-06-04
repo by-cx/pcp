@@ -143,7 +143,7 @@ class AppPythonForm(AppParametersForm):
     python = forms.ChoiceField(
         label=_("Python version"),
         required=True,
-        choices=[(x, x) for x in settings.PYTHON_INTERPRETERS]
+        choices=[]
     )
     procs = forms.ChoiceField(
         label=_("Processes"),

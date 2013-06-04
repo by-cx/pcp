@@ -59,6 +59,16 @@ class Server(models.Model):
             return u"%s" % self.name
 
 
+class PythonInterpreter(models.Model):
+    server = models.ForeignKey(Server)
+    name = models.CharField(_("Python name/version"), max_length=128)
+    cmd = models.CharField(_("Path to python binary"), max_length=128)
+    virtualenv = models.CharField(_("Path to virtualenv binary"), max_length=128)
+
+    def __unicode__(self):
+        return unicode("%s on %s" % (self.name, self.server.name))
+
+
 class Log(models.Model):
     date = models.DateField(_("Date"), auto_now_add=True)
     content = models.TextField(_("Messages"))

@@ -10,7 +10,7 @@ from wsgiadmin.apps.backend import PythonApp, typed_object, DbObject
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext as __
 from django.contrib import messages
-from wsgiadmin.core.utils import server_chooser
+from wsgiadmin.core.utils import server_chooser, get_load_balancers
 
 
 class AppsListView(ListView):
@@ -62,6 +62,7 @@ class AppDetailView(TemplateView):
         context['superuser'] = self.request.user
         context['app'] = self.get_object()
         context['dbs'] = context['app'].db_set.all()
+        context['loadbalancers'] = get_load_balancers()
         return context
 
 
@@ -73,8 +74,10 @@ class AppParametersView(TemplateView):
     def post(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
         form = self.get_form()(request.POST)
+        app = self.get_object()
+        if app.app_type == "python":
+            form.fields["python"].choices = [(python.name, python.name) for python in self.get_object().core_server.pythoninterpreter_set.all()]
         if form.is_valid():
-            app = self.get_object()
             parms = {}
             for field in form.cleaned_data:
                 if field == "domains":
@@ -106,6 +109,8 @@ class AppParametersView(TemplateView):
     def get(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
         form = self.get_form()(initial=self.get_initial())
+        if self.get_object().app_type == "python":
+            form.fields["python"].choices = [(python.name, python.name) for python in self.get_object().core_server.pythoninterpreter_set.all()]
         context["form"] = form
         return self.render_to_response(context)
 

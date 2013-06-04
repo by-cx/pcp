@@ -5,7 +5,7 @@ import re
 from wsgiadmin.apps.models import App, Db
 from constance import config
 from wsgiadmin.core.backend_base import Script
-from wsgiadmin.core.exceptions import PCPException
+from wsgiadmin.core.exceptions import PCPException, ScriptException
 from wsgiadmin.core.utils import get_load_balancers, get_mysql_server, get_pgsql_server
 
 
@@ -400,7 +400,11 @@ class PythonApp(AppBackend):
 
     def get_parmameters(self):
         parms = super(PythonApp, self).get_parmameters()
-        parms["virtualenv_cmd"] = settings.PYTHON_INTERPRETERS.get(parms.get("python", "python2.7"))
+        interpreters = self.core_server.pythoninterpreter_set.filter(name=parms.get("python", "Python 2.7"))
+        if len(interpreters) == 1:
+            parms["virtualenv_cmd"] = interpreters[0].virtualenv
+        else:
+            raise ScriptException("Error: badly configured python interpreters on %s" % self.core_server.name)
         return parms
 
     def install(self):

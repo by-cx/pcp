@@ -33,7 +33,24 @@
                 {{ app.core_server.domain }}
                 {% if app.core_server.ip %}<br>IPv4: {{ app.core_server.ip }}{% endif %}
                 {% if app.core_server.ipv6 %}<br>IPv6: {{ app.core_server.ipv6 }}{% endif %}
+
         </tr>
+        {% if loadbalancers %}
+        <tr>
+            <th>{% trans "Load balancers" %}</th>
+            <td>
+                {% for balancer in loadbalancers %}
+                    {% if not balancer.hide %}
+                    {% if balancer.ip %}<em>{{ balancer.ip }}</em>{% endif %}
+                    {% if balancer.ip and balancer.ipv6 %}<em>/</em>{% endif %}
+                    {% if balancer.ipv6 %}<em>{{ balancer.ipv6 }}</em>{% endif %}
+                    <br>
+                    {% endif %}
+                {% endfor %}
+                <em>{% trans "Use these IPv4/6 addresses for A/AAAA records in your DNS zone." %}</em>
+            </td>
+        </tr>
+        {% endif %}
         <tr>
             <th>{% trans "Stav" %}</th>
             <td>

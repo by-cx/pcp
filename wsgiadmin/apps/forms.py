@@ -163,6 +163,7 @@ class AppPythonForm(AppParametersForm):
         widget=forms.Textarea(attrs={"class": "textarea-code"}),
         help_text=_("Consider your app as root. One pair <em>/url/ /path/</em> per line.")
     )
+    memory = forms.ChoiceField(label=_("Max memory"), choices=(("256", "256 MB"), ("380", "380 MB"), ("512", "512 MB")))
 
 
 class AppNativeForm(AppParametersForm):

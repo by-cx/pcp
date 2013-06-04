@@ -47,7 +47,7 @@ def commit_requests(requests, server, task_log=None):
             elif req.get("type") == "file":
                 req_path = req.get("path")
                 req_cmd = "tee '%s'" % req_path
-                req_stdin = req.get("stdin")
+                req_stdin = req.get("content")
                 req_owner = req.get("owner")
                 log.command = req_cmd
                 log.execute_user = req_owner

@@ -47,7 +47,7 @@ class Record(models.Model):
 
 class Credit(models.Model):
     date = models.DateTimeField(_("Date"), auto_now_add=True)
-    date_payed = models.DateTimeField(_("Date payed"), blank=True, null=True)
+    date_payed = models.DateTimeField(_("Date paid"), blank=True, null=True)
     user = models.ForeignKey(User, verbose_name=_("User"))
     price = models.FloatField(_("Price"))
     currency = models.CharField(_("Currenty"), max_length=8)

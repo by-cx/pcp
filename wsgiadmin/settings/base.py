@@ -17,6 +17,10 @@ APPEND_SLASH = True
 MANAGERS = ADMINS = ()
 
 INTERNAL_IPS = ('127.0.0.1', '89.111.104.66')
+ALLOWED_HOSTS = (
+    "localhost",
+    "localhost:8000"
+)
 
 DATABASES = {}
 
@@ -134,6 +138,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.contrib.messages.context_processors.messages",
     "wsgiadmin.useradmin.context.rosti_context",
     'constance.context_processors.config',
+    'wsgiadmin.core.context.django_settings',
 )
 
 INSTALLED_APPS = [
@@ -144,6 +149,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.admin',
 
+    'djcelery',
     'rosetta',
     'crispy_forms',
     'south',
@@ -151,7 +157,7 @@ INSTALLED_APPS = [
     'constance.backends.database',
     'raven.contrib.django',
     # not necessarly, make it optional
-    'gopay4django',
+    'djcelery',
 
     'wsgiadmin.useradmin',
     'wsgiadmin.clients',
@@ -163,13 +169,6 @@ INSTALLED_APPS = [
     'wsgiadmin.core',
     'wsgiadmin.apps',
     'wsgiadmin.virt',
-
-    'wsgiadmin.old.requests',
-    'wsgiadmin.old.ftps',
-    'wsgiadmin.old.db',
-    'wsgiadmin.old.cron',
-    'wsgiadmin.old.domains',
-    'wsgiadmin.old.apacheconf',
 ]
 
 PYTHON_INTERPRETERS = {
@@ -187,6 +186,13 @@ LOCALE_PATHS = (
     join(ROOT, "locale"),
 )
 
+# support for old style apps/emails/ftp/.. implementation
+OLD = False
+
+BROKER_URL = 'redis://localhost/'
+
+SSH_PRIVATEKEY = join(os.environ.get('HOME', "/"), ".ssh", "id_dsa")
+SSH_HOSTKEYS = join(os.environ.get('HOME', "/"), ".ssh", "known_hosts")
 
 ## Logování
 import logging

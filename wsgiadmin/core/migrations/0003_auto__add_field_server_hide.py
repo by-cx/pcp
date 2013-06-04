@@ -8,20 +8,16 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
+        # Adding field 'Server.hide'
+        db.add_column(u'core_server', 'hide',
+                      self.gf('django.db.models.fields.BooleanField')(default=False),
+                      keep_default=False)
 
-        # Changing field 'Server.ip'
-        db.alter_column(u'core_server', 'ip', self.gf('django.db.models.fields.CharField')(max_length=64, null=True))
-
-        # Changing field 'Server.ipv6'
-        db.alter_column(u'core_server', 'ipv6', self.gf('django.db.models.fields.CharField')(max_length=64, null=True))
 
     def backwards(self, orm):
+        # Deleting field 'Server.hide'
+        db.delete_column(u'core_server', 'hide')
 
-        # Changing field 'Server.ip'
-        db.alter_column(u'core_server', 'ip', self.gf('django.db.models.fields.CharField')(max_length=64))
-
-        # Changing field 'Server.ipv6'
-        db.alter_column(u'core_server', 'ipv6', self.gf('django.db.models.fields.CharField')(max_length=64))
 
     models = {
         u'auth.group': {
@@ -88,7 +84,9 @@ class Migration(SchemaMigration):
         u'core.server': {
             'Meta': {'object_name': 'Server'},
             'capabilities': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': u"orm['core.Capability']", 'null': 'True', 'blank': 'True'}),
+            'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'domain': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
+            'hide': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'ip': ('django.db.models.fields.CharField', [], {'default': "'127.0.0.1'", 'max_length': '64', 'null': 'True', 'blank': 'True'}),
             'ipv6': ('django.db.models.fields.CharField', [], {'default': "'::1'", 'max_length': '64', 'null': 'True', 'blank': 'True'}),

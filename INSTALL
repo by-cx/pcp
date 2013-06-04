@@ -1,6 +1,6 @@
-It develop for Debian, but it should work on other distributions too. Need at least this packages:
+The target Linux distribution is Debian, but it should work on other distributions too. You will need at least these packages:
 
-apache2 nginx supervisor php5-cgi (for PHP hosting) suexec-custom python python-pip python-virtualenv postfix couried-imap(ssl)|pop(ssl)|authlib (for mail support) and maybe some more
+apache2 nginx supervisor php5-cgi (for PHP hosting) suexec-custom python python-pip python-virtualenv postfix couried-imap(ssl)|pop(ssl)|authlib (for mail support) python-libvirt and maybe some more
 
 Create virtualenv for PCP and continue with:
 
@@ -11,6 +11,7 @@ sudo cp pcp_runner.py /usr/local/bin/pcp_runner
 sudo chmod 755 /usr/local/bin/pcp_runner (its used for remote control of server)
 sudo mkdir /etc/nginx/apps.d/
 cd wsgiadmin
+cp settings/local_rename.py settings/local.py
 # in settings.local, set the database connection and maybe other values
 python manage.py syncdb
 python manage.py migrate

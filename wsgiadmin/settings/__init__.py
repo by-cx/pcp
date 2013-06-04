@@ -18,6 +18,21 @@ except ImportError:
 #if GOPAY:
 #    INSTALLED_APPS.insert(0, 'gopay4django')
 
+if OLD:
+    INSTALLED_APPS += [
+        'wsgiadmin.old.requests',
+        'wsgiadmin.old.ftps',
+        'wsgiadmin.old.db',
+        'wsgiadmin.old.cron',
+        'wsgiadmin.old.domains',
+        'wsgiadmin.old.apacheconf',
+    ]
+
+if GOPAY:
+    INSTALLED_APPS += [
+        'gopay4django',
+    ]
+
 if DEBUG_TOOLBAR:
 
     INSTALLED_APPS += ('debug_toolbar',)

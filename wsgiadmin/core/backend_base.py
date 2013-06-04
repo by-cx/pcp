@@ -5,10 +5,12 @@ from subprocess import Popen, PIPE
 import sys
 from threading import Thread
 import time
+from paramiko import SSHClient, AutoAddPolicy
 from wsgiadmin.core.exceptions import ScriptException, PCPException
 from django.conf import settings
 from wsgiadmin.core.models import CommandLog
 from django.db import connection
+from wsgiadmin.core.tasks import commit_requests
 
 
 class BaseScript(object):
@@ -31,8 +33,32 @@ class BaseScript(object):
         self.server = server.ssh_cmd.split(" ")
 
     def commit(self, no_thread=False):
-        #dummy method, define new one
-        pass
+        if self.restarts["nginx"]:
+            if self.server_object.os in ("debian6", "debian7", ):
+                self.add_cmd("/etc/init.d/nginx restart")
+            elif self.server_object.os == "archlinux":
+                self.add_cmd("systemctl restart nginx")
+            self.reloads["nginx"] = False
+            self.restarts["nginx"] = False
+        elif self.reloads["nginx"]:
+            if self.server_object.os in ("debian6", "debian7", ):
+                self.add_cmd("/etc/init.d/nginx reload")
+            elif self.server_object.os == "archlinux":
+                self.add_cmd("systemctl reload nginx")
+            self.reloads["nginx"] = False
+        if self.restarts["apache"]:
+            if self.server_object.os in ("debian6", "debian7", ):
+                self.add_cmd("/etc/init.d/apache2 restart")
+            elif self.server_object.os == "archlinux":
+                self.add_cmd("systemctl restart apache")
+            self.reloads["apache"] = False
+            self.restarts["apache"] = False
+        elif self.reloads["apache"]:
+            if self.server_object.os in ("debian6", "debian7", ):
+                self.add_cmd("/etc/init.d/apache2 reload")
+            elif self.server_object.os == "archlinux":
+                self.add_cmd("systemctl reload apache")
+            self.reloads["apache"] = False
 
     def print_requests(self):
         for request in self.requests:
@@ -84,33 +110,8 @@ class BaseScript(object):
 
 class QueueScript(BaseScript):
 
-    def commit(self, no_thread=False):
-        if self.restarts["nginx"]:
-            if self.server_object.os in ("debian6", "debian7", ):
-                self.add_cmd("/etc/init.d/nginx restart")
-            elif self.server_object.os == "archlinux":
-                self.add_cmd("systemctl restart nginx")
-            self.reloads["nginx"] = False
-            self.restarts["nginx"] = False
-        elif self.reloads["nginx"]:
-            if self.server_object.os in ("debian6", "debian7", ):
-                self.add_cmd("/etc/init.d/nginx reload")
-            elif self.server_object.os == "archlinux":
-                self.add_cmd("systemctl reload nginx")
-            self.reloads["nginx"] = False
-        if self.restarts["apache"]:
-            if self.server_object.os in ("debian6", "debian7", ):
-                self.add_cmd("/etc/init.d/apache2 restart")
-            elif self.server_object.os == "archlinux":
-                self.add_cmd("systemctl restart apache")
-            self.reloads["apache"] = False
-            self.restarts["apache"] = False
-        elif self.reloads["apache"]:
-            if self.server_object.os in ("debian6", "debian7", ):
-                self.add_cmd("/etc/init.d/apache2 reload")
-            elif self.server_object.os == "archlinux":
-                self.add_cmd("systemctl reload apache")
-            self.reloads["apache"] = False
+    def commit(self, no_thread=False, tasklog=None):
+        super(QueueScript, self).commit(no_thread)
 
         for request in self.requests:
             #{"type": "cmd", "cmd": cmd, "stdin": stdin, "user": user, "rm_stdin": rm_stdin}
@@ -153,33 +154,8 @@ class QueueScript(BaseScript):
 
 
 class DirectSSHScript(BaseScript):
-    def commit(self, no_thread=False):
-        if self.restarts["nginx"]:
-            if self.server_object.os in ("debian6", "debian7", ):
-                self.add_cmd("/etc/init.d/nginx restart")
-            elif self.server_object.os == "archlinux":
-                self.add_cmd("systemctl restart nginx")
-            self.reloads["nginx"] = False
-            self.restarts["nginx"] = False
-        elif self.reloads["nginx"]:
-            if self.server_object.os in ("debian6", "debian7", ):
-                self.add_cmd("/etc/init.d/nginx reload")
-            elif self.server_object.os == "archlinux":
-                self.add_cmd("systemctl reload nginx")
-            self.reloads["nginx"] = False
-        if self.restarts["apache"]:
-            if self.server_object.os in ("debian6", "debian7", ):
-                self.add_cmd("/etc/init.d/apache2 restart")
-            elif self.server_object.os == "archlinux":
-                self.add_cmd("systemctl restart apache")
-            self.reloads["apache"] = False
-            self.restarts["apache"] = False
-        elif self.reloads["apache"]:
-            if self.server_object.os in ("debian6", "debian7", ):
-                self.add_cmd("/etc/init.d/apache2 reload")
-            elif self.server_object.os == "archlinux":
-                self.add_cmd("systemctl reload apache")
-            self.reloads["apache"] = False
+    def commit(self, no_thread=False, tasklog=None):
+        super(DirectSSHScript, self).commit(no_thread)
 
         if no_thread:
             self.send(["pcp_runner"], json.dumps(self.requests))
@@ -220,4 +196,32 @@ class DirectSSHScript(BaseScript):
             return result[0]
 
 
-Script = DirectSSHScript
+class ParamikoScript(BaseScript):
+    """ Backend based on Paramiko """
+
+    def commit(self, no_thread=False, tasklog=None):
+        super(ParamikoScript, self).commit(no_thread)
+        commit_requests.delay(self.requests, self.server_object, tasklog)
+
+    def run(self, cmd):
+        log = CommandLog()
+        log.server = self.server_object
+        ssh = SSHClient()
+        ssh.load_system_host_keys(settings.SSH_HOSTKEYS)
+        ssh.set_missing_host_key_policy(AutoAddPolicy())
+        ssh.connect(self.server_object.domain, username="root", key_filename=settings.SSH_PRIVATEKEY)
+        log.command = cmd
+        log.execute_user = "root"
+        log.save()
+        stdin, stdout, stderr = ssh.exec_command(cmd)
+        log.result_stdout = stdout.read()
+        log.result_stderr = stderr.read()
+        log.status_code = stdout.channel.recv_exit_status()
+        log.processed = True
+        log.save()
+        ssh.close()
+        return {"stdout": stdout.read(), "stderr": stderr.read()}
+
+
+
+Script = ParamikoScript

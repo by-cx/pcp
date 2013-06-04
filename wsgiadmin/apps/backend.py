@@ -407,6 +407,7 @@ class PythonApp(AppBackend):
         super(PythonApp, self).install()
         parms = self.get_parmameters()
         self.script.add_cmd("cd; %(virtualenv_cmd)s %(home)s/venv" % parms, user=self.get_user())
+        self.script.add_cmd("tee -a %(home)s/.bashrc" % parms, user=self.get_user(), stdin="\n\nsource ~/venv/bin/activate")
 
     def disable(self):
         super(PythonApp, self).disable()

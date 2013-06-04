@@ -8,23 +8,15 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Deleting field 'Server.communication_key'
-        db.delete_column(u'core_server', 'communication_key')
-
-        # Adding field 'Server.key'
-        db.add_column(u'core_server', 'key',
+        # Adding field 'Server.description'
+        db.add_column(u'core_server', 'description',
                       self.gf('django.db.models.fields.TextField')(null=True, blank=True),
                       keep_default=False)
 
 
     def backwards(self, orm):
-        # Adding field 'Server.communication_key'
-        db.add_column(u'core_server', 'communication_key',
-                      self.gf('django.db.models.fields.TextField')(null=True, blank=True),
-                      keep_default=False)
-
-        # Deleting field 'Server.key'
-        db.delete_column(u'core_server', 'key')
+        # Deleting field 'Server.description'
+        db.delete_column(u'core_server', 'description')
 
 
     models = {
@@ -91,10 +83,12 @@ class Migration(SchemaMigration):
         },
         u'core.server': {
             'Meta': {'object_name': 'Server'},
-            'capabilities': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['core.Capability']", 'symmetrical': 'False'}),
+            'capabilities': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': u"orm['core.Capability']", 'null': 'True', 'blank': 'True'}),
+            'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'domain': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'ip': ('django.db.models.fields.IPAddressField', [], {'default': "'127.0.0.1'", 'max_length': '15'}),
+            'ip': ('django.db.models.fields.CharField', [], {'default': "'127.0.0.1'", 'max_length': '64', 'null': 'True', 'blank': 'True'}),
+            'ipv6': ('django.db.models.fields.CharField', [], {'default': "'::1'", 'max_length': '64', 'null': 'True', 'blank': 'True'}),
             'key': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
             'os': ('django.db.models.fields.CharField', [], {'default': "'debian6'", 'max_length': '64'}),

@@ -10,23 +10,25 @@ from django.views.generic.base import TemplateView
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
-from gopay4django.api import GoPay
-from gopay4django.models import Payment
 from wsgiadmin.clients.models import Address
 from wsgiadmin.emails.models import Message
 from wsgiadmin.service.views import RostiListView
 from wsgiadmin.stats.models import Credit
 from wsgiadmin.stats.tools import add_credit, payed
-from gopay4django.signals import payment_changed
 from django.dispatch import receiver
+if settings.GOPAY:
+    from gopay4django.api import GoPay
+    from gopay4django.models import Payment
+    from gopay4django.signals import payment_changed
 
 
-@receiver(payment_changed)
-def payment_changed_callback(sender, **kwargs):
-    payment = kwargs.get("payment")
-    if payment.state == "PAID":
-        credit = Credit.objects.get(id=int(payment.p4))
-        payed(credit)
+if settings.GOPAY:
+    @receiver(payment_changed)
+    def payment_changed_callback(sender, **kwargs):
+        payment = kwargs.get("payment")
+        if payment.state == "PAID":
+            credit = Credit.objects.get(id=int(payment.p4))
+            payed(credit)
 
 
 @login_required

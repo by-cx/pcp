@@ -2,9 +2,12 @@ from wsgiadmin.core.exceptions import PCPException
 from wsgiadmin.core.models import Server, Capability
 
 
-def server_chooser(capname):
+def server_chooser(capname, hidden=True):
     capability = Capability.objects.get(name=capname)
-    return Server.objects.filter(capabilities__in=[capability.id])
+    if hidden:
+        return Server.objects.filter(capabilities__in=[capability.id])
+    else:
+        return Server.objects.filter(capabilities__in=[capability.id], hide=False)
 
 
 def get_mail_server():

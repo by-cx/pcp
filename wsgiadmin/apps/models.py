@@ -101,3 +101,14 @@ class Db(models.Model):
     def __unicode__(self):
         return self.name #"%s db for %s app" % (self.name, self.app_id)
 
+
+class TaskLog(models.Model):
+    date = models.DateTimeField(_("Date"), auto_now_add=True)
+    app = models.ForeignKey(App)
+    msg = models.CharField(_("Message"), max_length=512)
+    complete = models.BooleanField(_("Complete"), default=False)
+    error = models.BooleanField(_("Error"), default=False)
+    backend_msg = models.CharField(_("Message from backend"), max_length=512, blank=True, null=True)
+
+    def __unicode__(self):
+        return u"%s - %s" % (self.app.name, self.msg)

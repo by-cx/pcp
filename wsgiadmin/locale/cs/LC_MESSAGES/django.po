@@ -7,9 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
+<<<<<<< HEAD
 "POT-Creation-Date: 2013-05-04 16:43+0200\n"
 "PO-Revision-Date: 2013-05-04 16:50+0200\n"
 "Last-Translator:   <cx@initd.cz>\n"
+=======
+"POT-Creation-Date: 2013-06-02 18:22+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+>>>>>>> e6b67cadf9b1177c8699ddf1c9cd88db495039d1
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18,7 +24,11 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2\n"
 "X-Translated-Using: django-rosetta 0.7.1\n"
 
+<<<<<<< HEAD
 #: wsgiadmin/apps/forms.py:27
+=======
+#: apps/forms.py:27
+>>>>>>> e6b67cadf9b1177c8699ddf1c9cd88db495039d1
 msgid ""
 "PostgreSQL database has public scheme as default. Make sure, you create your"
 " own. Otherwise everybody can see your tables/views/.. (not data, just "
@@ -28,23 +38,36 @@ msgstr ""
 "před použitím vytvoříte schéma vlastní. V opačném případě uvidí "
 "všichnistrukturu vašich tabulek/pohledu/.. (nikoli data)."
 
+<<<<<<< HEAD
 #: wsgiadmin/apps/forms.py:46
+=======
+#: apps/forms.py:46
+>>>>>>> e6b67cadf9b1177c8699ddf1c9cd88db495039d1
 msgid ""
-"There is no relation to DNS or Domains menu (if you see one). Write your "
-"domains separated by spaces."
+"On these domains your app will listen. There is no relation to DNS. Write "
+"your domains separated by spaces. For example: mydomain.cz www.mydomain.cz"
 msgstr ""
 "Není zde žádná vazba na sekci DNS nebo domény (pokud je vidíte). Napište "
 "domény oddělené mezerami."
 
+<<<<<<< HEAD
 #: wsgiadmin/apps/forms.py:55 wsgiadmin/apps/forms.py:93
 msgid "Each domain has to be in this format: ^[0-9a-z_\\.\\-]*$"
 msgstr "Domény musejí být zapsané v následujícím formátu: ^[0-9a-z_\\.\\-]*$"
 
 #: wsgiadmin/apps/forms.py:57 wsgiadmin/apps/forms.py:95
+=======
+#: apps/forms.py:55 apps/forms.py:93
+msgid "Each domain has to be in this format: ^[0-9a-z_\\.\\-]*$"
+msgstr "Domény musejí být zapsané v následujícím formátu: ^[0-9a-z_\\.\\-]*$"
+
+#: apps/forms.py:57 apps/forms.py:95
+>>>>>>> e6b67cadf9b1177c8699ddf1c9cd88db495039d1
 #, python-format
 msgid "One of your domain is already used. (%s)"
 msgstr "Jedna z vašich domén je již použita. (%s)"
 
+<<<<<<< HEAD
 #: wsgiadmin/apps/forms.py:62
 msgid "App name has to be in this format: ^[0-9a-zA-Z_\\ \\.]*$"
 msgstr "Název aplikace musí mít tento formát: ^[0-9a-zA-Z_\\ \\.]*$"
@@ -64,10 +87,31 @@ msgstr "Domény"
 msgid ""
 "There is no relation to DNS or Domains menu. Write your domains separated by"
 " spaces."
+=======
+#: apps/forms.py:62
+msgid "App name has to be in this format: ^[0-9a-zA-Z_\\ \\.]*$"
+msgstr "Jméno aplikace musí mít tento formát: ^[0-9a-zA-Z_\\ ]*$"
+
+#: apps/forms.py:64
+msgid "This name is already used"
+msgstr "Toto jméno je již obsazené"
+
+#: apps/forms.py:75 apps/models.py:22 templates/admin.html:36
+#: templates/admin.html.py:147 templates/domains.html:5 templates/info.html:58
+#: templates/apps/app_info.html:23
+msgid "Domains"
+msgstr "Domény"
+
+#: apps/forms.py:76
+msgid ""
+"There is no relation to DNS or Domains menu. Write your domains separated by "
+"spaces."
+>>>>>>> e6b67cadf9b1177c8699ddf1c9cd88db495039d1
 msgstr ""
 "Není zde žádná vazba na sekci DNS nebo Domény. Napište své domény oddělené "
 "mezerou."
 
+<<<<<<< HEAD
 #: wsgiadmin/apps/forms.py:81 wsgiadmin/apps/models.py:93
 #: wsgiadmin/emails/forms.py:29 wsgiadmin/old/ftps/models.py:9
 #: wsgiadmin/service/forms.py:20 wsgiadmin/service/forms.py:49
@@ -135,22 +179,99 @@ msgid "Virtualenv"
 msgstr ""
 
 #: wsgiadmin/apps/forms.py:158
+=======
+#: apps/forms.py:81 apps/models.py:93 emails/forms.py:29 old/ftps/models.py:9
+#: service/forms.py:20 service/forms.py:49
+msgid "Password"
+msgstr "Heslo"
+
+#: apps/forms.py:83
+msgid "For SSH/SFTP/FTP"
+msgstr "Pro SSH/SFTP/FTP přístup"
+
+#: apps/forms.py:107 apps/forms.py:119
+msgid "Indexing"
+msgstr "Indexování obsahu adresářů"
+
+#: apps/forms.py:108 apps/forms.py:120
+msgid "Turn on/off indexing of your document root"
+msgstr "Zapnutí/vypnutí výpisu obsahu adresářů"
+
+#: apps/forms.py:123
+msgid "memory_limit"
+msgstr ""
+
+#: apps/forms.py:124
+msgid "post_max_size"
+msgstr ""
+
+#: apps/forms.py:125
+msgid "upload_max_filesize"
+msgstr ""
+
+#: apps/forms.py:126
+msgid "max_file_uploads"
+msgstr ""
+
+#: apps/forms.py:127
+msgid "max_execution_time"
+msgstr ""
+
+#: apps/forms.py:128
+msgid "allow_url_fopen"
+msgstr ""
+
+#: apps/forms.py:129
+msgid "display_errors"
+msgstr ""
+
+#: apps/forms.py:138
+msgid "WSGI Script"
+msgstr "WSGI Skript"
+
+#: apps/forms.py:141
+msgid "Write python code, which create WSGI handler of your app."
+msgstr "Napište pythoní skript, který vytvoří WSGI handler aplication"
+
+#: apps/forms.py:144
+msgid "Python version"
+msgstr "Verze pythonu"
+
+#: apps/forms.py:149
+msgid "Processes"
+msgstr "Počet procesů"
+
+#: apps/forms.py:154 old/apacheconf/models.py:41
+msgid "Virtualenv"
+msgstr ""
+
+#: apps/forms.py:158
+>>>>>>> e6b67cadf9b1177c8699ddf1c9cd88db495039d1
 msgid ""
 "List of requirements. One package per one line. Like requirements.txt file."
 msgstr ""
 "Seznam modulů, které vaše aplikace potřebuje k běhu. Podobný jako soubor "
 "requirements.txt."
 
+<<<<<<< HEAD
 #: wsgiadmin/apps/forms.py:161
 msgid "Static maps"
 msgstr "Mapa statického obsahu"
 
 #: wsgiadmin/apps/forms.py:164
+=======
+#: apps/forms.py:161
+msgid "Static maps"
+msgstr "Mapa statického obsahu"
+
+#: apps/forms.py:164
+>>>>>>> e6b67cadf9b1177c8699ddf1c9cd88db495039d1
 msgid "Consider your app as root. One pair <em>/url/ /path/</em> per line."
 msgstr ""
 "Napište na každý řádek jeden pár <em>/url/ /cesta/</em>. Cesta je brána "
 "vzhledem k rootu vaší aplikace (~/app/). Detaily na wiki."
 
+<<<<<<< HEAD
 #: wsgiadmin/apps/forms.py:174 wsgiadmin/core/models.py:71
 msgid "Command"
 msgstr "Příkaz"
@@ -288,6 +409,149 @@ msgid "App is disabled"
 msgstr "Aplikace je vypnutá"
 
 #: wsgiadmin/apps/views.py:332
+=======
+#: apps/forms.py:174 core/models.py:76
+msgid "Command"
+msgstr "Příkaz"
+
+#: apps/models.py:17 apps/models.py:91 apps/models.py:106 core/models.py:63
+#: core/models.py:74 stats/models.py:30 stats/models.py:49
+#: templates/info.html:113 templates/old/requests.html:17
+#: templates/stats/credits.html:15 templates/stats/payment_infopage.html:15
+msgid "Date"
+msgstr "Datum"
+
+#: apps/models.py:18 templates/apps/app_info.html:41
+msgid "Disabled"
+msgstr "Vypnuto"
+
+#: apps/models.py:19 clients/models.py:39 templates/apps/app_info.html:40
+msgid "Installed"
+msgstr "Nainstalováno"
+
+#: apps/models.py:20 dns/models.py:46 old/apacheconf/models.py:27
+#: templates/apps/app_info.html:27 templates/apps/apps.html:16
+#: templates/dns/editor.html:22 templates/old/apache.html:16
+msgid "Type"
+msgstr "Typ"
+
+#: apps/models.py:21 core/models.py:26 dns/models.py:45 emails/forms.py:11
+#: templates/addresses.html:15 templates/info.html:16
+#: templates/apps/app_info.html:15 templates/apps/app_info.html.py:81
+#: templates/apps/apps.html:17 templates/dns/editor.html:21
+#: templates/virt/list.html:16 virt/models.py:10 virt/models.py:31
+msgid "Name"
+msgstr "Jméno"
+
+#: apps/models.py:21
+msgid "Name of your application"
+msgstr "Název aplikace"
+
+#: apps/models.py:23 templates/apps/app_info.html:50
+#: templates/apps/app_info.html.py:52 templates/apps/app_info.html:54
+#: templates/apps/app_info.html.py:56 templates/apps/app_info.html:58
+#: templates/apps/app_info.html.py:64 templates/apps/apps.html:34
+#: templates/apps/apps.html.py:36 templates/apps/apps.html:38
+#: templates/apps/apps.html.py:40 templates/apps/apps.html:42
+msgid "Parameters"
+msgstr "Parametry"
+
+#: apps/models.py:24
+msgid "Addons"
+msgstr "Přídavky"
+
+#: apps/models.py:24
+msgid "Extra stuff: databases for example"
+msgstr "Doplňkové věci, například databáze"
+
+#: apps/models.py:25
+msgid "SSL cert"
+msgstr "SSL cert"
+
+#: apps/models.py:25
+msgid "Service cert + CA cert"
+msgstr ""
+
+#: apps/models.py:26
+msgid "SSL key"
+msgstr "SSL klíč"
+
+#: apps/models.py:26
+msgid "Key without password"
+msgstr "Klíč bez hesla"
+
+#: apps/models.py:28 core/models.py:75 templates/old/requests.html:20
+#: virt/models.py:14
+msgid "Server"
+msgstr ""
+
+#: apps/models.py:29
+msgid "Server for database"
+msgstr "Server pro databázi"
+
+#: apps/models.py:52
+msgid "Yes"
+msgstr "Ano"
+
+#: apps/models.py:52
+msgid "No"
+msgstr "Ne"
+
+#: apps/models.py:92
+msgid "DB engine"
+msgstr "Databázový engine"
+
+#: apps/models.py:94 templates/apps/app_info.html:82
+msgid "Comment"
+msgstr "Komentář"
+
+#: apps/models.py:95
+msgid "App"
+msgstr "Aplikace"
+
+#: apps/models.py:108
+#, fuzzy
+msgid "Message"
+msgstr "Zprávy"
+
+#: apps/models.py:109
+msgid "Complete"
+msgstr "Hotovo"
+
+#: apps/models.py:110
+msgid "Error"
+msgstr "Chyba"
+
+#: apps/models.py:111
+msgid "Message from backend"
+msgstr "Zpráva z backendu"
+
+#: apps/views.py:99
+msgid "Changes has been saved."
+msgstr "Změny byly provedeny"
+
+#: apps/views.py:101
+msgid "Changes has been saved. But app is disabled."
+msgstr "Změny byly provedeny, ale aplikace je vypnutá."
+
+#: apps/views.py:288
+msgid "Database has been removed"
+msgstr "Databáze byla smazána"
+
+#: apps/views.py:312
+msgid "App has been removed"
+msgstr "Aplikace byla smazána"
+
+#: apps/views.py:328
+msgid "App has been restarted"
+msgstr "Aplikace byla restartována"
+
+#: apps/views.py:330
+msgid "App is disabled"
+msgstr "Aplikace je vypnutá"
+
+#: apps/views.py:332
+>>>>>>> e6b67cadf9b1177c8699ddf1c9cd88db495039d1
 msgid "App is not resetable"
 msgstr "Aplikace není resetovatelná"
 
@@ -307,7 +571,11 @@ msgstr ""
 msgid "IPv6 adresa serveru"
 msgstr ""
 
+<<<<<<< HEAD
 #: wsgiadmin/clients/models.py:28 wsgiadmin/templates/admin.html:90
+=======
+#: clients/models.py:28 templates/admin.html:92
+>>>>>>> e6b67cadf9b1177c8699ddf1c9cd88db495039d1
 msgid "Home"
 msgstr "Domů"
 
@@ -423,12 +691,18 @@ msgstr "DIČ"
 msgid "Removed"
 msgstr "Vymazáno"
 
+<<<<<<< HEAD
 #: wsgiadmin/clients/views.py:16 wsgiadmin/stats/views.py:295
 #: wsgiadmin/useradmin/views.py:33 wsgiadmin/useradmin/views.py:52
 #: wsgiadmin/users/views.py:28 wsgiadmin/users/views.py:66
 #: wsgiadmin/users/views.py:83 wsgiadmin/users/views.py:96
 #: wsgiadmin/users/views.py:138 wsgiadmin/users/views.py:183
 #: wsgiadmin/users/views.py:224
+=======
+#: clients/views.py:16 stats/views.py:297 useradmin/views.py:33
+#: useradmin/views.py:52 users/views.py:28 users/views.py:66 users/views.py:83
+#: users/views.py:96 users/views.py:138 users/views.py:183 users/views.py:224
+>>>>>>> e6b67cadf9b1177c8699ddf1c9cd88db495039d1
 msgid "Permission error"
 msgstr "Chyba oprávnění"
 
@@ -445,6 +719,7 @@ msgstr "Adresa smazána"
 msgid "Address %s chose as default"
 msgstr "Adresa %s byla zvolena jako výchozí"
 
+<<<<<<< HEAD
 #: wsgiadmin/core/models.py:15
 msgid "Capability"
 msgstr "Vlastnost"
@@ -516,6 +791,85 @@ msgid "Processed"
 msgstr "Zpracováno"
 
 #: wsgiadmin/dns/forms.py:39
+=======
+#: core/models.py:15
+msgid "Capability"
+msgstr ""
+
+#: core/models.py:27 dns/models.py:23 emails/forms.py:12 emails/forms.py:33
+#: emails/models.py:44 emails/models.py:54 emails/models.py:67
+#: old/domains/forms.py:22 templates/boxes.html:28 templates/domains.html:17
+#: templates/dns/list.html:15
+msgid "Domain"
+msgstr "Doména"
+
+#: core/models.py:28
+msgid "IP address"
+msgstr "IP adresa"
+
+#: core/models.py:29
+msgid "IPv6 address"
+msgstr "IPv6 adresa"
+
+#: core/models.py:30
+msgid "SSH Port"
+msgstr ""
+
+#: core/models.py:31
+msgid "Operating system"
+msgstr ""
+
+#: core/models.py:32
+msgid "API key"
+msgstr ""
+
+#: core/models.py:33
+msgid "Capabilities"
+msgstr ""
+
+#: core/models.py:34
+msgid "Description"
+msgstr "Popis"
+
+#: core/models.py:35
+msgid "Hide in app server field"
+msgstr ""
+
+#: core/models.py:64
+msgid "Messages"
+msgstr "Zprávy"
+
+#: core/models.py:77
+msgid "Execute user/Owner of file"
+msgstr ""
+
+#: core/models.py:78
+msgid "Stdin"
+msgstr ""
+
+#: core/models.py:79
+msgid "Remove stdin after process"
+msgstr ""
+
+#: core/models.py:80 old/requests/models.py:21
+msgid "Stdout"
+msgstr ""
+
+#: core/models.py:81 old/requests/models.py:22
+msgid "Stderr"
+msgstr ""
+
+#: core/models.py:82 old/requests/models.py:23 templates/old/requests.html:21
+msgid "Return code"
+msgstr "Návratový kód"
+
+#: core/models.py:83
+#, fuzzy
+msgid "Processed"
+msgstr "Počet procesů"
+
+#: dns/forms.py:39
+>>>>>>> e6b67cadf9b1177c8699ddf1c9cd88db495039d1
 msgid "MX needs prio"
 msgstr "MX záznam musí mít prioritu"
 
@@ -528,12 +882,21 @@ msgstr "Datum poslední změny"
 msgid "Serial"
 msgstr ""
 
+<<<<<<< HEAD
 #: wsgiadmin/dns/models.py:24 wsgiadmin/templates/dns/list.html:17
 msgid "Admin e-mail"
 msgstr "Administrátorský e-mail"
 
 #: wsgiadmin/dns/models.py:25 wsgiadmin/dns/models.py:48
 #: wsgiadmin/templates/dns/editor.html:23 wsgiadmin/templates/dns/list.html:16
+=======
+#: dns/models.py:24 templates/dns/list.html:17
+msgid "Admin e-mail"
+msgstr "Administrátorský e-mail"
+
+#: dns/models.py:25 dns/models.py:48 templates/dns/editor.html:23
+#: templates/dns/list.html:16
+>>>>>>> e6b67cadf9b1177c8699ddf1c9cd88db495039d1
 msgid "TTL"
 msgstr ""
 
@@ -550,6 +913,7 @@ msgstr "Pořadí"
 msgid "Priority"
 msgstr "Priorita"
 
+<<<<<<< HEAD
 #: wsgiadmin/dns/views.py:61 wsgiadmin/emails/views.py:44
 msgid "Domain has been created"
 msgstr "Doména byla přidána"
@@ -571,6 +935,29 @@ msgid "Record has been removed from the zone"
 msgstr "Záznam byl odstraněn ze zóny"
 
 #: wsgiadmin/dns/views.py:249
+=======
+#: dns/views.py:61 emails/views.py:44
+msgid "Domain has been created"
+msgstr "Doména byla přidána"
+
+#: dns/views.py:94
+msgid "Domain has been updated"
+msgstr "Doména byla upravena"
+
+#: dns/views.py:160
+msgid "Domain zone has been updated"
+msgstr "Zóna byla upravena"
+
+#: dns/views.py:206
+msgid "Domain has been removed"
+msgstr "Doména byla odstraněna"
+
+#: dns/views.py:220
+msgid "Record has been removed from the zone"
+msgstr "Záznam byl odstraněn ze zóny"
+
+#: dns/views.py:249
+>>>>>>> e6b67cadf9b1177c8699ddf1c9cd88db495039d1
 msgid "Configuration has been send to the NS servers."
 msgstr "Nová zóny byla odeslána na NS server"
 
@@ -602,9 +989,14 @@ msgstr "Alias už existuje"
 msgid "Domain name has to be in this format: ^[0-9a-zA-Z\\.]*$"
 msgstr "Doména musí mít tento formát: ^[0-9a-zA-Z_\\.]*$"
 
+<<<<<<< HEAD
 #: wsgiadmin/emails/models.py:10 wsgiadmin/templates/form.html:19
 #: wsgiadmin/templates/login.html:17 wsgiadmin/templates/passwd_form.html:14
 #: wsgiadmin/templates/reg.html:8 wsgiadmin/useradmin/views.py:241
+=======
+#: emails/models.py:10 templates/form.html:19 templates/login.html:17
+#: templates/passwd_form.html:14 templates/reg.html:8 useradmin/views.py:241
+>>>>>>> e6b67cadf9b1177c8699ddf1c9cd88db495039d1
 msgid "Registration"
 msgstr "Registrace"
 
@@ -660,9 +1052,14 @@ msgstr "Předmět"
 msgid "Body"
 msgstr "Tělo"
 
+<<<<<<< HEAD
 #: wsgiadmin/emails/models.py:53 wsgiadmin/old/ftps/models.py:8
 #: wsgiadmin/templates/form.html:18 wsgiadmin/templates/login.html:7
 #: wsgiadmin/templates/old/ftps.html:15
+=======
+#: emails/models.py:53 old/ftps/models.py:8 templates/form.html:18
+#: templates/login.html:7 templates/old/ftps.html:15
+>>>>>>> e6b67cadf9b1177c8699ddf1c9cd88db495039d1
 msgid "Login"
 msgstr "Login"
 
@@ -706,9 +1103,14 @@ msgstr "Přidat schránku"
 msgid "E-mail has been added"
 msgstr "Schránka byla přidána"
 
+<<<<<<< HEAD
 #: wsgiadmin/emails/views.py:159 wsgiadmin/old/db/views.py:127
 #: wsgiadmin/old/ftps/views.py:92 wsgiadmin/useradmin/views.py:166
 #: wsgiadmin/users/views.py:274
+=======
+#: emails/views.py:159 old/db/views.py:127 old/ftps/views.py:92
+#: useradmin/views.py:166 users/views.py:274
+>>>>>>> e6b67cadf9b1177c8699ddf1c9cd88db495039d1
 msgid "Password has been changed"
 msgstr "Heslo bylo změněno"
 
@@ -1186,8 +1588,12 @@ msgstr "Přidána nová doména: %s"
 msgid "Domain has been added"
 msgstr "Doména byla přidána"
 
+<<<<<<< HEAD
 #: wsgiadmin/old/domains/views.py:119 wsgiadmin/templates/admin.html:140
 #: wsgiadmin/templates/boxes.html:20
+=======
+#: old/domains/views.py:119 templates/admin.html:142 templates/boxes.html:20
+>>>>>>> e6b67cadf9b1177c8699ddf1c9cd88db495039d1
 msgid "Add domain"
 msgstr "Přidat doménu"
 
@@ -1259,7 +1665,11 @@ msgstr "Akce"
 msgid "Data"
 msgstr ""
 
+<<<<<<< HEAD
 #: wsgiadmin/service/forms.py:13
+=======
+#: service/forms.py:13
+>>>>>>> e6b67cadf9b1177c8699ddf1c9cd88db495039d1
 msgid "Save"
 msgstr "Uložit"
 
@@ -1281,6 +1691,7 @@ msgstr "Heslo musí mít alespoň %s znaků"
 msgid "First password isn't equal to second one"
 msgstr "První heslo nesouhlasí s druhým"
 
+<<<<<<< HEAD
 #: wsgiadmin/service/views.py:57
 msgid "Create"
 msgstr "Vytvořit"
@@ -1296,6 +1707,23 @@ msgid "Per application (60 CZK/app/month)"
 msgstr "Za aplikaci (60 Kč/app/měsíc)"
 
 #: wsgiadmin/settings/base.py:183
+=======
+#: service/views.py:57
+msgid "Create"
+msgstr "Vytvořit"
+
+#: service/views.py:77 templates/addresses.html:35
+#: templates/apps/app_info.html:90 templates/dns/editor.html:39
+#: templates/dns/list.html:31
+msgid "Update"
+msgstr "Upravit"
+
+#: settings/base.py:181
+msgid "Per application (60 CZK/app/month)"
+msgstr "Za aplikaci (60 Kč/app/měsíc)"
+
+#: settings/base.py:182
+>>>>>>> e6b67cadf9b1177c8699ddf1c9cd88db495039d1
 msgid "Constant fee (200 CZK/196 MB RAM)"
 msgstr "Paušální poplatek (200 Kč/196 MB RAM)"
 
@@ -1308,8 +1736,13 @@ msgstr "Služba"
 msgid "Cost"
 msgstr "Cena"
 
+<<<<<<< HEAD
 #: wsgiadmin/stats/models.py:50
 msgid "Date payed"
+=======
+#: stats/models.py:50
+msgid "Date paid"
+>>>>>>> e6b67cadf9b1177c8699ddf1c9cd88db495039d1
 msgstr "Datum zaplacení"
 
 #: wsgiadmin/stats/models.py:52 wsgiadmin/templates/info.html:115
@@ -1330,6 +1763,7 @@ msgstr "Kredity (včetně bonusu)"
 msgid "Bonus"
 msgstr ""
 
+<<<<<<< HEAD
 #: wsgiadmin/stats/views.py:130
 msgid "Put number into form below."
 msgstr "Do formuláře je nutné vložit celé číslo"
@@ -1381,6 +1815,54 @@ msgid "Administration"
 msgstr "Administrace"
 
 #: wsgiadmin/templates/addresses.html:5 wsgiadmin/templates/admin.html:311
+=======
+#: stats/views.py:132
+msgid "Put number into form below."
+msgstr "Do formuláře je nutné vložit celé číslo"
+
+#: stats/views.py:135
+msgid "Minimum value is 50 credits"
+msgstr "Minimální hodnota je 50 kreditů"
+
+#: stats/views.py:142
+msgid "Credits will been added on your account after payment"
+msgstr "Kredity budou připsány po zaplacení"
+
+#: stats/views.py:147
+msgid "Low level behavior has been setted"
+msgstr "Chování při nízkém kreditu bylo upraveno"
+
+#: stats/views.py:231
+msgid "Address has been changed"
+msgstr "Adresa byla upravena"
+
+#: stats/views.py:233
+msgid "Address hasn't been changed"
+msgstr "Adresa nebyla změněna"
+
+#: stats/views.py:301
+#, python-format
+msgid "API call result: %s"
+msgstr ""
+
+#: templates/addresses.html:5 templates/base.html:64 templates/boxes.html:5
+#: templates/cron.html:5 templates/domains.html:5 templates/info.html:5
+#: templates/redirects.html:5 templates/universal.html:5
+#: templates/users.html:6 templates/apps/app_info.html:5
+#: templates/apps/apps.html:5 templates/dns/editor.html:6
+#: templates/dns/list.html:5 templates/old/apache.html:5
+#: templates/old/db.html:5 templates/old/ftps.html:5
+#: templates/old/requests.html:5 templates/old/subdomains.html:5
+#: templates/stats/bill.html:5 templates/stats/credit.html:5
+#: templates/stats/credits.html:5 templates/stats/payment_done.html:5
+#: templates/stats/payment_error.html:5
+#: templates/stats/payment_infopage.html:5 templates/virt/list.html:5
+#: templates/virt/new_vm.html:5 templates/virt/summary.html:5
+msgid "Administration"
+msgstr "Administrace"
+
+#: templates/addresses.html:5 templates/admin.html:313
+>>>>>>> e6b67cadf9b1177c8699ddf1c9cd88db495039d1
 msgid "Addresses"
 msgstr "Adresy"
 
@@ -1392,6 +1874,7 @@ msgstr "Seznam adres"
 msgid "Street"
 msgstr "Adresa"
 
+<<<<<<< HEAD
 #: wsgiadmin/templates/addresses.html:20 wsgiadmin/templates/cron.html:21
 #: wsgiadmin/templates/redirects.html:23 wsgiadmin/templates/users.html:30
 #: wsgiadmin/templates/apps/apps.html:18
@@ -1430,6 +1913,36 @@ msgstr "Určitě?"
 #: wsgiadmin/templates/old/subdomains_list.html:9
 #: wsgiadmin/templates/virt/list.html:30
 #: wsgiadmin/templates/virt/summary.html:53
+=======
+#: templates/addresses.html:20 templates/cron.html:21
+#: templates/redirects.html:23 templates/users.html:30
+#: templates/apps/apps.html:18 templates/dns/editor.html:26
+#: templates/dns/list.html:19 templates/old/apache.html:18
+#: templates/virt/list.html:18 templates/virt/summary.html:41
+msgid "Actions"
+msgstr "Akce"
+
+#: templates/addresses.html:38 templates/base.html:44 templates/boxes.html:36
+#: templates/users.html:59 templates/apps/app_info.html:60
+#: templates/apps/app_info.html.py:91 templates/apps/apps.html:44
+#: templates/dns/editor.html:40 templates/dns/list.html:33
+#: templates/old/subdomains_list.html:8 templates/virt/list.html:30
+msgid "Are you sure?"
+msgstr "Určitě?"
+
+#: templates/addresses.html:38 templates/boxes.html:36 templates/cron.html:35
+#: templates/cron.html.py:36 templates/domains.html:68
+#: templates/domains.html.py:69 templates/redirects.html:38
+#: templates/redirects.html.py:39 templates/users.html:59
+#: templates/apps/app_info.html:60 templates/apps/app_info.html.py:91
+#: templates/apps/apps.html:44 templates/dns/editor.html:40
+#: templates/dns/list.html:33 templates/old/apache.html:52
+#: templates/old/apache.html.py:53 templates/old/db.html:29
+#: templates/old/db.html.py:30 templates/old/ftps.html:34
+#: templates/old/ftps.html.py:35 templates/old/invoices.html:77
+#: templates/old/invoices.html.py:97 templates/old/subdomains_list.html:9
+#: templates/virt/list.html:30 templates/virt/summary.html:53
+>>>>>>> e6b67cadf9b1177c8699ddf1c9cd88db495039d1
 msgid "Delete"
 msgstr "Smazat"
 
@@ -1445,11 +1958,19 @@ msgstr "superuživatel"
 msgid "back"
 msgstr "Zpět"
 
+<<<<<<< HEAD
 #: wsgiadmin/templates/admin.html:26 wsgiadmin/templates/admin.html.py:331
 msgid "Logout"
 msgstr "Odhlásit"
 
 #: wsgiadmin/templates/admin.html:32 wsgiadmin/templates/admin.html.py:86
+=======
+#: templates/admin.html:26 templates/admin.html.py:333
+msgid "Logout"
+msgstr "Odhlásit"
+
+#: templates/admin.html:32 templates/admin.html.py:88
+>>>>>>> e6b67cadf9b1177c8699ddf1c9cd88db495039d1
 msgid "Dashboard"
 msgstr ""
 
@@ -1461,6 +1982,7 @@ msgstr ""
 msgid "Web apps"
 msgstr "Webové aplikace"
 
+<<<<<<< HEAD
 #: wsgiadmin/templates/admin.html:50 wsgiadmin/templates/admin.html.py:197
 #: wsgiadmin/templates/info.html:51 wsgiadmin/templates/apps/app_info.html:5
 #: wsgiadmin/templates/apps/apps.html:5
@@ -1650,6 +2172,196 @@ msgid "Change password"
 msgstr "Změnit heslo"
 
 #: wsgiadmin/templates/admin.html:324
+=======
+#: templates/admin.html:50 templates/admin.html.py:199 templates/info.html:51
+#: templates/apps/app_info.html:5 templates/apps/apps.html:5
+#: templates/stats/credit.html:24
+msgid "Apps"
+msgstr "Aplikace"
+
+#: templates/admin.html:54
+msgid "VM"
+msgstr ""
+
+#: templates/admin.html:60 templates/admin.html.py:231
+#: templates/apps/app_info.html:75
+msgid "Databases"
+msgstr "Databáze"
+
+#: templates/admin.html:66
+msgid "FTP"
+msgstr ""
+
+#: templates/admin.html:70 templates/admin.html.py:259
+#: templates/domains.html:18
+msgid "E-mails"
+msgstr "E-maily"
+
+#: templates/admin.html:74 templates/admin.html.py:308
+msgid "Settings"
+msgstr "Nastavení"
+
+#: templates/admin.html:98
+msgid "Payout stats"
+msgstr "Statistiky odečtů"
+
+#: templates/admin.html:104
+msgid "Bought credit"
+msgstr "Nákoupené kredity"
+
+#: templates/admin.html:110 templates/stats/credit.html:65
+msgid "Buy some credit"
+msgstr "Koupit kredit"
+
+#: templates/admin.html:115 templates/admin.html.py:119
+#: templates/master.html:9
+msgid "Master panel"
+msgstr ""
+
+#: templates/admin.html:125
+msgid "User's list"
+msgstr "Seznam uživatelů"
+
+#: templates/admin.html:131
+msgid "DNS settings"
+msgstr "Nastavení DNS"
+
+#: templates/admin.html:135
+msgid "Your domains"
+msgstr "Domény"
+
+#: templates/admin.html:151
+msgid "Domains list"
+msgstr "Seznam domén"
+
+#: templates/admin.html:158
+msgid "Add registered domain"
+msgstr "Přidat registrovanou doménu"
+
+#: templates/admin.html:163
+msgid "Web applications"
+msgstr "Webové aplikace"
+
+#: templates/admin.html:167
+msgid "Your apps"
+msgstr "Vaše aplikace"
+
+#: templates/admin.html:173
+msgid "Add static page"
+msgstr "Přidat statickou stránku"
+
+#: templates/admin.html:179
+msgid "Add PHP app"
+msgstr "Přidat PHP aplikaci"
+
+#: templates/admin.html:184
+msgid "Add WSGI app"
+msgstr "Přidat WSGI aplikaci"
+
+#: templates/admin.html:190 templates/cron.html:5
+msgid "Crontab"
+msgstr ""
+
+#: templates/admin.html:195
+msgid "Add cron record"
+msgstr "Přidat cron"
+
+#: templates/admin.html:201
+msgid "Apps list"
+msgstr "Seznam aplikací"
+
+#: templates/admin.html:205
+msgid "Add static app"
+msgstr "Přidat statickou aplikaci"
+
+#: templates/admin.html:208
+msgid "Add php app"
+msgstr "Přidat PHP aplikaci"
+
+#: templates/admin.html:211
+msgid "Add python app"
+msgstr "Přidat pythoní aplikaci"
+
+#: templates/admin.html:214
+msgid "Add native app"
+msgstr "Přidat nativní aplikaci"
+
+#: templates/admin.html:217
+msgid "Add proxy"
+msgstr "Přidat proxy"
+
+#: templates/admin.html:221
+msgid "Virtual machines"
+msgstr ""
+
+#: templates/admin.html:223
+msgid "Your virtual machines"
+msgstr ""
+
+#: templates/admin.html:227 templates/virt/new_vm.html:5
+msgid "New virtual machine"
+msgstr ""
+
+#: templates/admin.html:235
+msgid "MySQL databases"
+msgstr "MySQL databáze"
+
+#: templates/admin.html:241
+msgid "PostgreSQL databases"
+msgstr "PostgreSQL databáze"
+
+#: templates/admin.html:248
+msgid "Add MySQL database"
+msgstr "Přidat MySQL databázi"
+
+#: templates/admin.html:254
+msgid "Add postgresql database"
+msgstr "Přidat PostgreSQL databázi"
+
+#: templates/admin.html:263
+msgid "List of mailboxes"
+msgstr "Seznam e-mailových schránek"
+
+#: templates/admin.html:269
+msgid "Redirections"
+msgstr "Přesměrování"
+
+#: templates/admin.html:276
+msgid "Add domain for mailboxes"
+msgstr "Přidat domény pro e-maily"
+
+#: templates/admin.html:282 templates/boxes.html:21
+msgid "Add mailbox"
+msgstr "Přidat e-mailovou schránku"
+
+#: templates/admin.html:288
+msgid "Add redirection"
+msgstr "Přidat přesměrování"
+
+#: templates/admin.html:293 templates/old/ftps.html:5
+msgid "FTP accounts"
+msgstr "FTP účty"
+
+#: templates/admin.html:297
+msgid "Add FTP account"
+msgstr "Přidat FTP přístup"
+
+#: templates/admin.html:303 templates/old/ftps.html:11
+msgid "List of FTP accounts"
+msgstr "Seznam FTP účtů"
+
+#: templates/admin.html:310
+msgid "New address"
+msgstr "Nová adresa"
+
+#: templates/admin.html:319 templates/boxes.html:35 templates/old/db.html:26
+#: templates/old/db.html.py:27 templates/old/ftps.html:28
+#: templates/old/ftps.html.py:29
+msgid "Change password"
+msgstr "Změnit heslo"
+
+#: templates/admin.html:326
+>>>>>>> e6b67cadf9b1177c8699ddf1c9cd88db495039d1
 msgid "Change SSH/SFTP/FTP password"
 msgstr "Změnit SSH/SFTP/FTP heslo"
 
@@ -1734,7 +2446,11 @@ msgstr ""
 msgid "Pravděpodobně již stejná položka kterou zadáváte, v databázi existuje."
 msgstr ""
 
+<<<<<<< HEAD
 #: wsgiadmin/templates/form.html:20 wsgiadmin/templates/login.html:18
+=======
+#: templates/form.html:20 templates/login.html:18
+>>>>>>> e6b67cadf9b1177c8699ddf1c9cd88db495039d1
 msgid "Lost password"
 msgstr "Ztracené heslo"
 
@@ -1762,8 +2478,13 @@ msgstr "Poplatky"
 msgid "Count"
 msgstr "Počet"
 
+<<<<<<< HEAD
 #: wsgiadmin/templates/info.html:48 wsgiadmin/templates/info.html.py:81
 #: wsgiadmin/templates/stats/credit.html:37 wsgiadmin/virt/models.py:35
+=======
+#: templates/info.html:48 templates/info.html.py:81
+#: templates/stats/credit.html:37 virt/models.py:35
+>>>>>>> e6b67cadf9b1177c8699ddf1c9cd88db495039d1
 msgid "Credits per day"
 msgstr "Kreditů za den"
 
@@ -1975,8 +2696,13 @@ msgstr "Datum registrace"
 msgid "Reverse"
 msgstr "Otočit pořadí"
 
+<<<<<<< HEAD
 #: wsgiadmin/templates/users.html:26 wsgiadmin/templates/apps/apps.html:29
 #: wsgiadmin/templates/virt/list.html:29
+=======
+#: templates/users.html:26 templates/apps/apps.html:29
+#: templates/virt/list.html:29
+>>>>>>> e6b67cadf9b1177c8699ddf1c9cd88db495039d1
 msgid "Info"
 msgstr ""
 
@@ -2008,6 +2734,7 @@ msgstr ""
 msgid "Host"
 msgstr ""
 
+<<<<<<< HEAD
 #: wsgiadmin/templates/apps/app_info.html:31
 msgid "Server domain and IP"
 msgstr "Doména a IP serveru"
@@ -2039,6 +2766,35 @@ msgid "Akce"
 msgstr ""
 
 #: wsgiadmin/templates/apps/app_info.html:100
+=======
+#: templates/apps/app_info.html:31
+msgid "Server domain and IP"
+msgstr "Doména serveru a IP"
+
+#: templates/apps/app_info.html:38
+msgid "Stav"
+msgstr ""
+
+#: templates/apps/app_info.html:40
+msgid "Not installed"
+msgstr "Nenainstalováno"
+
+#: templates/apps/app_info.html:47 templates/apps/apps.html:31
+#: templates/old/apache.html:40 templates/old/apache.html.py:41
+#: templates/virt/summary.html:46
+msgid "Restart"
+msgstr ""
+
+#: templates/apps/app_info.html:78 templates/apps/app_info.html.py:97
+msgid "Add database to this app"
+msgstr "Přidat k této aplikaci databázi"
+
+#: templates/apps/app_info.html:83 templates/old/invoices.html:60
+msgid "Akce"
+msgstr ""
+
+#: templates/apps/app_info.html:100
+>>>>>>> e6b67cadf9b1177c8699ddf1c9cd88db495039d1
 msgid "Log files"
 msgstr "Log soubory"
 
@@ -2046,9 +2802,14 @@ msgstr "Log soubory"
 msgid "List of apps"
 msgstr "Seznam aplikací"
 
+<<<<<<< HEAD
 #: wsgiadmin/templates/apps/apps.html:15
 #: wsgiadmin/templates/old/apache.html:15
 #: wsgiadmin/templates/virt/list.html:15
+=======
+#: templates/apps/apps.html:15 templates/old/apache.html:15
+#: templates/virt/list.html:15
+>>>>>>> e6b67cadf9b1177c8699ddf1c9cd88db495039d1
 msgid "Create date"
 msgstr "Datum vytvoření"
 
@@ -2097,7 +2858,11 @@ msgstr "Domény a DNS záznamy"
 msgid "List of domains"
 msgstr "Seznam domén"
 
+<<<<<<< HEAD
 #: wsgiadmin/templates/dns/list.html:32
+=======
+#: templates/dns/list.html:32
+>>>>>>> e6b67cadf9b1177c8699ddf1c9cd88db495039d1
 msgid "Records editor"
 msgstr "Editor DNS záznamů"
 
@@ -2265,12 +3030,21 @@ msgstr "statistiky kreditů"
 msgid "Credit statistics"
 msgstr "Kreditové statistiky"
 
+<<<<<<< HEAD
 #: wsgiadmin/templates/stats/bill.html:14
 msgid "What you payed in last 14 days"
 msgstr "Odečtené kredity za posledních 14 dní"
 
 #: wsgiadmin/templates/stats/bill.html:25
 msgid "What you payed by months"
+=======
+#: templates/stats/bill.html:14
+msgid "What you paid in last 14 days"
+msgstr "Odečtené kredity za posledních 14 dní"
+
+#: templates/stats/bill.html:25
+msgid "What you paid by months"
+>>>>>>> e6b67cadf9b1177c8699ddf1c9cd88db495039d1
 msgstr "Odečtené kredity podle měsíců"
 
 #: wsgiadmin/templates/stats/credit.html:5
@@ -2380,6 +3154,7 @@ msgstr "přidat adresu"
 msgid "List of payments"
 msgstr "Seznam plateb"
 
+<<<<<<< HEAD
 #: wsgiadmin/templates/stats/credits.html:21
 #: wsgiadmin/templates/stats/payment_infopage.html:27
 #: wsgiadmin/templates/virt/list.html:17
@@ -2390,6 +3165,15 @@ msgstr "Stav"
 #: wsgiadmin/templates/stats/credits.html:36
 #: wsgiadmin/templates/stats/payment_infopage.html:28
 msgid "payed"
+=======
+#: templates/stats/credits.html:21 templates/stats/payment_infopage.html:27
+#: templates/virt/list.html:17 templates/virt/summary.html:37
+msgid "State"
+msgstr "Stav"
+
+#: templates/stats/credits.html:36 templates/stats/payment_infopage.html:28
+msgid "paid"
+>>>>>>> e6b67cadf9b1177c8699ddf1c9cd88db495039d1
 msgstr "zaplaceno"
 
 #: wsgiadmin/templates/stats/credits.html:38
@@ -2397,8 +3181,13 @@ msgstr "zaplaceno"
 msgid "No payment"
 msgstr "Zatím žádná platba"
 
+<<<<<<< HEAD
 #: wsgiadmin/templates/stats/credits.html:42
 msgid "Payed!"
+=======
+#: templates/stats/credits.html:42
+msgid "Paid!"
+>>>>>>> e6b67cadf9b1177c8699ddf1c9cd88db495039d1
 msgstr "Zaplaceno!"
 
 #: wsgiadmin/templates/stats/credits.html:45
@@ -2517,6 +3306,7 @@ msgstr "Bankovní účet"
 msgid "Variable symbol"
 msgstr "Variabilní symbol"
 
+<<<<<<< HEAD
 #: wsgiadmin/templates/virt/list.html:5
 msgid "Virtual Machines"
 msgstr "Virtuální servery"
@@ -2604,6 +3394,96 @@ msgid "VNC Access"
 msgstr "VNC přístup"
 
 #: wsgiadmin/useradmin/forms.py:21
+=======
+#: templates/virt/list.html:5
+#, fuzzy
+msgid "Virtual Machines"
+msgstr "Stroj"
+
+#: templates/virt/list.html:11
+#, fuzzy
+msgid "List of virtual machines"
+msgstr "Seznam domén"
+
+#: templates/virt/list.html:27 templates/virt/summary.html:38
+msgid "running"
+msgstr ""
+
+#: templates/virt/list.html:27 templates/virt/summary.html:38
+msgid "not running"
+msgstr ""
+
+#: templates/virt/list.html:48
+#, fuzzy
+msgid ""
+"Crap! No virtual machines found. However, you can add one with the menu on "
+"left side."
+msgstr "Žádná doména ještě nebyla přidána, můžete to napravit v levém menu."
+
+#: templates/virt/new_vm.html:11
+msgid "Get your own server"
+msgstr ""
+
+#: templates/virt/new_vm.html:16
+msgid "Small one"
+msgstr ""
+
+#: templates/virt/new_vm.html:29
+msgid "Big one"
+msgstr ""
+
+#: templates/virt/summary.html:5
+#, fuzzy
+msgid "Virtual Machine"
+msgstr "Stroj"
+
+#: templates/virt/summary.html:17
+#, fuzzy
+msgid "Summary of"
+msgstr "Souhrn"
+
+#: templates/virt/summary.html:21
+msgid "CPUs"
+msgstr ""
+
+#: templates/virt/summary.html:25 virt/models.py:33
+msgid "Memory"
+msgstr ""
+
+#: templates/virt/summary.html:29
+msgid "Disks"
+msgstr ""
+
+#: templates/virt/summary.html:32
+msgid "disk not found"
+msgstr ""
+
+#: templates/virt/summary.html:43
+msgid "Start"
+msgstr ""
+
+#: templates/virt/summary.html:45
+msgid "Reboot"
+msgstr ""
+
+#: templates/virt/summary.html:47
+msgid "Shutdown"
+msgstr ""
+
+#: templates/virt/summary.html:48
+msgid "Force shutdown"
+msgstr ""
+
+#: templates/virt/summary.html:51
+msgid "Backend install"
+msgstr ""
+
+#: templates/virt/summary.html:63
+msgid "VNC Access"
+msgstr ""
+
+#: useradmin/forms.py:21
+>>>>>>> e6b67cadf9b1177c8699ddf1c9cd88db495039d1
 msgid "This username is already in use"
 msgstr "Vybrané uživatelské jméno je už použito"
 
@@ -2639,15 +3519,24 @@ msgstr ""
 msgid "Given email doesn't belong to any user"
 msgstr "Zadaná adresa nepatří žádnému uživateli"
 
+<<<<<<< HEAD
 #: wsgiadmin/useradmin/views.py:42
 msgid "Site has been copied"
 msgstr "Stránka byla zkopírována"
 
 #: wsgiadmin/useradmin/views.py:140
+=======
+#: useradmin/views.py:42
+msgid "Site has been copied"
+msgstr "Stránka byla zkopírována"
+
+#: useradmin/views.py:140
+>>>>>>> e6b67cadf9b1177c8699ddf1c9cd88db495039d1
 #, python-format
 msgid "Your password has been reseted: %s"
 msgstr "Heslo bylo resetováno: %s"
 
+<<<<<<< HEAD
 #: wsgiadmin/useradmin/views.py:144
 msgid "Password reset"
 msgstr "Reset hesla"
@@ -2661,11 +3550,30 @@ msgid "Change password for this administration"
 msgstr "Změna hesla pro administraci"
 
 #: wsgiadmin/useradmin/views.py:221
+=======
+#: useradmin/views.py:144
+msgid "Password reset"
+msgstr "Reset hesla"
+
+#: useradmin/views.py:151
+msgid "Password has been reseted and sent to your email"
+msgstr "Heslo bylo resetováno a odesláno na váš e-mail"
+
+#: useradmin/views.py:175
+msgid "Change password for this administration"
+msgstr "Změna hesla pro administraci"
+
+#: useradmin/views.py:221
+>>>>>>> e6b67cadf9b1177c8699ddf1c9cd88db495039d1
 #, python-format
 msgid "User %s has been registered."
 msgstr "Uživatel %s byl registrován"
 
+<<<<<<< HEAD
 #: wsgiadmin/useradmin/views.py:222
+=======
+#: useradmin/views.py:222
+>>>>>>> e6b67cadf9b1177c8699ddf1c9cd88db495039d1
 msgid "New registration"
 msgstr "Nová registrace"
 
@@ -2689,6 +3597,7 @@ msgstr "Úprava uživatele"
 msgid "Update information"
 msgstr "Upravit informace"
 
+<<<<<<< HEAD
 #: wsgiadmin/users/views.py:283
 msgid "Change password for SSH/FTP"
 msgstr "Změna heslo pro SSH/SFTP"
@@ -2720,13 +3629,57 @@ msgstr "Velikost disku"
 #: wsgiadmin/virt/models.py:34
 msgid "in GB unit"
 msgstr "v jednotkách GB"
+=======
+#: users/views.py:283
+msgid "Change password for SSH/FTP"
+msgstr "Změna heslo pro SSH/SFTP"
+
+#: virt/models.py:8
+msgid "Created date"
+msgstr "Datum vytvoření"
+
+#: virt/models.py:9
+#, fuzzy
+msgid "Lastest update"
+msgstr "Úprava uživatele"
+
+#: virt/models.py:11
+msgid "Ownident"
+msgstr ""
+
+#: virt/models.py:12
+msgid "Token"
+msgstr ""
+
+#: virt/models.py:33
+msgid "in MB unit"
+msgstr ""
+
+#: virt/models.py:34
+msgid "Disk size"
+msgstr ""
+
+#: virt/models.py:34
+msgid "in GB unit"
+msgstr ""
+
+#~ msgid ""
+#~ "There is no relation to DNS or Domains menu (if you see one). Write your "
+#~ "domains separated by spaces."
+#~ msgstr ""
+#~ "Není zde žádná vazba na sekci DNS nebo domény (pokud je vidíte). Napište "
+#~ "domény oddělené mezerami."
+>>>>>>> e6b67cadf9b1177c8699ddf1c9cd88db495039d1
 
 #~ msgid "Hostname/address"
 #~ msgstr "Hostname/adresa"
 
+<<<<<<< HEAD
 #~ msgid "it has to match with ssh config"
 #~ msgstr "Musí souhlasit s ~/.ssh/config"
 
+=======
+>>>>>>> e6b67cadf9b1177c8699ddf1c9cd88db495039d1
 #~ msgid "It already has invoice"
 #~ msgstr "Tato platba má již svoji fakturu"
 
@@ -2736,6 +3689,15 @@ msgstr "v jednotkách GB"
 #~ msgid "Nameservers"
 #~ msgstr "Jmenné servery"
 
+<<<<<<< HEAD
+=======
+#~ msgid "payed"
+#~ msgstr "zaplaceno"
+
+#~ msgid "Payed!"
+#~ msgstr "Zaplaceno!"
+
+>>>>>>> e6b67cadf9b1177c8699ddf1c9cd88db495039d1
 #~ msgid "Given username doesn't exists"
 #~ msgstr "Uživatelské jméno neexistuje"
 

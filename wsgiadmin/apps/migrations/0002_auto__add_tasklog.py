@@ -8,15 +8,22 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding field 'App.db_server'
-        db.add_column(u'apps_app', 'db_server',
-                      self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='app_db_set', null=True, to=orm['core.Server']),
-                      keep_default=False)
+        # Adding model 'TaskLog'
+        db.create_table(u'apps_tasklog', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('date', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
+            ('app', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['apps.App'])),
+            ('msg', self.gf('django.db.models.fields.CharField')(max_length=512)),
+            ('complete', self.gf('django.db.models.fields.BooleanField')(default=False)),
+            ('error', self.gf('django.db.models.fields.BooleanField')(default=False)),
+            ('backend_msg', self.gf('django.db.models.fields.CharField')(max_length=512, null=True, blank=True)),
+        ))
+        db.send_create_signal(u'apps', ['TaskLog'])
 
 
     def backwards(self, orm):
-        # Deleting field 'App.db_server'
-        db.delete_column(u'apps_app', 'db_server_id')
+        # Deleting model 'TaskLog'
+        db.delete_table(u'apps_tasklog')
 
 
     models = {
@@ -28,7 +35,7 @@ class Migration(SchemaMigration):
             'date': ('django.db.models.fields.DateField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'db_server': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'app_db_set'", 'null': 'True', 'to': u"orm['core.Server']"}),
             'disabled': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'domains': ('django.db.models.fields.CharField', [], {'max_length': '512', 'null': 'True', 'blank': 'True'}),
+            'domains': ('django.db.models.fields.CharField', [], {'max_length': '512'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'installed': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '256'}),
@@ -45,6 +52,16 @@ class Migration(SchemaMigration):
             'db_type': ('django.db.models.fields.CharField', [], {'max_length': '32'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'password': ('django.db.models.fields.CharField', [], {'max_length': '256'})
+        },
+        u'apps.tasklog': {
+            'Meta': {'object_name': 'TaskLog'},
+            'app': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['apps.App']"}),
+            'backend_msg': ('django.db.models.fields.CharField', [], {'max_length': '512', 'null': 'True', 'blank': 'True'}),
+            'complete': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'date': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
+            'error': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'msg': ('django.db.models.fields.CharField', [], {'max_length': '512'})
         },
         u'auth.group': {
             'Meta': {'object_name': 'Group'},
@@ -89,10 +106,12 @@ class Migration(SchemaMigration):
         },
         u'core.server': {
             'Meta': {'object_name': 'Server'},
-            'capabilities': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['core.Capability']", 'symmetrical': 'False'}),
+            'capabilities': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': u"orm['core.Capability']", 'null': 'True', 'blank': 'True'}),
+            'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'domain': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'ip': ('django.db.models.fields.IPAddressField', [], {'default': "'127.0.0.1'", 'max_length': '15'}),
+            'ip': ('django.db.models.fields.CharField', [], {'default': "'127.0.0.1'", 'max_length': '64', 'null': 'True', 'blank': 'True'}),
+            'ipv6': ('django.db.models.fields.CharField', [], {'default': "'::1'", 'max_length': '64', 'null': 'True', 'blank': 'True'}),
             'key': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
             'os': ('django.db.models.fields.CharField', [], {'default': "'debian6'", 'max_length': '64'}),

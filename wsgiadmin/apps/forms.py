@@ -43,7 +43,7 @@ class AppForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(AppForm, self).__init__(*args, **kwargs)
-        self.fields["domains"].help_text = _("There is no relation to DNS or Domains menu (if you see one). Write your domains separated by spaces.")
+        self.fields["domains"].help_text = _("On these domains your app will listen. There is no relation to DNS. Write your domains separated by spaces. For example: mydomain.cz www.mydomain.cz")
 
     def clean_domains(self):
         domains = self.cleaned_data["domains"].split()

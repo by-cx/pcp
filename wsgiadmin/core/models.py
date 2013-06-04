@@ -31,6 +31,8 @@ class Server(models.Model):
     os = models.CharField(_("Operating system"), max_length=64, default="debian6", choices=OSS)
     key = models.TextField(_("API key"), null=True, blank=True)
     capabilities = models.ManyToManyField(Capability, verbose_name=_("Capabilities"), null=True, blank=True)
+    description = models.TextField(_("Description"), null=True, blank=True)
+    hide = models.BooleanField(_("Hide in app server field"), default=False)
 
     user = models.ForeignKey(User, blank=True, null=True)
 
@@ -51,7 +53,10 @@ class Server(models.Model):
         return "root@%s -p %d" % (self.ip, self.ssh_port)
 
     def __unicode__(self):
-        return unicode(self.name)
+        if self.description:
+            return u"%s (%s)" % (self.name, self.description)
+        else:
+            return u"%s" % self.name
 
 
 class Log(models.Model):
@@ -69,9 +74,9 @@ class CommandLog(models.Model):
     date = models.DateTimeField(_("Date"), auto_now_add=True)
     server = models.ForeignKey(Server, verbose_name=_("Server"))
     command = models.CharField(_("Command"), max_length=512)
-    execute_user = models.CharField(_("Execute user"), max_length=128, default="root")
+    execute_user = models.CharField(_("Execute user/Owner of file"), max_length=128, default="root")
     stdin = models.TextField(_("Stdin"), null=True, blank=True)
-    rm_stdin = models.BooleanField(_("Remove stdin adter process"), default=False)
+    rm_stdin = models.BooleanField(_("Remove stdin after process"), default=False)
     result_stdout = models.TextField(_("Stdout"), null=True, blank=True)
     result_stderr = models.TextField(_("Stderr"), null=True, blank=True)
     status_code = models.IntegerField(_("Return code"), null=True, blank=True)

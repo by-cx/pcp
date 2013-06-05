@@ -24,6 +24,7 @@ class Capability(models.Model):
 
 class Server(models.Model):
     name = models.CharField(_("Name"), max_length=128)
+    priority = models.IntegerField(_("Priority"), default=5, choices=[(x, x) for x in range(1, 11)], help_text=_("Lower is higher"))
     domain = models.CharField(_("Domain"), max_length=128)
     ip = models.CharField(_("IP address"), default="127.0.0.1", max_length=64, blank=True, null=True)
     ipv6 = models.CharField(_("IPv6 address"), default="::1", max_length=64, blank=True, null=True)
@@ -57,6 +58,9 @@ class Server(models.Model):
             return u"%s (%s)" % (self.name, self.description)
         else:
             return u"%s" % self.name
+
+    class Meta:
+        ordering = ("priority", )
 
 
 class PythonInterpreter(models.Model):

@@ -95,8 +95,6 @@ class AppBackend(App):
     def get_logs(self):
         parms = self.get_parmameters()
         logfiles = []
-        print "ls \"%(home)s/logs/\"" % parms
-        print self.script.run("ls \"%(home)s/logs/\"" % parms)
         for logfile in self.script.run("ls \"%(home)s/logs/\"" % parms)["stdout"].split():
             if re.match(".*\.log$", logfile):
                 path = os.path.join("%(home)s/logs/" % parms, logfile.strip())

@@ -76,7 +76,7 @@ class AppParametersView(TemplateView):
         form = self.get_form()(request.POST)
         app = self.get_object()
         if app.app_type == "python":
-            form.fields["python"].choices = [(python.name, python.name) for python in self.get_object().core_server.pythoninterpreter_set.all()]
+            form.fields["python"].choices = [(python.name, python.name) for python in self.get_object().core_server.pythoninterpreter_set.order_by("priority")]
         if form.is_valid():
             parms = {}
             for field in form.cleaned_data:
@@ -110,7 +110,7 @@ class AppParametersView(TemplateView):
         context = self.get_context_data(**kwargs)
         form = self.get_form()(initial=self.get_initial())
         if self.get_object().app_type == "python":
-            form.fields["python"].choices = [(python.name, python.name) for python in self.get_object().core_server.pythoninterpreter_set.all()]
+            form.fields["python"].choices = [(python.name, python.name) for python in self.get_object().core_server.pythoninterpreter_set.order_by("priority")]
         context["form"] = form
         return self.render_to_response(context)
 

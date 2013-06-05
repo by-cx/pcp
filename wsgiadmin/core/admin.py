@@ -13,7 +13,7 @@ class PythonInterpreterInline(admin.TabularInline):
 
 
 class ServerAdmin(admin.ModelAdmin):
-    list_display = ("name", "domain", "ip", "ssh", "capabilities_str", "libvirt_url", )
+    list_display = ("name", "domain", "ip", "ssh", "capabilities_str", "priority", )
     list_display_links = ("name", )
     ordering = ['name']
     inlines = [

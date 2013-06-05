@@ -5,9 +5,9 @@ from wsgiadmin.core.models import Server, Capability
 def server_chooser(capname, hidden=True):
     capability = Capability.objects.get(name=capname)
     if hidden:
-        return Server.objects.filter(capabilities__in=[capability.id])
+        return Server.objects.filter(capabilities__in=[capability.id]).order_by("priority")
     else:
-        return Server.objects.filter(capabilities__in=[capability.id], hide=False)
+        return Server.objects.filter(capabilities__in=[capability.id], hide=False).order_by("priority")
 
 
 def get_mail_server():

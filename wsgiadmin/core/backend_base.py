@@ -214,13 +214,14 @@ class ParamikoScript(BaseScript):
         log.execute_user = "root"
         log.save()
         stdin, stdout, stderr = ssh.exec_command(cmd)
-        log.result_stdout = stdout.read()
-        log.result_stderr = stderr.read()
+        data = {"stdout": stdout.read(), "stderr": stderr.read()}
+        log.result_stdout = data.get("stdout")
+        log.result_stderr = data.get("stderr")
         log.status_code = stdout.channel.recv_exit_status()
         log.processed = True
         log.save()
         ssh.close()
-        return {"stdout": stdout.read(), "stderr": stderr.read()}
+        return data
 
 
 

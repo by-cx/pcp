@@ -19,6 +19,15 @@
             <th>{% trans "FTP/SFTP" %}</th>
             <td>{% trans "Host" %}: {{ app.core_server.domain }} / {% trans "User" %}: {{ app.get_user }}</td>
         </tr>
+        {% if app.db_server %}
+        <tr>
+            <th>{% trans "Database server" %}</th>
+            <td>
+                {{ app.db_server.domain }}<br>
+                <em>{% trans "If you want connect to database, use this domain." %}</em>
+            </td>
+        </tr>
+        {% endif %}
         <tr>
             <th>{% trans "Domains" %}</th>
             <td>{{ app.domains }}</td>

@@ -565,6 +565,7 @@ class DbObject(Db):
     def uninstall(self):
         if self.db_type == "mysql":
             self.script.add_cmd("mysql -u root", stdin="DROP DATABASE %s;" % self.name)
+            self.script.add_cmd("mysql -u root", stdin="DROP USER %s;" % self.name)
         elif self.db_type == "pgsql":
             self.script.add_cmd("dropdb %s" % self.name)
             self.script.add_cmd("dropuser %s" % self.name)

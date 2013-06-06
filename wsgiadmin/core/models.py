@@ -68,9 +68,13 @@ class PythonInterpreter(models.Model):
     name = models.CharField(_("Python name/version"), max_length=128)
     cmd = models.CharField(_("Path to python binary"), max_length=128)
     virtualenv = models.CharField(_("Path to virtualenv binary"), max_length=128)
+    priority = models.IntegerField(_("Priority"), default=5, choices=[(x, x) for x in range(1, 11)], help_text=_("Lower is higher"))
 
     def __unicode__(self):
         return unicode("%s on %s" % (self.name, self.server.name))
+
+    class Meta:
+        ordering = ("priority", )
 
 
 class Log(models.Model):

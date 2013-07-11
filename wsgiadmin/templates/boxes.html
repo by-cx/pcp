@@ -18,7 +18,7 @@
     <hr>
     <p>
         <a href="{% url 'email_domain_add' %}" class="btn btn-primary"><i class="icon-plus icon-white"></i> {% trans "Add domain" %}</a>
-        <a href="{% url 'add_mailbox' %}" class="btn btn-primary"><i class="icon-plus icon-white"></i> {% trans "Add mailbox" %}</a>
+        {% if object_list %}<a href="{% url 'add_mailbox' %}" class="btn btn-primary"><i class="icon-plus icon-white"></i> {% trans "Add mailbox" %}</a>{% endif %}
     </p>
     <hr>
 

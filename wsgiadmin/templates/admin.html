@@ -276,6 +276,7 @@
                                 {% trans "Add domain for mailboxes" %}
                             </a>
                         </li>
+                        {% if user.email_domain_set.count %}
                         <li>
                             <a href="{% url 'add_mailbox' %}">
                                 <i class="icon-plus"></i>
@@ -288,6 +289,7 @@
                                 {% trans "Add redirection" %}
                             </a>
                         </li>
+                        {% endif %}
                     {% endif %}
                     {% if menu_active == "ftps" %}
                         <li class="nav-header">{% trans "FTP accounts" %}</li>

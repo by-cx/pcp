@@ -28,7 +28,7 @@ class DbForm(ModelForm):
 
     class Meta:
         model = Db
-        fields = ["db_type", "password", "comment"]
+        fields = ["db_type", "password", "comment", "pg_postgis"]
         widgets = {
             'password': forms.PasswordInput,
         }

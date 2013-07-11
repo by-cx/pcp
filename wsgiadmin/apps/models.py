@@ -91,6 +91,7 @@ class Db(models.Model):
     date = models.DateField(_("Date"), auto_now_add=True)
     db_type = models.CharField(_("DB engine"), max_length=32, choices=(("mysql", "MySQL"), ("pgsql", "PgSQL")))
     password = models.CharField(_("Password"), max_length=256)
+    pg_postgis = models.BooleanField(_("PostGIS support"), default=False, help_text=_("Just for PostgreSQL"))
     comment = models.TextField(_("Comment"), blank=True, null=True)
     app = models.ForeignKey(App, verbose_name=_("App"))
 

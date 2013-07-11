@@ -551,7 +551,10 @@ class DbObject(Db):
             self.script.add_cmd("mysql -u root", stdin="GRANT ALL PRIVILEGES ON %s.* TO '%s'@'%%' WITH GRANT OPTION;" % (self.name, self.name))
         elif self.db_type == "pgsql":
             self.script.add_cmd("createuser -D -R -S %s" % self.name)
-            self.script.add_cmd("createdb -O %s %s" % (self.name, self.name))
+            if self.pg_postgis:
+                self.script.add_cmd("createdb -T template_postgis -O %s %s" % (self.name, self.name))
+            else:
+                self.script.add_cmd("createdb -O %s %s" % (self.name, self.name))
             self.passwd(self.password)
 
     def passwd(self, password):

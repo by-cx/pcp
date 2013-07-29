@@ -19,7 +19,7 @@ class App(models.Model):
     installed = models.BooleanField(_("Installed"), default=False)
     app_type = models.CharField(_("Type"), max_length=20, choices=SITE_TYPE_CHOICES, blank=True, null=True)
     name = models.CharField(_("Name"), max_length=256, help_text=_("Name of your application"))
-    domains = models.CharField(_("Domains"), max_length=512, blank=False, null=False)
+    domains = models.CharField(_("Domains"), max_length=1024, blank=False, null=False)
     parameters_data = models.TextField(_("Parameters"), blank=True, null=True)
     addons_data = models.TextField(_("Addons"), blank=True, null=True, help_text=_("Extra stuff: databases for example"))
     ssl_cert = models.TextField(_("SSL cert"), blank=True, null=True, help_text=_("Service cert + CA cert"))

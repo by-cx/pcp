@@ -14,6 +14,7 @@
         <tr>
             <th>{% trans "Create date" %}</th>
             <th>{% trans "Type" %}</th>
+            <th>{% trans "Appid" %}</th>
             <th>{% trans "Name" %}</th>
             <th>{% trans "Actions" %}</th>
         </tr>
@@ -24,6 +25,7 @@
                 <tr>
                     <td>{{ app.date }}</td>
                     <td>{% trans app.app_type %}</td>
+                    <td>{{ app.get_user }}</td>
                     <td>{{ app.name }}</td>
                     <td class="list_actions">
                         <a href="{% url 'app_detail' app_id=app.id %}" class="btn btn-info btn-mini"><i class="icon-info-sign icon-white"></i> {% trans "Info" %}</a>

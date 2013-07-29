@@ -70,7 +70,7 @@ class AppParametersForm(forms.Form):
     this_app = None
 
     domains = forms.CharField(
-        max_length=512,
+        max_length=1024,
         required=False,
         label=_("Domains"),
         help_text=_("There is no relation to DNS or Domains menu. Write your domains separated by spaces.")
@@ -89,7 +89,7 @@ class AppParametersForm(forms.Form):
         for x in [app.domains_list for app in App.objects.all() if not self.this_app or self.this_app.id != app.id]:
             used_domains += x
         for domain in domains:
-            if not re.match("^[0-9a-z_\.\-]*$", domain):
+            if not re.match("^[0-9a-z_\.\-\*]*$", domain):
                 raise forms.ValidationError(_("Each domain has to be in this format: ^[0-9a-z_\.\-]*$"))
             if domain in used_domains:
                 raise forms.ValidationError(_("One of your domain is already used. (%s)" % domain))

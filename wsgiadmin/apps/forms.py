@@ -127,6 +127,12 @@ class AppPHPForm(AppParametersForm):
     max_execution_time = forms.ChoiceField(label=_("max_execution_time"), choices=[(x, "%ds" % x) for x in range(20,121,20)])
     allow_url_fopen = forms.BooleanField(label=_("allow_url_fopen"), initial=False, required=False)
     display_errors = forms.BooleanField(label=_("display_errors"), initial=True, required=False)
+    static_maps = forms.CharField(
+        label=_("Static maps"),
+        required=False,
+        widget=forms.Textarea(attrs={"class": "textarea-code"}),
+        help_text=_("Consider your app as root. One pair <em>/url/ /path/</em> per line.")
+    )
 
 
 class AppPythonForm(AppParametersForm):

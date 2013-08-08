@@ -1,5 +1,6 @@
 from wsgiadmin.settings.base import *
 from wsgiadmin.settings.config import *
+from wsgiadmin.settings.default import *
 
 import sys
 sys.path.insert(0, '/etc/pcp/')

@@ -100,7 +100,7 @@
         </tr>
     </table>
 
-    <p>{% trans "If you mobile bank app support QR payments, you can use it on this QR code:" %}</p>
+    <p>{% trans "If your mobile bank app supports QR payments, you can pay with this QR code:" %}</p>
 
     <img src="http://api.paylibo.com/paylibo/generator/czech/image?accountNumber={{ settings.BANK_ACCOUNT }}&bankCode={{ settings.BANK_CODE }}&amount={{ credit.price }}&currency=CZK&vs={{ u.parms.var_symbol }}&message=RostiHosting" alt="QR platba" />
     {% endif %}

@@ -84,11 +84,11 @@
     <table class="table table-striped">
         <tr>
             <th>{% trans "Bank" %}</th>
-            <td>{{ config.bank_name }}</td>
+            <td>{{ settings.BANK_NAME }}</td>
         </tr>
         <tr>
             <th>{% trans "Bank account" %}</th>
-            <td>{{ config.bank_account }}</td>
+            <td>{{ settings.BANK_ACCOUNT }} / {{ settings.BANK_CODE }}</td>
         </tr>
         <tr>
             <th>{% trans "Variable symbol" %}</th>
@@ -99,6 +99,10 @@
             <td>{{ credit.price }} {{ credit.currency }}</td>
         </tr>
     </table>
+
+    <p>{% trans "If you mobile bank app support QR payments, you can use it on this QR code:" %}</p>
+
+    <img src="http://api.paylibo.com/paylibo/generator/czech/image?accountNumber={{ settings.BANK_ACCOUNT }}&bankCode={{ settings.BANK_CODE }}&amount={{ credit.price }}&currency=CZK&vs={{ u.parms.var_symbol }}&message=RostiHosting" alt="QR platba" />
     {% endif %}
 
 {% endblock %}

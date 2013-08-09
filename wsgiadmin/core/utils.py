@@ -1,13 +1,14 @@
 from wsgiadmin.core.exceptions import PCPException
 from wsgiadmin.core.models import Server, Capability
+from django.db.models import Q
 
 
-def server_chooser(capname, hidden=True):
+def server_chooser(capname, hidden=True, user=None):
     capability = Capability.objects.get(name=capname)
     if hidden:
-        return Server.objects.filter(capabilities__in=[capability.id]).order_by("priority")
+        return Server.objects.filter(capabilities__in=[capability.id]).filter(Q(user=None) | Q(user=user)).order_by("priority")
     else:
-        return Server.objects.filter(capabilities__in=[capability.id], hide=False).order_by("priority")
+        return Server.objects.filter(capabilities__in=[capability.id], hide=False).filter(Q(user=None) | Q(user=user)).order_by("priority")
 
 
 def get_mail_server():

@@ -6,7 +6,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic import ListView, TemplateView, CreateView, UpdateView
 from wsgiadmin.apps.forms import AppForm, AppStaticForm, AppPHPForm, AppNativeForm, AppProxyForm, AppPythonForm, DbForm, DbFormPasswd
 from wsgiadmin.apps.models import App, Db
-from wsgiadmin.apps.backend import PythonApp, typed_object, DbObject
+from wsgiadmin.apps.backend import PythonApp, typed_object, DbObject, AppBackend
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext as __
 from django.contrib import messages
@@ -15,7 +15,7 @@ from wsgiadmin.core.utils import server_chooser, get_load_balancers
 
 class AppsListView(ListView):
     menu_active = "apps"
-    model = App
+    model = AppBackend
     template_name = "apps/apps.html"
 
     @method_decorator(login_required)
@@ -179,7 +179,7 @@ class AppCreateView(CreateView):
     def get_form(self, form_class):
         form = super(AppCreateView, self).get_form(form_class)
         form.user = self.user
-        form.fields["core_server"].queryset = server_chooser(self.app_type, hidden=False)
+        form.fields["core_server"].queryset = server_chooser(self.app_type, hidden=False, user=self.user)
         return form
 
     def get_success_url(self):

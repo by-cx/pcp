@@ -130,20 +130,21 @@ class Command(BaseCommand):
             print (parms.low_level_credits).ljust(15),
             print (parms.last_notification.strftime("%d.%m.%Y")).ljust(15) if parms.last_notification else "--".ljust(15),
             if not parms.guard_enable: print "Guarding disabled",
-            if parms.credit < 0:
-                total_credit += parms.credit
-            if not parms.last_notification or (parms.last_notification and (datetime.date.today() - parms.last_notification).days >= 3):
-                if parms.guard_enable and parms.credit < config.credit_threshold and parms.enable:
+            else:
+                if parms.credit < 0:
+                    total_credit += parms.credit
+                if not parms.last_notification or (parms.last_notification and (datetime.date.today() - parms.last_notification).days >= 3):
+                    if parms.guard_enable and parms.credit < config.credit_threshold and parms.enable:
+                        guarding.append(user)
+                        print "Be disabled!!!",
+                    elif not parms.enable:
+                        print "is disabled",
+                    elif parms.guard_enable:
+                        guarding.append(user)
+                        print "Be guarded",
+                if not parms.enable and parms.credit >= 0:
                     guarding.append(user)
-                    print "Be disabled!!!",
-                elif not parms.enable:
-                    print "is disabled",
-                elif parms.guard_enable:
-                    guarding.append(user)
-                    print "Be guarded",
-            if not parms.enable and parms.credit >= 0:
-                guarding.append(user)
-                print "will be enabled",
+                    print "will be enabled",
             print
         print "Total: %.2f" % total_credit
 

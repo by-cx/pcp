@@ -276,7 +276,7 @@
                                 {% trans "Add domain for mailboxes" %}
                             </a>
                         </li>
-                        {% if user.email_domain_set.count %}
+                        {% if u.email_domain_set.count %}
                         <li>
                             <a href="{% url 'add_mailbox' %}">
                                 <i class="icon-plus"></i>

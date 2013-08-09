@@ -34,7 +34,7 @@ class Message(models.Model):
                             template.render(Context(context)),
                             from_email=config.email,
                             to=[email],
-                            bcc=[config.email],
+                            #bcc=[config.email],
                             headers={'Reply-To': config.email})
         message.send()
 

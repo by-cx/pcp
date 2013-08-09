@@ -16,3 +16,4 @@ paramiko
 redis
 celery
 django-celery
+fiobank

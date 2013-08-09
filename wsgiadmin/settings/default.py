@@ -5,6 +5,9 @@ BANK_NAME = ""
 BANK_ACCOUNT = ""
 BANK_CODE = ""
 
+# Token for access to Czeck FIOBank
+FIO_TOKEN = None
+
 # When user will be reminded in case of insufficient amount of resources
 CREDIT_TRESHOLD = 20
 # When users apps will be killed

@@ -51,7 +51,9 @@ class Command(BaseCommand):
         parms.save()
 
     def check_user(self, user, parms):
-        if parms.credit <= settings.CREDIT_TRESHOLD and parms.last_notification != datetime.date.today():
+        if (parms.credit - parms.pay_total_day()) <= settings.CREDIT_TRESHOLD and \
+                        parms.last_notification != datetime.date.today() and \
+                        not (parms.pay_total_day() == 0 and parms.credit >= 0):
             self.remind_user(user, parms)
         elif parms.credit > settings.CREDIT_TRESHOLD and parms.num_reminds > 0:
             parms.num_reminds = 0

@@ -72,3 +72,11 @@ class Credit(models.Model):
 
     def __unicode__(self):
         return "%s += %.2f" % (self.user.username, self.value)
+
+
+class TransId(models.Model):
+    trans_id = models.IntegerField(_("Transaction ID"), help_text=_("Transaction ID from bank"))
+    credit = models.ForeignKey(Credit)
+
+    def __unicode__(self):
+        return self.trans_id

@@ -223,15 +223,6 @@ def rm(request, uid):
     if not superuser.is_superuser:
         return HttpResponseForbidden(_("Permission error"))
 
-    user = get_object_or_404(User, id=int(uid))
-    script = Script(user.parms.web_machine.name)
-    try:
-        parms = user.parms
-    except Exception, e:
-        print 'users/views - handle only this exception type'
-        print type(e)
-        parms = None
-
     for app in user.app_set.all():
         app = typed_object(app)
         app.uninstall()
@@ -239,22 +230,7 @@ def rm(request, uid):
         app.delete()
     for webapp in user.usersite_set.all():
         webapp.delete()
-    for mydb in user.mysqldb_set.all():
-        script.add_cmd("mysql -u root", stdin="DROP DATABASE %s;" % mydb.dbname)
-        mydb.delete()
-    for pgdb in user.pgsql_set.all():
-        script.add_cmd("dropdb %s" % pgdb.dbname)
-        script.add_cmd("dropuser %s" % pgdb.dbname)
-        pgdb.delete()
 
-    script.add_cmd("rm -r '/var/www/%s'" % user.username)
-    script.add_cmd("userdel -r %s" % user.username)
-    script.add_cmd("dropuser %s" % user.username)
-    script.add_cmd("rm -r '/home/%s'" % user.username)
-    script.commit()
-
-    if parms:
-        parms.delete()
     user.delete()
 
     return HttpResponseRedirect(reverse("users_list"))

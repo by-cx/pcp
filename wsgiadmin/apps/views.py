@@ -4,8 +4,8 @@ from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, TemplateView, CreateView, UpdateView
-from wsgiadmin.apps.forms import AppForm, AppStaticForm, AppPHPForm, AppNativeForm, AppProxyForm, AppPythonForm, DbForm, DbFormPasswd
-from wsgiadmin.apps.models import App, Db
+from wsgiadmin.apps.forms import AppForm, AppStaticForm, AppPHPForm, AppNativeForm, AppProxyForm, AppPythonForm, DbForm, DbFormPasswd, FtpAccessForm
+from wsgiadmin.apps.models import App, Db, FtpAccess
 from wsgiadmin.apps.backend import PythonApp, typed_object, DbObject, AppBackend
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext as __
@@ -213,6 +213,67 @@ class AppCreateView(CreateView):
         return context
 
 
+class FtpAccessCreateView(CreateView):
+    form_class = FtpAccessForm
+    template_name = "universal.html"
+    model = FtpAccess
+    menu_active = "apps"
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        self.user = request.session.get('switched_user', request.user)
+        self.success_url = reverse("app_detail", kwargs={"app_id": request.GET.get("app_id")})
+        return super(FtpAccessCreateView, self).dispatch(request, *args, **kwargs)
+
+    def get_app(self):
+        app_id = self.request.GET.get("app_id")
+        return self.user.app_set.get(id=app_id)
+
+    def form_valid(self, form):
+        object = form.save(commit=False)
+        object.app = self.get_app()
+        object.hash = crypt.crypt(form.cleaned_data["hash"], self.user.username)
+        object.save()
+        return super(FtpAccessCreateView, self).form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super(FtpAccessCreateView, self).get_context_data(**kwargs)
+        context['menu_active'] = self.menu_active
+        context['u'] = self.user
+        context['superuser'] = self.request.user
+        return context
+
+
+class FtpAccessUpdateView(UpdateView):
+    form_class = FtpAccessForm
+    template_name = "universal.html"
+    model = FtpAccess
+    menu_active = "apps"
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        self.user = request.session.get('switched_user', request.user)
+        return super(FtpAccessUpdateView, self).dispatch(request, *args, **kwargs)
+
+    def get_queryset(self):
+        queryset = super(FtpAccessUpdateView, self).get_queryset()
+        queryset = queryset.filter(app__user=self.user)
+        return queryset
+
+    def form_valid(self, form):
+        self.success_url = reverse("app_detail", kwargs={"app_id": self.get_object().app_id})
+        object = super(FtpAccessUpdateView, self).form_valid(form)
+        object.hash = crypt.crypt(form.cleaned_data["hash"], self.user.username)
+        return object
+
+    def get_context_data(self, **kwargs):
+        context = super(FtpAccessUpdateView, self).get_context_data(**kwargs)
+        context['menu_active'] = self.menu_active
+        context['u'] = self.user
+        context['superuser'] = self.request.user
+        return context
+
+
 class DbCreateView(CreateView):
     form_class = DbForm
     template_name = "universal.html"
@@ -291,6 +352,18 @@ def db_rm(request):
     app_id = db.app_id
     db.delete()
     messages.add_message(request, messages.SUCCESS, _('Database has been removed'))
+    return HttpResponseRedirect(reverse("app_detail", kwargs={"app_id": app_id}))
+
+@login_required()
+def db_rm(request):
+    user = request.session.get('switched_user', request.user)
+    superuser = request.user
+
+    ftpaccess_id = int(request.GET.get("ftpaccess_id"))
+    ftpaccess = FtpAccess.objects.filter(app__user=user).get(id=ftpaccess_id)
+    app_id = ftpaccess.app_id
+    ftpaccess.delete()
+    messages.add_message(request, messages.SUCCESS, _('FTP access has been removed'))
     return HttpResponseRedirect(reverse("app_detail", kwargs={"app_id": app_id}))
 
 

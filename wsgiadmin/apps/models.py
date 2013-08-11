@@ -28,6 +28,10 @@ class App(models.Model):
     core_server = models.ForeignKey(Server, verbose_name=_("Server"), null=True) #TODO: not entirly clean
     db_server = models.ForeignKey(Server, verbose_name=_("Server for database"), null=True, blank=True, related_name="app_db_set")
 
+    @property
+    def system_name(self):
+        return "app_%.5d" % self.id
+
     def parameters_get(self):
         return json.loads(self.parameters_data if self.parameters_data else "{}")
 
@@ -113,3 +117,13 @@ class TaskLog(models.Model):
 
     def __unicode__(self):
         return u"%s - %s" % (self.app.name, self.msg)
+
+
+class FtpAccess(models.Model):
+    username = models.CharField(_("Username"), unique=True, max_length=64)
+    hash = models.CharField(_("Password"), max_length=64)
+    directory = models.CharField(_("Directory"), max_length=512)
+    app = models.ForeignKey(App)
+
+    def __unicode__(self):
+        return "%s for %s" % (self.username, self.app.system_name)

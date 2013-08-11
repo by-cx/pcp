@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.forms.models import ModelForm
 from django import forms
-from wsgiadmin.apps.models import App, Db
+from wsgiadmin.apps.models import App, Db, FtpAccess
 from django.utils.translation import ugettext_lazy as _
 import re
 from wsgiadmin.core.utils import server_chooser
@@ -31,6 +31,16 @@ class DbForm(ModelForm):
         fields = ["db_type", "password", "comment", "pg_postgis"]
         widgets = {
             'password': forms.PasswordInput,
+        }
+
+class FtpAccessForm(ModelForm):
+    helper = RostiFormHelper()
+
+    class Meta:
+        model = FtpAccess
+        fields = ["username", "hash", "directory"]
+        widgets = {
+            'hash': forms.PasswordInput,
         }
 
 

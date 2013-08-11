@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-08-08 23:36+0200\n"
-"PO-Revision-Date: 2013-08-08 23:38+0100\n"
+"POT-Creation-Date: 2013-08-11 22:25+0200\n"
+"PO-Revision-Date: 2013-08-11 22:26+0100\n"
 "Last-Translator:   <cx@initd.cz>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -28,7 +28,7 @@ msgstr ""
 "před použitím vytvoříte schéma vlastní. V opačném případě uvidí "
 "všichnistrukturu vašich tabulek/pohledu/.. (nikoli data)."
 
-#: apps/forms.py:46
+#: apps/forms.py:56
 msgid ""
 "On these domains your app will listen. There is no relation to DNS. Write "
 "your domains separated by spaces. For example: mydomain.cz www.mydomain.cz"
@@ -36,30 +36,30 @@ msgstr ""
 "Není zde žádná vazba na sekci DNS nebo domény (pokud je vidíte). Napište "
 "domény oddělené mezerami."
 
-#: apps/forms.py:55 apps/forms.py:93
+#: apps/forms.py:65 apps/forms.py:103
 msgid "Each domain has to be in this format: ^[0-9a-z_\\.\\-]*$"
 msgstr "Domény musejí být zapsané v následujícím formátu: ^[0-9a-z_\\.\\-]*$"
 
-#: apps/forms.py:57 apps/forms.py:95
+#: apps/forms.py:67 apps/forms.py:105
 #, python-format
 msgid "One of your domain is already used. (%s)"
 msgstr "Jedna z vašich domén je již použita. (%s)"
 
-#: apps/forms.py:62
+#: apps/forms.py:72
 msgid "App name has to be in this format: ^[0-9a-zA-Z_\\ \\.\\-]*$"
 msgstr "Jméno aplikace musí mít následující formát: ^[0-9a-zA-Z_\\ \\.\\-]*$"
 
-#: apps/forms.py:64
+#: apps/forms.py:74
 msgid "This name is already used"
 msgstr "Toto jméno je již obsazené"
 
-#: apps/forms.py:75 apps/models.py:22 templates/admin.html:36
+#: apps/forms.py:85 apps/models.py:22 templates/admin.html:36
 #: templates/admin.html.py:147 templates/domains.html:5 templates/info.html:58
 #: templates/apps/app_info.html:32
 msgid "Domains"
 msgstr "Domény"
 
-#: apps/forms.py:76
+#: apps/forms.py:86
 msgid ""
 "There is no relation to DNS or Domains menu. Write your domains separated by"
 " spaces."
@@ -67,97 +67,97 @@ msgstr ""
 "Není zde žádná vazba na sekci DNS nebo Domény. Napište své domény oddělené "
 "mezerou."
 
-#: apps/forms.py:81 apps/models.py:93 emails/forms.py:29 old/ftps/models.py:9
-#: service/forms.py:20 service/forms.py:49
+#: apps/forms.py:91 apps/models.py:97 apps/models.py:124 emails/forms.py:29
+#: old/ftps/models.py:9 service/forms.py:20 service/forms.py:49
 msgid "Password"
 msgstr "Heslo"
 
-#: apps/forms.py:83
+#: apps/forms.py:93
 msgid "For SSH/SFTP/FTP"
 msgstr "Pro SSH/SFTP/FTP přístup"
 
-#: apps/forms.py:107 apps/forms.py:119
+#: apps/forms.py:117 apps/forms.py:129
 msgid "Indexing"
 msgstr "Indexování obsahu adresářů"
 
-#: apps/forms.py:108 apps/forms.py:120
+#: apps/forms.py:118 apps/forms.py:130
 msgid "Turn on/off indexing of your document root"
 msgstr "Zapnutí/vypnutí výpisu obsahu adresářů"
 
-#: apps/forms.py:123
+#: apps/forms.py:133
 msgid "memory_limit"
 msgstr ""
 
-#: apps/forms.py:124
+#: apps/forms.py:134
 msgid "post_max_size"
 msgstr ""
 
-#: apps/forms.py:125
+#: apps/forms.py:135
 msgid "upload_max_filesize"
 msgstr ""
 
-#: apps/forms.py:126
+#: apps/forms.py:136
 msgid "max_file_uploads"
 msgstr ""
 
-#: apps/forms.py:127
+#: apps/forms.py:137
 msgid "max_execution_time"
 msgstr ""
 
-#: apps/forms.py:128
+#: apps/forms.py:138
 msgid "allow_url_fopen"
 msgstr ""
 
-#: apps/forms.py:129
+#: apps/forms.py:139
 msgid "display_errors"
 msgstr ""
 
-#: apps/forms.py:131 apps/forms.py:167
+#: apps/forms.py:141 apps/forms.py:177
 msgid "Static maps"
 msgstr "Mapa statického obsahu"
 
-#: apps/forms.py:134 apps/forms.py:170
+#: apps/forms.py:144 apps/forms.py:180
 msgid "Consider your app as root. One pair <em>/url/ /path/</em> per line."
 msgstr ""
 "Napište na každý řádek jeden pár <em>/url/ /cesta/</em>. Cesta je brána "
 "vzhledem k rootu vaší aplikace (~/app/). Detaily na wiki."
 
-#: apps/forms.py:144
+#: apps/forms.py:154
 msgid "WSGI Script"
 msgstr "WSGI Skript"
 
-#: apps/forms.py:147
+#: apps/forms.py:157
 msgid "Write python code, which create WSGI handler of your app."
 msgstr "Napište pythoní skript, který vytvoří WSGI handler aplication"
 
-#: apps/forms.py:150
+#: apps/forms.py:160
 msgid "Python version"
 msgstr "Verze pythonu"
 
-#: apps/forms.py:155
+#: apps/forms.py:165
 msgid "Processes"
 msgstr "Počet procesů"
 
-#: apps/forms.py:160 old/apacheconf/models.py:41
+#: apps/forms.py:170 old/apacheconf/models.py:41
 msgid "Virtualenv"
 msgstr ""
 
-#: apps/forms.py:164
+#: apps/forms.py:174
 msgid ""
 "List of requirements. One package per one line. Like requirements.txt file."
 msgstr ""
 "Seznam modulů, které vaše aplikace potřebuje k běhu. Podobný jako soubor "
 "requirements.txt."
 
-#: apps/forms.py:172
+#: apps/forms.py:182
 msgid "Max memory"
 msgstr ""
 
-#: apps/forms.py:181 core/models.py:94
+#: apps/forms.py:191 core/models.py:94
 msgid "Command"
 msgstr "Příkaz"
 
-#: apps/models.py:17 apps/models.py:91 apps/models.py:107 core/models.py:81
+#: apps/models.py:17 apps/models.py:95 apps/models.py:111 core/models.py:81
 #: core/models.py:92 stats/models.py:30 stats/models.py:49
 #: templates/info.html:113 templates/old/requests.html:17
 #: templates/stats/credits.html:15 templates/stats/payment_infopage.html:15
@@ -232,49 +232,61 @@ msgstr ""
 msgid "Server for database"
 msgstr "Server pro databázi"
 
-#: apps/models.py:52
+#: apps/models.py:56
 msgid "Yes"
 msgstr "Ano"
 
-#: apps/models.py:52
+#: apps/models.py:56
 msgid "No"
 msgstr "Ne"
 
-#: apps/models.py:92
+#: apps/models.py:96
 msgid "DB engine"
 msgstr "Databázový engine"
 
-#: apps/models.py:94
+#: apps/models.py:98
 msgid "PostGIS support"
 msgstr "Podpora pro PostGIS"
 
-#: apps/models.py:94
+#: apps/models.py:98
 msgid "Just for PostgreSQL"
 msgstr "Pouze pro databáze PostgreSQL"
 
-#: apps/models.py:95 templates/apps/app_info.html:108
+#: apps/models.py:99 templates/apps/app_info.html:108
 msgid "Comment"
 msgstr "Komentář"
 
-#: apps/models.py:96
+#: apps/models.py:100
 msgid "App"
 msgstr "Aplikace"
 
-#: apps/models.py:109
+#: apps/models.py:113
 msgid "Message"
 msgstr "Zpráva"
 
-#: apps/models.py:110
+#: apps/models.py:114
 msgid "Complete"
 msgstr "Hotovo"
 
-#: apps/models.py:111
+#: apps/models.py:115
 msgid "Error"
 msgstr "Chyba"
 
-#: apps/models.py:112
+#: apps/models.py:116
 msgid "Message from backend"
 msgstr "Zpráva z backendu"
+
+#: apps/models.py:123 emails/forms.py:28 templates/info.html:21
+#: templates/master.html:29 templates/users.html:14 templates/users.html.py:24
+#: templates/apps/app_info.html:132 templates/stats/credits.html:19
+#: useradmin/forms.py:12 useradmin/forms.py:40
+msgid "Username"
+msgstr "Uživatelské jméno"
+
+#: apps/models.py:125 templates/apps/app_info.html:133
+#: templates/old/ftps.html:16
+msgid "Directory"
+msgstr "Adresář"
 
 #: apps/views.py:102
 msgid "Changes has been saved."
@@ -284,23 +296,28 @@ msgstr "Změny byly provedeny"
 msgid "Changes has been saved. But app is disabled."
 msgstr "Změny byly provedeny, ale aplikace je vypnutá."
 
-#: apps/views.py:293
+#: apps/views.py:354
 msgid "Database has been removed"
 msgstr "Databáze byla smazána"
 
-#: apps/views.py:317
+#: apps/views.py:366
+#, fuzzy
+msgid "FTP access has been removed"
+msgstr "Databáze byla smazána"
+
+#: apps/views.py:390
 msgid "App has been removed"
 msgstr "Aplikace byla smazána"
 
-#: apps/views.py:333
+#: apps/views.py:406
 msgid "App has been restarted"
 msgstr "Aplikace byla restartována"
 
-#: apps/views.py:335
+#: apps/views.py:408
 msgid "App is disabled"
 msgstr "Aplikace je vypnutá"
 
-#: apps/views.py:337
+#: apps/views.py:410
 msgid "App is not resetable"
 msgstr "Aplikace není resetovatelná"
 
@@ -614,12 +631,6 @@ msgstr "Jméno už existuje"
 #: emails/forms.py:22
 msgid "Login has to be in this format: ^[0-9a-zA-Z_\\.]*$"
 msgstr "Uživatelské jméno musí mít následující formát: ^[0-9a-zA-Z_\\.]*$"
-
-#: emails/forms.py:28 templates/info.html:21 templates/master.html:29
-#: templates/users.html:14 templates/users.html.py:24
-#: templates/stats/credits.html:19 useradmin/forms.py:12 useradmin/forms.py:40
-msgid "Username"
-msgstr "Uživatelské jméno"
 
 #: emails/forms.py:43
 msgid "Given alias already exists"
@@ -1303,8 +1314,8 @@ msgid "Create"
 msgstr "Vytvořit"
 
 #: service/views.py:77 templates/addresses.html:35
-#: templates/apps/app_info.html:116 templates/dns/editor.html:39
-#: templates/dns/list.html:31
+#: templates/apps/app_info.html:116 templates/apps/app_info.html.py:141
+#: templates/dns/editor.html:39 templates/dns/list.html:31
 msgid "Update"
 msgstr "Upravit"
 
@@ -1343,6 +1354,15 @@ msgstr "Kredity (včetně bonusu)"
 
 #: stats/models.py:55
 msgid "Bonus"
+msgstr ""
+
+#: stats/models.py:78
+#, fuzzy
+msgid "Transaction ID"
+msgstr "Hromadné akce"
+
+#: stats/models.py:78
+msgid "Transaction ID from bank"
 msgstr ""
 
 #: stats/views.py:132
@@ -1404,6 +1424,7 @@ msgstr "Adresa"
 
 #: templates/addresses.html:20 templates/cron.html:21
 #: templates/redirects.html:23 templates/users.html:30
+#: templates/apps/app_info.html:109 templates/apps/app_info.html.py:134
 #: templates/apps/apps.html:19 templates/dns/editor.html:26
 #: templates/dns/list.html:19 templates/old/apache.html:18
 #: templates/virt/list.html:18 templates/virt/summary.html:41
@@ -1412,9 +1433,10 @@ msgstr "Akce"
 
 #: templates/addresses.html:38 templates/base.html:44 templates/boxes.html:36
 #: templates/users.html:59 templates/apps/app_info.html:86
-#: templates/apps/app_info.html.py:117 templates/apps/apps.html:46
-#: templates/dns/editor.html:40 templates/dns/list.html:33
-#: templates/old/subdomains_list.html:8 templates/virt/list.html:30
+#: templates/apps/app_info.html.py:117 templates/apps/app_info.html:143
+#: templates/apps/apps.html:46 templates/dns/editor.html:40
+#: templates/dns/list.html:33 templates/old/subdomains_list.html:8
+#: templates/virt/list.html:30
 msgid "Are you sure?"
 msgstr "Určitě?"
 
@@ -1423,13 +1445,14 @@ msgstr "Určitě?"
 #: templates/domains.html.py:69 templates/redirects.html:38
 #: templates/redirects.html.py:39 templates/users.html:59
 #: templates/apps/app_info.html:86 templates/apps/app_info.html.py:117
-#: templates/apps/apps.html:46 templates/dns/editor.html:40
-#: templates/dns/list.html:33 templates/old/apache.html:52
-#: templates/old/apache.html.py:53 templates/old/db.html:29
-#: templates/old/db.html.py:30 templates/old/ftps.html:34
-#: templates/old/ftps.html.py:35 templates/old/invoices.html:77
-#: templates/old/invoices.html.py:97 templates/old/subdomains_list.html:9
-#: templates/virt/list.html:30 templates/virt/summary.html:53
+#: templates/apps/app_info.html:143 templates/apps/apps.html:46
+#: templates/dns/editor.html:40 templates/dns/list.html:33
+#: templates/old/apache.html:52 templates/old/apache.html.py:53
+#: templates/old/db.html:29 templates/old/db.html.py:30
+#: templates/old/ftps.html:34 templates/old/ftps.html.py:35
+#: templates/old/invoices.html:77 templates/old/invoices.html.py:97
+#: templates/old/subdomains_list.html:9 templates/virt/list.html:30
+#: templates/virt/summary.html:53
 msgid "Delete"
 msgstr "Smazat"
 
@@ -2030,14 +2053,21 @@ msgid "Restart"
 msgstr ""
 
 #: templates/apps/app_info.html:104 templates/apps/app_info.html.py:123
+#: templates/apps/app_info.html:149
 msgid "Add database to this app"
 msgstr "Přidat k této aplikaci databázi"
 
-#: templates/apps/app_info.html:109 templates/old/invoices.html:60
-msgid "Akce"
-msgstr ""
-
 #: templates/apps/app_info.html:126
+#, fuzzy
+msgid "FTP access"
+msgstr "FTP účty"
+
+#: templates/apps/app_info.html:129
+#, fuzzy
+msgid "Add FTP access to this app"
+msgstr "Přidat k této aplikaci databázi"
+
+#: templates/apps/app_info.html:152
 msgid "Log files"
 msgstr "Log soubory"
 
@@ -2161,10 +2191,6 @@ msgid ""
 msgstr ""
 "Ještě nebla přidána žádná databáze, ale můžete to napravit v levém menu."
 
-#: templates/old/ftps.html:16
-msgid "Directory"
-msgstr "Adresář"
-
 #: templates/old/ftps.html:55
 msgid "No FTP account created yet"
 msgstr "Žádný FTP účet ještě nebyl vytvořen"
@@ -2215,6 +2241,10 @@ msgstr ""
 
 #: templates/old/invoices.html:59
 msgid "Celková částka"
+msgstr ""
+
+#: templates/old/invoices.html:60
+msgid "Akce"
 msgstr ""
 
 #: templates/old/invoices.html:73
@@ -2324,11 +2354,23 @@ msgstr "Koupit volitelný počet kreditů"
 msgid "Buy"
 msgstr "Koupit"
 
+#: templates/stats/credit.html:140
+msgid "Before buying of new credit, you have to fill at least one address."
+msgstr "Před zakoupením kreditů musíte vyplnit alespoň jednu svou adresu."
+
+#: templates/stats/credit.html:140
+msgid "add my address"
+msgstr "přidat adresu"
+
 #: templates/stats/credit.html:142
+msgid "Payment reminder"
+msgstr "Připomenutí platby"
+
+#: templates/stats/credit.html:145
 msgid "If your credit's level reachs last 14 days"
 msgstr "Pokud úroveň kreditů dosáhne na posledních 14 dní provozu"
 
-#: templates/stats/credit.html:146
+#: templates/stats/credit.html:149
 msgid ""
 "If your credits goes low, you don't have to keep your eye on this site. It "
 "can be done for you automaticly, just select what you want."
@@ -2336,41 +2378,33 @@ msgstr ""
 "Nemusíte si hlídat stav vašich kredtů a sledovat tuto stránku. Stačí když si"
 " zde vyberete, co se má stát, pokud hodnota kreditů klesne na nízkou úroveň"
 
-#: templates/stats/credit.html:154
+#: templates/stats/credit.html:157
 msgid "Do nothing"
 msgstr "Nedělat nic"
 
-#: templates/stats/credit.html:155
+#: templates/stats/credit.html:158
 msgid "Send me e-mail"
 msgstr "Pošli mi e-mail"
 
-#: templates/stats/credit.html:156
+#: templates/stats/credit.html:159
 msgid "Buy ONE month"
 msgstr "Prodloužit služby o jeden měsíc"
 
-#: templates/stats/credit.html:157
+#: templates/stats/credit.html:160
 msgid "Buy THREE months"
 msgstr "Prodloužit služby o tři měsíce"
 
-#: templates/stats/credit.html:158
+#: templates/stats/credit.html:161
 msgid "Buy SIX months"
 msgstr "Prodloužit služby o šest měsíců"
 
-#: templates/stats/credit.html:159
+#: templates/stats/credit.html:162
 msgid "Buy ONE year"
 msgstr "Prodloužit služby o jeden rok"
 
-#: templates/stats/credit.html:161
+#: templates/stats/credit.html:164
 msgid "Confirm"
 msgstr "Potvrdit"
-
-#: templates/stats/credit.html:167
-msgid "Before buying of new credit, you have to fill at least one address."
-msgstr "Před zakoupením kreditů musíte vyplnit alespoň jednu svou adresu."
-
-#: templates/stats/credit.html:167
-msgid "add my address"
-msgstr "přidat adresu"
 
 #: templates/stats/credits.html:11
 msgid "List of payments"

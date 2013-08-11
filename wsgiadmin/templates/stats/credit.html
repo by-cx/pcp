@@ -136,7 +136,10 @@
         </td>
     </tr>
     </table>
-
+    {% else %}
+        <p>{% trans "Before buying of new credit, you have to fill at least one address." %} - <a href="{% url 'address_create' %}">{% trans "add my address" %}</a></p>
+    {% endif %}
+    <h3>{% blocktrans %}Payment reminder{% endblocktrans %}</h3>
     <table class="table table-striped">
     <tr>
         <th>{% trans "If your credit's level reachs last 14 days" %}</th>
@@ -163,8 +166,5 @@
         </td>
     </tr>
     </table>
-    {% else %}
-        <p>{% trans "Before buying of new credit, you have to fill at least one address." %} - <a href="{% url 'address_create' %}">{% trans "add my address" %}</a></p>
-    {% endif %}
     
 {% endblock %}

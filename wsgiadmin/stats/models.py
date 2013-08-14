@@ -75,7 +75,7 @@ class Credit(models.Model):
 
 
 class TransId(models.Model):
-    trans_id = models.IntegerField(_("Transaction ID"), help_text=_("Transaction ID from bank"))
+    trans_id = models.BigIntegerField(_("Transaction ID"), help_text=_("Transaction ID from bank"))
     credit = models.ForeignKey(Credit)
 
     def __unicode__(self):

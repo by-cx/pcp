@@ -3,6 +3,7 @@ from os.path import join
 from django.contrib import messages
 from django.contrib.auth.models import User
 
+from django.conf import settings
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import render_to_response, get_object_or_404
 from django.core.urlresolvers import reverse
@@ -228,8 +229,9 @@ def rm(request, uid):
         app.uninstall()
         app.commit()
         app.delete()
-    for webapp in user.usersite_set.all():
-        webapp.delete()
+    if settings.OLD:
+        for webapp in user.usersite_set.all():
+            webapp.delete()
 
     user.delete()
 

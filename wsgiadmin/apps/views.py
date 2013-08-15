@@ -1,3 +1,4 @@
+import crypt
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponseRedirect
@@ -62,6 +63,7 @@ class AppDetailView(TemplateView):
         context['superuser'] = self.request.user
         context['app'] = self.get_object()
         context['dbs'] = context['app'].db_set.all()
+        context['ftps'] = context['app'].ftpaccess_set.all()
         context['loadbalancers'] = get_load_balancers()
         return context
 
@@ -229,10 +231,17 @@ class FtpAccessCreateView(CreateView):
         app_id = self.request.GET.get("app_id")
         return self.user.app_set.get(id=app_id)
 
+    def get_form(self, form_class):
+        form = super(FtpAccessCreateView, self).get_form(form_class)
+        form.fields["directory"].choices = form.fields["directory"].choices = [(x, x) for x in self.get_app().get_directories() if x]
+        form.app = self.get_app()
+        return form
+
     def form_valid(self, form):
         object = form.save(commit=False)
         object.app = self.get_app()
         object.hash = crypt.crypt(form.cleaned_data["hash"], self.user.username)
+        object.home = AppBackend.objects.get(id=self.get_app().id).get_home()
         object.save()
         return super(FtpAccessCreateView, self).form_valid(form)
 
@@ -260,10 +269,22 @@ class FtpAccessUpdateView(UpdateView):
         queryset = queryset.filter(app__user=self.user)
         return queryset
 
+    def get_app(self):
+        return AppBackend.objects.get(id=self.object.app.id)
+
+    def get_form(self, form_class):
+        form = super(FtpAccessUpdateView, self).get_form(form_class)
+        form.fields["directory"].choices = [(x, x) for x in self.get_app().get_directories() if x]
+        form.fields["hash"].required = False
+        form.app = self.get_app()
+        form.ftpaccess = self.object
+        return form
+
     def form_valid(self, form):
         self.success_url = reverse("app_detail", kwargs={"app_id": self.get_object().app_id})
         object = super(FtpAccessUpdateView, self).form_valid(form)
-        object.hash = crypt.crypt(form.cleaned_data["hash"], self.user.username)
+        if form.cleaned_data["hash"]:
+            object.hash = crypt.crypt(form.cleaned_data["hash"], self.user.username)
         return object
 
     def get_context_data(self, **kwargs):
@@ -355,7 +376,7 @@ def db_rm(request):
     return HttpResponseRedirect(reverse("app_detail", kwargs={"app_id": app_id}))
 
 @login_required()
-def db_rm(request):
+def ftp_rm(request):
     user = request.session.get('switched_user', request.user)
     superuser = request.user
 

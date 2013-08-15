@@ -101,6 +101,10 @@ class AppBackend(App):
                 logfiles.append((path, self.script.run("tail -n 60 %s" % path)["stdout"]))
         return logfiles
 
+    def get_directories(self):
+        parms = self.get_parmameters()
+        return [x.strip()[len(parms.get("home"))+1:] for x in self.script.run("find -L %s -maxdepth %d -type d" % (parms.get("home"), 3))["stdout"].split("\n")]
+
     def passwd(self, password):
         self.script.add_cmd("/usr/sbin/chpasswd", stdin="%s:%s" % (self.get_user(), password))
 

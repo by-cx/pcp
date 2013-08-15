@@ -135,12 +135,12 @@
             </tr>
             {% for ftp in ftps %}
                 <tr>
-                    <td>{{ ftp.usernamename }}</td>
+                    <td>{{ ftp.username }}</td>
                     <td>{{ ftp.directory }}</td>
                     <td>
-                        <a href="{% url 'ftp_update' pk=db.id %}" class="btn btn-small">{% trans "Update" %}</a>
+                        <a href="{% url 'ftp_update' pk=ftp.id %}" class="btn btn-small">{% trans "Update" %}</a>
                         <a href="#a" class="btn btn-danger btn-small"
-                           onclick="if(confirm('{% trans "Are you sure?" %}')){ document.location='{% url 'ftp_rm' %}?db_id={{ db.id }}'; }">{% trans "Delete" %}</a>
+                           onclick="if(confirm('{% trans "Are you sure?" %}')){ document.location='{% url 'ftp_rm' %}?db_id={{ ftp.id }}'; }">{% trans "Delete" %}</a>
                     </td>
                 </tr>
             {% endfor %}

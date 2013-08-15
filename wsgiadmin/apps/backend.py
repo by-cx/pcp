@@ -80,7 +80,7 @@ class AppBackend(App):
     def uninstall(self):
         parms = self.get_parmameters()
         self.script.add_cmd("/usr/sbin/userdel %(user)s" % parms)
-        #self.script.add_cmd("/usr/sbin/groupdel %(group)s" % parms)
+        self.script.add_cmd("/usr/sbin/groupdel %(group)s" % parms)
         self.script.add_cmd("rm -rf %(home)s" % parms)
         self.script.add_cmd("rm /etc/security/limits.d/%(user)s.conf" % parms)
         self.proxy.setdown()

@@ -106,7 +106,7 @@
         <tr>
             <th>{% trans "Name" %}</th>
             <th>{% trans "Comment" %}</th>
-            <th>{% trans "Akce" %}</th>
+            <th>{% trans "Actions" %}</th>
         </tr>
         {% for db in dbs %}
         <tr>
@@ -121,6 +121,32 @@
     </table>
     {% else %}
         <p><a href="{% url 'db_add' %}?app_id={{ app.id }}">{% trans "Add database to this app" %}</a></p>
+    {% endif %}
+
+    <h2>{% trans "FTP access" %}</h2>
+
+    {% if ftps %}
+        <p><a href="{% url 'ftp_add' %}?app_id={{ app.id }}">{% trans "Add FTP access to this app" %}</a></p>
+        <table class="table table-striped">
+            <tr>
+                <th>{% trans "Username" %}</th>
+                <th>{% trans "Directory" %}</th>
+                <th>{% trans "Actions" %}</th>
+            </tr>
+            {% for ftp in ftps %}
+                <tr>
+                    <td>{{ ftp.usernamename }}</td>
+                    <td>{{ ftp.directory }}</td>
+                    <td>
+                        <a href="{% url 'ftp_update' pk=db.id %}" class="btn btn-small">{% trans "Update" %}</a>
+                        <a href="#a" class="btn btn-danger btn-small"
+                           onclick="if(confirm('{% trans "Are you sure?" %}')){ document.location='{% url 'ftp_rm' %}?db_id={{ db.id }}'; }">{% trans "Delete" %}</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p><a href="{% url 'ftp_add' %}?app_id={{ app.id }}">{% trans "Add database to this app" %}</a></p>
     {% endif %}
 
     <h2>{% trans "Log files" %}</h2>

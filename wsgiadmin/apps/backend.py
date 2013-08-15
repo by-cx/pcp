@@ -418,6 +418,8 @@ class PythonApp(AppBackend):
         parms = self.get_parmameters()
         self.script.add_cmd("cd; %(virtualenv_cmd)s %(home)s/venv" % parms, user=self.get_user())
         self.script.add_cmd("tee -a %(home)s/.bashrc" % parms, user=self.get_user(), stdin="\n\nsource ~/venv/bin/activate")
+        self.script.add_file("%(home)s/requirements.txt" % parms, "uwsgi\n" + parms.get("virtualenv"), owner="%(user)s:%(group)s" % parms)
+        self.script.add_cmd("%(home)s/venv/bin/pip install -r %(home)s/requirements.txt" % parms, user=self.get_user())
 
     def disable(self):
         super(PythonApp, self).disable()
@@ -443,8 +445,6 @@ class PythonApp(AppBackend):
     def update(self):
         super(PythonApp, self).update()
         parms = self.get_parmameters()
-        self.script.add_file("%(home)s/requirements.txt" % parms, "uwsgi\n" + parms.get("virtualenv"), owner="%(user)s:%(group)s" % parms)
-        self.script.add_cmd("%(home)s/venv/bin/pip install -r %(home)s/requirements.txt" % parms, user=self.get_user())
         self.script.add_file("%(home)s/requirements.txt" % parms, "uwsgi\n" + parms.get("virtualenv"), owner="%(user)s:%(group)s" % parms)
         self.script.add_file("%(home)s/app.wsgi" % parms, parms.get("script"), owner="%(user)s:%(group)s" % parms)
         self.script.add_file("/etc/supervisor/apps.d/%(user)s.conf" % parms, self.gen_supervisor_config())
@@ -525,7 +525,9 @@ class PythonApp(AppBackend):
         parms = self.get_parmameters()
         self.script.add_cmd("supervisorctl reread")
         self.script.add_cmd("supervisorctl update")
-        self.script.add_cmd("supervisorctl restart %(user)s" % parms)
+        # probably restart is execute by update
+        # this comment should remove dead childs processes during update app
+        #self.script.add_cmd("supervisorctl restart %(user)s" % parms)
 
     def stop(self):
         parms = self.get_parmameters()

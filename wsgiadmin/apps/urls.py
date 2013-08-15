@@ -1,5 +1,5 @@
 from django.conf.urls.defaults import *
-from wsgiadmin.apps.views import AppsListView, AppParametersView, AppDetailView, AppCreateView, DbCreateView, DbUpdateView
+from wsgiadmin.apps.views import AppsListView, AppParametersView, AppDetailView, AppCreateView, DbCreateView, DbUpdateView, FtpAccessCreateView, FtpAccessUpdateView
 
 urlpatterns = patterns('',
        url(r'^list/$', AppsListView.as_view(), name="apps_list"),
@@ -9,6 +9,9 @@ urlpatterns = patterns('',
        url(r'^db/add/$', DbCreateView.as_view(), name="db_add"),
        url(r'^db/update/(?P<pk>\d+)/$', DbUpdateView.as_view(), name="db_update"),
        url(r'^db/rm/$', "wsgiadmin.apps.views.db_rm", name="db_rm"),
+       url(r'^ftp/add/$', FtpAccessCreateView.as_view(), name="ftp_add"),
+       url(r'^ftp/update/(?P<pk>\d+)/$', FtpAccessUpdateView.as_view(), name="ftp_update"),
+       url(r'^ftp/rm/$', "wsgiadmin.apps.views.db_rm", name="ftp_rm"),
        url(r'^add_static/$', AppCreateView.as_view(app_type="static"), name="app_add_static"),
        url(r'^add_php/$', AppCreateView.as_view(app_type="php"), name="app_add_php"),
        url(r'^add_phpfpm/$', AppCreateView.as_view(app_type="phpfpm"), name="app_add_phpfpm"),

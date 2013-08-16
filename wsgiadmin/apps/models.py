@@ -124,6 +124,8 @@ class FtpAccess(models.Model):
     hash = models.CharField(_("Password"), max_length=64)
     home = models.CharField(_("Home"), max_length=512, blank=True, null=True)
     directory = models.CharField(_("Directory"), max_length=512, choices=[])
+    uid = models.IntegerField(_("UID"), null=True)
+    gid = models.IntegerField(_("GID"), null=True)
     app = models.ForeignKey(App)
 
     def __unicode__(self):

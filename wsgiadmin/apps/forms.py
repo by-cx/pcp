@@ -33,9 +33,11 @@ class DbForm(ModelForm):
             'password': forms.PasswordInput,
         }
 
+
 class FtpAccessForm(ModelForm):
     helper = RostiFormHelper()
 
+    password = forms.CharField(label=_("Password"))
     directory = forms.ChoiceField(label=_("Directory"))
 
     def __init__(self, *args, **kwargs):
@@ -44,7 +46,7 @@ class FtpAccessForm(ModelForm):
 
     class Meta:
         model = FtpAccess
-        fields = ["username", "hash", "directory"]
+        fields = ["username", "directory"]
         widgets = {
             'hash': forms.PasswordInput,
         }

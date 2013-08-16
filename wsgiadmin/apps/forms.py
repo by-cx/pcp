@@ -36,12 +36,25 @@ class DbForm(ModelForm):
 class FtpAccessForm(ModelForm):
     helper = RostiFormHelper()
 
+    directory = forms.ChoiceField(label=_("Directory"))
+
+    def __init__(self, *args, **kwargs):
+        self.ftpaccess = None
+        super(FtpAccessForm, self).__init__(*args, **kwargs)
+
     class Meta:
         model = FtpAccess
         fields = ["username", "hash", "directory"]
         widgets = {
             'hash': forms.PasswordInput,
         }
+
+    def clean_username(self):
+        if not re.match("^[0-9a-zA-Z_]*$", self.cleaned_data["username"]):
+            raise forms.ValidationError(_("Username has to be in this format: ^[0-9a-zA-Z_]*$"))
+        if self.app.ftpaccess_set.filter(username=self.cleaned_data["username"]).count() and (not self.ftpaccess or self.ftpaccess.username != self.cleaned_data["username"]):
+            raise forms.ValidationError(_("This username is already used"))
+        return self.cleaned_data["username"]
 
 
 class AppForm(ModelForm):

@@ -122,7 +122,8 @@ class TaskLog(models.Model):
 class FtpAccess(models.Model):
     username = models.CharField(_("Username"), unique=True, max_length=64)
     hash = models.CharField(_("Password"), max_length=64)
-    directory = models.CharField(_("Directory"), max_length=512)
+    home = models.CharField(_("Home"), max_length=512, blank=True, null=True)
+    directory = models.CharField(_("Directory"), max_length=512, choices=[])
     app = models.ForeignKey(App)
 
     def __unicode__(self):

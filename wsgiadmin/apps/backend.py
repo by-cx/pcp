@@ -106,6 +106,12 @@ class AppBackend(App):
         parms = self.get_parmameters()
         return [x.strip()[len(parms.get("home"))+1:] for x in self.script.run("find -L %s -maxdepth %d -type d" % (parms.get("home"), 3))["stdout"].split("\n")]
 
+    def get_uid(self):
+        return int(self.script.run("id -u %s" % self.get_user())["stdout"].strip())
+
+    def get_gid(self):
+        return int(self.script.run("id -g %s" % self.get_user())["stdout"].strip())
+
     def passwd(self, password):
         self.script.add_cmd("/usr/sbin/chpasswd", stdin="%s:%s" % (self.get_user(), password))
 

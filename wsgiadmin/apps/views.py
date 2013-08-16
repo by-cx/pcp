@@ -232,16 +232,20 @@ class FtpAccessCreateView(CreateView):
         return self.user.app_set.get(id=app_id)
 
     def get_form(self, form_class):
+        backend = AppBackend.objects.get(id=self.get_app().id)
         form = super(FtpAccessCreateView, self).get_form(form_class)
-        form.fields["directory"].choices = form.fields["directory"].choices = [(x, x) for x in self.get_app().get_directories() if x]
+        form.fields["directory"].choices = form.fields["directory"].choices = [(x, x) for x in backend.get_directories() if x]
         form.app = self.get_app()
         return form
 
     def form_valid(self, form):
         object = form.save(commit=False)
+        backend = AppBackend.objects.get(id=self.get_app().id)
         object.app = self.get_app()
-        object.hash = crypt.crypt(form.cleaned_data["hash"], self.user.username)
-        object.home = AppBackend.objects.get(id=self.get_app().id).get_home()
+        object.hash = crypt.crypt(form.cleaned_data["password"], self.user.username)
+        object.home = backend.get_home()
+        object.uid = backend.get_uid()
+        object.gid = backend.get_gid()
         object.save()
         return super(FtpAccessCreateView, self).form_valid(form)
 
@@ -275,17 +279,20 @@ class FtpAccessUpdateView(UpdateView):
     def get_form(self, form_class):
         form = super(FtpAccessUpdateView, self).get_form(form_class)
         form.fields["directory"].choices = [(x, x) for x in self.get_app().get_directories() if x]
-        form.fields["hash"].required = False
+        form.fields["password"].required = False
         form.app = self.get_app()
         form.ftpaccess = self.object
         return form
 
     def form_valid(self, form):
         self.success_url = reverse("app_detail", kwargs={"app_id": self.get_object().app_id})
-        object = super(FtpAccessUpdateView, self).form_valid(form)
-        if form.cleaned_data["hash"]:
-            object.hash = crypt.crypt(form.cleaned_data["hash"], self.user.username)
-        return object
+        ftpaccess = form.save(commit=False)
+        ftpaccess.username = form.cleaned_data["username"]
+        ftpaccess.directory = form.cleaned_data["directory"]
+        if form.cleaned_data["password"]:
+            ftpaccess.hash = crypt.crypt(form.cleaned_data["password"], self.user.username)
+        ftpaccess.save()
+        return HttpResponseRedirect(self.get_success_url())
 
     def get_context_data(self, **kwargs):
         context = super(FtpAccessUpdateView, self).get_context_data(**kwargs)

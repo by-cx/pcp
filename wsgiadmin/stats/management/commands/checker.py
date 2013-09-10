@@ -13,7 +13,8 @@ class Command(BaseCommand):
     help = "Check who pay and who dont"
 
     def pay(self, date, user, value, trans):
-        credits = user.credit_set.filter(date_payed=None, price=value, date__lte=date)
+        #credits = user.credit_set.filter(date_payed=None, price=value, date__lte=date)
+        credits = user.credit_set.filter(date_payed=None, price=value)
         if credits:
             credit = credits[0]
             sys.stdout.write(credit.user.username)

@@ -500,6 +500,7 @@ class PythonApp(AppBackend):
         content.append("--wsgi-file %(home)s/app.wsgi" % parms)
         content.append("--chdir %(home)s" % parms)
         content.append("--pythonpath %(home)s/app" % parms)
+        content.append("--env PYTHON_EGG_CACHE=~/.python-eggs")
         return " ".join(content)
 
     def gen_nginx_config(self):

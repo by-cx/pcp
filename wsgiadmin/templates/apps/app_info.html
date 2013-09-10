@@ -8,152 +8,172 @@
 {% block content %}
     <div class="clear"></div>
 
-    <h2>{% trans "Information about app" %} {{ app.name }}</h2>
+    <div class="panel panel-default">
+        <div class="panel-heading"><strong>{% trans "Information about app" %} {{ app.name }}</strong></div>
 
-    <table class="table table-striped">
-        <tr>
-            <th>{% trans "Name" %}</th>
-            <td>{{ app.name }}</td>
-        </tr>
-        <tr>
-            <th>{% trans "FTP/SFTP" %}</th>
-            <td>{% trans "Host" %}: {{ app.core_server.domain }} / {% trans "User" %}: {{ app.get_user }}</td>
-        </tr>
-        {% if app.db_server %}
-        <tr>
-            <th>{% trans "Database server" %}</th>
-            <td>
-                {{ app.db_server.domain }}<br>
-                <em>{% trans "If you want connect to database, use this domain." %}</em>
-            </td>
-        </tr>
-        {% endif %}
-        <tr>
-            <th>{% trans "Domains" %}</th>
-            <td>{{ app.domains }}</td>
-        </tr>
-        <tr>
-            <th>{% trans "Type" %}</th>
-            <td>{{ app.app_type }}</td>
-        </tr>
-        <tr>
-            <th>{% trans "Server domain and IP" %}</th>
-            <td>
-                {{ app.core_server.domain }}
-                {% if app.core_server.ip %}<br>IPv4: {{ app.core_server.ip }}{% endif %}
-                {% if app.core_server.ipv6 %}<br>IPv6: {{ app.core_server.ipv6 }}{% endif %}
-
-        </tr>
-        {% if loadbalancers %}
-        <tr>
-            <th>{% trans "Load balancers" %}</th>
-            <td>
-                {% for balancer in loadbalancers %}
-                    {% if not balancer.hide %}
-                    {% if balancer.ip %}<em>{{ balancer.ip }}</em>{% endif %}
-                    {% if balancer.ip and balancer.ipv6 %}<em>/</em>{% endif %}
-                    {% if balancer.ipv6 %}<em>{{ balancer.ipv6 }}</em>{% endif %}
-                    <br>
-                    {% endif %}
-                {% endfor %}
-                <em>{% trans "Use these IPv4/6 addresses for A/AAAA records in your DNS zone." %}</em>
-            </td>
-        </tr>
-        {% endif %}
-        <tr>
-            <th>{% trans "Stav" %}</th>
-            <td>
-                {% if app.installed %}{% trans "Installed" %}{% else %}{% trans "Not installed" %}{% endif %}
-                {% if app.disabled %}{% trans "Disabled" %}{% endif %}
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2">
-                {% if app.app_type == "python" or app.app_type == "native" %}
-                    <a href="{% url 'app_restart' %}?app_id={{ app.id }}" class="btn btn-primary"><i class="icon-refresh icon-white"></i> {% trans "Restart" %}</a>
-                {% endif %}
-                {% if app.app_type == "static" %}
-                    <a href="{% url 'app_params_static' app_id=app.id %}" class="btn btn-warning"><i class="icon-edit icon-white"></i> {% trans "Parameters" %}</a>
-                {% elif app.app_type == "php" %}
-                    <a href="{% url 'app_params_php' app_id=app.id %}" class="btn btn-warning"><i class="icon-edit icon-white"></i> {% trans "Parameters" %}</a>
-                {% elif app.app_type == "python" %}
-                    <a href="{% url 'app_params_python' app_id=app.id %}" class="btn btn-warning"><i class="icon-edit icon-white"></i> {% trans "Parameters" %}</a>
-                {% elif app.app_type == "native" %}
-                    <a href="{% url 'app_params_native' app_id=app.id %}" class="btn btn-warning"><i class="icon-edit icon-white"></i> {% trans "Parameters" %}</a>
-                {% elif app.app_type == "proxy" %}
-                    <a href="{% url 'app_params_proxy' app_id=app.id %}" class="btn btn-warning"><i class="icon-edit icon-white"></i> {% trans "Parameters" %}</a>
-                {% endif %}
-                <a href="#a" onclick="if(confirm('{% trans "Are you sure?" %}')) {document.location= '{% url 'app_rm' %}?app_id={{ app.id }}';}" class="btn btn-danger"><i class="icon-remove icon-white"></i> {% trans "Delete" %}</a>
-            </td>
-        </tr>
-        <tr>
-            <th colspan="2">{% trans "Parameters" %}</th>
-        </tr>
-        {% for key, value in app.format_parameters.items %}
-        <tr>
-            <td>{{ key }}</td>
-            <td>{{ value|safe }}</td>
-        </tr>
-        {% endfor %}
-    </table>
-
-
-    <h2>{% trans "Databases" %}</h2>
-
-    {% if dbs %}
-    <p><a href="{% url 'db_add' %}?app_id={{ app.id }}">{% trans "Add database to this app" %}</a></p>
-    <table class="table table-striped">
-        <tr>
-            <th>{% trans "Name" %}</th>
-            <th>{% trans "Comment" %}</th>
-            <th>{% trans "Actions" %}</th>
-        </tr>
-        {% for db in dbs %}
-        <tr>
-            <td>{{ db.name }}</td>
-            <td>{{ db.comment }}</td>
-            <td>
-                <a href="{% url 'db_update' pk=db.id %}" class="btn btn-small">{% trans "Update" %}</a>
-                <a href="#a" class="btn btn-danger btn-small" onclick="if(confirm('{% trans "Are you sure?" %}')){ document.location='{% url 'db_rm' %}?db_id={{ db.id }}'; }">{% trans "Delete" %}</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
-    {% else %}
-        <p><a href="{% url 'db_add' %}?app_id={{ app.id }}">{% trans "Add database to this app" %}</a></p>
-    {% endif %}
-
-    <h2>{% trans "FTP access" %}</h2>
-
-    {% if ftps %}
-        <p><a href="{% url 'ftp_add' %}?app_id={{ app.id }}">{% trans "Add FTP access to this app" %}</a></p>
+        <div class="panel-body"></div>
         <table class="table table-striped">
             <tr>
-                <th>{% trans "Username" %}</th>
-                <th>{% trans "Directory" %}</th>
-                <th>{% trans "Actions" %}</th>
+                <th>{% trans "Name" %}</th>
+                <td>{{ app.name }}</td>
             </tr>
-            {% for ftp in ftps %}
-                <tr>
-                    <td>{{ ftp.username }}</td>
-                    <td>{{ ftp.directory }}</td>
-                    <td>
-                        <a href="{% url 'ftp_update' pk=ftp.id %}" class="btn btn-small">{% trans "Update" %}</a>
-                        <a href="#a" class="btn btn-danger btn-small"
-                           onclick="if(confirm('{% trans "Are you sure?" %}')){ document.location='{% url 'ftp_rm' %}?ftpaccess_id={{ ftp.id }}'; }">{% trans "Delete" %}</a>
-                    </td>
-                </tr>
+            <tr>
+                <th>{% trans "FTP/SFTP" %}</th>
+                <td>{% trans "Host" %}: {{ app.core_server.domain }} / {% trans "User" %}: {{ app.get_user }}</td>
+            </tr>
+            {% if app.db_server %}
+            <tr>
+                <th>{% trans "Database server" %}</th>
+                <td>
+                    {{ app.db_server.domain }}<br>
+                    <em>{% trans "If you want connect to database, use this domain." %}</em>
+                </td>
+            </tr>
+            {% endif %}
+            <tr>
+                <th>{% trans "Domains" %}</th>
+                <td>{{ app.domains }}</td>
+            </tr>
+            <tr>
+                <th>{% trans "Type" %}</th>
+                <td>{{ app.app_type }}</td>
+            </tr>
+            <tr>
+                <th>{% trans "Server domain and IP" %}</th>
+                <td>
+                    {{ app.core_server.domain }}
+                    {% if app.core_server.ip %}<br>IPv4: {{ app.core_server.ip }}{% endif %}
+                    {% if app.core_server.ipv6 %}<br>IPv6: {{ app.core_server.ipv6 }}{% endif %}
+
+            </tr>
+            {% if loadbalancers %}
+            <tr>
+                <th>{% trans "Load balancers" %}</th>
+                <td>
+                    {% for balancer in loadbalancers %}
+                        {% if not balancer.hide %}
+                        {% if balancer.ip %}<em>{{ balancer.ip }}</em>{% endif %}
+                        {% if balancer.ip and balancer.ipv6 %}<em>/</em>{% endif %}
+                        {% if balancer.ipv6 %}<em>{{ balancer.ipv6 }}</em>{% endif %}
+                        <br>
+                        {% endif %}
+                    {% endfor %}
+                    <em>{% trans "Use these IPv4/6 addresses for A/AAAA records in your DNS zone." %}</em>
+                </td>
+            </tr>
+            {% endif %}
+            <tr>
+                <th>{% trans "Stav" %}</th>
+                <td>
+                    {% if app.installed %}{% trans "Installed" %}{% else %}{% trans "Not installed" %}{% endif %}
+                    {% if app.disabled %}{% trans "Disabled" %}{% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>{% trans "Actions" %}</th>
+                <td>
+                    {% if app.app_type == "python" or app.app_type == "native" %}
+                        <a href="{% url 'app_restart' %}?app_id={{ app.id }}" class="btn btn-primary"><span class="glyphicon glyphicon-refresh glyphicon-white"></span> {% trans "Restart" %}</a>
+                    {% endif %}
+                    {% if app.app_type == "static" %}
+                        <a href="{% url 'app_params_static' app_id=app.id %}" class="btn btn-warning"><span class="glyphicon glyphicon-edit glyphicon-white"></span> {% trans "Parameters" %}</a>
+                    {% elif app.app_type == "php" %}
+                        <a href="{% url 'app_params_php' app_id=app.id %}" class="btn btn-warning"><span class="glyphicon glyphicon-edit glyphicon-white"></span> {% trans "Parameters" %}</a>
+                    {% elif app.app_type == "python" %}
+                        <a href="{% url 'app_params_python' app_id=app.id %}" class="btn btn-warning"><span class="glyphicon glyphicon-edit glyphicon-white"></span> {% trans "Parameters" %}</a>
+                    {% elif app.app_type == "native" %}
+                        <a href="{% url 'app_params_native' app_id=app.id %}" class="btn btn-warning"><span class="glyphicon glyphicon-edit glyphicon-white"></span> {% trans "Parameters" %}</a>
+                    {% elif app.app_type == "proxy" %}
+                        <a href="{% url 'app_params_proxy' app_id=app.id %}" class="btn btn-warning"><span class="glyphicon glyphicon-edit glyphicon-white"></span> {% trans "Parameters" %}</a>
+                    {% endif %}
+                    <a href="#a" onclick="if(confirm('{% trans "Are you sure?" %}')) {document.location= '{% url 'app_rm' %}?app_id={{ app.id }}';}" class="btn btn-danger"><span class="glyphicon glyphicon-remove glyphicon glyphicon-white"></span> {% trans "Delete" %}</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">{% trans "Parameters" %}</div>
+
+        <div class="panel-body"></div>
+        <table class="table table-striped">
+            {% for key, value in app.format_parameters.items %}
+            <tr>
+                <th>{{ key }}</th>
+                <td>{{ value|safe }}</td>
+            </tr>
             {% endfor %}
         </table>
-    {% else %}
-        <p><a href="{% url 'ftp_add' %}?app_id={{ app.id }}">{% trans "Add new FTP access to this app" %}</a></p>
-    {% endif %}
+    </div>
 
-    <h2>{% trans "Log files" %}</h2>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">{% trans "Databases" %}</div>
+            {% if dbs %}
+            <div class="panel-body">
+                <p><a href="{% url 'db_add' %}?app_id={{ app.id }}">{% trans "Add database to this app" %}</a></p>
+            </div>
+            <table class="table table-striped">
+                <tr>
+                    <th>{% trans "Name" %}</th>
+                    <th>{% trans "Comment" %}</th>
+                    <th>{% trans "Actions" %}</th>
+                </tr>
+                {% for db in dbs %}
+                <tr>
+                    <td>{{ db.name }}</td>
+                    <td>{{ db.comment }}</td>
+                    <td>
+                        <a href="{% url 'db_update' pk=db.id %}" class="btn btn-small">{% trans "Update" %}</a>
+                        <a href="#a" class="btn btn-danger btn-small" onclick="if(confirm('{% trans "Are you sure?" %}')){ document.location='{% url 'db_rm' %}?db_id={{ db.id }}'; }">{% trans "Delete" %}</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+            {% else %}
+                <div class="panel-body">
+                    <p><a href="{% url 'db_add' %}?app_id={{ app.id }}">{% trans "Add FTP access to this app" %}</a></p>
+                </div>
+            {% endif %}
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">{% trans "FTP access" %}</div>
+
+        <div class="panel-body">
+            {% if ftps %}
+                <p><a href="{% url 'ftp_add' %}?app_id={{ app.id }}">{% trans "Add FTP access to this app" %}</a></p>
+                <table class="table table-striped">
+                    <tr>
+                        <th>{% trans "Username" %}</th>
+                        <th>{% trans "Directory" %}</th>
+                        <th>{% trans "Actions" %}</th>
+                    </tr>
+                    {% for ftp in ftps %}
+                        <tr>
+                            <td>{{ ftp.username }}</td>
+                            <td>{{ ftp.directory }}</td>
+                            <td>
+                                <a href="{% url 'ftp_update' pk=ftp.id %}" class="btn btn-small">{% trans "Update" %}</a>
+                                <a href="#a" class="btn btn-danger btn-small"
+                                   onclick="if(confirm('{% trans "Are you sure?" %}')){ document.location='{% url 'ftp_rm' %}?db_id={{ ftp.id }}'; }">{% trans "Delete" %}</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <p><a href="{% url 'ftp_add' %}?app_id={{ app.id }}">{% trans "Add database to this app" %}</a></p>
+            {% endif %}
+        </div>
+    </div>
 
     {% for log in app.get_logs %}
-    <p><strong>{{ log.0 }}</strong></p>
-    <pre class="log">{{ log.1 }}</pre>
+    <div class="panel panel-default">
+        <div class="panel-heading">{% trans "Log:" %} {{ log.0 }}</div>
+        <div class="panel-body">
+            <pre class="log">{{ log.1 }}</pre>
+        </div>
+    </div>
     {% endfor %}
 
 {% endblock %}

@@ -238,7 +238,7 @@ class FtpAccessCreateView(CreateView):
     def get_form(self, form_class):
         backend = AppBackend.objects.get(id=self.get_app().id)
         form = super(FtpAccessCreateView, self).get_form(form_class)
-        form.fields["directory"].choices = form.fields["directory"].choices = [(x, x) for x in backend.get_directories() if x]
+        form.fields["directory"].choices = form.fields["directory"].choices = [("", _("App root"))]+[(x, x) for x in backend.get_directories() if x]
         form.app = self.get_app()
         return form
 
@@ -282,7 +282,7 @@ class FtpAccessUpdateView(UpdateView):
 
     def get_form(self, form_class):
         form = super(FtpAccessUpdateView, self).get_form(form_class)
-        form.fields["directory"].choices = [(x, x) for x in self.get_app().get_directories() if x]
+        form.fields["directory"].choices = [("", _("App root"))]+[(x, x) for x in self.get_app().get_directories() if x]
         form.fields["password"].required = False
         form.app = self.get_app()
         form.ftpaccess = self.object

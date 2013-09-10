@@ -1,14 +1,9 @@
 body {
     background: #FFFFFF;
+    padding-top: 70px;
 }
 
-#top {
-    margin-top: 50px;
-    /*background: #eeeeee;
-    -moz-box-shadow: 0 0 200px rgba(0, 0, 0, 0.3) inset;
-    -webkit-box-shadow: 0 0 200px rgba(0, 0, 0, 0.3) inset;
-    box-shadow: 0 0 200px rgba(0, 0, 0, 0.3) inset;*/
-}
+
 /*--------------------------------------------------------------------------------------------------------
     Content
 --------------------------------------------------------------------------------------------------------*/

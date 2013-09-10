@@ -13,6 +13,24 @@ class RostiFormHelper(FormHelper):
         self.add_input(Submit(_("Save"), _("Save")))
 
 
+class LoginFormHelper(FormHelper):
+
+    def __init__(self, *args, **kwargs):
+        super(LoginFormHelper, self).__init__(*args, **kwargs)
+
+        self.form_class = 'well'
+        self.add_input(Submit(_("Login"), _("Login")))
+
+
+class RegFormHelper(FormHelper):
+
+    def __init__(self, *args, **kwargs):
+        super(RegFormHelper, self).__init__(*args, **kwargs)
+
+        self.form_class = 'well'
+        self.add_input(Submit(_("Register"), _("Register")))
+
+
 class PassCheckForm(forms.Form):
 
     _pwd_min_length = 6

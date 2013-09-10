@@ -231,13 +231,9 @@ def reg(request):
     else:
         form = RegistrationForm()
 
-    form_helper = FormHelper()
-    form_helper.form_tag = False
-
     return render_to_response('reg.html',
         {
             "form": form,
-            "form_helper": form_helper,
             "title": _("Registration"),
             "action": reverse("wsgiadmin.useradmin.views.reg"),
             "config": config,

@@ -1,5 +1,5 @@
 from django.conf.urls.defaults import *
-from wsgiadmin.service.forms import RostiFormHelper
+from wsgiadmin.service.forms import LoginFormHelper
 from wsgiadmin.useradmin.views import PasswordView
 
 urlpatterns = patterns('wsgiadmin.useradmin.views',
@@ -34,7 +34,7 @@ urlpatterns += patterns('',
                                 {
                                     'template_name': 'login.html',
                                     'extra_context': {
-                                        'form_helper': RostiFormHelper(),
+                                        'form_helper': LoginFormHelper(),
                                         'menu_active': 'login',
                                     }
                                 },
@@ -44,7 +44,7 @@ urlpatterns += patterns('',
                                 {
                                     'template_name': 'logout.html',
                                     'extra_context': {
-                                        'form_helper': RostiFormHelper(),
+                                        'form_helper': LoginFormHelper(),
                                     }
                                 },
                                 name = "logout"

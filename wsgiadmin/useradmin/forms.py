@@ -1,11 +1,9 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
-from django.forms.widgets import RadioSelect
 from django.utils.translation import ugettext_lazy as _
 
-from wsgiadmin.service.forms import PassCheckForm
-from django.conf import settings
+from wsgiadmin.service.forms import PassCheckForm, RegFormHelper
 import re
 
 class RegistrationForm(PassCheckForm):
@@ -15,6 +13,7 @@ class RegistrationForm(PassCheckForm):
     def __init__(self, *args, **kwargs):
         super(RegistrationForm, self).__init__(*args, **kwargs)
         self.fields.keyOrder = ['email', 'username', 'password1', 'password2']
+        self.helper = RegFormHelper()
 
     def clean_username(self):
         if User.objects.filter(username=self.cleaned_data["username"]):

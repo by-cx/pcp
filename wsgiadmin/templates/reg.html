@@ -6,12 +6,7 @@
 {% block container %}
 
     <h2>{% trans "Registration" %}</h2>
-    <form action="{% url 'registration' %}" method="post" class="well form-horizontal" id="reg-form">
-        {% crispy form form_helper %}
-        <div class="form-actions">
-            <input type="submit" value="{% trans "Register" %}"/>
-        </div>
-    </form>
+    {% crispy form %}
 
     <div class="row">
         <div class="span6 offset2 center">

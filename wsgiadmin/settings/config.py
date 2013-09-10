@@ -5,7 +5,7 @@ EMAIL_HOST = "localhost"
 
 DEFAULT_MYSQL_COMMAND = 'mysql -uroot'
 
-CRISPY_TEMPLATE_PACK = 'bootstrap'
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 CONSTANCE_BACKEND = "constance.backends.database.DatabaseBackend"
 

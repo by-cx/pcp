@@ -36,8 +36,8 @@
                     <td>{{ record.prio|default_if_none:"--" }}</td>
                     <td>{{ record.value }}</td>
                     <td class="list_actions">
-                        <a href="{% url 'dns_record_editor' pk=domain.id record_pk=record.id %}" class="btn btn-warning btn-mini"><i class="icon-edit icon-white"></i> {% trans "Update" %}</a>
-                        <a href="#a" onclick="if(confirm('{% trans "Are you sure?" %}')) {document.location= '{% url 'dns_rm_record' %}?record_pk={{ record.id }}';}" class="btn btn-danger btn-mini"><i class="icon-remove icon-white"></i> {% trans "Delete" %}</a>
+                        <a href="{% url 'dns_record_editor' pk=domain.id record_pk=record.id %}" class="btn btn-warning btn-mini"><span class="glyphicon-edit glyphicon"></span> {% trans "Update" %}</a>
+                        <a href="#a" onclick="if(confirm('{% trans "Are you sure?" %}')) {document.location= '{% url 'dns_rm_record' %}?record_pk={{ record.id }}';}" class="btn btn-danger btn-mini"><span class="glyphicon-remove glyphicon"></span> {% trans "Delete" %}</a>
                     </td>
                 </tr>
             {% endfor %}

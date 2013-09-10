@@ -8,6 +8,13 @@ from wsgiadmin.core.utils import server_chooser
 from wsgiadmin.service.forms import RostiFormHelper
 
 
+class EmailForm(forms.Form):
+    helper = RostiFormHelper()
+
+    subject = forms.CharField(_("Subject"))
+    message = forms.CharField(_("Message"), widget=forms.Textarea)
+
+
 class DbFormPasswd(ModelForm):
     helper = RostiFormHelper()
 

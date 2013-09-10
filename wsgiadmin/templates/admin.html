@@ -125,6 +125,12 @@
             <li class="divider"></li>
             <li class="nav-header">{% trans "Master panel" %}</li>
             <li>
+                <a href="{% url 'send_email' %}" class="red">
+                    <span class="glyphicon glyphicon-lock"></span>
+                    {% trans "Send group e-mail" %}
+                </a>
+            </li>
+            <li>
                 <a href="{% url 'wsgiadmin.useradmin.views.master' %}" class="red">
                     <span class="glyphicon glyphicon-lock"></span>
                     {% trans "Master panel" %}

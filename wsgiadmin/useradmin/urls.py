@@ -1,6 +1,6 @@
 from django.conf.urls.defaults import *
 from wsgiadmin.service.forms import LoginFormHelper
-from wsgiadmin.useradmin.views import PasswordView
+from wsgiadmin.useradmin.views import PasswordView, EmailView
 
 urlpatterns = patterns('wsgiadmin.useradmin.views',
                        url(r'^$', 'info'),
@@ -17,6 +17,7 @@ urlpatterns = patterns('wsgiadmin.useradmin.views',
                        )
 
 urlpatterns += patterns('',
+                        url(r'^send_email/$', EmailView.as_view(), name='send_email'),
                         url(r'^commit/$', 'wsgiadmin.old.requests.views.commit'),
                         url(r'^domains/', include('wsgiadmin.old.domains.urls')),
                         url(r'^clients/', include('wsgiadmin.clients.urls')),

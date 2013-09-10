@@ -8,12 +8,16 @@ from django.contrib import messages
 from django.db.models.query_utils import Q
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import HttpResponseRedirect, HttpResponseForbidden
+from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _, ugettext
 from django.template.context import RequestContext
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMessage
+from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
+from wsgiadmin.apps.forms import EmailForm
+from wsgiadmin.core.tasks import send_email
 
 from wsgiadmin.old.apacheconf.models import UserSite
 from wsgiadmin.clients.models import *
@@ -23,6 +27,52 @@ from wsgiadmin.service.forms import PassCheckForm, RostiFormHelper
 from wsgiadmin.useradmin.forms import SendPwdForm, RegistrationForm
 from wsgiadmin.clients.models import Parms
 from wsgiadmin.stats.tools import add_credit
+
+
+class EmailView(TemplateView):
+    template_name = "universal.html"
+    form_class = EmailForm
+    success_url = reverse_lazy("send_email")
+    menu_active = "dashboard"
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        self.user = request.session.get('switched_user', request.user)
+        self.superuser = request.user
+        if not self.superuser.is_superuser:
+            return HttpResponseForbidden(_("Permission error"))
+        return super(EmailView, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        form = self.get_form(request)
+        context = self.get_context_data(form, **kwargs)
+        return self.render_to_response(context)
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form(request)
+        if not form.is_valid():
+            context = self.get_context_data(form, **kwargs)
+            return self.render_to_response(context)
+        else:
+            url = self.form_valid(form)
+            return HttpResponseRedirect(url)
+
+    def form_valid(self, form):
+        send_email.delay(form.cleaned_data["subject"], form.cleaned_data["message"])
+        return self.success_url
+
+    def get_form(self, request):
+        if request.method == "POST":
+            return self.form_class(request.POST)
+        return self.form_class()
+
+    def get_context_data(self, form, **kwargs):
+        context = super(EmailView, self).get_context_data(**kwargs)
+        context["form"] = form
+        context['menu_active'] = self.menu_active
+        context['u'] = self.user
+        context['superuser'] = self.superuser
+        return context
 
 
 @login_required

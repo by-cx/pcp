@@ -1,5 +1,7 @@
 from celery import task
+from constance import config
 from django.conf import settings
+from django.core.mail import EmailMessage
 from paramiko import SSHClient, AutoAddPolicy
 from wsgiadmin.core.models import CommandLog
 
@@ -80,6 +82,17 @@ def commit_requests(requests, server, task_log=None):
         task_log.save()
 
     return not error
+
+
+@task()
+def send_email(subject, text):
+    message = EmailMessage(subject,
+                            text,
+                            from_email=config.email,
+                            to=["cx@initd.cz"],
+                            #bcc=[config.email],
+                            headers={'Reply-To': config.email})
+    message.send()
 
 
 """

@@ -44,7 +44,7 @@ class DbForm(ModelForm):
 class FtpAccessForm(ModelForm):
     helper = RostiFormHelper()
 
-    password = forms.CharField(label=_("Password"))
+    password = forms.CharField(label=_("Password"), widget=forms.PasswordInput)
     directory = forms.ChoiceField(label=_("Directory"))
 
     def __init__(self, *args, **kwargs):
@@ -54,9 +54,6 @@ class FtpAccessForm(ModelForm):
     class Meta:
         model = FtpAccess
         fields = ["username", "directory"]
-        widgets = {
-            'hash': forms.PasswordInput,
-        }
 
     def clean_username(self):
         if not re.match("^[0-9a-zA-Z_]*$", self.cleaned_data["username"]):

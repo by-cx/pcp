@@ -2,6 +2,7 @@ import json
 from django.conf import settings
 import os
 import re
+import datetime
 from wsgiadmin.apps.models import App, Db
 from constance import config
 from wsgiadmin.core.backend_base import Script
@@ -499,6 +500,7 @@ class PythonApp(AppBackend):
         content.append("--wsgi-file %(home)s/app.wsgi" % parms)
         content.append("--chdir %(home)s" % parms)
         content.append("--pythonpath %(home)s/app" % parms)
+        content.append("--env PYTHON_EGG_CACHE=~/.python-eggs")
         return " ".join(content)
 
     def gen_nginx_config(self):
@@ -529,15 +531,14 @@ class PythonApp(AppBackend):
         parms = self.get_parmameters()
         self.script.add_cmd("supervisorctl reread")
         self.script.add_cmd("supervisorctl update")
+        # should be needed, but for sure in some cases
         self.script.add_cmd("supervisorctl start %(user)s" % parms)
 
     def restart(self):
         parms = self.get_parmameters()
         self.script.add_cmd("supervisorctl reread")
         self.script.add_cmd("supervisorctl update")
-        # probably restart is execute by update
-        # this comment should remove dead childs processes during update app
-        #self.script.add_cmd("supervisorctl restart %(user)s" % parms)
+        self.script.add_cmd("supervisorctl restart %(user)s" % parms)
 
     def stop(self):
         parms = self.get_parmameters()

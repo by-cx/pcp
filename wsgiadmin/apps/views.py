@@ -98,13 +98,9 @@ class AppParametersView(TemplateView):
                 app.update()
                 if app.app_type == "python":
                     app.restart()
-                app.commit()
                 if form.cleaned_data["password"]:
                     app.passwd(form.cleaned_data["password"])
                 app.commit()
-                if form.cleaned_data["password"]:
-                    app.passwd(form.cleaned_data["password"])
-                    app.commit()
                 messages.add_message(request, messages.SUCCESS, _('Changes has been saved.'))
             else:
                 messages.add_message(request, messages.WARNING, _('Changes has been saved. But app is disabled.'))

@@ -8,6 +8,7 @@ from wsgiadmin.service.forms import PassCheckModelForm, RostiFormHelper
 
 
 class FormEmail(PassCheckModelForm):
+    helper = RostiFormHelper()
     login = forms.CharField(label=_("Name"), help_text=_("Mailbox in name@domain format"))
     xdomain = forms.ChoiceField(label=_("Domain"), choices=[(11, 22)])
 
@@ -30,6 +31,7 @@ class FormLogin(forms.Form):
 
 
 class FormRedirect(ModelForm):
+    helper = RostiFormHelper()
     _domain = forms.ChoiceField(label=_("Domain"), choices=[(11, 22)])
 
     class Meta:

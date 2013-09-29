@@ -32,7 +32,6 @@ class RegFormHelper(FormHelper):
 
 
 class PassCheckForm(forms.Form):
-
     _pwd_min_length = 6
 
     password1 = forms.CharField(label=_("Password"), widget=forms.PasswordInput(render_value=False))

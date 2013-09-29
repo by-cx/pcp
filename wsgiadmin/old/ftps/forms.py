@@ -4,10 +4,11 @@ from django.utils.translation import ugettext_lazy as _
 from wsgiadmin.old.apacheconf.tools import user_directories
 
 from wsgiadmin.old.ftps.models import Ftp
-from wsgiadmin.service.forms import PassCheckModelForm
+from wsgiadmin.service.forms import PassCheckModelForm, RostiFormHelper
 
 
 class FTPUpdateForm(ModelForm):
+    helper = RostiFormHelper()
 
     class Meta:
         model = Ftp
@@ -42,6 +43,8 @@ class FTPUpdateForm(ModelForm):
 
 
 class FTPForm(PassCheckModelForm, FTPUpdateForm):
+    helper = RostiFormHelper()
+
     class Meta:
         model = Ftp
         fields = ('username', 'dir', 'password1', 'password2')

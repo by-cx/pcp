@@ -24,7 +24,7 @@ from wsgiadmin.clients.models import *
 from wsgiadmin.emails.models import Message
 from wsgiadmin.old.requests.request import SSHHandler
 from wsgiadmin.service.forms import PassCheckForm, RostiFormHelper
-from wsgiadmin.useradmin.forms import SendPwdForm, RegistrationForm
+from wsgiadmin.useradmin.forms import SendPwdForm, RegistrationForm, AdminPasswd
 from wsgiadmin.clients.models import Parms
 from wsgiadmin.stats.tools import add_credit
 
@@ -208,7 +208,7 @@ def change_passwd(request):
     superuser = request.user
 
     if request.method == 'POST':
-        form = PassCheckForm(request.POST)
+        form = AdminPasswd(request.POST)
         if form.is_valid():
             u.set_password(form.cleaned_data["password1"])
             u.save()
@@ -216,12 +216,11 @@ def change_passwd(request):
             messages.add_message(request, messages.SUCCESS, _('Password has been changed'))
             return HttpResponseRedirect(reverse("wsgiadmin.useradmin.views.change_passwd"))
     else:
-        form = PassCheckForm()
+        form = AdminPasswd()
 
     return render_to_response('universal.html',
             {
             "form": form,
-            "form_helper": RostiFormHelper(),
             "title": _("Change password for this administration"),
             "u": u,
             "superuser": superuser,

@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 
-from wsgiadmin.service.forms import PassCheckForm, RegFormHelper
+from wsgiadmin.service.forms import PassCheckForm, RegFormHelper, RostiFormHelper
 import re
 
 class RegistrationForm(PassCheckForm):
@@ -66,3 +66,7 @@ class SendPwdForm(forms.Form):
                 raise ValidationError(_("Given email doesn't belong to any user"))
 
         return self.cleaned_data
+
+
+class AdminPasswd(PassCheckForm):
+    helper = RostiFormHelper()

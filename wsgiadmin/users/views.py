@@ -19,6 +19,8 @@ from wsgiadmin.emails.models import Message
 from wsgiadmin.old.requests.request import SystemRequest
 from wsgiadmin.service.forms import PassCheckForm, RostiFormHelper
 from wsgiadmin.stats.tools import add_credit
+from wsgiadmin.users.forms import SSHPasswd
+
 
 @login_required
 def show(request):
@@ -244,7 +246,7 @@ def ssh_passwd(request):
     superuser = request.user
 
     if request.method == 'POST':
-        form = PassCheckForm(request.POST)
+        form = SSHPasswd(request.POST)
         if form.is_valid():
             sr = SystemRequest(u, u.parms.web_machine)
             sr.passwd(form.cleaned_data["password1"])
@@ -252,16 +254,15 @@ def ssh_passwd(request):
             messages.add_message(request, messages.SUCCESS, _('Password has been changed'))
             return HttpResponseRedirect(reverse("wsgiadmin.useradmin.views.ok"))
     else:
-        form = PassCheckForm()
+        form = SSHPasswd()
 
     return render_to_response('universal.html',
             {
             "form": form,
-            "form_helper": RostiFormHelper(),
             "title": _("Change password for SSH/FTP"),
             "u": u,
             "superuser": superuser,
             "menu_active": "settings",
             },
-                              context_instance=RequestContext(request)
+            context_instance=RequestContext(request)
     )

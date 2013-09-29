@@ -132,7 +132,7 @@
             </table>
             {% else %}
                 <div class="panel-body">
-                    <p><a href="{% url 'db_add' %}?app_id={{ app.id }}">{% trans "Add FTP access to this app" %}</a></p>
+                    <p><a href="{% url 'db_add' %}?app_id={{ app.id }}">{% trans "Add database to this app" %}</a></p>
                 </div>
             {% endif %}
     </div>
@@ -162,7 +162,7 @@
                     {% endfor %}
                 </table>
             {% else %}
-                <p><a href="{% url 'ftp_add' %}?app_id={{ app.id }}">{% trans "Add database to this app" %}</a></p>
+                <p><a href="{% url 'ftp_add' %}?app_id={{ app.id }}">{% trans "Add FTP access to this app" %}</a></p>
             {% endif %}
         </div>
     </div>

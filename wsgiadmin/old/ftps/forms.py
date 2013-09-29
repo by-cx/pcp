@@ -4,7 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 from wsgiadmin.old.apacheconf.tools import user_directories
 
 from wsgiadmin.old.ftps.models import Ftp
-from wsgiadmin.service.forms import PassCheckModelForm, RostiFormHelper
+from wsgiadmin.service.forms import PassCheckModelForm, RostiFormHelper, PassCheckForm
 
 
 class FTPUpdateForm(ModelForm):
@@ -64,3 +64,6 @@ class FTPForm(PassCheckModelForm, FTPUpdateForm):
             raise forms.ValidationError(_("Chosen username already exists"))
 
         return out_value
+
+class FTPasswd(PassCheckForm):
+    helper = RostiFormHelper()

@@ -8,7 +8,7 @@ from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.template.context import RequestContext
 from django.utils.translation import ugettext_lazy as _, ugettext
 
-from wsgiadmin.old.ftps.forms import FTPForm, FTPUpdateForm
+from wsgiadmin.old.ftps.forms import FTPForm, FTPUpdateForm, FTPasswd
 from wsgiadmin.old.ftps.models import *
 from wsgiadmin.service.forms import PassCheckForm, RostiFormHelper
 from wsgiadmin.service.views import RostiListView, JsonResponse
@@ -62,7 +62,6 @@ def ftp_upsert(request, ftp_id=0):
     return render_to_response('universal.html',
             {
             "form": form,
-            "form_helper": RostiFormHelper(),
             "title": _("FTP account"),
             "note": [_("* Username will be prefixed with `%s_`" % u.username)],
             "u": u,
@@ -80,7 +79,7 @@ def passwd_ftp(request, ftp_id):
     superuser = request.user
 
     if request.method == 'POST':
-        form = PassCheckForm(request.POST)
+        form = FTPasswd(request.POST)
         
         if form.is_valid():
             if iftp.owner != u:
@@ -92,12 +91,11 @@ def passwd_ftp(request, ftp_id):
             messages.add_message(request, messages.SUCCESS, _('Password has been changed'))
             return HttpResponseRedirect(reverse("ftp_list"))
     else:
-        form = PassCheckForm()
+        form = FTPasswd()
 
     return render_to_response('universal.html',
             {
             "form": form,
-            "form_helper": RostiFormHelper(),
             "title": _("Edit FTP account"),
             "submit": _("Save changes"),
             "action": reverse("ftp_passwd", kwargs={'ftp_id': ftp_id}),

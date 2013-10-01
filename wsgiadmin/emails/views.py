@@ -11,7 +11,7 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _, ugettext
 from django.views.generic.edit import CreateView
 from wsgiadmin.emails.backend import EmailBackend
-from wsgiadmin.emails.forms import DomainForm
+from wsgiadmin.emails.forms import DomainForm, EmailPasswd
 
 from wsgiadmin.emails.forms import FormEmail, FormRedirect
 from wsgiadmin.emails.models import Email, EmailRedirect
@@ -151,7 +151,7 @@ def changePasswdBox(request, eid):
         e = None
 
     if request.method == 'POST':
-        form = PassCheckModelForm(request.POST, instance=e)
+        form = EmailPasswd(request.POST, instance=e)
         if form.is_valid():
             email = form.save(commit=False)
             email.password = crypt.crypt(form.cleaned_data["password1"], email.login)
@@ -159,7 +159,7 @@ def changePasswdBox(request, eid):
             messages.add_message(request, messages.SUCCESS, _('Password has been changed'))
             return HttpResponseRedirect(reverse("mailbox_list"))
     else:
-        form = PassCheckModelForm(instance=e)
+        form = EmailPasswd(instance=e)
 
     helper = RostiFormHelper()
     helper.form_action = reverse("wsgiadmin.emails.views.changePasswdBox", args=[e.id])

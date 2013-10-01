@@ -61,3 +61,7 @@ class DomainForm(forms.ModelForm):
 
     def clean_user(self):
         return None
+
+
+class EmailPasswd(PassCheckModelForm):
+    helper = RostiFormHelper()

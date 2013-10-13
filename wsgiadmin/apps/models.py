@@ -7,9 +7,11 @@ from wsgiadmin.core.models import Server
 
 SITE_TYPE_CHOICES = [
     ("uwsgi", "uWSGI"),
+    ("python", "Python"),
+    ("gunicorn", "Gunicorn"),
     ("php", "PHP"),
     ("static", "Static"),
-    ("nodejs", "Node.js"),
+    ("node", "Node.js"),
     ("native", "Native"),
 ]
 

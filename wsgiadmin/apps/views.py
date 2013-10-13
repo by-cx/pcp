@@ -5,9 +5,11 @@ from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, TemplateView, CreateView, UpdateView
-from wsgiadmin.apps.forms import AppForm, AppStaticForm, AppPHPForm, AppNativeForm, AppProxyForm, AppPythonForm, DbForm, DbFormPasswd, FtpAccessForm
+from wsgiadmin.apps.backend.python import PythonGunicornApp, PythonApp
+from wsgiadmin.apps.backend import typed_object, AppBackend
+from wsgiadmin.apps.backend.db import DbObject
+from wsgiadmin.apps.forms import AppForm, AppStaticForm, AppPHPForm, AppNativeForm, AppProxyForm, AppPythonForm, DbForm, DbFormPasswd, FtpAccessForm, AppGunicornForm
 from wsgiadmin.apps.models import App, Db, FtpAccess
-from wsgiadmin.apps.backend import PythonApp, typed_object, DbObject, AppBackend
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext as __
 from django.contrib import messages
@@ -77,7 +79,7 @@ class AppParametersView(TemplateView):
         context = self.get_context_data(**kwargs)
         form = self.get_form()(request.POST)
         app = self.get_object()
-        if app.app_type == "python":
+        if app.app_type in ("python", "uwsgi", "gunicorn"):
             form.fields["python"].choices = [(python.name, python.name) for python in self.get_object().core_server.pythoninterpreter_set.all()]
         if form.is_valid():
             parms = {}
@@ -96,7 +98,7 @@ class AppParametersView(TemplateView):
                 if not app.installed:
                     app.install()
                 app.update()
-                if app.app_type == "python":
+                if app.app_type in ("python", "uwsgi", "gunicorn"):
                     app.restart()
                 if form.cleaned_data["password"]:
                     app.passwd(form.cleaned_data["password"])
@@ -111,7 +113,7 @@ class AppParametersView(TemplateView):
     def get(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
         form = self.get_form()(initial=self.get_initial())
-        if self.get_object().app_type == "python":
+        if self.get_object().app_type in ("python", "uwsgi", "gunicorn"):
             form.fields["python"].choices = [(python.name, python.name) for python in self.get_object().core_server.pythoninterpreter_set.all()]
         context["form"] = form
         return self.render_to_response(context)
@@ -126,12 +128,16 @@ class AppParametersView(TemplateView):
             form = AppPHPForm
         elif self.app_type == "phpfpm":
             form = AppPHPForm
-        elif self.app_type == "python":
+        elif self.app_type in ("python", "uwsgi"):
             form = AppPythonForm
+        elif self.app_type == "gunicorn":
+            form = AppGunicornForm
         elif self.app_type == "native":
             form = AppNativeForm
         elif self.app_type == "proxy":
             form = AppProxyForm
+        elif self.app_type == "proxy":
+            form = AppNodeForm
         else:
             raise Http404
         form.this_app = self.get_object()
@@ -191,7 +197,7 @@ class AppCreateView(CreateView):
             return reverse("app_params_php", kwargs={"app_id": self.object.id})
         elif self.app_type == "phpfpm":
             return reverse("app_params_phpfpm", kwargs={"app_id": self.object.id})
-        elif self.app_type == "python":
+        elif self.app_type in ("python", "uwsgi", "gunicorn"):
             return reverse("app_params_python", kwargs={"app_id": self.object.id})
         elif self.app_type == "native":
             return reverse("app_params_native", kwargs={"app_id": self.object.id})
@@ -426,8 +432,14 @@ def app_restart(request):
 
     app_id = int(request.GET.get("app_id"))
     app = get_object_or_404(user.app_set, id=app_id)
-    if app.app_type == "python" and not app.disabled:
+    if app.app_type in ("python", "uwsgi") and not app.disabled:
         app = PythonApp.objects.get(id=app.id)
+        app.update()
+        app.restart()
+        app.commit()
+        messages.add_message(request, messages.SUCCESS, _('App has been restarted'))
+    elif app.app_type == "gunicorn" and not app.disabled:
+        app = PythonGunicornApp.objects.get(id=app.id)
         app.update()
         app.restart()
         app.commit()

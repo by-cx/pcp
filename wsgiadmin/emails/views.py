@@ -90,7 +90,7 @@ def addBox(request):
             email.login = form.cleaned_data["login"]
             email.domain = form.cleaned_data["xdomain"]
             email.password = crypt.crypt(form.cleaned_data["password1"],
-                                         form.cleaned_data["login"])
+                                         form.cleaned_data["login"]*2)
             email.save()
 
             backend = EmailBackend()
@@ -154,7 +154,7 @@ def changePasswdBox(request, eid):
         form = EmailPasswd(request.POST, instance=e)
         if form.is_valid():
             email = form.save(commit=False)
-            email.password = crypt.crypt(form.cleaned_data["password1"], email.login)
+            email.password = crypt.crypt(form.cleaned_data["password1"], email.login*2)
             email.save()
             messages.add_message(request, messages.SUCCESS, _('Password has been changed'))
             return HttpResponseRedirect(reverse("mailbox_list"))

@@ -13,3 +13,9 @@ CREDIT_TRESHOLD = 20
 # When users apps will be killed
 KILLER_TRESHOLD = -20
 NUMBER_OF_REMINDS_TO_KILL = 20
+
+GUNICORN_PROXY_PORT = 12000
+
+NODE_VERSIONS = (
+    ("0.10", "0.10.x"),
+)

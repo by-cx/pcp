@@ -14,10 +14,14 @@ if getattr(settings, 'ENABLE_DEBUG_URLS', False):
 
 urlpatterns += patterns('',
     url(r'^django-admin/', include(admin.site.urls)),
-    url(r'^gopay/', include('gopay4django.urls')),
     url(r'^favicon\.ico$', 'wsgiadmin.tools.redirect_to', {'url': '/static/favicon.ico'}),
     url(r'^i18n/', include('django.conf.urls.i18n')),
 )
+
+if settings.GOPAY:
+    urlpatterns += patterns('',
+        url(r'^gopay/', include('gopay4django.urls')),
+    )
 
 if 'rosetta' in settings.INSTALLED_APPS:
     urlpatterns += patterns('',

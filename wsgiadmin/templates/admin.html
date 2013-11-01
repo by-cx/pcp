@@ -242,18 +242,18 @@
         <li>
             <a href="{% url 'app_add_node' %}"><span class="glyphicon glyphicon-plus"></span> {% trans "Add Node.js app" %}</a>
         </li>
-            {% endif %}
-        {% if "native" in capabilities %}
+        {% endif %}
         <!--<li>
-                            <a href="{% url 'app_add_native' %}"><span class="glyphicon glyphicon-plus"></span> {% trans "Add native app" %}</a>
-                        </li>
-                        {% endif %}
-                        {% if "proxy" in capabilities %}
-                        <li>
-                            <a href="{% url 'app_add_proxy' %}"><span class="glyphicon glyphicon-plus"></span> {% trans "Add proxy" %}</a>
-                        </li>
-                        {% endif %}
-                        -->
+        {% if "native" in capabilities %}
+            <a href="{% url 'app_add_native' %}"><span class="glyphicon glyphicon-plus"></span> {% trans "Add native app" %}</a>
+        </li>
+        {% endif %}
+        {% if "proxy" in capabilities %}
+        <li>
+            <a href="{% url 'app_add_proxy' %}"><span class="glyphicon glyphicon-plus"></span> {% trans "Add proxy" %}</a>
+        </li>
+        {% endif %}
+        -->
     {% endif %}
     {% if menu_active == "virt" %}
         <li class="nav-header">{% trans "Virtual machines" %}</li>

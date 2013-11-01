@@ -30,7 +30,7 @@
                                 <a href="{% url 'dns_list' %}">{% trans "DNS" %}</a>
                             </li>
                         {% endif %}
-                        {% if user.usersite_set.count and settings.OLD %}
+                        {% if settings.OLD user.usersite_set.count %}
                             <li {% if menu_active == "webapps" %} class="active"{% endif %}>
                                 <a href="{% url 'app_list' %}">{% trans "Web apps" %}</a>
                             </li>
@@ -50,7 +50,7 @@
                                 </li>
                             {% endif %}
                         {% endif %}
-                        {% if user.ftp_set.count and settings.OLD %}
+                        {% if settings.OLD and user.ftp_set.count %}
                             <li{% if menu_active == "ftps" %} class="active"{% endif %}>
                                 <a href="{% url 'ftp_list' %}">{% trans "FTP" %}</a>
                             </li>

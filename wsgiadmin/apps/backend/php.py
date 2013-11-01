@@ -1,6 +1,7 @@
 import os
 import re
 from constance import config
+from django.conf import settings
 from wsgiadmin.apps.backend.main import AppBackend, AppException
 
 
@@ -65,7 +66,7 @@ class PHPApp(AppBackend):
     def gen_php_ini(self):
         parms = self.get_parmameters()
         content = []
-        content.append("%s" % self.script.run("cat /etc/php5/cgi/php.ini")["stdout"])
+        content.append("%s" % self.script.run("cat %s" % settings.PHP_INI_PATH)["stdout"])
         content.append("error_log = %(home)s/logs/php.log" % parms)
         content.append("memory_limit = %s" % parms.get("memory_limit", "32M"))
         content.append("post_max_size = %s" % parms.get("post_max_size", "32M"))

@@ -19,3 +19,5 @@ GUNICORN_PROXY_PORT = 12000
 NODE_VERSIONS = (
     ("0.10", "0.10.x"),
 )
+
+PHP_INI_PATH = "/etc/php5/cgi/php.ini"

@@ -59,18 +59,26 @@ class Parms(models.Model):
 
     @property
     def count_domains(self):
+        if not settings.OLD:
+            return 0
         return self.user.domain_set.count()
 
     @property
     def count_ftps(self):
+        if not settings.OLD:
+            return 0
         return self.user.ftp_set.count()
 
     @property
     def count_pgs(self):
+        if not settings.OLD:
+            return 0
         return self.user.pgsql_set.count()
 
     @property
     def count_mys(self):
+        if not settings.OLD:
+            return 0
         return self.user.mysqldb_set.count()
 
     @property
@@ -79,6 +87,8 @@ class Parms(models.Model):
 
     @property
     def count_sites(self):
+        if not settings.OLD:
+            return 0
         return self.user.usersite_set.count()
 
     @property
@@ -90,6 +100,8 @@ class Parms(models.Model):
         return float(config.credit_quotient)
 
     def pay_for_sites(self, use_cache=True):
+        if not settings.OLD:
+            return 0
         pay = cache.get('user_payment_%s' % self.user_id)
         if pay is None or not use_cache:
             pay = 0.0

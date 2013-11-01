@@ -8,6 +8,7 @@ OSS = (
     ("debian6", "Debian 6.0"),
     ("debian7", "Debian 7.0"),
     ("archlinux", "Arch Linux"),
+    ("gentoo", "Gentoo"),
 )
 
 

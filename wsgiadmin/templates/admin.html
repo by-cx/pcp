@@ -38,7 +38,7 @@
                         <li {% if menu_active == "apps" %} class="active"{% endif %}>
                             <a href="{% url 'apps_list' %}">{% trans "Apps" %}</a>
                         </li>
-                        {% if superuser.is_superuser %}
+                        {% if superuser.is_superuser and settings.VIRT %}
                             <li {% if menu_active == "virt" %} class="active"{% endif %}>
                                 <a href="{% url 'virt_list' %}">{% trans "VM" %}</a>
                             </li>

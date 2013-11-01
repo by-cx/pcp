@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.conf.urls.defaults import *
 from wsgiadmin.service.forms import LoginFormHelper
 from wsgiadmin.useradmin.views import PasswordView, EmailView
@@ -30,7 +31,6 @@ urlpatterns += patterns('',
                         url(r'^credit/', include('wsgiadmin.stats.urls')),
                         url(r'^users/', include('wsgiadmin.users.urls')),
                         url(r'^apps/', include('wsgiadmin.apps.urls')),
-                        url(r'^vm/', include('wsgiadmin.virt.urls')),
                         url(r'^login/$', 'django.contrib.auth.views.login',
                                 {
                                     'template_name': 'login.html',
@@ -51,3 +51,8 @@ urlpatterns += patterns('',
                                 name = "logout"
                         ),
 )
+
+if settings.VIRT:
+    urlpatterns += patterns('',
+        url(r'^vm/', include('wsgiadmin.virt.urls')),
+    )

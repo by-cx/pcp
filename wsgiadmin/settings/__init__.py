@@ -29,6 +29,11 @@ if OLD:
         'wsgiadmin.old.apacheconf',
     ]
 
+if VIRT:
+    INSTALLED_APPS += [
+        'wsgiadmin.virt',
+    ]
+
 if GOPAY:
     INSTALLED_APPS += [
         'gopay4django',

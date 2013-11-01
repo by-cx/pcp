@@ -139,6 +139,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "wsgiadmin.useradmin.context.rosti_context",
     'constance.context_processors.config',
     'wsgiadmin.core.context.django_settings',
+    "wsgiadmin.core.context.capabilities",
 )
 
 INSTALLED_APPS = [

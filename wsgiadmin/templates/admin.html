@@ -218,27 +218,42 @@
             <a href="{% url 'apps_list' %}"><span class="glyphicon glyphicon-list"></span> {% trans "Apps list" %}</a>
         </li>
         <li class="divider"></li>
+        {% if "static" in capabilities %}
         <li>
             <a href="{% url 'app_add_static' %}"><span class="glyphicon glyphicon-plus"></span> {% trans "Add static app" %}</a>
         </li>
+        {% endif %}
+        {% if "php" in capabilities %}
         <li>
             <a href="{% url 'app_add_php' %}"><span class="glyphicon glyphicon-plus"></span> {% trans "Add php app" %}</a>
         </li>
+        {% endif %}
+        {% if "uwsgi" in capabilities or "python" in capabilities %}
         <li>
             <a href="{% url 'app_add_python' %}"><span class="glyphicon glyphicon-plus"></span> {% trans "Add python app" %}</a>
         </li>
+        {% endif %}
+        {% if "gunicorn" in capabilities %}
         <li>
             <a href="{% url 'app_add_gunicorn' %}"><span class="glyphicon glyphicon-plus"></span> {% trans "Add python app (Gunicorn)" %}</a>
         </li>
+        {% endif %}
+        {% if "node" in capabilities %}
         <li>
             <a href="{% url 'app_add_node' %}"><span class="glyphicon glyphicon-plus"></span> {% trans "Add Node.js app" %}</a>
         </li>
+            {% endif %}
+        {% if "native" in capabilities %}
         <!--<li>
                             <a href="{% url 'app_add_native' %}"><span class="glyphicon glyphicon-plus"></span> {% trans "Add native app" %}</a>
                         </li>
+                        {% endif %}
+                        {% if "proxy" in capabilities %}
                         <li>
                             <a href="{% url 'app_add_proxy' %}"><span class="glyphicon glyphicon-plus"></span> {% trans "Add proxy" %}</a>
-                        </li>-->
+                        </li>
+                        {% endif %}
+                        -->
     {% endif %}
     {% if menu_active == "virt" %}
         <li class="nav-header">{% trans "Virtual machines" %}</li>

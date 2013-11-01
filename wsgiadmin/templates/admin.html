@@ -30,7 +30,7 @@
                                 <a href="{% url 'dns_list' %}">{% trans "DNS" %}</a>
                             </li>
                         {% endif %}
-                        {% if settings.OLD user.usersite_set.count %}
+                        {% if settings.OLD and user.usersite_set.count %}
                             <li {% if menu_active == "webapps" %} class="active"{% endif %}>
                                 <a href="{% url 'app_list' %}">{% trans "Web apps" %}</a>
                             </li>

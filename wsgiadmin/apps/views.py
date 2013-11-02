@@ -463,4 +463,5 @@ def app_reinstall(request):
     app = typed_object(app)
 
     app.install()
+    messages.add_message(request, messages.SUCCESS, _('App has been reinstalled'))
     return HttpResponseRedirect(reverse("app_detail", kwargs={"app_id": app.id}))

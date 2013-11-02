@@ -26,8 +26,8 @@
                     <td>{{ vm.name }}</td>
                     <td>{% if vm.state == 1 %}{% trans "running" %}{% else %}{% trans "not running" %}{% endif %}</td>
                     <td class="list_actions">
-                        <a href="{% url 'virt_summary' pk=vm.id %}" class="btn btn-info btn-mini"><span class="glyphicon-info-sign glyphicon"></span> {% trans "Info" %}</a>
-                        <a href="#a" onclick="if(confirm('{% trans "Are you sure?" %}')) {document.location='';}" class="btn btn-danger btn-mini"><span class="glyphicon-remove glyphicon"></span> {% trans "Delete" %}</a>
+                        <a href="{% url 'virt_summary' pk=vm.id %}" class="btn btn-info btn-sm"><span class="glyphicon-info-sign glyphicon"></span> {% trans "Info" %}</a>
+                        <a href="#a" onclick="if(confirm('{% trans "Are you sure?" %}')) {document.location='';}" class="btn btn-danger btn-sm"><span class="glyphicon-remove glyphicon"></span> {% trans "Delete" %}</a>
                     </td>
                 </tr>
             {% endfor %}

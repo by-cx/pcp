@@ -19,7 +19,7 @@ MANAGERS = ADMINS = ()
 INTERNAL_IPS = ('127.0.0.1', '89.111.104.66')
 ALLOWED_HOSTS = (
     "localhost",
-    "localhost:8000"
+    "localhost:8000",
 )
 
 DATABASES = {}

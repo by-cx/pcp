@@ -28,22 +28,26 @@
                     <td>{{ app.get_user }}</td>
                     <td>{{ app.name }}</td>
                     <td class="list_actions">
-                        <a href="{% url 'app_detail' app_id=app.id %}" class="btn btn-info btn-mini"><span class="glyphicon-info-sign glyphicon"></span> {% trans "Info" %}</a>
-                        {% if app.app_type == "python" or app.app_type == "native" %}
-                            <a href="{% url 'app_restart' %}?app_id={{ app.id }}" class="btn btn-primary btn-mini"><span class="glyphicon-refresh glyphicon"></span> {% trans "Restart" %}</a>
+                        <a href="{% url 'app_detail' app_id=app.id %}" class="btn btn-info btn-sm"><span class="glyphicon-info-sign glyphicon"></span> {% trans "Info" %}</a>
+                        {% if app.app_type == "python" or app.app_type == "native" or app.app_type == "gunicorn" or app.app_type == "node" %}
+                            <a href="{% url 'app_restart' %}?app_id={{ app.id }}" class="btn btn-primary btn-sm"><span class="glyphicon-refresh glyphicon"></span> {% trans "Restart" %}</a>
                         {% endif %}
                         {% if app.app_type == "static" %}
-                            <a href="{% url 'app_params_static' app_id=app.id %}" class="btn btn-warning btn-mini"><span class="glyphicon-edit glyphicon"></span> {% trans "Parameters" %}</a>
+                            <a href="{% url 'app_params_static' app_id=app.id %}" class="btn btn-warning btn-sm"><span class="glyphicon-edit glyphicon"></span> {% trans "Parameters" %}</a>
                         {% elif app.app_type == "php" %}
-                            <a href="{% url 'app_params_php' app_id=app.id %}" class="btn btn-warning btn-mini"><span class="glyphicon-edit glyphicon"></span> {% trans "Parameters" %}</a>
+                            <a href="{% url 'app_params_php' app_id=app.id %}" class="btn btn-warning btn-sm"><span class="glyphicon-edit glyphicon"></span> {% trans "Parameters" %}</a>
                         {% elif app.app_type == "python" %}
-                            <a href="{% url 'app_params_python' app_id=app.id %}" class="btn btn-warning btn-mini"><span class="glyphicon-edit glyphicon"></span> {% trans "Parameters" %}</a>
+                            <a href="{% url 'app_params_python' app_id=app.id %}" class="btn btn-warning btn-sm"><span class="glyphicon-edit glyphicon"></span> {% trans "Parameters" %}</a>
                         {% elif app.app_type == "native" %}
-                            <a href="{% url 'app_params_native' app_id=app.id %}" class="btn btn-warning btn-mini"><span class="glyphicon-edit glyphicon"></span> {% trans "Parameters" %}</a>
+                            <a href="{% url 'app_params_native' app_id=app.id %}" class="btn btn-warning btn-sm"><span class="glyphicon-edit glyphicon"></span> {% trans "Parameters" %}</a>
                         {% elif app.app_type == "proxy" %}
-                            <a href="{% url 'app_params_proxy' app_id=app.id %}" class="btn btn-warning btn-mini"><span class="glyphicon-edit glyphicon"></span> {% trans "Parameters" %}</a>
+                            <a href="{% url 'app_params_proxy' app_id=app.id %}" class="btn btn-warning btn-sm"><span class="glyphicon-edit glyphicon"></span> {% trans "Parameters" %}</a>
+                        {% elif app.app_type == "node" %}
+                            <a href="{% url 'app_params_node' app_id=app.id %}" class="btn btn-warning btn-sm"><span class="glyphicon-edit glyphicon"></span> {% trans "Parameters" %}</a>
+                        {% elif app.app_type == "gunicorn" %}
+                            <a href="{% url 'app_params_gunicorn' app_id=app.id %}" class="btn btn-warning btn-sm"><span class="glyphicon-edit glyphicon"></span> {% trans "Parameters" %}</a>
                         {% endif %}
-                        <a href="#a" onclick="if(confirm('{% trans "Are you sure?" %}')) {document.location= '{% url 'app_rm' %}?app_id={{ app.id }}';}" class="btn btn-danger btn-mini"><span class="glyphicon-remove glyphicon"></span> {% trans "Delete" %}</a>
+                        <a href="#a" onclick="if(confirm('{% trans "Are you sure?" %}')) {document.location= '{% url 'app_rm' %}?app_id={{ app.id }}';}" class="btn btn-danger btn-sm"><span class="glyphicon-remove glyphicon"></span> {% trans "Delete" %}</a>
                     </td>
                 </tr>
             {% endfor %}

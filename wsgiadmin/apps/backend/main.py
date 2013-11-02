@@ -86,8 +86,8 @@ class AppBackend(App):
 
     def update(self):
         parms = self.get_parmameters()
-        limits = "%(user)s         hard    nproc           64\n"
-        limits += "%(user)s         hard    as          393216\n"
+        limits = "%(user)s         hard    nproc           64\n" % parms
+        limits += "%(user)s         hard    as          393216\n" % parms
         self.script.add_file("/etc/security/limits.d/%(user)s.conf" % parms, limits)
         self.proxy.setup()
 

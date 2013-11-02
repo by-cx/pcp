@@ -209,6 +209,7 @@ class ParamikoScript(BaseScript):
         ssh = SSHClient()
         ssh.load_system_host_keys(settings.SSH_HOSTKEYS)
         ssh.set_missing_host_key_policy(AutoAddPolicy())
+        print self.server_object.domain
         ssh.connect(self.server_object.domain, username="root", key_filename=settings.SSH_PRIVATEKEY)
         log.command = cmd
         log.execute_user = "root"

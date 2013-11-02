@@ -6,9 +6,10 @@ from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, TemplateView, CreateView, UpdateView
 from wsgiadmin.apps.backend.python import PythonGunicornApp, PythonApp
+from wsgiadmin.apps.backend.node import NodeApp
 from wsgiadmin.apps.backend import typed_object, AppBackend
 from wsgiadmin.apps.backend.db import DbObject
-from wsgiadmin.apps.forms import AppForm, AppStaticForm, AppPHPForm, AppNativeForm, AppProxyForm, AppPythonForm, DbForm, DbFormPasswd, FtpAccessForm, AppGunicornForm
+from wsgiadmin.apps.forms import AppForm, AppStaticForm, AppPHPForm, AppNativeForm, AppProxyForm, AppPythonForm, DbForm, DbFormPasswd, FtpAccessForm, AppGunicornForm, AppNodeForm
 from wsgiadmin.apps.models import App, Db, FtpAccess
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext as __
@@ -136,7 +137,7 @@ class AppParametersView(TemplateView):
             form = AppNativeForm
         elif self.app_type == "proxy":
             form = AppProxyForm
-        elif self.app_type == "proxy":
+        elif self.app_type == "node":
             form = AppNodeForm
         else:
             raise Http404
@@ -203,6 +204,10 @@ class AppCreateView(CreateView):
             return reverse("app_params_native", kwargs={"app_id": self.object.id})
         elif self.app_type == "proxy":
             return reverse("app_params_proxy", kwargs={"app_id": self.object.id})
+        elif self.app_type == "gunicorn":
+            return reverse("app_params_gunicorn", kwargs={"app_id": self.object.id})
+        elif self.app_type == "node":
+            return reverse("app_params_node", kwargs={"app_id": self.object.id})
         else:
             return reverse("apps_list")
 
@@ -434,13 +439,16 @@ def app_restart(request):
     app = get_object_or_404(user.app_set, id=app_id)
     if app.app_type in ("python", "uwsgi") and not app.disabled:
         app = PythonApp.objects.get(id=app.id)
-        app.update()
+        app.restart()
+        app.commit()
+        messages.add_message(request, messages.SUCCESS, _('App has been restarted'))
+    elif app.app_type == "node" and not app.disabled:
+        app = NodeApp.objects.get(id=app.id)
         app.restart()
         app.commit()
         messages.add_message(request, messages.SUCCESS, _('App has been restarted'))
     elif app.app_type == "gunicorn" and not app.disabled:
         app = PythonGunicornApp.objects.get(id=app.id)
-        app.update()
         app.restart()
         app.commit()
         messages.add_message(request, messages.SUCCESS, _('App has been restarted'))

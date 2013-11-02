@@ -27,5 +27,5 @@ urlpatterns = patterns('',
        url(r'^set_gunicorn/(?P<app_id>\d+)/$', AppParametersView.as_view(app_type="gunicorn"), name="app_params_gunicorn"),
        url(r'^set_native/(?P<app_id>\d+)/$', AppParametersView.as_view(app_type="native"), name="app_params_native"),
        url(r'^set_proxy/(?P<app_id>\d+)/$', AppParametersView.as_view(app_type="proxy"), name="app_params_proxy"),
-       url(r'^set_nodey/(?P<app_id>\d+)/$', AppParametersView.as_view(app_type="node"), name="app_params_node"),
+       url(r'^set_node/(?P<app_id>\d+)/$', AppParametersView.as_view(app_type="node"), name="app_params_node"),
 )

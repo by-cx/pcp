@@ -53,6 +53,9 @@ class PythonApp(AppBackend):
         self.script.add_file("%(home)s/app.wsgi" % parms, parms.get("script"), owner="%(user)s:%(group)s" % parms)
         self.script.add_file("/etc/supervisor/apps.d/%(user)s.conf" % parms, self.gen_supervisor_config())
         self.script.add_file("/etc/nginx/apps.d/%(user)s.conf" % parms, self.gen_nginx_config())
+        self.script.add_cmd("supervisorctl reread")
+        self.script.add_cmd("supervisorctl update")
+        self.script.add_cmd("sleep 6")
         self.script.reload_nginx()
 
     def gen_supervisor_config(self):
@@ -129,9 +132,9 @@ class PythonApp(AppBackend):
 
     def restart(self):
         parms = self.get_parmameters()
-        self.script.add_cmd("supervisorctl reread")
-        self.script.add_cmd("supervisorctl update")
-        self.script.add_cmd("supervisorctl restart %(user)s" % parms)
+        self.script.add_cmd("supervisorctl stop %(user)s" % parms)
+        self.script.add_cmd("sleep 10")
+        self.script.add_cmd("supervisorctl start %(user)s" % parms)
 
     def stop(self):
         parms = self.get_parmameters()
@@ -139,6 +142,9 @@ class PythonApp(AppBackend):
 
 
 class PythonGunicornApp(PythonApp):
+
+    class Meta:
+        proxy = True
 
     def get_port(self):
         return settings.GUNICORN_PROXY_PORT + self.id
@@ -158,6 +164,9 @@ class PythonGunicornApp(PythonApp):
         self.script.add_file("%(home)s/app.py" % parms, parms.get("script"), owner="%(user)s:%(group)s" % parms)
         self.script.add_file("/etc/supervisor/apps.d/%(user)s.conf" % parms, self.gen_supervisor_config())
         self.script.add_file("/etc/nginx/apps.d/%(user)s.conf" % parms, self.gen_nginx_config())
+        self.script.add_cmd("supervisorctl reread")
+        self.script.add_cmd("supervisorctl update")
+        self.script.add_cmd("sleep 6")
         self.script.reload_nginx()
 
     def gen_gunicorn_parms(self):

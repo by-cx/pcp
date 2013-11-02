@@ -26,14 +26,14 @@
         {% for domain in object_list %}
             <tr>
                 <th>{% trans "Domain" %} {{ domain.name }}</th>
-                <td><a href="#a" class="btn btn-mini btn-danger" onclick="if(confirm('{% trans "Are you sure? This delete all mailboxes under this domain." %}')) document.location='{% url 'email_domain_delete' %}?domain_pk={{ domain.id }}';"><span class="glyphicon-remove glyphicon"></span> Delete whole domain</a></td>
+                <td><a href="#a" class="btn btn-sm btn-danger" onclick="if(confirm('{% trans "Are you sure? This delete all mailboxes under this domain." %}')) document.location='{% url 'email_domain_delete' %}?domain_pk={{ domain.id }}';"><span class="glyphicon-remove glyphicon"></span> Delete whole domain</a></td>
             </tr>
             {% for email in domain.boxes %}
                 <tr>
                     <td>{{ email.login }}@{{ email.domain.name }}</td>
                     <td>
-                        <a href="{% url 'wsgiadmin.emails.views.changePasswdBox' email.id %}" class="btn btn-warning btn-mini">{% trans "Change password" %}</a>
-                        <a href="#a" class="btn btn-danger btn-mini" onclick="if(confirm('{% trans "Are you sure?" %}')) document.location='{% url 'mailbox_remove' %}?pk={{ email.id }}';">{% trans "Delete" %}</a>
+                        <a href="{% url 'wsgiadmin.emails.views.changePasswdBox' email.id %}" class="btn btn-warning btn-sm">{% trans "Change password" %}</a>
+                        <a href="#a" class="btn btn-danger btn-sm" onclick="if(confirm('{% trans "Are you sure?" %}')) document.location='{% url 'mailbox_remove' %}?pk={{ email.id }}';">{% trans "Delete" %}</a>
                     </td>
                 </tr>
             {% endfor %}

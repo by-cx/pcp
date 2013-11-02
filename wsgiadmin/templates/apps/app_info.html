@@ -17,6 +17,16 @@
                 <th>{% trans "Name" %}</th>
                 <td>{{ app.name }}</td>
             </tr>
+            {% if app.app_type == "node" %}
+            <tr>
+                <th>{% trans "Port" %}</th>
+                <td>
+                    {{ app.get_port }}
+                    <br>
+                    <em>{% trans "Set your application to listen on this port." %}</em>
+                </td>
+            </tr>
+            {% endif %}
             <tr>
                 <th>{% trans "FTP/SFTP" %}</th>
                 <td>{% trans "Host" %}: {{ app.core_server.domain }} / {% trans "User" %}: {{ app.get_user }}</td>
@@ -72,7 +82,7 @@
             <tr>
                 <th>{% trans "Actions" %}</th>
                 <td>
-                    {% if app.app_type == "python" or app.app_type == "native" %}
+                    {% if app.app_type == "python" or app.app_type == "native" or app.app_type == "node" or app.app_type == "gunicorn" %}
                         <a href="{% url 'app_restart' %}?app_id={{ app.id }}" class="btn btn-primary"><span class="glyphicon glyphicon-refresh"></span> {% trans "Restart" %}</a>
                     {% endif %}
                     {% if app.app_type == "static" %}
@@ -85,6 +95,10 @@
                         <a href="{% url 'app_params_native' app_id=app.id %}" class="btn btn-warning"><span class="glyphicon glyphicon-edit"></span> {% trans "Parameters" %}</a>
                     {% elif app.app_type == "proxy" %}
                         <a href="{% url 'app_params_proxy' app_id=app.id %}" class="btn btn-warning"><span class="glyphicon glyphicon-edit"></span> {% trans "Parameters" %}</a>
+                    {% elif app.app_type == "node" %}
+                        <a href="{% url 'app_params_node' app_id=app.id %}" class="btn btn-warning"><span class="glyphicon glyphicon-edit"></span> {% trans "Parameters" %}</a>
+                    {% elif app.app_type == "gunicorn" %}
+                        <a href="{% url 'app_params_gunicorn' app_id=app.id %}" class="btn btn-warning"><span class="glyphicon glyphicon-edit"></span> {% trans "Parameters" %}</a>
                     {% endif %}
                     <a href="#a" onclick="if(confirm('{% trans "Are you sure?" %}')) {document.location= '{% url 'app_rm' %}?app_id={{ app.id }}';}" class="btn btn-danger"><span class="glyphicon glyphicon-remove glyphicon"></span> {% trans "Delete" %}</a>
                 </td>

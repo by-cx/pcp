@@ -1,5 +1,6 @@
 import json
 from django.contrib.auth.models import User
+from django.core.cache import cache
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -8,6 +9,7 @@ OSS = (
     ("debian6", "Debian 6.0"),
     ("debian7", "Debian 7.0"),
     ("archlinux", "Arch Linux"),
+    ("gentoo", "Gentoo"),
 )
 
 
@@ -36,6 +38,10 @@ class Server(models.Model):
     hide = models.BooleanField(_("Hide in app server field"), default=False)
 
     user = models.ForeignKey(User, blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        cache.delete('server_capabilities')
+        super(Server, self).save(*args, **kwargs)
 
     @property
     def capabilities_str(self):

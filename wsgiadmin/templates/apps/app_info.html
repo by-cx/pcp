@@ -101,6 +101,10 @@
                         <a href="{% url 'app_params_gunicorn' app_id=app.id %}" class="btn btn-warning"><span class="glyphicon glyphicon-edit"></span> {% trans "Parameters" %}</a>
                     {% endif %}
                     <a href="#a" onclick="if(confirm('{% trans "Are you sure?" %}')) {document.location= '{% url 'app_rm' %}?app_id={{ app.id }}';}" class="btn btn-danger"><span class="glyphicon glyphicon-remove glyphicon"></span> {% trans "Delete" %}</a>
+                    {% if superuser.is_superuser %}
+                        <a href="#a" onclick="if(confirm('{% trans "Are you sure?" %}')) {document.location= '{% url 'app_reinstall' %}?app_id={{ app.id }}';}" class="btn btn-danger"><span class="glyphicon glyphicon-remove glyphicon"></span> {% trans "Reinstall" %}</a>
+                    {% endif %}
+
                 </td>
             </tr>
         </table>

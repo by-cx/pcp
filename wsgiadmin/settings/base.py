@@ -139,6 +139,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "wsgiadmin.useradmin.context.rosti_context",
     'constance.context_processors.config',
     'wsgiadmin.core.context.django_settings',
+    "wsgiadmin.core.context.capabilities",
 )
 
 INSTALLED_APPS = [
@@ -168,7 +169,6 @@ INSTALLED_APPS = [
     'wsgiadmin.stats',
     'wsgiadmin.core',
     'wsgiadmin.apps',
-    'wsgiadmin.virt',
 ]
 
 PYTHON_INTERPRETERS = {
@@ -193,6 +193,8 @@ BROKER_URL = 'redis://localhost/'
 
 SSH_PRIVATEKEY = join(os.environ.get('HOME', "/"), ".ssh", "id_dsa")
 SSH_HOSTKEYS = join(os.environ.get('HOME', "/"), ".ssh", "known_hosts")
+
+VIRT = False
 
 ## Logování
 import logging

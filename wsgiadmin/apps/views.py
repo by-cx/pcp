@@ -1,7 +1,7 @@
 import crypt
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, TemplateView, CreateView, UpdateView
@@ -456,4 +456,20 @@ def app_restart(request):
         messages.add_message(request, messages.WARNING, _('App is disabled'))
     else:
         messages.add_message(request, messages.ERROR, _('App is not resetable'))
+    return HttpResponseRedirect(reverse("app_detail", kwargs={"app_id": app.id}))
+
+
+@login_required()
+def app_reinstall(request):
+    user = request.session.get('switched_user', request.user)
+    superuser = request.user
+    if not superuser.is_superuser:
+            return HttpResponseForbidden(_("Permission error"))
+
+    app_id = int(request.GET.get("app_id"))
+    app = get_object_or_404(user.app_set, id=app_id)
+    app = typed_object(app)
+
+    app.install()
+    messages.add_message(request, messages.SUCCESS, _('App has been reinstalled'))
     return HttpResponseRedirect(reverse("app_detail", kwargs={"app_id": app.id}))

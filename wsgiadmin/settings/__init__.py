@@ -62,3 +62,6 @@ if DEBUG_TOOLBAR:
     MIDDLEWARE_CLASSES += (
         'debug_toolbar.middleware.DebugToolbarMiddleware',
     )
+
+import djcelery
+djcelery.setup_loader()

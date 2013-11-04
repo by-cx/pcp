@@ -157,7 +157,6 @@ INSTALLED_APPS = [
     'constance',
     'constance.backends.database',
     'raven.contrib.django',
-    # not necessarly, make it optional
 
     'wsgiadmin.useradmin',
     'wsgiadmin.clients',

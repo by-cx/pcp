@@ -1,7 +1,9 @@
 import logging
 from django.core.management.base import BaseCommand, CommandError
 from wsgiadmin.apps.models import App
-from wsgiadmin.apps.backend import PythonApp, AppBackend, typed_object, ProxyObject
+from wsgiadmin.apps.backend import typed_object
+from wsgiadmin.apps.backend.main import AppBackend, ProxyObject
+from wsgiadmin.apps.backend.python import PythonApp
 from wsgiadmin.core.backend_base import Script
 from wsgiadmin.core.utils import get_load_balancers
 from wsgiadmin.emails.models import Message

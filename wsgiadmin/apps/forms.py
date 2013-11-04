@@ -11,6 +11,7 @@ from wsgiadmin.service.forms import RostiFormHelper
 class EmailForm(forms.Form):
     helper = RostiFormHelper()
 
+    ids = forms.CharField(_("User IDs"), help_text=_("Separated by spaces"))
     subject = forms.CharField(_("Subject"))
     message = forms.CharField(_("Message"), widget=forms.Textarea)
 

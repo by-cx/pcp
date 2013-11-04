@@ -58,7 +58,7 @@ class EmailView(TemplateView):
             return HttpResponseRedirect(url)
 
     def form_valid(self, form):
-        send_email.delay(form.cleaned_data["subject"], form.cleaned_data["message"])
+        send_email.delay(form.cleaned_data["subject"], form.cleaned_data["message"], [int(x) for x in form.cleaned_data["ids"].strip().split(" ")])
         return self.success_url
 
     def get_form(self, request):

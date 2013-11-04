@@ -1,9 +1,12 @@
 from celery import task
 from constance import config
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.core.mail import EmailMessage
 from paramiko import SSHClient, AutoAddPolicy
+from smtplib import SMTPException
 from wsgiadmin.core.models import CommandLog
+import logging
 
 
 @task()
@@ -85,14 +88,20 @@ def commit_requests(requests, server, task_log=None):
 
 
 @task()
-def send_email(subject, text):
-    message = EmailMessage(subject,
-                            text,
-                            from_email=config.email,
-                            to=["cx@initd.cz"],
-                            #bcc=[config.email],
-                            headers={'Reply-To': config.email})
-    message.send()
+def send_email(subject, text, users_ids):
+    for user_id in users_ids:
+        user = User.objects.get(id=user_id)
+        message = EmailMessage(subject,
+                                text,
+                                from_email=config.email,
+                                to=[user.email],
+                                #bcc=[config.email],
+                                headers={'Reply-To': config.email})
+        try:
+            message.send()
+            logging.info("E-mail for %s (%d) has been sent" % (user.email, user.id))
+        except SMTPException:
+            logging.error("E-mail for %s (%d) has not been sent" % (user.email, user.id))
 
 
 """

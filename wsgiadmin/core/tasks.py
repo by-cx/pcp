@@ -93,7 +93,7 @@ def send_email(subject, text, users_ids):
         user = User.objects.get(id=user_id)
         message = EmailMessage(subject,
                                 text,
-                                from_email=config.email,
+                                from_email="%s <%s>" % (config.email_name, config.email),
                                 to=[user.email],
                                 #bcc=[config.email],
                                 headers={'Reply-To': config.email})

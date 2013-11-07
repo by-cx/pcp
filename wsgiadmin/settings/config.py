@@ -11,6 +11,7 @@ CONSTANCE_BACKEND = "constance.backends.database.DatabaseBackend"
 
 CONSTANCE_CONFIG = {
     "email": ("info@rosti.cz", "Your e-mail"),
+    "email_name": ("Hosting Roští.cz", "Your e-mail name"),
 
     "mode": ("nginx", "apache or nginx"), # main web server, (apache/nginx)
     "ipv6": (True, "Turn on/off support for IPv6"),

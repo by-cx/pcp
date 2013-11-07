@@ -113,7 +113,9 @@ class PHPApp(AppBackend):
         content.append("\terror_log %(home)s/logs/error.log;"% parms)
         content.append("\tlocation / {")
         content.append("\t\tproxy_pass         http://%s/;" % config.apache_url)
-        content.append("\t\tproxy_redirect     off;")
+        content.append("\t\tproxy_redirect     default;")
+        content.append("\t\tproxy_set_header   X-Real-IP  $remote_addr;")
+        content.append("\t\tproxy_set_header   Host       $host;")
         content.append("\t}")
         if parms.get("static_maps"):
             for location, directory in [(x.split()[0].strip(), x.split()[1].strip()) for x in parms.get("static_maps").split("\n") if len(x.split()) == 2]:
@@ -235,7 +237,9 @@ class PHPFPMApp(AppBackend):
         content.append("\terror_log %(home)s/logs/error.log;"% parms)
         content.append("\tlocation / {")
         content.append("\t\tproxy_pass         http://%s/;" % config.apache_url)
-        content.append("\t\tproxy_redirect     off;")
+        content.append("\t\tproxy_redirect     default;")
+        content.append("\t\tproxy_set_header   X-Real-IP  $remote_addr;")
+        content.append("\t\tproxy_set_header   Host       $host;")
         content.append("\t}")
         content.append("}\n")
         return "\n".join(content)

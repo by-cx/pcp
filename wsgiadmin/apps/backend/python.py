@@ -77,6 +77,7 @@ class PythonApp(AppBackend):
         content.append("stderr_logfile_backups=5")
         content.append("stderr_capture_maxbytes=2MB")
         content.append("stderr_events_enabled=false\n")
+        content.append("stopsignal=QUIT\n")
         return "\n".join(content)
 
     def gen_uwsgi_parms(self):
@@ -161,7 +162,7 @@ class PythonGunicornApp(PythonApp):
         AppBackend.update(self)
         parms = self.get_parmameters()
         self.script.add_file("%(home)s/requirements.txt" % parms, "gunicorn\n" + parms.get("virtualenv"), owner="%(user)s:%(group)s" % parms)
-        self.script.add_file("%(home)s/app.py" % parms, parms.get("script"), owner="%(user)s:%(group)s" % parms)
+        self.script.add_file("%(home)s/app/app.py" % parms, parms.get("script"), owner="%(user)s:%(group)s" % parms)
         self.script.add_file("/etc/supervisor/apps.d/%(user)s.conf" % parms, self.gen_supervisor_config())
         self.script.add_file("/etc/nginx/apps.d/%(user)s.conf" % parms, self.gen_nginx_config())
         self.script.add_cmd("supervisorctl reread")
@@ -172,7 +173,7 @@ class PythonGunicornApp(PythonApp):
     def gen_gunicorn_parms(self):
         parms = self.get_parmameters()
         gunicorn = []
-        gunicorn.append("-w %d" % parms.get("procs", "2"))
+        gunicorn.append("-w %s" % parms.get("procs", "2"))
         gunicorn.append("-b 127.0.0.1:%d" % self.get_port())
         gunicorn.append("app")
         return " ".join(gunicorn)
@@ -190,7 +191,9 @@ class PythonGunicornApp(PythonApp):
         content.append("\terror_log %(home)s/logs/error.log;"% parms)
         content.append("\tlocation / {")
         content.append("\t\tproxy_pass         http://127.0.0.1:%d/;" % self.get_port())
-        content.append("\t\tproxy_redirect     off;")
+        content.append("\t\tproxy_redirect     default;")
+        content.append("\t\tproxy_set_header   X-Real-IP  $remote_addr;")
+        content.append("\t\tproxy_set_header   Host       $host;")
         content.append("\t}")
         if parms.get("static_maps"):
             for location, directory in [(x.split()[0].strip(), x.split()[1].strip()) for x in parms.get("static_maps").split("\n") if len(x.split()) == 2]:
@@ -205,7 +208,7 @@ class PythonGunicornApp(PythonApp):
         parms = self.get_parmameters()
         content = []
         content.append("[program:%(user)s]" % parms)
-        content.append("command=%(home)s/venv/bin/gunicorn " + self.gen_uwsgi_parms())
+        content.append(("command=%(home)s/venv/bin/gunicorn " % parms) + self.gen_gunicorn_parms())
         content.append("directory=%(home)s/app" % parms)
         content.append("process_name=%(user)s" % parms)
         content.append("user=%(user)s" % parms)

@@ -198,7 +198,7 @@ class AppCreateView(CreateView):
             return reverse("app_params_php", kwargs={"app_id": self.object.id})
         elif self.app_type == "phpfpm":
             return reverse("app_params_phpfpm", kwargs={"app_id": self.object.id})
-        elif self.app_type in ("python", "uwsgi", "gunicorn"):
+        elif self.app_type in ("python", "uwsgi"):
             return reverse("app_params_python", kwargs={"app_id": self.object.id})
         elif self.app_type == "native":
             return reverse("app_params_native", kwargs={"app_id": self.object.id})

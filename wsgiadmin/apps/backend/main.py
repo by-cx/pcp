@@ -162,7 +162,9 @@ class ProxyObject(object):
         content.append("\tserver_name  %s;" % self.app.domains)
         content.append("\tlocation / {")
         content.append("\t\tproxy_pass         http://%s/;" % self.app.core_server.ip)
-        content.append("\t\tproxy_redirect     off;")
+        content.append("\t\tproxy_redirect     default;")
+        content.append("\t\tproxy_set_header   X-Real-IP  $remote_addr;")
+        content.append("\t\tproxy_set_header   Host       $host;")
         content.append("\t}")
         content.append("}\n")
         return content

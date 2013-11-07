@@ -204,7 +204,7 @@ class AppPythonForm(AppParametersForm):
 
 class AppGunicornForm(AppParametersForm):
     def __init__(self, *args, **kwargs):
-        super(AppPythonForm, self).__init__(*args, **kwargs)
+        super(AppGunicornForm, self).__init__(*args, **kwargs)
         self.fields["domains"].required = True
 
     script = forms.CharField(

@@ -370,8 +370,7 @@ class BindRequest(Service):
     def mod_zone(self, domain):
         date_now = date.today()
         num = 0
-        if len(str(domain.serial)) == 10 and domain.serial[0:8] == "%.4d%.2d%.2d%" % \
-                                                                   (date_now.year,date_now.month,date_now.day):
+        if len(str(domain.serial)) == 10 and str(domain.serial)[0:8] == "%.4d%.2d%.2d" % (date_now.year,date_now.month,date_now.day):
             ye  = int(str(domain.serial)[0:4])
             mo  = int(str(domain.serial)[4:6])
             da  = int(str(domain.serial)[6:8])

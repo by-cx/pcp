@@ -156,7 +156,7 @@ INSTALLED_APPS = [
     'south',
     'constance',
     'constance.backends.database',
-    'raven.contrib.django',
+    'raven.contrib.django.raven_compat',
 
     'wsgiadmin.useradmin',
     'wsgiadmin.clients',

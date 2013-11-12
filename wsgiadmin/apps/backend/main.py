@@ -129,7 +129,7 @@ class ProxyObject(object):
         content = []
         if self.app.ssl_cert and self.app.ssl_key:
             content.append("server {")
-            if os in ("archlinux", ):
+            if os in ("archlinux", "gentoo", ):
                 content.append("\tlisten       *:443 ssl;")
             else:
                 content.append("\tlisten       [::]:443 ssl;")
@@ -155,7 +155,7 @@ class ProxyObject(object):
     def gen_config(self, os):
         content = []
         content.append("server {")
-        if os in ("archlinux", ):
+        if os in ("archlinux", "gentoo", ):
             content.append("\tlisten       *:80;")
         else:
             content.append("\tlisten       [::]:80;")

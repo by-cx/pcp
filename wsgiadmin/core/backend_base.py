@@ -34,27 +34,27 @@ class BaseScript(object):
 
     def commit(self, no_thread=False):
         if self.restarts["nginx"]:
-            if self.server_object.os in ("debian6", "debian7", ):
+            if self.server_object.os in ("debian6", "debian7", "gentoo", ):
                 self.add_cmd("/etc/init.d/nginx restart")
             elif self.server_object.os == "archlinux":
                 self.add_cmd("systemctl restart nginx")
             self.reloads["nginx"] = False
             self.restarts["nginx"] = False
         elif self.reloads["nginx"]:
-            if self.server_object.os in ("debian6", "debian7", ):
+            if self.server_object.os in ("debian6", "debian7", "gentoo", ):
                 self.add_cmd("/etc/init.d/nginx reload")
             elif self.server_object.os == "archlinux":
                 self.add_cmd("systemctl reload nginx")
             self.reloads["nginx"] = False
         if self.restarts["apache"]:
-            if self.server_object.os in ("debian6", "debian7", ):
+            if self.server_object.os in ("debian6", "debian7", "gentoo", ):
                 self.add_cmd("/etc/init.d/apache2 restart")
             elif self.server_object.os == "archlinux":
                 self.add_cmd("systemctl restart apache")
             self.reloads["apache"] = False
             self.restarts["apache"] = False
         elif self.reloads["apache"]:
-            if self.server_object.os in ("debian6", "debian7", ):
+            if self.server_object.os in ("debian6", "debian7", "gentoo", ):
                 self.add_cmd("/etc/init.d/apache2 reload")
             elif self.server_object.os == "archlinux":
                 self.add_cmd("systemctl reload apache")

@@ -69,7 +69,7 @@ class NodeApp(AppBackend):
         parms = self.get_parmameters()
         content = []
         content.append("server {")
-        if self.core_server.os in ("archlinux", ):
+        if self.core_server.os in ("archlinux", "gentoo", ):
             content.append("\tlisten       *:80;")
         else:
             content.append("\tlisten       [::]:80;")

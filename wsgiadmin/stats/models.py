@@ -80,3 +80,21 @@ class TransId(models.Model):
 
     def __unicode__(self):
         return self.trans_id
+
+
+class AssignedDiscountCode(models.Model):
+    user = models.ForeignKey(User)
+
+
+RANGES = (
+    ("credits", "Just credits"),
+    ("one-time", "One-time % bonus (credit recharge)"),
+    ("always", "Always % bonus (each credit recharge)"),
+)
+class DiscountCodes(models.Model):
+    code = models.CharField(_("Code"), max_length=64)
+    start_date = models.DateTimeField(_("Start date"))
+    end_date = models.DateTimeField(_("End date"))
+    description = models.CharField(_("Description"), max_length=256)
+    code_type = models.CharField(_("Range"), max_length=256, choices=RANGES)
+    value = models.FloatField(_("Discount/Credits"), default=0.0, help_text=_("Amount of credits for credits type, otherwise %"))

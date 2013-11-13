@@ -174,7 +174,7 @@
                             <td>
                                 <a href="{% url 'ftp_update' pk=ftp.id %}" class="btn btn-small">{% trans "Update" %}</a>
                                 <a href="#a" class="btn btn-danger btn-small"
-                                   onclick="if(confirm('{% trans "Are you sure?" %}')){ document.location='{% url 'ftp_rm' %}?db_id={{ ftp.id }}'; }">{% trans "Delete" %}</a>
+                                   onclick="if(confirm('{% trans "Are you sure?" %}')){ document.location='{% url 'ftp_rm' %}?ftpaccess_id={{ ftp.id }}'; }">{% trans "Delete" %}</a>
                             </td>
                         </tr>
                     {% endfor %}

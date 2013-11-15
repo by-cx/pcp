@@ -82,19 +82,59 @@ class TransId(models.Model):
         return self.trans_id
 
 
-class AssignedDiscountCode(models.Model):
-    user = models.ForeignKey(User)
-
-
 RANGES = (
-    ("credits", "Just credits"),
-    ("one-time", "One-time % bonus (credit recharge)"),
-    ("always", "Always % bonus (each credit recharge)"),
+    ("credits-one-time", "Just credits"),
+    ("percent-one-time", "One-time % bonus (credit recharge)"),
+    ("percent-always", "Always % bonus (each credit recharge)"),
 )
 class DiscountCodes(models.Model):
+    """
+        Features of discount codes
+    """
+
     code = models.CharField(_("Code"), max_length=64)
     start_date = models.DateTimeField(_("Start date"))
     end_date = models.DateTimeField(_("End date"))
     description = models.CharField(_("Description"), max_length=256)
     code_type = models.CharField(_("Range"), max_length=256, choices=RANGES)
     value = models.FloatField(_("Discount/Credits"), default=0.0, help_text=_("Amount of credits for credits type, otherwise %"))
+    valid = models.BooleanField(_("Valid"), default=True)
+
+
+class AssignedDiscountCode(models.Model):
+    """
+        Discount code relation to user
+    """
+
+    user = models.ForeignKey(User)
+    discount_code = models.ForeignKey(DiscountCodes)
+    valid = models.BooleanField(_("Valid"), default=True)
+
+
+AFFILIATE_RANGES = (
+    ("credits-one-time", "Just credits"),
+    ("percent-one-time", "One-time % bonus (credit recharge)"),
+    ("percent-always", "Always % bonus (each credit recharge)"),
+)
+class AffiliateCode(models.Model):
+    """
+        Features of affiliate codes
+    """
+
+    code = models.CharField(_("Code"), max_length=64)
+    code_type = models.CharField(_("Range"), max_length=256, choices=AFFILIATE_RANGES)
+    value = models.FloatField(_("Discount/Credits"), default=0.0, help_text=_("Amount of credits for credits type, otherwise %"))
+    valid = models.BooleanField(_("Valid"), default=True)
+
+
+class AffiliateBonus(models.Model):
+    """
+        Affiliate code relations from donor to base users
+    """
+
+    base_user = models.ForeignKey(User, related_name="affiliate_bonus_base_set", help_text=_("User which found another user"))
+    donor_user = models.OneToOneField(User, related_name="affiliate_bonus_donor", help_text=_("New user"))
+    affiliate_code = models.ForeignKey(AffiliateCode)
+    counter = models.IntegerField(_("Counter of use"), default=0)
+    valid = models.BooleanField(_("Valid"), default=True)
+

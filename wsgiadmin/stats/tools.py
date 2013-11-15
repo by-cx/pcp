@@ -4,7 +4,7 @@ from constance import config
 import requests
 from wsgiadmin.clients.models import Parms
 from wsgiadmin.emails.models import Message
-from wsgiadmin.stats.models import Record, Credit
+from wsgiadmin.stats.models import Record, Credit, AffiliateBonus
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext as __
 
@@ -44,7 +44,7 @@ def low_credits_level():
         parm.last_notification = date.today()
         parm.save()
 
-def add_credit(user, value, address=None, free=None):
+def add_credit(user, value, address=None, free=False, from_affiliate=False):
     value = float(value)
 
     if not address and not free:
@@ -63,6 +63,9 @@ def add_credit(user, value, address=None, free=None):
     credit.bonus = 0
     credit.address = address
     credit.save()
+
+    if not from_affiliate:
+        process_affiliate(user, credit)
 
     if address and not free:
         context = {
@@ -116,3 +119,44 @@ def payed(credit):
     credit.date_payed = datetime.now()
     credit.save()
     return "%s (%d)" % (r.text, r.status_code)
+
+
+def process_affiliate(user, credit):
+    valid = False
+
+    # try found some affiliate bonus
+    try:
+        bonus = AffiliateBonus.objects.get(donor_user=user)
+    except AffiliateBonus.DoesNotExist:
+        return False
+
+    # test if its valid
+    if bonus.affiliate_code.code_type == "credits-one-time" and bonus.counter == 0 and bonus.valid:
+        valid = True
+    if bonus.affiliate_code.code_type == "percent-one-time" and bonus.counter == 0 and bonus.valid:
+        valid = True
+    if bonus.affiliate_code.code_type == "percent-always" and bonus.valid:
+        valid = True
+
+    # if doest add bonus to base user
+    if valid:
+        bonus_value = 0.0
+        if bonus.affiliate_code.code_type == "credits-one-time":
+            bonus_value = bonus.affiliate_code.value
+        if bonus.affiliate_code.code_type in ("percent-one-time", "percent-always"):
+            bonus_value = credit.value * (1 + bonus.affiliate_code.value / 100)
+
+        add_credit(bonus.base_user, bonus_value, address=None, free=True, from_affiliate=True)
+
+        try:
+            msg = Message.objects.get(purpose="affiliate_earn")
+            msg.send(user.email, {
+                "user": bonus.base_user,
+                "donor": user
+            })
+        except Message.DoesNotExist:
+            pass
+
+        # counter to assurance for one-time bonuses
+        bonus.counter += 1
+        bonus.save()

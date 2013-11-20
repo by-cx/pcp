@@ -234,10 +234,11 @@ def reg(request):
         form = RegistrationForm(request.POST)
         if form.is_valid():
             # machine
-            m_web = get_object_or_404(Machine, name=config.default_web_machine)
-            m_mail = get_object_or_404(Machine, name=config.default_mail_machine)
-            m_mysql = get_object_or_404(Machine, name=config.default_mysql_machine)
-            m_pgsql = get_object_or_404(Machine, name=config.default_pgsql_machine)
+            if settings.OLD:
+                m_web = get_object_or_404(Machine, name=config.default_web_machine)
+                m_mail = get_object_or_404(Machine, name=config.default_mail_machine)
+                m_mysql = get_object_or_404(Machine, name=config.default_mysql_machine)
+                m_pgsql = get_object_or_404(Machine, name=config.default_pgsql_machine)
 
             # user
             u = user.objects.create_user(form.cleaned_data["username"],

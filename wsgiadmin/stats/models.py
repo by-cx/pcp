@@ -87,7 +87,7 @@ RANGES = (
     ("percent-one-time", "One-time % bonus (credit recharge)"),
     ("percent-always", "Always % bonus (each credit recharge)"),
 )
-class DiscountCodes(models.Model):
+class DiscountCode(models.Model):
     """
         Features of discount codes
     """
@@ -107,8 +107,9 @@ class AssignedDiscountCode(models.Model):
     """
 
     user = models.ForeignKey(User)
-    discount_code = models.ForeignKey(DiscountCodes)
+    discount_code = models.ForeignKey(DiscountCode)
     valid = models.BooleanField(_("Valid"), default=True)
+    counter = models.IntegerField(_("Counter of use"), default=0)
 
 
 AFFILIATE_RANGES = (

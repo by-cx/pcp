@@ -4,7 +4,7 @@ from constance import config
 import requests
 from wsgiadmin.clients.models import Parms
 from wsgiadmin.emails.models import Message
-from wsgiadmin.stats.models import Record, Credit, AffiliateBonus
+from wsgiadmin.stats.models import Record, Credit, AffiliateBonus, AssignedDiscountCode
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext as __
 
@@ -44,7 +44,7 @@ def low_credits_level():
         parm.last_notification = date.today()
         parm.save()
 
-def add_credit(user, value, address=None, free=False, from_affiliate=False):
+def add_credit(user, value, address=None, free=False):
     value = float(value)
 
     if not address and not free:
@@ -63,9 +63,6 @@ def add_credit(user, value, address=None, free=False, from_affiliate=False):
     credit.bonus = 0
     credit.address = address
     credit.save()
-
-    if not from_affiliate:
-        process_affiliate(user, credit)
 
     if address and not free:
         context = {
@@ -118,6 +115,10 @@ def payed(credit):
     r = requests.post(config.pcp_invoices_api_url, data={"data": json.dumps(invoice)})
     credit.date_payed = datetime.now()
     credit.save()
+
+    process_affiliate(credit.user, credit)
+    process_discount_codes(credit.user, credit)
+
     return "%s (%d)" % (r.text, r.status_code)
 
 
@@ -146,7 +147,7 @@ def process_affiliate(user, credit):
         if bonus.affiliate_code.code_type in ("percent-one-time", "percent-always"):
             bonus_value = credit.value * (1 + bonus.affiliate_code.value / 100)
 
-        add_credit(bonus.base_user, bonus_value, address=None, free=True, from_affiliate=True)
+        add_credit(bonus.base_user, bonus_value, address=None, free=True)
 
         try:
             msg = Message.objects.get(purpose="affiliate_earn")
@@ -160,3 +161,33 @@ def process_affiliate(user, credit):
         # counter to assurance for one-time bonuses
         bonus.counter += 1
         bonus.save()
+
+
+def process_discount_codes(user, credit):
+    """
+       Counting of discount codes
+    """
+    for code in AssignedDiscountCode.objects.filter(user=user):
+        # Validation test
+        valid = True
+        if code.discount_code.start_date < datetime.datetime.now():
+            valid = False
+        if code.discount_code.end_date > datetime.datetime.now():
+            valid = False
+        if not code.discount_code.valid or not code.valid:
+            valid = False
+        if code.discount_code.code_type in ("credits-one-time", "percent-one-time") and code.counter > 0:
+            valid = False
+
+        if valid:
+            # Bonus count
+            bonus_value = 0.0
+            if code.discount_code.code_type in ("percent-always", "percent-one-time"):
+                bonus_value = credit.value * (1 + code.discount_code.value / 100)
+            elif code.discount_code.code_type == "percent-one-time":
+                bonus_value = code.discount_code.value
+            if bonus_value:
+                # save everything
+                add_credit(user, bonus_value, address=None, free=True)
+                code.counter += 1
+                code.save()

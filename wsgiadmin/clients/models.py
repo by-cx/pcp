@@ -40,10 +40,10 @@ class Parms(models.Model):
     installed = models.BooleanField(_("Installed"), default=False)
 
     #address		= models.ForeignKey("address")
-    web_machine = models.ForeignKey(Machine, related_name="web")
-    mail_machine = models.ForeignKey(Machine, related_name="mail")
-    mysql_machine = models.ForeignKey(Machine, related_name="mysql")
-    pgsql_machine = models.ForeignKey(Machine, related_name="pgsql")
+    web_machine = models.ForeignKey(Machine, related_name="web", blank=True, null=True, default=None)
+    mail_machine = models.ForeignKey(Machine, related_name="mail", blank=True, null=True, default=None)
+    mysql_machine = models.ForeignKey(Machine, related_name="mysql", blank=True, null=True, default=None)
+    pgsql_machine = models.ForeignKey(Machine, related_name="pgsql", blank=True, null=True, default=None)
 
     user = models.OneToOneField(user, verbose_name=_(u'Uživatel'))
 

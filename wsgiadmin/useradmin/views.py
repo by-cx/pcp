@@ -254,10 +254,11 @@ def reg(request):
             p.uid = 0
             p.gid = 0
             p.discount = 0
-            p.web_machine = m_web
-            p.mail_machine = m_mail
-            p.mysql_machine = m_mysql
-            p.pgsql_machine = m_pgsql
+            if settings.OLD:
+                p.web_machine = m_web
+                p.mail_machine = m_mail
+                p.mysql_machine = m_mysql
+                p.pgsql_machine = m_pgsql
             p.user = u
             p.save()
 

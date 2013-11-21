@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
@@ -68,7 +69,10 @@ class Credit(models.Model):
         return False
 
     def gopay_payments(self):
-        return Payment.objects.filter(p4=str(self.id)).order_by("date").reverse()
+        if settings.GOPAY:
+            return Payment.objects.filter(p4=str(self.id)).order_by("date").reverse()
+        else:
+            return []
 
     def __unicode__(self):
         return "%s += %.2f" % (self.user.username, self.value)

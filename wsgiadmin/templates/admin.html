@@ -387,7 +387,7 @@
                 {% endfor %}
             {% endif %}
             {% if not user.parms.enable %}
-                <div class="alert alert-{{ message.tags }}">{% trans "Your account has been disabled. Reason: insufficient amount of credits" %}</div>
+                <div class="alert alert-danger">{% trans "<strong>Your account has been disabled.</strong> Reason: insufficient amount of credits" %}</div>
             {% endif %}
         </div>
         {% block content %}{% endblock %}

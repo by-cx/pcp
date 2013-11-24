@@ -1,11 +1,12 @@
+import logging
+import sys
 from constance import config
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand
 from wsgiadmin.apps.backend import typed_object
-import logging
-import sys
 from wsgiadmin.old.apacheconf.tools import restart_master
+from wsgiadmin.emails.models import Message
 
 
 class Command(BaseCommand):
@@ -42,6 +43,9 @@ class Command(BaseCommand):
                 self.kill_old_apps(user)
             self.kill_new_apps(user)
             sys.stdout.write("%s killed\n" % user.username)
+            message = Message.objects.filter(purpose="webs_disabled")
+            if message:
+                message[0].send(user.email, {"username": user.username})
         elif not parms.enable and parms.credit > 0:
             print "Revival %s" % user.username, user.email
             parms.enable = True
@@ -50,9 +54,12 @@ class Command(BaseCommand):
                 self.refresh_old_apps(user)
             self.refresh_new_apps(user)
             sys.stdout.write("%s refreshed\n" % user.username)
+            message = Message.objects.filter(purpose="webs_enabled")
+            if message:
+                message[0].send(user.email, {"username": user.username})
 
     def handle(self, *args, **options):
         for user in User.objects.all():
             parms = user.parms
-            if parms.guard_enable and user.username == "gypsy":
+            if parms.guard_enable:
                 self.check_user(user, parms)

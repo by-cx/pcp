@@ -67,5 +67,5 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         for user in User.objects.all():
             parms = user.parms
-            if parms.guard_enable:
+            if parms.guard_enable and parms.enable:
                 self.check_user(user, parms)

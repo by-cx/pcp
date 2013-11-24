@@ -35,6 +35,10 @@ class NodeApp(AppBackend):
         self.script.add_cmd("rm /etc/nginx/apps.d/%(user)s.conf" % parms)
         self.script.reload_nginx()
 
+    def enable(self):
+        self.update()
+        super(NodeApp, self).enable()
+
     def uninstall(self):
         super(NodeApp, self).uninstall()
         parms = self.get_parmameters()

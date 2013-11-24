@@ -35,6 +35,8 @@ class PythonApp(AppBackend):
         self.script.reload_nginx()
 
     def enable(self):
+        self.update()
+        self.start()
         super(PythonApp, self).enable()
 
     def uninstall(self):

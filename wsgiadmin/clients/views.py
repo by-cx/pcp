@@ -74,7 +74,7 @@ class AddressUpdate(RostiUpdateView):
                 address.default = False
                 address.save()
             self.object.default = True
-            self.user.email = form.cleaned_data.get("email")
+            self.user.email = self.object.email
             self.user.save()
             self.object.save()
 

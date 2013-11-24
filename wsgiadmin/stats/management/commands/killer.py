@@ -35,22 +35,24 @@ class Command(BaseCommand):
 
     def check_user(self, user, parms):
         if parms.enable and parms.credit < settings.KILLER_TRESHOLD and parms.num_reminds > settings.NUMBER_OF_REMINDS_TO_KILL:
+            print "Killing %s" % user.username, user.email
             parms.enable = False
             parms.save()
             if settings.OLD:
-                self.kill_old_apps()
-            self.kill_new_apps()
+                self.kill_old_apps(user)
+            self.kill_new_apps(user)
             sys.stdout.write("%s killed\n" % user.username)
         elif not parms.enable and parms.credit > 0:
+            print "Revival %s" % user.username, user.email
             parms.enable = True
             parms.save()
             if settings.OLD:
-                self.refresh_old_apps()
-            self.refresh_new_apps()
+                self.refresh_old_apps(user)
+            self.refresh_new_apps(user)
             sys.stdout.write("%s refreshed\n" % user.username)
 
     def handle(self, *args, **options):
         for user in User.objects.all():
             parms = user.parms
-            if parms.guard_enable:
+            if parms.guard_enable and user.username == "gypsy":
                 self.check_user(user, parms)

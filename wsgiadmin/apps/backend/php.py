@@ -25,6 +25,7 @@ class PHPApp(AppBackend):
         self.script.reload_nginx()
 
     def enable(self):
+        self.update()
         super(PHPApp, self).enable()
 
     def uninstall(self):

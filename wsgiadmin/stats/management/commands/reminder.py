@@ -57,7 +57,12 @@ class Command(BaseCommand):
             self.remind_user(user, parms)
         elif parms.credit > settings.CREDIT_TRESHOLD and parms.num_reminds > 0:
             parms.num_reminds = 0
-            parms.save()
+
+        if not parms.enable:
+            parms.num_disabled += 1
+        else:
+            parms.num_disabled = 0
+        parms.save()
 
     def handle(self, *args, **options):
         for user in User.objects.all():

@@ -20,40 +20,42 @@
                         <li {% if menu_active == "dashboard" %} class="active"{% endif %}>
                             <a href="{% url 'wsgiadmin.useradmin.views.info' %}">{% trans "Dashboard" %}</a>
                         </li>
-                        {% if superuser.is_superuser and settings.OLD %}
-                            <!--<li {% if menu_active == "domains" %} class="active"{% endif %}>
-                        <a href="{% url 'domains_list' %}">{% trans "Domains" %}</a>
-                    </li>-->
-                        {% endif %}
-                        {% if config.handle_dns %}
-                            <li {% if menu_active == "dns" %} class="active"{% endif %}>
-                                <a href="{% url 'dns_list' %}">{% trans "DNS" %}</a>
-                            </li>
-                        {% endif %}
-                        {% if settings.OLD and user.usersite_set.count %}
-                            <li {% if menu_active == "webapps" %} class="active"{% endif %}>
-                                <a href="{% url 'app_list' %}">{% trans "Web apps" %}</a>
-                            </li>
-                        {% endif %}
-                        <li {% if menu_active == "apps" %} class="active"{% endif %}>
-                            <a href="{% url 'apps_list' %}">{% trans "Apps" %}</a>
-                        </li>
-                        {% if superuser.is_superuser and settings.VIRT %}
-                            <li {% if menu_active == "virt" %} class="active"{% endif %}>
-                                <a href="{% url 'virt_list' %}">{% trans "VM" %}</a>
-                            </li>
-                        {% endif %}
-                        {% if settings.OLD %}
-                            {% if user.mysqldb_set.count or user.pgsql_set.count %}
-                                <li{% if menu_active == "dbs" %} class="active"{% endif %}>
-                                    <a href="{% url 'db_list' %}">{% trans "Databases" %}</a>
+                        {% if user.parms.enable %}
+                            {% if superuser.is_superuser and settings.OLD %}
+                                <!--<li {% if menu_active == "domains" %} class="active"{% endif %}>
+                            <a href="{% url 'domains_list' %}">{% trans "Domains" %}</a>
+                        </li>-->
+                            {% endif %}
+                            {% if config.handle_dns %}
+                                <li {% if menu_active == "dns" %} class="active"{% endif %}>
+                                    <a href="{% url 'dns_list' %}">{% trans "DNS" %}</a>
                                 </li>
                             {% endif %}
-                        {% endif %}
-                        {% if settings.OLD and user.ftp_set.count %}
-                            <li{% if menu_active == "ftps" %} class="active"{% endif %}>
-                                <a href="{% url 'ftp_list' %}">{% trans "FTP" %}</a>
+                            {% if settings.OLD and user.usersite_set.count %}
+                                <li {% if menu_active == "webapps" %} class="active"{% endif %}>
+                                    <a href="{% url 'app_list' %}">{% trans "Web apps" %}</a>
+                                </li>
+                            {% endif %}
+                            <li {% if menu_active == "apps" %} class="active"{% endif %}>
+                                <a href="{% url 'apps_list' %}">{% trans "Apps" %}</a>
                             </li>
+                            {% if superuser.is_superuser and settings.VIRT %}
+                                <li {% if menu_active == "virt" %} class="active"{% endif %}>
+                                    <a href="{% url 'virt_list' %}">{% trans "VM" %}</a>
+                                </li>
+                            {% endif %}
+                            {% if settings.OLD %}
+                                {% if user.mysqldb_set.count or user.pgsql_set.count %}
+                                    <li{% if menu_active == "dbs" %} class="active"{% endif %}>
+                                        <a href="{% url 'db_list' %}">{% trans "Databases" %}</a>
+                                    </li>
+                                {% endif %}
+                            {% endif %}
+                            {% if settings.OLD and user.ftp_set.count %}
+                                <li{% if menu_active == "ftps" %} class="active"{% endif %}>
+                                    <a href="{% url 'ftp_list' %}">{% trans "FTP" %}</a>
+                                </li>
+                            {% endif %}
                         {% endif %}
                         <li {% if menu_active == "emails" %} class="active"{% endif %}>
                             <a href="{% url 'mailbox_list' %}">{% trans "E-mails" %}</a>

@@ -77,6 +77,10 @@ class AppParametersView(TemplateView):
     template_name = "universal.html"
 
     def post(self, request, *args, **kwargs):
+        if not self.user.parms.enable:
+            messages.add_message(request, messages.ERROR, _('Your account is disabled now. You can do anything with your apps.'))
+            return HttpResponseRedirect("info")
+
         context = self.get_context_data(**kwargs)
         form = self.get_form()(request.POST)
         app = self.get_object()
@@ -112,6 +116,11 @@ class AppParametersView(TemplateView):
         return self.render_to_response(context)
 
     def get(self, request, *args, **kwargs):
+        if not self.user.parms.enable:
+            messages.add_message(request, messages.ERROR,
+                                 _('Your account is disabled now. You can do anything with your apps.'))
+            return HttpResponseRedirect("info")
+
         context = self.get_context_data(**kwargs)
         form = self.get_form()(initial=self.get_initial())
         if self.get_object().app_type in ("python", "uwsgi", "gunicorn"):
@@ -434,6 +443,11 @@ def app_rm(request):
 def app_restart(request):
     user = request.session.get('switched_user', request.user)
     superuser = request.user
+
+    if not user.parms.enable:
+        messages.add_message(request, messages.ERROR,
+                             _('Your account is disabled now. You can do anything with your apps.'))
+        return HttpResponseRedirect("info")
 
     app_id = int(request.GET.get("app_id"))
     app = get_object_or_404(user.app_set, id=app_id)

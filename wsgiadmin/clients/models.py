@@ -37,6 +37,7 @@ class Parms(models.Model):
     low_level_credits = models.CharField(_("Low level of credits"), max_length=30, default="send_email")
     last_notification = models.DateField(_("Last low level notification"), blank=True, null=True)
     num_reminds = models.IntegerField(_("Number of reminds"), default=0)
+    num_disabled = models.IntegerField(_("Number of disabled days"), default=0)
     installed = models.BooleanField(_("Installed"), default=False)
 
     #address		= models.ForeignKey("address")

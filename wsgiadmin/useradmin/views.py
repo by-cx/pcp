@@ -101,14 +101,19 @@ def master(request):
     if not superuser.is_superuser:
         return HttpResponseForbidden(_("Permission error"))
 
-    balance_day = 0
-    sites = UserSite.objects.all()
-    for site in sites:
-        balance_day += site.pay
-    balance_month = balance_day * 30
+    apps = []
+    balance_day = 0.0
+    balance_month = 0.0
 
-    apps = UserSite.objects.filter(Q(type="static")|Q(type="php"))
-    apps = sorted(apps, key=lambda x: x.main_domain.name)
+    if settings.OLD:
+        balance_day = 0
+        sites = UserSite.objects.all()
+        for site in sites:
+            balance_day += site.pay
+        balance_month = balance_day * 30
+
+        apps = UserSite.objects.filter(Q(type="static")|Q(type="php"))
+        apps = sorted(apps, key=lambda x: x.main_domain.name)
 
     return render_to_response('master.html', {
         "u": u,

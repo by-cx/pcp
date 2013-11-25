@@ -85,7 +85,7 @@ USE_I18N = True
 #USE_L10N = True
 
 LOCALE_PATHS = (
-    join(ROOT, "locale")
+    join(ROOT, "locale"),
 )
 
 STATIC_ROOT = join(ROOT, "..", "static")
@@ -180,9 +180,6 @@ PAYMENT_CHOICES = (
     ("fee", _("Constant fee (200 CZK/196 MB RAM)")),
 )
 
-LOCALE_PATHS = (
-    join(ROOT, "locale"),
-)
 
 # support for old style apps/emails/ftp/.. implementation
 OLD = False

@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import patterns, url
+from django.conf.urls import patterns, url
 from django.views.generic.base import TemplateView
 from wsgiadmin.virt.views import VirtListView, VirtCreateView, VirtSummaryView, VirtNewView
 

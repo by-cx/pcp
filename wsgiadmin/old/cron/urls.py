@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import patterns, url
 from wsgiadmin.old.cron.views import CronListView, CronUpdateView, CronCreateView
 
 urlpatterns = patterns('wsgiadmin.old.cron.views',

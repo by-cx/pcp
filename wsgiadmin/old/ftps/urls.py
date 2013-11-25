@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import patterns, url
 from wsgiadmin.old.ftps.views import FTPListView, ftp_upsert, remove_ftp, passwd_ftp
 
 urlpatterns = patterns('',

@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import patterns, url
 from wsgiadmin.emails.views import mailbox_remove, alias_remove, MailboxListView, EmailAliasListView, addRedirect, addBox, DomainCreateView
 
 urlpatterns = patterns('wsgiadmin.emails.views',

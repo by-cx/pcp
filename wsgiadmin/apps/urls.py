@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import patterns, url
 from wsgiadmin.apps.views import AppsListView, AppParametersView, AppDetailView, AppCreateView, DbCreateView, DbUpdateView, FtpAccessCreateView, FtpAccessUpdateView
 
 urlpatterns = patterns('',

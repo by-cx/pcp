@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import patterns, url, include
 
 urlpatterns = patterns('wsgiadmin.users.views',
     url(r'^show/$', 'show', name="users_list"),

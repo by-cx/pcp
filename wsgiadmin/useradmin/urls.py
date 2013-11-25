@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.conf.urls.defaults import *
+from django.conf.urls import patterns, url, include
 from wsgiadmin.service.forms import LoginFormHelper
 from wsgiadmin.useradmin.views import PasswordView, EmailView
 

@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import patterns, url
 from wsgiadmin.old.apacheconf.views import *
 
 urlpatterns = patterns('wsgiadmin.old.apacheconf.views',

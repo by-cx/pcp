@@ -35,7 +35,7 @@
                                 <a href="{% url 'address_update' pk=addr.id %}"><span class="glyphicon-edit glyphicon"></span> {% trans "Update" %}</a>
                             </li>
                             <li class="smazat">
-                                <a href="#a" onclick="if(confirm('{% trans "Are you sure?" %}̈́')){document.location='{% url 'address_delete' pk=addr.id %}'};"><span class="glyphicon-remove glyphicone"></span> {% trans "Delete" %}</a>
+                                <a href="#a" onclick="if(confirm('{% trans "Are you sure?" %}̈́')){document.location='{% url 'address_delete' pk=addr.id %}'};"><span class="glyphicon-remove glyphicon"></span> {% trans "Delete" %}</a>
                             </li>
                         </ul>
                     </td>

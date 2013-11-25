@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import patterns, url
+from django.conf.urls import patterns, url
 from wsgiadmin.stats.views import CreditView, StatsView, PaymentView, PaymentsView, PaymentDone, PaymentError
 
 urlpatterns = patterns('',

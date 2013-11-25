@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import patterns, url
 from wsgiadmin.dns.views import DomainsListView, EditorView, DomainCreateView, DomainUpdateView, RecordEditorView
 
 urlpatterns = patterns('',

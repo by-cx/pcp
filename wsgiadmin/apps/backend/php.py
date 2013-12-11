@@ -90,7 +90,7 @@ class PHPApp(AppBackend):
         content.append("\tCustomLog %(home)s/logs/access.log combined" % parms)
         content.append("\tErrorLog %(home)s/logs/error.log" % parms)
         content.append("\t<Directory %(home)s/app/>" % parms)
-        content.append("\t\tOptions +ExecCGI %s" % "+Indexes" if parms.get("flag_index") else "")
+        content.append("\t\tOptions +ExecCGI %s" % ("+Indexes" if parms.get("flag_index") else ""))
         content.append("\t\tAllowOverride All")
         content.append("\t\tAddHandler fcgid-script .php")
         content.append("\t\tFCGIWrapper /var/www/%(user)s/php-wrap .php" % parms)
